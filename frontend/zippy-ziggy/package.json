@@ -9,14 +9,21 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@tanstack/react-query": "^4.29.1",
     "@types/node": "18.15.11",
     "@types/react": "18.0.35",
     "@types/react-dom": "18.0.11",
+    "@types/styled-components": "^5.1.26",
     "eslint": "8.38.0",
     "eslint-config-next": "13.3.0",
     "next": "13.3.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "styled-components": "^5.3.9",
+    "styled-normalize": "^8.0.7",
     "typescript": "5.0.4"
+  },
+  "devDependencies": {
+    "babel-plugin-styled-components": "^2.1.1"
   }
 }
