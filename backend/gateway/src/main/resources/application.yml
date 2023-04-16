@@ -1,0 +1,33 @@
+
+server:
+  port: 8000
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      routes:
+        - id: member
+          uri: lb://MEMBER
+          predicates:
+            - Path=/members/**
+        - id: prompt
+          uri: lb://PROMPT
+          predicates:
+            - Path=/prompts/**
+        - id: search
+          uri: lb://SEARCH
+          predicates:
+            - Path=/search/**
+        - id: notice
+          uri: lb://NOTICE
+          predicates:
+            - Path=/notice/**
