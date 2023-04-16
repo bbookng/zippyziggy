@@ -1,4 +1,5 @@
 import { media } from '@/styles/media';
+import Link from 'next/link';
 import styled from 'styled-components';
 
 const Example = styled.div<any>`
@@ -19,6 +20,7 @@ export default function Home() {
   return (
     <>
       <Example>안녕</Example>
+      <input placeholder='각자 할거 합시다 이제' />
     </>
   );
 }
