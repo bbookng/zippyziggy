@@ -1,0 +1,96 @@
+:root {
+  /* Font Sizes */
+  --fonts-desktop-heading-5xl: 3rem;
+  --fonts-desktop-heading-4xl: 2.25rem;
+  --fonts-desktop-heading-3xl: 1.875rem;
+  --fonts-desktop-heading-2xl: 1.5rem;
+  --fonts-desktop-heading-xl: 1.25rem;
+  --fonts-mobile-heading-4xl: 2.25rem;
+  --fonts-mobile-heading-3xl: 1.875rem;
+  --fonts-mobile-heading-2xl: 1.5rem;
+  --fonts-mobile-heading-xl: 1.25rem;
+  --fonts-body-lg: 1.125rem;
+  --fonts-body-base: 1rem;
+  --fonts-body-sm: 0.875rem;
+  --fonts-body-xm: 0.75rem;
+
+  /* Font Weights */
+  --fonts-heading: 600;
+  --fonts-body: 400;
+
+  /* line Heights */
+  --lineHights-desktop-heading-5xl: 3rem;
+  --lineHights-desktop-heading-4xl: 2.5rem;
+  --lineHights-desktop-heading-3xl: 2.25rem;
+  --lineHights-desktop-heading-2xl: 2rem;
+  --lineHights-desktop-heading-xl: 1.75rem;
+  --lineHights-mobile-heading-4xl: 2.5rem;
+  --lineHights-mobile-heading-3xl: 2.25rem;
+  --lineHights-mobile-heading-2xl: 2rem;
+  --lineHights-mobile-heading-xl: 1.75rem;
+  --lineHights-body-lg: 1.75rem;
+  --lineHights-body-base: 1.5rem;
+  --lineHights-body-sm: 1.25rem;
+  --lineHights-body-xm: 1rem;
+
+  /* Colors */
+  --colors-main-500: #4ade80;
+  --colors-main-400: #68db92;
+  --colors-main-300: #90e9b0;
+  --colors-main-200: #bdf7d2;
+  --colors-main-100: #dcfde8;
+  --colors-black: #000000;
+  --colors-black-500: #08171b;
+  --colors-black-400: #182d33;
+  --colors-black-300: #253438;
+  --colors-black-200: #3a4346;
+  --colors-black-100: #585858;
+  --colors-white: #ffffff;
+  --colors-white-500: #fcfcfc;
+  --colors-white-400: #e9e9e9;
+  --colors-white-300: #d5d5d5;
+  --colors-white-200: #c1c1c1;
+  --colors-white-100: #adadad;
+  --colors-success: #4ade80;
+  --colors-danger: #f87171;
+  --colors-info: #22ddee;
+  --colors-warn: #fbbf24;
+  --colors-link: #60a5fa;
+  --colors-heart: #ff2d2d;
+  --colors-bookmark: #10c600;
+  --colors-background: #f5f6fa;
+
+  /* Breakpoints */
+  --breakpoints-phone: 768px;
+  --breakpoints-desktop: 1440px;
+
+  /* Borders */
+  --borders-radius-base: 8px;
+  --borders-radius-lg: 12px;
+  --borders-radius-xl: 16px;
+  --borders-radius-2xl: 24px;
+  --borders-radius-round: 50%;
+
+  /* Shadows */
+  --shadows-black-sm: 0px 1px 2px rgba(0, 0, 0, 0.05);
+  --shadows-black: 0px 1px 3px rgba(0, 0, 0, 0.1), 0px 1px 2px rgba(0, 0, 0, 0.06);
+  --shadows-black-md: 0px 4px 6px -1px rgba(0, 0, 0, 0.1), 0px 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadows-black-lg: 0px 10px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadows-black-xl: 0px 20px 25px -5px rgba(0, 0, 0, 0.1), 0px 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadows-black-2xl: 0px 25px 50px -12px rgba(0, 0, 0, 0.25);
+
+  --shadows-main-sm: 0px 1px 2px rgba(59, 130, 246, 0.05);
+  --shadows-main: 0px 1px 3px rgba(59, 130, 246, 0.1), 0px 1px 2px rgba(59, 130, 246, 0.06);
+  --shadows-main-md: 0px 4px 6px -1px rgba(59, 130, 246, 0.1), 0px 2px 4px -1px rgba(59, 130, 246, 0.06);
+  --shadows-main-lg: 0px 10px 15px -3px rgba(59, 130, 246, 0.1), 0px 4px 6px -2px rgba(59, 130, 246, 0.05);
+  --shadows-main-xl: 0px 20px 25px -5px rgba(59, 130, 246, 0.1), 0px 10px 10px -5px rgba(59, 130, 246, 0.04);
+  --shadows-main-2xl: 0px 25px 50px -12px rgba(59, 130, 246, 0.25);
+  /* --minus-margin-android: 0px -16px;
+--minus-margin-ios: 0px -24px;
+--minus-margin-undefined: 0px -24px;
+--padding-android: 0px 16px;
+--padding-ios: 0px 24px;
+--padding-undefined: 0px 24px; */
+
+  --toolbar-height: 60px;
+}
