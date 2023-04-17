@@ -16,8 +16,8 @@ export const GlobalStyle = createGlobalStyle`
   }
   
   html {
-    background-color: ${({ theme }) => theme?.bgColor};
-    color: ${({ theme }) => theme?.textColor};
+    background-color: ${({ theme }) => theme?.whiteColor100};
+    color: ${({ theme }) => theme?.blackColor90};
     min-width: var(--breakpoints-desktop);
     
     ${media.small`
