@@ -1,7 +1,7 @@
 import React from 'react';
 
 const App = () => {
-  return <h1>제목입니다</h1>;
+  return <img src="icon.png" alt="아이콘" />;
 };
 
 export default App;
