@@ -2,32 +2,37 @@
 const path = require('path');
 const CopyPlugin = require('copy-webpack-plugin');
 const HtmlPlugin = require('html-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin').CleanWebpackPlugin;
 
 module.exports = {
-  mode: 'development',
-  devtool: 'cheap-module-source-map',
   entry: {
     popup: path.resolve('src/popup/popup.tsx'),
     options: path.resolve('src/options/options.tsx'),
+    background: path.resolve('src/background/background.ts'),
+    contentScript: path.resolve('src/content-script/contentScript.ts'),
   }, // 진입점
   module: {
     rules: [
       {
-        use: 'ts-loader',
         test: /\.ts(x)?$/,
+        use: 'ts-loader',
         exclude: /node_modules/,
       },
       {
+        test: /\.css$/i,
         use: ['style-loader', 'css-loader'],
-        test: /\.css$/i
+        exclude: /\.module\.css$/,
       },
       {
         type: 'asset/resource',
-        test: /\.(jpg|jpeg|png|woff|woff2|eot|ttf|svg)$/
-      }
+        test: /\.(jpg|jpeg|png|woff|woff2|eot|ttf|svg)$/,
+      },
     ],
   },
   plugins: [
+    new CleanWebpackPlugin({
+      cleanStaleWebpackAssets: false,
+    }),
     new CopyPlugin({
       patterns: [
         {
@@ -36,7 +41,7 @@ module.exports = {
         },
       ],
     }),
-
+    
     ...getHtmlPlugins(['popup', 'options']),
   ],
   resolve: {
@@ -60,6 +65,6 @@ function getHtmlPlugins(chunks) {
         title: '지피지기',
         filename: `${chunk}.html`,
         chunks: [chunk],
-      })
+      }),
   );
 }

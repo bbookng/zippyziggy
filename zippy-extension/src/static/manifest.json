@@ -13,5 +13,21 @@
     "default_title" : "지피지기",
     "default_popup": "popup.html"
   },
-  "options_page" : "options.html"
+  "options_page" : "options.html",
+  "background": {
+    "service_worker" : "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://chat.openai.com/*"],
+      "js": ["contentScript.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["inject.js"],
+      "matches": ["https://chat.openai.com/*"],
+      "use_dynamic_url": false
+    }
+  ]
 }

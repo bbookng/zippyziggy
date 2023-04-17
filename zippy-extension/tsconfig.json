@@ -7,8 +7,8 @@
     "strict": true,
     "module": "ESNext",
     "moduleResolution": "Node",
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", ".eslintrc.cjs", "webpack.config.js"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", ".eslintrc.cjs", "webpack.*.js"],
   "exclude": ["node_modules"]
 }
