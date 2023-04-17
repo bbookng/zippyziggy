@@ -7,6 +7,7 @@ module.exports ={
   devtool: "cheap-module-source-map",
   entry: {
     popup: path.resolve('src/popup/popup.tsx'),
+    options: path.resolve('src/options/options.tsx'),
   }, // 진입점
   module : {
     rules : [
@@ -21,17 +22,16 @@ module.exports ={
     new CopyPlugin({
       patterns: [
         {
-          from: path.resolve('src/manifest.json'),
+          from: path.resolve('src/static'),
           to: path.resolve('dist')
         }
       ]
     }),
     
-    new HtmlPlugin({
-      title: '지피지기',
-      filename: "popup.html",
-      chunks: ['popup'],
-    })
+    ...getHtmlPlugins([
+      'popup',
+      'options'
+    ])
   ],
   resolve: {
     extensions: ['.tsx', '.ts', '.js']
@@ -39,5 +39,18 @@ module.exports ={
   output: {
     filename: '[name].js', // 청크 네임으로 나오는듯..?
     path: path.resolve('dist')
+  },
+  optimization :{
+    splitChunks : {
+      chunks : 'all'
+    }
   }
+}
+
+function getHtmlPlugins(chunks) {
+  return chunks.map(chunk => new HtmlPlugin({
+    title: "지피지기",
+    filename: `${chunk}.html`,
+    chunks: [chunk]
+  }))
 }

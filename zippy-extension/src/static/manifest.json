@@ -3,9 +3,15 @@
   "short_name": "지피지기",
   "name": "지피지기 - ChatGPT 확장프로그램",
   "version": "0.0.1",
+  "icons" : {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
   "description": "Modify fetch requests to OpenAI's conversation API",
   "action": {
     "default_title" : "지피지기",
     "default_popup": "popup.html"
-  }
+  },
+  "options_page" : "options.html"
 }

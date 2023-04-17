@@ -3,11 +3,12 @@
     "target": "ESNext",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "strict": true,
     "module": "ESNext",
     "moduleResolution": "Node",
-    "jsx": "react",
+    "jsx": "react-jsx"
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", ".eslintrc.cjs"],
   "exclude": ["node_modules"]
 }

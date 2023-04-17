@@ -1,7 +1,11 @@
 import React from 'react';
 
 const App = () => {
-  return <h1>제목입니다</h1>;
+  return (
+    <div>
+      <h1> 옵션페이지</h1>
+    </div>
+  );
 };
 
 export default App;
