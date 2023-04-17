@@ -59,6 +59,7 @@
   --colors-heart: #ff2d2d;
   --colors-bookmark: #10c600;
   --colors-background: #f5f6fa;
+  --colors-typo-title: var(--colors-black);
 
   /* Breakpoints */
   --breakpoints-phone: 768px;

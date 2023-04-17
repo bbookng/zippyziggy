@@ -91,6 +91,9 @@ textarea {
   box-shadow: var(--shadows-main);
   padding: 0.5rem 0.75rem;
   transition: all 0.3s ease;
+  color: inherit;
+  font-family: inherit;
+  background-color: inherit;
 }
 button,
 select {

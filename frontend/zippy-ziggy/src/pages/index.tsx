@@ -1,6 +1,7 @@
 import { media } from '@/styles/media';
-import Link from 'next/link';
+import http from '@/lib/http';
 import styled from 'styled-components';
+import { useEffect, useState } from 'react';
 
 const Example = styled.div<any>`
   font-size: 2rem;
@@ -17,9 +18,14 @@ const Example = styled.div<any>`
 `;
 
 export default function Home() {
+  const [name, setName] = useState<string>('');
+  useEffect(() => {
+    // http.get('/hello').then((res) => setName(res.data.name));
+    http.post('/hello').then((res) => setName(res.data.name));
+  }, []);
   return (
     <>
-      <Example>안녕</Example>
+      <Example>안녕 난 {name}이야</Example>
       <input placeholder='각자 할거 합시다 이제' />
     </>
   );
