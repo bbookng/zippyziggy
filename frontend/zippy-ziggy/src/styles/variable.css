@@ -56,7 +56,23 @@
   --colors-black-30: rgba(0, 0, 0, 0.3);
   --colors-black-20: rgba(0, 0, 0, 0.2);
   --colors-black-10: rgba(0, 0, 0, 0.1);
-  --colors-black-0: rgba(0, 0, 0, 0);
+  --colors-black-05: rgba(0, 0, 0, 0.05);
+  --colors-black-03: rgba(0, 0, 0, 0.03);
+  --colors-black-00: rgba(0, 0, 0, 0);
+
+  --colors-dark-100: rgba(48, 48, 48, 1);
+  --colors-dark-90: rgba(48, 48, 48, 0.9);
+  --colors-dark-80: rgba(48, 48, 48, 0.8);
+  --colors-dark-70: rgba(48, 48, 48, 0.7);
+  --colors-dark-60: rgba(48, 48, 48, 0.6);
+  --colors-dark-50: rgba(48, 48, 48, 0.5);
+  --colors-dark-40: rgba(48, 48, 48, 0.4);
+  --colors-dark-30: rgba(48, 48, 48, 0.3);
+  --colors-dark-20: rgba(48, 48, 48, 0.2);
+  --colors-dark-10: rgba(48, 48, 48, 0.1);
+  --colors-dark-05: rgba(48, 48, 48, 0.05);
+  --colors-dark-03: rgba(48, 48, 48, 0.03);
+  --colors-dark-00: rgba(48, 48, 48, 0);
 
   --colors-white-100: rgba(255, 255, 255, 1);
   --colors-white-90: rgba(255, 255, 255, 0.9);
@@ -68,7 +84,9 @@
   --colors-white-30: rgba(255, 255, 255, 0.3);
   --colors-white-20: rgba(255, 255, 255, 0.2);
   --colors-white-10: rgba(255, 255, 255, 0.1);
-  --colors-white-0: rgba(255, 255, 255, 0);
+  --colors-white-05: rgba(255, 255, 255, 0.05);
+  --colors-white-03: rgba(255, 255, 255, 0.03);
+  --colors-white-00: rgba(255, 255, 255, 0);
 
   --colors-success: #4ade80;
   --colors-danger: #f87171;
@@ -79,21 +97,6 @@
   --colors-bookmark: #10c600;
   --colors-background: #f5f6fa;
   --colors-gpt: #74aa9c;
-
-  --colors-border: rgba(0, 0, 0, 0.05);
-  --colors-box: rgba(0, 0, 0, 0.03);
-  --colors-box-primary: rgba(16, 198, 0, 0.05);
-  --colors-box-card-primary: #f3fcf2;
-  --colors-background-white: var(--colors-white-100);
-  --colors-box-card-white: var(--colors-white-100);
-  --colors-box-white: var(--colors-white-100);
-  --colors-typo-white: var(--colors-white-100);
-  --colors-typo-button-white: var(--colors-white-100);
-  --colors-typo-title: var(--colors-black-90);
-  --colors-typo-input: var(--colors-black-90);
-  --colors-typo-text: var(--colors-black-70);
-  --colors-typo-sub: var(--colors-black-30);
-  --colors-typo-placeholder: var(--colors-black-30);
 
   /* Breakpoints */
   --breakpoints-phone: 768px;
