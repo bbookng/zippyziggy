@@ -1,32 +1,32 @@
 package com.zippyziggy.member.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zippyziggy.member.dto.response.KakaoTokenResponseDto;
+import com.zippyziggy.member.dto.response.GoogleTokenResponseDto;
+import com.zippyziggy.member.dto.response.GoogleUserInfoResponseDto;
 import com.zippyziggy.member.dto.response.KakaoUserInfoResponseDto;
 import com.zippyziggy.member.model.Member;
 import com.zippyziggy.member.model.Platform;
 import com.zippyziggy.member.repository.MemberRepository;
+import com.zippyziggy.member.service.GoogleLoginService;
 import com.zippyziggy.member.service.KakaoLoginService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.reactive.function.BodyInserters;
-import org.springframework.web.reactive.function.client.WebClient;
 
-import java.time.Duration;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/members")
-public class KakaoLoginController {
+public class MemberController {
 
     @Autowired
     private KakaoLoginService kakaoLoginService;
+
+    @Autowired
+    private GoogleLoginService googleLoginService;
 
     @Autowired
     private MemberRepository memberRepository;
@@ -42,10 +42,10 @@ public class KakaoLoginController {
     public String kakaoCallback(String code) throws Exception {
 
         // kakao Token 가져오기(권한)
-        String kakaoAccessToken = kakaoLoginService.kakaoToken(code);
+        String kakaoAccessToken = kakaoLoginService.kakaoGetToken(code);
 
         // Token으로 사용자 정보 가져오기
-        KakaoUserInfoResponseDto kakaoUserInfo = kakaoLoginService.kakaoProfile(kakaoAccessToken);
+        KakaoUserInfoResponseDto kakaoUserInfo = kakaoLoginService.kakaoGetProfile(kakaoAccessToken);
 
         Long platformId = kakaoUserInfo.getId();
         Optional<Member> member = memberRepository.findByPlatformAndPlatformId(Platform.KAKAO, platformId);
@@ -61,6 +61,25 @@ public class KakaoLoginController {
         return kakaoUserInfo.toString();
     }
 
+
+    @GetMapping("/logout")
+    public ResponseEntity<Long> logout() {
+
+//        String kakaoLogoutUrl = "https://kauth.kakao.com/oauth/logout?client_id=${REST_API_KEY}&logout_redirect_uri=${LOGOUT_REDIRECT_URI}"
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/login/oauth2/code/google")
+    public String googleCallback(@RequestParam(value="code", required = false) String code) throws Exception {
+        GoogleTokenResponseDto token = googleLoginService.googleGetToken(code);
+
+        GoogleUserInfoResponseDto googleProfile = googleLoginService.googleGetProfile(token.getAccess_token());
+
+
+
+        return googleProfile.toString();
+    }
 
 
 }

@@ -34,17 +34,17 @@ public class KakaoLoginService {
     private MemberRepository memberRepository;
 
     // code를 이용해 kakaoToken 가져오기
-    public String kakaoToken(String code) throws Exception {
+    public String kakaoGetToken(String code) throws Exception {
 
         // 요청 URL
         String kakaoTokenUri = "https://kauth.kakao.com/oauth/token";
 
         // body
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("grant_type", "authorization_code");
-        params.add("client_id", kakaoClientId);
-        params.add("redirect_uri", kakaoRedirectUri);
-        params.add("code", code);
+        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("grant_type", "authorization_code");
+        body.add("client_id", kakaoClientId);
+        body.add("redirect_uri", kakaoRedirectUri);
+        body.add("code", code);
 
 
         String token = WebClient.create()
@@ -52,7 +52,7 @@ public class KakaoLoginService {
                 .uri(kakaoTokenUri)
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .body(BodyInserters.fromFormData(params))
+                .body(BodyInserters.fromFormData(body))
                 .retrieve()
                 .bodyToMono(String.class)
                 .timeout(Duration.ofMillis(5000))
@@ -69,7 +69,7 @@ public class KakaoLoginService {
 
 
     // 토큰을 사용하여 사용자 정보 가져오기
-    public KakaoUserInfoResponseDto kakaoProfile(String kakaoAccessToken) throws Exception {
+    public KakaoUserInfoResponseDto kakaoGetProfile(String kakaoAccessToken) throws Exception {
 
         // URL
         String kakaoUserInfoUrl = "https://kapi.kakao.com/v2/user/me";
