@@ -201,11 +201,11 @@ video {
   width: 3px;
 }
 ::-webkit-scrollbar-thumb {
-  background-color: var(--colors-main-300);
+  background-color: var(--colors-background);
   border-radius: var(--borders-radius-base);
 }
 
 ::selection {
   color: #000;
-  background-color: var(--colors-main-300);
+  background-color: var(--colors-background);
 }

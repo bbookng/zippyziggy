@@ -34,23 +34,42 @@
   --lineHights-body-xm: 1rem;
 
   /* Colors */
-  --colors-main-500: #4ade80;
-  --colors-main-400: #68db92;
-  --colors-main-300: #90e9b0;
-  --colors-main-200: #bdf7d2;
-  --colors-main-100: #dcfde8;
-  --colors-black: #000000;
-  --colors-black-500: #08171b;
-  --colors-black-400: #182d33;
-  --colors-black-300: #253438;
-  --colors-black-200: #3a4346;
-  --colors-black-100: #585858;
-  --colors-white: #ffffff;
-  --colors-white-500: #fcfcfc;
-  --colors-white-400: #e9e9e9;
-  --colors-white-300: #d5d5d5;
-  --colors-white-200: #c1c1c1;
-  --colors-white-100: #adadad;
+  --colors-primary-100: rgba(16, 198, 0, 1);
+  --colors-primary-90: rgba(16, 198, 0, 0.9);
+  --colors-primary-80: rgba(16, 198, 0, 0.8);
+  --colors-primary-70: rgba(16, 198, 0, 0.7);
+  --colors-primary-60: rgba(16, 198, 0, 0.6);
+  --colors-primary-50: rgba(16, 198, 0, 0.5);
+  --colors-primary-40: rgba(16, 198, 0, 0.4);
+  --colors-primary-30: rgba(16, 198, 0, 0.3);
+  --colors-primary-20: rgba(16, 198, 0, 0.2);
+  --colors-primary-10: rgba(16, 198, 0, 0.1);
+  --colors-primary-0: rgba(16, 198, 0, 0);
+
+  --colors-black-100: rgba(0, 0, 0, 1);
+  --colors-black-90: rgba(0, 0, 0, 0.9);
+  --colors-black-80: rgba(0, 0, 0, 0.8);
+  --colors-black-70: rgba(0, 0, 0, 0.7);
+  --colors-black-60: rgba(0, 0, 0, 0.6);
+  --colors-black-50: rgba(0, 0, 0, 0.5);
+  --colors-black-40: rgba(0, 0, 0, 0.4);
+  --colors-black-30: rgba(0, 0, 0, 0.3);
+  --colors-black-20: rgba(0, 0, 0, 0.2);
+  --colors-black-10: rgba(0, 0, 0, 0.1);
+  --colors-black-0: rgba(0, 0, 0, 0);
+
+  --colors-white-100: rgba(255, 255, 255, 1);
+  --colors-white-90: rgba(255, 255, 255, 0.9);
+  --colors-white-80: rgba(255, 255, 255, 0.8);
+  --colors-white-70: rgba(255, 255, 255, 0.7);
+  --colors-white-60: rgba(255, 255, 255, 0.6);
+  --colors-white-50: rgba(255, 255, 255, 0.5);
+  --colors-white-40: rgba(255, 255, 255, 0.4);
+  --colors-white-30: rgba(255, 255, 255, 0.3);
+  --colors-white-20: rgba(255, 255, 255, 0.2);
+  --colors-white-10: rgba(255, 255, 255, 0.1);
+  --colors-white-0: rgba(255, 255, 255, 0);
+
   --colors-success: #4ade80;
   --colors-danger: #f87171;
   --colors-info: #22ddee;
@@ -59,7 +78,22 @@
   --colors-heart: #ff2d2d;
   --colors-bookmark: #10c600;
   --colors-background: #f5f6fa;
-  --colors-typo-title: var(--colors-black);
+  --colors-gpt: #74aa9c;
+
+  --colors-border: rgba(0, 0, 0, 0.05);
+  --colors-box: rgba(0, 0, 0, 0.03);
+  --colors-box-primary: rgba(16, 198, 0, 0.05);
+  --colors-box-card-primary: #f3fcf2;
+  --colors-background-white: var(--colors-white-100);
+  --colors-box-card-white: var(--colors-white-100);
+  --colors-box-white: var(--colors-white-100);
+  --colors-typo-white: var(--colors-white-100);
+  --colors-typo-button-white: var(--colors-white-100);
+  --colors-typo-title: var(--colors-black-90);
+  --colors-typo-input: var(--colors-black-90);
+  --colors-typo-text: var(--colors-black-70);
+  --colors-typo-sub: var(--colors-black-30);
+  --colors-typo-placeholder: var(--colors-black-30);
 
   /* Breakpoints */
   --breakpoints-phone: 768px;
@@ -79,6 +113,7 @@
   --shadows-black-lg: 0px 10px 15px -3px rgba(0, 0, 0, 0.1), 0px 4px 6px -2px rgba(0, 0, 0, 0.05);
   --shadows-black-xl: 0px 20px 25px -5px rgba(0, 0, 0, 0.1), 0px 10px 10px -5px rgba(0, 0, 0, 0.04);
   --shadows-black-2xl: 0px 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --shadows-black-inner: inset 0px 2px 4px rgba(0, 0, 0, 0.06);
 
   --shadows-main-sm: 0px 1px 2px rgba(59, 130, 246, 0.05);
   --shadows-main: 0px 1px 3px rgba(59, 130, 246, 0.1), 0px 1px 2px rgba(59, 130, 246, 0.06);
@@ -86,12 +121,7 @@
   --shadows-main-lg: 0px 10px 15px -3px rgba(59, 130, 246, 0.1), 0px 4px 6px -2px rgba(59, 130, 246, 0.05);
   --shadows-main-xl: 0px 20px 25px -5px rgba(59, 130, 246, 0.1), 0px 10px 10px -5px rgba(59, 130, 246, 0.04);
   --shadows-main-2xl: 0px 25px 50px -12px rgba(59, 130, 246, 0.25);
-  /* --minus-margin-android: 0px -16px;
---minus-margin-ios: 0px -24px;
---minus-margin-undefined: 0px -24px;
---padding-android: 0px 16px;
---padding-ios: 0px 24px;
---padding-undefined: 0px 24px; */
+  --shadows-main-inner: inset 0px 2px 4px rgba(59, 130, 246, 0.06);
 
   --toolbar-height: 60px;
 }
