@@ -10,6 +10,7 @@ module.exports = {
     options: path.resolve('src/options/options.tsx'),
     background: path.resolve('src/background/background.ts'),
     contentScript: path.resolve('src/content-script/contentScript.ts'),
+    inject: path.resolve('src/inject/index.ts'),
   }, // 진입점
   module: {
     rules: [
@@ -24,8 +25,32 @@ module.exports = {
         exclude: /\.module\.css$/,
       },
       {
+        test: /\.scss$/,
+        use: [
+          "style-loader",
+          "css-loader",
+          "sass-loader"
+        ],
+        exclude: /node_modules/,
+      },
+      {
         type: 'asset/resource',
         test: /\.(jpg|jpeg|png|woff|woff2|eot|ttf|svg)$/,
+      },
+      {
+        test: /\.svg$/,
+        use: "file-loader",
+      },
+      {
+        test: /\.png$/,
+        use: [
+          {
+            loader: "url-loader",
+            options: {
+              mimetype: "image/png",
+            },
+          },
+        ],
       },
     ],
   },

@@ -50,5 +50,6 @@ module.exports = {
     'react/no-unused-prop-types': 'warn',
     'import/no-cycle': 'warn',
     'import/extensions': 'off',
+    'no-underscore-dangle': 'off'
   },
 };
