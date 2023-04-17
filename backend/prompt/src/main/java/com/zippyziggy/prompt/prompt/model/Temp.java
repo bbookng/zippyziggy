@@ -1,4 +1,4 @@
-package com.zippyziggy.member.model;
+package com.zippyziggy.prompt.prompt.model;
 
 import java.time.LocalDateTime;
 
@@ -7,7 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.Lob;
 
 import org.hibernate.annotations.ColumnDefault;
 
@@ -18,41 +18,48 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "member")
 @Getter
-public class Member {
+public class Temp {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false, length = 10)
-	private String nickname;
-
-	@Column(length = 255)
-	private String profileImg;
+	@Column(nullable = false)
+	private Long userId;
 
 	@Column(nullable = false, length = 255)
-	private String name;
+	private String title;
+
+	@Column(nullable = false, length = 255)
+	private String description;
+
+	@Column(nullable = false)
+	@ColumnDefault("0")
+	private Integer hit;
 
 	@Column(nullable = false)
 	private LocalDateTime regDt;
 
 	@Column(nullable = false)
-	@ColumnDefault("false")
-	private Boolean activate;
+	private LocalDateTime updDt;
 
 	@Column(nullable = false, length = 10)
-	@ColumnDefault("USER")
-	private RoleType role;
+	private Category category;
 
-	@Column(nullable = false, length = 10)
-	private Platform platform;
+	@Lob
+	private String prefix;
+
+	@Lob
+	private String suffix;
+
+	@Lob
+	private String example;
 
 	@Column(nullable = false, length = 128)
-	private String userUuid;
+	private String promptUuid;
 
 }

@@ -1,4 +1,4 @@
-package com.zippyziggy.prompt.controller;
+package com.zippyziggy.prompt.prompt.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
