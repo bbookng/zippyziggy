@@ -1,9 +1,9 @@
+import { useQuery } from '@tanstack/react-query';
+import styled from 'styled-components';
 import { media } from '@/styles/media';
 import http from '@/lib/http';
-import styled from 'styled-components';
-import { useEffect, useState } from 'react';
 
-const Example = styled.div<any>`
+const Example = styled.div`
   font-size: 2rem;
   display: flex;
   justify-content: center;
@@ -18,15 +18,14 @@ const Example = styled.div<any>`
 `;
 
 export default function Home() {
-  const [name, setName] = useState<string>('');
-  useEffect(() => {
-    // http.get('/hello').then((res) => setName(res.data.name));
-    http.post('/hello').then((res) => setName(res.data.name));
-  }, []);
+  const { isLoading, error, data } = useQuery({
+    queryKey: ['repoData'],
+    queryFn: () => http.post('/hello').then((res) => res.data.name),
+  });
   return (
     <>
-      <Example>안녕 난 {name}이야</Example>
-      <input placeholder='각자 할거 합시다 이제' />
+      <Example>안녕 난 {data}이야</Example>
+      <input placeholder="각자 할거 합시다 이제" />
     </>
   );
 }

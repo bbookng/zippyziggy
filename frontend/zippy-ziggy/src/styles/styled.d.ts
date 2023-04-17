@@ -12,7 +12,7 @@ declare module 'styled-components' {
     boxShadowLarge: string;
 
     // 시맨틱 컬러
-    mainColor: string;
+    primaryColor: string;
     dangerColor: string;
     infoColor: string;
     linkColor: string;
