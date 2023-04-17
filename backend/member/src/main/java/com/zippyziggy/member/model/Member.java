@@ -2,12 +2,7 @@ package com.zippyziggy.member.model;
 
 import java.time.LocalDateTime;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import org.hibernate.annotations.ColumnDefault;
 
@@ -16,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
 
 @Entity
 @Builder
@@ -23,6 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "member")
 @Getter
+@DynamicInsert
 public class Member {
 
 	@Id
@@ -41,16 +38,19 @@ public class Member {
 	@Column(nullable = false)
 	private LocalDateTime regDt;
 
-	@Column(nullable = false)
-	@ColumnDefault("false")
+	@Column(nullable = false, columnDefinition = "boolean not null default 1")
 	private Boolean activate;
 
-	@Column(nullable = false, length = 10)
-	@ColumnDefault("USER")
+	@Column(nullable = false, length = 10, columnDefinition = "varchar(10) default 'USER'")
+	@Enumerated(value = EnumType.STRING)
 	private RoleType role;
 
 	@Column(nullable = false, length = 10)
+	@Enumerated(value = EnumType.STRING)
 	private Platform platform;
+
+	@Column(nullable = false)
+	private Long platformId;
 
 	@Column(nullable = false, length = 128)
 	private String userUuid;
