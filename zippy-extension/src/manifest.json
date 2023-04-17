@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "short_name": "지피지기",
+  "name": "지피지기 - ChatGPT 확장프로그램",
+  "version": "0.0.1",
+  "description": "Modify fetch requests to OpenAI's conversation API",
+  "action": {
+    "default_title" : "지피지기",
+    "default_popup": "popup.html"
+  }
+}
