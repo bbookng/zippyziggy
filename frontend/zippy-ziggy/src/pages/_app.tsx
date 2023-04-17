@@ -15,9 +15,9 @@ export const GlobalStyle = createGlobalStyle`
   }
   
   html {
-    background-color: ${({ theme }) => theme?.whiteColor100};
+    background-color: ${({ theme }) => theme?.bgColor};
     color: ${({ theme }) => theme?.blackColor90};
-    min-width: var(--breakpoints-desktop);
+    /* min-width: var(--breakpoints-desktop); */
     
     ${media.small`
     min-width: unset;

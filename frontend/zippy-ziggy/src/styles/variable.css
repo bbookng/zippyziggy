@@ -88,6 +88,9 @@
   --colors-white-03: rgba(255, 255, 255, 0.03);
   --colors-white-00: rgba(255, 255, 255, 0);
 
+  --colors-white-nav: #ececec;
+  --colors-dark-nav: #5e5e5e;
+
   --colors-success: #4ade80;
   --colors-danger: #f87171;
   --colors-info: #22ddee;
@@ -95,8 +98,9 @@
   --colors-link: #60a5fa;
   --colors-heart: #ff2d2d;
   --colors-bookmark: #10c600;
-  --colors-background: #f5f6fa;
   --colors-gpt: #74aa9c;
+  --colors-white-background: #f5f6fa;
+  --colors-black-background: #464647;
 
   /* Breakpoints */
   --breakpoints-phone: 768px;
