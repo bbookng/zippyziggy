@@ -6,13 +6,25 @@ const NavWrapper = styled.div`
   align-items: center;
   min-height: 5rem;
   margin: 0 auto 1rem auto;
-  padding: 0 1.25rem;
+  padding: 0 1.5rem;
   justify-content: space-between;
   background-color: ${({ theme }) => theme?.whiteColor100};
   box-shadow: ${({ theme }) => theme?.boxShadowLarge};
+
   ${media.small`
     min-height: 3rem;
+    padding: 0 0.75rem;
   `}
+
+  .toggleBtn {
+    display: none;
+    ${media.small`
+      display: block;
+      cursor: pointer;
+      font-size: 1.25rem;
+      margin-right: 2rem;
+    `}
+  }
 `;
 
 type NavListProps = {
@@ -31,18 +43,17 @@ const NavList = styled.ul<NavListProps>`
     background-color: ${({ theme }) => theme?.navColor};
     top: 0px;
     left: -50%;
-    width: 50%;
+    width: 40%;
     height: 100%;
     z-index: 999;
     padding: 2rem 0;
     transition: transform 0.3s ease-in-out;
-    transform: ${(props) => (props.isOpen ? 'translateX(100%)' : 'translateX(0)')};
-
+    transform: ${(props) => (props.isOpen ? 'translateX(120%)' : 'translateX(0)')};
   `}
 `;
 
 const NavOption = styled.li`
-  width: 5rem;
+  margin-inline: 1rem;
   height: 2rem;
   border-radius: var(---borders-radius-base);
   cursor: pointer;
@@ -57,33 +68,27 @@ const NavOption = styled.li`
 
   &.active,
   &:hover,
-  &:active,
-  &:focus {
+  &:active {
     color: var(--colors-primary-80);
   }
 
-  &.active > h3,
-  &:hover > h3 {
-    color: var(--colors-primary-100);
+  .themeBtn {
+    background-color: black;
   }
-
-  & > h3 {
-    line-height: var(--lineHights-desktop-heading-4xl);
-  }
-`;
-
-const ToggleBtn = styled.button`
-  display: none;
-  ${media.small`
-    display: block;
-  `}
 `;
 
 const Logo = styled.div`
-  margin-right: 2rem;
-  ${media.small`
-    margin-right: 0;
-  `}
+  .LogoImage {
+    width: 120px;
+    height: 40px;
+    margin-right: 2rem;
+    object-fit: contain;
+    ${media.small`
+      width: 100px;
+      height: 48px;
+      margin-right: 0;
+    `}
+  }
 `;
 
 const NavUser = styled.div`
@@ -93,7 +98,15 @@ const NavUser = styled.div`
   padding: 0;
 
   .item {
-    margin-left: 0.4rem;
+    margin-right: 0.8rem;
+    font-size: 1.25rem;
+  }
+
+  .bookmark {
+    display: block;
+    ${media.small`
+      display: none;
+    `}
   }
 
   .profileImage {
@@ -101,4 +114,14 @@ const NavUser = styled.div`
   }
 `;
 
-export { NavWrapper, NavList, NavOption, ToggleBtn, Logo, NavUser };
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 99;
+  background-color: var(--colors-black-50);
+`;
+
+export { NavWrapper, NavList, NavOption, Logo, NavUser, Overlay };
