@@ -1,12 +1,13 @@
-import { media } from '@/styles/media';
-import styled, { css, StyledComponent } from 'styled-components';
+// import { media } from '@/styles/media';
+import { HTMLAttributes } from 'react';
+import styled, { css } from 'styled-components';
 
 enum Size {
   small = '0.875rem',
   medium = '1rem',
   large = '1.25rem',
 }
-export interface ParagraphProps extends HTMLParagraphElement {
+export interface ParagraphProps extends HTMLAttributes<HTMLHeadingElement> {
   size?: keyof typeof Size;
   color?: string;
 }
@@ -31,7 +32,7 @@ const StyledParagraph = styled.p<ParagraphProps>`
   ${colorStyles}
 `;
 
-function Paragraph({ children, color, size, ...rest }: ParagraphProps) {
+function Paragraph({ children, size, color, ...rest }: ParagraphProps) {
   return (
     <StyledParagraph size={size} color={color} {...rest}>
       {children}

@@ -26,7 +26,9 @@ export default function SignUp() {
 
   return (
     <div>
-      <Title textAlign="left">에잉</Title>
+      <Title color="successColor" textAlign="left">
+        에잉
+      </Title>
 
       {/* <Paragraph size="large" color="infoColor">
         앗살라마이쿰 사와디캅
