@@ -6,6 +6,7 @@ import { ThemeProvider, createGlobalStyle } from 'styled-components';
 import normalize from 'styled-normalize';
 import '@/styles/index.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import AppLayout from '@/layout/AppLayout';
 
 export const GlobalStyle = createGlobalStyle`
   ${normalize}
@@ -39,6 +40,12 @@ export const GlobalStyle = createGlobalStyle`
   select,
   textarea {
     box-shadow: ${({ theme }) => theme?.boxShadowLarge};
+    /* background-color: ${({ theme }) => theme?.whiteColor70}; */
+  }
+
+  ::selection {
+    background-color: ${({ theme }) => theme?.navColor};
+    color: ${({ theme }) => theme?.blackColor50}
   }
 `;
 
@@ -51,7 +58,9 @@ export default function App({ Component, pageProps }: AppProps) {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={colorTheme === 'dark' ? darkTheme : lightTheme}>
         <GlobalStyle />
-        <Component {...pageProps} toggleTheme={toggleTheme} />
+        <AppLayout toggleTheme={toggleTheme}>
+          <Component {...pageProps} />
+        </AppLayout>
       </ThemeProvider>
     </QueryClientProvider>
   );
