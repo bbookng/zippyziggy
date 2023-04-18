@@ -1,11 +1,15 @@
 package com.zippyziggy.member.dto.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class KakaoUserInfoResponseDto {
 
-    public Long id;
+    public String id;
     public String connected_at;
     public Properties properties;
     public Kakao_account kakao_account;

@@ -90,4 +90,5 @@ public class KakaoLoginService {
         KakaoUserInfoResponseDto kakaoUserInfoResponseDto = objectMapper.readValue(userInfo, KakaoUserInfoResponseDto.class);
         return kakaoUserInfoResponseDto;
     }
+
 }

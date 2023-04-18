@@ -1,8 +1,12 @@
 package com.zippyziggy.member.dto.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class KakaoTokenResponseDto {
 
     public String access_token;

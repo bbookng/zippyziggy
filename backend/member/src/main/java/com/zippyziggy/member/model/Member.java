@@ -1,6 +1,7 @@
 package com.zippyziggy.member.model;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import javax.persistence.*;
 
@@ -11,7 +12,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Builder
@@ -36,6 +39,7 @@ public class Member {
 	private String name;
 
 	@Column(nullable = false)
+	@CreationTimestamp
 	private LocalDateTime regDt;
 
 	@Column(nullable = false, columnDefinition = "boolean not null default 1")
@@ -49,10 +53,12 @@ public class Member {
 	@Enumerated(value = EnumType.STRING)
 	private Platform platform;
 
-	@Column(nullable = false)
-	private Long platformId;
+	@Column(nullable = false, length = 100)
+	private String platformId;
 
-	@Column(nullable = false, length = 128)
-	private String userUuid;
+	@GeneratedValue(generator = "uuid2")
+	@GenericGenerator(name = "uuid2", strategy = "uuid2")
+	@Column(nullable = false, columnDefinition = "BINARY(16)")
+	private UUID userUuid;
 
 }

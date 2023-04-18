@@ -9,5 +9,6 @@ import java.util.Optional;
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
     // platformId와 platform으로 기존 유저인지 확인하기
-    Optional<Member> findByPlatformAndPlatformId(Platform platform, Long platformId);
+    Optional<Member> findByPlatformAndPlatformId(Platform platform, String platformId);
+    Optional<Member> findByNicknameEquals(String nickname);
 }
