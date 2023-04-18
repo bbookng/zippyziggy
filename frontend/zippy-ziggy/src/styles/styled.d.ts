@@ -42,6 +42,9 @@ declare module 'styled-components' {
     successColor: string;
     bookmarkColor: string;
 
+    navColor: string;
+    bgColor: string;
+
     whiteColor: string;
     blackColor: string;
 

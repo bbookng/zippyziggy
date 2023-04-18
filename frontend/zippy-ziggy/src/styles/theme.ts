@@ -42,6 +42,9 @@ const darkTheme: DefaultTheme = {
   successColor: 'var(--colors-success)',
   bookmarkColor: 'var(--colors-bookmark)',
 
+  navColor: 'var(--colors-dark-nav)',
+  bgColor: 'var(--colors-black-background)',
+
   whiteColor: 'var(--colors-white-100)',
   blackColor: 'var(--colors-black-100)',
 
@@ -89,6 +92,9 @@ const lightTheme: DefaultTheme = {
   heartColor: 'var(--colors-heart)',
   successColor: 'var(--colors-success)',
   bookmarkColor: 'var(--colors-bookmark)',
+
+  navColor: 'var(--colors-white-nav)',
+  bgColor: 'var(--colors-white-background)',
 
   whiteColor: 'var(--colors-white-100)',
   blackColor: 'var(--colors-black-100)',
