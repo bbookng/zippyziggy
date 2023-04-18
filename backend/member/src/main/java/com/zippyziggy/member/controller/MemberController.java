@@ -20,6 +20,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 import java.util.Optional;
@@ -59,6 +60,7 @@ public class MemberController {
     @GetMapping("/auth/kakao/callback")
     @Transactional
     @Operation(summary = "카카오 로그인", description = "기존 회원이면 로그인 성공, 아닐시 회원가입 요청 -> 프런트에서는 사용X")
+    @ApiIgnore
     public ResponseEntity<?> kakaoCallback(String code) throws Exception {
 
         // kakao Token 가져오기(권한)
@@ -108,6 +110,7 @@ public class MemberController {
     @GetMapping("/login/oauth2/code/google")
     @Transactional
     @Operation(summary = "구글 로그인", description = "기존 회원이 아니면 회원가입, 그 외에는 로그인 -> 프런트 관련 X")
+    @ApiIgnore
     public ResponseEntity<?> googleCallback(@RequestParam(value="code", required = false) String code) throws Exception {
 
         GoogleTokenResponseDto token = googleLoginService.googleGetToken(code);
@@ -232,6 +235,7 @@ public class MemberController {
      * 토큰으로 유저 정보 가져오기
      */
     @GetMapping("/jwt/test/")
+    @ApiIgnore
     public ResponseEntity<?> totalUser() {
 
         List<Member> members = memberRepository.findAll();
@@ -246,6 +250,7 @@ public class MemberController {
 
 
     @GetMapping("/jwt/test/{userUuid}")
+    @ApiIgnore
     public ResponseEntity<?> jwtTest(@PathVariable String userUuid) {
         UUID uuid = UUID.fromString(userUuid);
 
@@ -257,6 +262,7 @@ public class MemberController {
     }
 
     @GetMapping("/jwt/decode/test/{token}")
+    @ApiIgnore
     public ResponseEntity<?> decodeTest(@PathVariable String token) throws Exception {
         JwtResponse data = jwtValidationService.validateAccessToken(token);
         Member member = jwtValidationService.findMemberByJWT(token);
