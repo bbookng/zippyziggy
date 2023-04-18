@@ -39,7 +39,7 @@ public class TestMethod {
                 .activate(true)
                 .role(RoleType.USER)
                 .platform(Platform.KAKAO)
-                .userUuid("1234")
+                .userUuid(null)
                 .build();
 
         memberRepository.save(member);

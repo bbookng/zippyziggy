@@ -61,4 +61,5 @@ public class Member {
 	@Column(nullable = false, columnDefinition = "BINARY(16)")
 	private UUID userUuid;
 
+	private String refreshToken;
 }

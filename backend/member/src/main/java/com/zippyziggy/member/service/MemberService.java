@@ -7,6 +7,7 @@ import com.zippyziggy.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.NonUniqueResultException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -28,18 +29,27 @@ public class MemberService {
     }
 
     // 회원가입
+    // 유저가 이미 존재한다면 에러 발생
     public void memberSignUp(MemberSignUpRequestDto dto) throws Exception {
 
-        Member member = Member.builder()
-                .name(dto.getName())
-                .nickname(dto.getNickname())
-                .platform(dto.getPlatform())
-                .platformId(dto.getPlatformId())
-                .profileImg(dto.getProfileImg())
-                .userUuid(UUID.randomUUID())
-                .build();
+        String nickname = dto.getNickname();
 
-        memberRepository.save(member);
+        Optional<Member> checkMember = memberRepository.findByNicknameEquals(nickname);
+
+        if (checkMember.isEmpty()) {
+            Member member = Member.builder()
+                    .name(dto.getName())
+                    .nickname(nickname)
+                    .platform(dto.getPlatform())
+                    .platformId(dto.getPlatformId())
+                    .profileImg(dto.getProfileImg())
+                    .userUuid(UUID.randomUUID())
+                    .build();
+
+            memberRepository.save(member);
+        } else {
+            throw new NonUniqueResultException("유저가 이미 존재합니다.");
+        }
 
     }
 
