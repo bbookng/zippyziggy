@@ -1,5 +1,43 @@
 import { DefaultTheme } from 'styled-components';
 
+const CommonTheme = {
+  fonts: {
+    desktop_h_5xl: '3rem',
+    desktop_h_4xl: '2.25rem',
+    desktop_h_3xl: '1.875rem',
+    desktop_h_2xl: '1.5rem',
+    desktop_h_xl: '1.25rem',
+
+    mobile_h_4xl: '2.25rem',
+    mobile_h_3xl: '1.875rem',
+    mobile_h_2xl: '1.5rem',
+    mobile_h_xl: '1.25rem',
+
+    body_lg: '1.125rem',
+    body_base: '1rem',
+    body_sm: '0.875rem',
+    body_xm: '0.75rem',
+  },
+
+  lineHeights: {
+    desktop_h_5xl: '3rem',
+    desktop_h_4xl: '2.5rem',
+    desktop_h_3xl: '2.25rem',
+    desktop_h_2xl: '2rem',
+    desktop_h_xl: '1.75rem',
+
+    mobile_h_4xl: '2.5rem',
+    mobile_h_3xl: '2.25rem',
+    mobile_h_2xl: '2rem',
+    mobile_h_xl: '1.75rem',
+
+    body_lg: '1.75rem',
+    body_base: '1.5rem',
+    body_sm: '1.25rem',
+    body_xm: '1rem',
+  },
+};
+
 const darkTheme: DefaultTheme = {
   // 전역 설정 컬러 (모드가 바뀌면 바뀜)
   shadows: {
@@ -50,6 +88,7 @@ const darkTheme: DefaultTheme = {
     whiteColor: 'var(--colors-white-100)',
     blackColor: 'var(--colors-black-100)',
   },
+  ...CommonTheme,
   isDark: true,
 };
 
@@ -103,6 +142,7 @@ const lightTheme: DefaultTheme = {
     whiteColor: 'var(--colors-white-100)',
     blackColor: 'var(--colors-black-100)',
   },
+  ...CommonTheme,
   isDark: false,
 };
 

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Title from '@/components/Typography/Title';
 import Paragraph from '@/components/Typography/Paragraph';
+import Button from '@/components/Button/Button';
 // import firebase from 'firebase/app';
 // import 'firebase/auth';
 
@@ -26,10 +27,12 @@ export default function SignUp() {
 
   return (
     <div>
-      <Title color="successColor" textAlign="left">
-        에잉
-      </Title>
-
+      <Title sizeType="3xl">에잉</Title>
+      <Paragraph sizeType="lg">아이고 안녕하세요</Paragraph>
+      <Button buttonType="fill" isRound width="200px" onClick={handleSignUp}>
+        힝
+      </Button>
+      <Button buttonType="outline">힝</Button>
       {/* <Paragraph size="large" color="infoColor">
         앗살라마이쿰 사와디캅
       </Paragraph> */}

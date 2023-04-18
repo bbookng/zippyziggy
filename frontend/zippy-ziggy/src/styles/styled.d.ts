@@ -50,6 +50,43 @@ declare module 'styled-components' {
       whiteColor: string;
       blackColor: string;
     };
+
+    fonts: {
+      desktop_h_5xl: string;
+      desktop_h_4xl: string;
+      desktop_h_3xl: string;
+      desktop_h_2xl: string;
+      desktop_h_xl: string;
+
+      mobile_h_4xl: string;
+      mobile_h_3xl: string;
+      mobile_h_2xl: string;
+      mobile_h_xl: string;
+
+      body_lg: string;
+      body_base: string;
+      body_sm: string;
+      body_xm: string;
+    };
+
+    lineHeights: {
+      desktop_h_5xl: string;
+      desktop_h_4xl: string;
+      desktop_h_3xl: string;
+      desktop_h_2xl: string;
+      desktop_h_xl: string;
+
+      mobile_h_4xl: string;
+      mobile_h_3xl: string;
+      mobile_h_2xl: string;
+      mobile_h_xl: string;
+
+      body_lg: string;
+      body_base: string;
+      body_sm: string;
+      body_xm: string;
+    };
+
     isDark: boolean;
   }
 }
