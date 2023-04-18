@@ -1,7 +1,8 @@
+import { HTMLAttributes } from 'react';
 import styled from 'styled-components';
 
-export interface TitleProps {
-  children?: string;
+export interface TitleProps extends HTMLAttributes<HTMLHeadingElement> {
+  children?: React.ReactNode;
   margin?: string;
   padding?: string;
   fontWeight?: string;
