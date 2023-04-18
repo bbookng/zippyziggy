@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { NavWrapper, NavList, NavOption, ToggleBtn, Logo, NavUser } from './navbar.style';
 
 const Navbar = ({ toggleTheme }) => {
@@ -76,13 +77,15 @@ const Navbar = ({ toggleTheme }) => {
       <NavUser>
         <div>북</div>
         <div className="item">종</div>
-        <Image
-          src="/images/noProfile.png"
-          alt="프사"
-          width={30}
-          height={30}
-          className="profileImage item"
-        />
+        <Link href={{ pathname: '/login' }}>
+          <Image
+            src="/images/noProfile.png"
+            alt="프사"
+            width={30}
+            height={30}
+            className="profileImage item"
+          />
+        </Link>
       </NavUser>
     </NavWrapper>
   );
