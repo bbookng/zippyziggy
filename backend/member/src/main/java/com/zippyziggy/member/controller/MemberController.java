@@ -73,7 +73,7 @@ public class MemberController {
         System.out.println("kakaoUserInfo = " + kakaoUserInfo);
         // DB에 해당 유저가 없다면 회원가입 진행, 없으면 로그인 진행
         // 회원가입을 위해서 일단 프런트로 회원 정보를 넘기고 회원가입 페이지로 넘어가게 해야 할 듯
-        if (member == null) {
+        if (member == null || member.getActivate().equals(false)) {
             // 회원가입 요청 메세지
             SocialSignUpResponseDto socialSignUpResponseDto = SocialSignUpResponseDto.builder()
                     .name(kakaoUserInfo.getProperties().getNickname())
@@ -120,7 +120,7 @@ public class MemberController {
 
         // DB에 해당 유저가 없다면 회원가입 진행, 없으면 로그인 진행
         // 회원가입을 위해서 일단 프런트로 회원 정보를 넘기고 회원가입 페이지로 넘어가게 해야 할 듯
-        if (member == null) {
+        if (member == null || member.getActivate().equals(false)) {
             // 회원가입 요청 메세지
             SocialSignUpResponseDto socialSignUpResponseDto = SocialSignUpResponseDto.builder()
                     .name(googleProfile.getName())
@@ -205,6 +205,7 @@ public class MemberController {
      */
     @PutMapping(value = "", headers = "Authorization")
     @Transactional
+    @Operation(summary = "회원 탈퇴", description = "사용자의 activate를 0으로 변경")
     public ResponseEntity<?> memberSignOut(@RequestHeader HttpHeaders headers) throws Exception {
         String accessToken = headers.get("authorization").get(0).replace("Bearer ", "");
         JwtResponse jwtResponse = jwtValidationService.validateAccessToken(accessToken);
