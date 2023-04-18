@@ -61,5 +61,14 @@ public class Member {
 	@Column(nullable = false, columnDefinition = "BINARY(16)")
 	private UUID userUuid;
 
+	@Column(length = 500)
 	private String refreshToken;
+
+	public void setRefreshToken(String refreshToken) {
+		this.refreshToken = refreshToken;
+	}
+
+	public void setActivate(Boolean activate) {
+		this.activate = activate;
+	}
 }

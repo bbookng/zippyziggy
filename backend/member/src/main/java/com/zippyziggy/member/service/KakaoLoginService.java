@@ -26,6 +26,10 @@ public class KakaoLoginService {
     @Value("${kakao.redirect.uri}")
     private String kakaoRedirectUri;
 
+    // logout_redirect_url
+    @Value("${kakao.logout.redirect.uri}")
+    private String kakaoLogoutRedirectUri;
+
     // json타입을 객체로 변환하기 위한 객체
     @Autowired
     private ObjectMapper objectMapper;
@@ -62,7 +66,7 @@ public class KakaoLoginService {
 
         KakaoTokenResponseDto kakaoTokenResponseDto = objectMapper.readValue(token, KakaoTokenResponseDto.class);
 
-        System.out.println("kakaoTokenResponseDto = " + kakaoTokenResponseDto);
+//        System.out.println("kakaoTokenResponseDto = " + kakaoTokenResponseDto);
 
         return kakaoTokenResponseDto.getAccess_token();
     }
@@ -91,4 +95,14 @@ public class KakaoLoginService {
         return kakaoUserInfoResponseDto;
     }
 
+
+    // 카카오계정과 함께 로그아웃
+    public void KakaoLogout() throws Exception {
+        String kakaoLogoutUrl = "https://kauth.kakao.com/oauth/logout?client_id=" + kakaoClientId + "&logout_redirect_uri=" + kakaoLogoutRedirectUri;
+
+        WebClient.create()
+                .get()
+                .uri(kakaoLogoutUrl)
+                .retrieve();
+    }
 }

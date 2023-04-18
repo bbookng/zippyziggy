@@ -3,10 +3,8 @@ package com.zippyziggy.member.service;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.zippyziggy.member.dto.response.MemberResponseDto;
 import com.zippyziggy.member.model.JwtResponse;
 import com.zippyziggy.member.model.Member;
-import com.zippyziggy.member.model.RoleType;
 import com.zippyziggy.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +17,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Optional;
-import java.util.UUID;
 
 import static com.auth0.jwt.JWT.require;
 
@@ -179,14 +176,6 @@ public class JwtValidationService {
         String nickname = verify.getClaim("nickname").asString();
 
         Optional<Member> member = memberRepository.findByNicknameEquals(nickname);
-
-        MemberResponseDto.builder()
-                .nickname(member.get().getNickname())
-                .profileImg(member.get().getProfileImg())
-                .name(member.get().getName())
-                .role(member.get().getRole())
-                .userUuid(member.get().getUserUuid())
-                .build();
 
         return member.get();
     }
