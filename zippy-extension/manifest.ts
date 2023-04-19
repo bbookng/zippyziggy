@@ -19,9 +19,6 @@ const manifest: chrome.runtime.ManifestV3 = {
     default_icon: "icon.png",
     default_title: "지피지기",
   },
-  chrome_url_overrides: {
-    newtab: "src/pages/newtab/index.html",
-  },
   icons: {
     "128": "icon.png",
   },

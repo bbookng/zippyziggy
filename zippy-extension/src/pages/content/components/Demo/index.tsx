@@ -7,6 +7,6 @@ refreshOnUpdate("pages/content");
 
 replaceFetch.init();
 const root = document.createElement("div");
-root.id = "chrome-extension-boilerplate-react-vite-content-view-root";
+root.id = "zp-root";
 document.getElementsByTagName("form")[0].childNodes[0].appendChild(root);
 createRoot(root).render(<App />);
