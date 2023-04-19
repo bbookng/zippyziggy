@@ -129,7 +129,7 @@ export default {
   // runner: "jest-runner",
 
   // The paths to modules that run some code to configure or set up the testing environment before each test
-  setupFiles: ["./test-utils/jest.setup.js"],
+  setupFiles: ["./test-zippyziggy/jest.setup.js"],
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
   // setupFilesAfterEnv: [],
@@ -158,7 +158,7 @@ export default {
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   testPathIgnorePatterns: [
     "<rootDir>/node_modules/",
-    "<rootDir>/test-utils/",
+    "<rootDir>/test-zippyziggy/",
     "<rootDir>/vite.config.ts",
     "<rootDir>/jest.config.js",
   ],

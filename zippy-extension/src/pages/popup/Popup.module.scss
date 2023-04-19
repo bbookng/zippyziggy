@@ -1,45 +1,18 @@
-.App {
-  position: absolute;
-  top: 0px;
-  bottom: 0px;
-  left: 0px;
-  right: 0px;
-  text-align: center;
+@import "@assets/style/theme.scss";
+
+.app {
+  width: 100%;
   height: 100%;
-  padding: 10px;
-  background-color: #282c34;
 }
 
-.App-logo {
-  height: 30vmin;
-  pointer-events: none;
+.logo {
+  width: 100%;
+  object-fit: contain;
+  object-position: center;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.button-wrapper {
+  background-color: map-get($theme-colors, primary);
 }
 
-.App-header {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}

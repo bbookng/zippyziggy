@@ -1,24 +1,26 @@
 import React from "react";
-import logo from "@assets/img/logo.svg";
 import styles from "./Popup.module.scss";
+import Logo from "@assets/img/logo.png";
+import Button from "@pages/popup/components/Button/Button";
+import Google from "@pages/popup/components/Button/Google";
+import Kakao from "@pages/popup/components/Button/Kakao";
 
 const Popup = () => {
   return (
-    <div className={styles.App}>
-      <header className={styles["App-header"]}>
-        <img src={logo} className={styles["App-logo"]} alt="logo" />
-        <p>
-          Edit <code>src/pages/popup/Popup.tsx</code> and save to reload.
-        </p>
-        <a
-          className={styles["App-link"]}
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React!
+    <div className={styles.app}>
+      <img className={styles.logo} src={Logo} alt="zippyziggy" />
+      <div>
+        <a href="#">
+          <p>웹사이트 둘러보기</p>
         </a>
-      </header>
+        <a href="#">
+          <p>ChatGPT에서 사용해보기</p>
+        </a>
+      </div>
+      <div className={styles["button-wrapper"]}>
+        <Google onClick={() => console.log("구글 로그인")} />
+        <Kakao onClick={() => console.log("카카오 로그인")} />
+      </div>
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import { createRoot } from "react-dom/client";
 import App from "@src/pages/content/components/Demo/app";
 import refreshOnUpdate from "virtual:reload-on-update-in-view";
-import replaceFetch from "@pages/content/components/utils/replaceFetch";
+import replaceFetch from "@pages/content/components/zippyziggy";
 
 refreshOnUpdate("pages/content");
 
