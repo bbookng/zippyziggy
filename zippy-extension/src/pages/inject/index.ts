@@ -14,7 +14,6 @@ window.ZIPPYZIGGY = {
 
   replaceFetch() {
     console.log("replace 실행");
-    console.log(window.ZIPPYZIGGY);
     window.fetch = async (...t: Parameters<typeof fetch>) => {
       const [requestInfo, requestInit] = t;
 

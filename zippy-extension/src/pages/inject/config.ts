@@ -1,0 +1,6 @@
+// global constants
+const PROMPT_PLACEHOLDER = "[PROMPT]";
+const TARGET_LANGUAGE_PLACEHOLDER = "[TARGETLANGUAGE]";
+const ZIPPY_URL = "https://www.naver.com/";
+
+export { ZIPPY_URL, PROMPT_PLACEHOLDER, TARGET_LANGUAGE_PLACEHOLDER };
