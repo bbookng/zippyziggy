@@ -1,8 +1,8 @@
 import React from "react";
-import "@pages/options/Options.css";
+import styles from "./Options.module.scss";
 
-const Options: React.FC = () => {
-  return <div className="OptionsContainer">Options</div>;
+const Options = () => {
+  return <div className={styles.OptionsContainer}>Options</div>;
 };
 
 export default Options;
