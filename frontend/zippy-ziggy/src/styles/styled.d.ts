@@ -3,18 +3,20 @@ import 'styled-components';
 declare module 'styled-components' {
   export interface DefaultTheme {
     shadows: {
+      boxShadowSmall: string;
       boxShadowLarge: string;
+      boxUpperShadowLarge: string;
     };
     colors: {
       blackColor100: string;
       blackColor90: string;
-      // blackColor80: string;
+      blackColor80: string;
       blackColor70: string;
-      // blackColor60: string;
-      // blackColor50: string;
-      // blackColor40: string;
+      blackColor60: string;
+      blackColor50: string;
+      blackColor40: string;
       blackColor30: string;
-      // blackColor20: string;
+      blackColor20: string;
       blackColor10: string;
       blackColor05: string;
       blackColor03: string;
@@ -22,13 +24,13 @@ declare module 'styled-components' {
 
       whiteColor100: string;
       whiteColor90: string;
-      // whiteColor80: string;
+      whiteColor80: string;
       whiteColor70: string;
-      // whiteColor60: string;
-      // whiteColor50: string;
-      // whiteColor40: string;
+      whiteColor60: string;
+      whiteColor50: string;
+      whiteColor40: string;
       whiteColor30: string;
-      // whiteColor20: string;
+      whiteColor20: string;
       whiteColor10: string;
       whiteColor05: string;
       whiteColor03: string;

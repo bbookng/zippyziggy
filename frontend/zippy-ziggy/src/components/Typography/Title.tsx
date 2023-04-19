@@ -84,6 +84,13 @@ const StyledTitle = styled.h1<TitleProps>`
   ${({ sizeType }) => sizeType && sizeList[sizeType]}
 `;
 
+/**
+ * <h1>을 사용한다.
+ * @param {SizeType} sizeType 타이틀 크기 default: '3xl'
+ * @param {DefaultTheme.colors} color 색 default: 'blackColor90'
+ * @param {string} margin
+ * @param {string} padding
+ */
 const Title = ({
   children,
   sizeType = '3xl',

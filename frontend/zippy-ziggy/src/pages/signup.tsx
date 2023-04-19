@@ -32,6 +32,9 @@ export default function SignUp() {
       <Button buttonType="fill" isRound width="200px" onClick={handleSignUp}>
         힝
       </Button>
+      <Button buttonType="fill" color="successColor">
+        asdf
+      </Button>
       <Button buttonType="outline">힝</Button>
       {/* <Paragraph size="large" color="infoColor">
         앗살라마이쿰 사와디캅
