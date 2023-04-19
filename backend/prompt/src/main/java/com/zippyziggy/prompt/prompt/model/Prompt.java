@@ -34,7 +34,7 @@ public class Prompt {
 	private Long id;
 
 	@Column(nullable = false)
-	private Long userId;
+	private Long memberId;
 
 	@Column(nullable = false, length = 255)
 	private String title;
@@ -54,6 +54,8 @@ public class Prompt {
 
 	@Column(nullable = false, length = 10)
 	private Category category;
+
+	private String thumbnail;
 
 	@Lob
 	private String prefix;
