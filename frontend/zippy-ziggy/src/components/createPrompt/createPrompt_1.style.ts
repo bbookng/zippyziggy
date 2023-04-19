@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { media } from '../media';
+import { media } from '@/styles/media';
 
 const ContainerTitle = styled.div`
   display: flex;

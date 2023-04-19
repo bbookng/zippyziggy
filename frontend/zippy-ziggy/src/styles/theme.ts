@@ -2,7 +2,7 @@ import { DefaultTheme } from 'styled-components';
 
 const darkTheme: DefaultTheme = {
   // 전역 설정 컬러 (모드가 바뀌면 바뀜)
-  boxShadowLarge: 'var(--shadows-black-xl)',
+  boxShadowLarge: 'var(--shadows-black-md)',
 
   blackColor100: 'var(--colors-white-100)',
   blackColor90: 'var(--colors-white-90)',
@@ -53,7 +53,7 @@ const darkTheme: DefaultTheme = {
 
 const lightTheme: DefaultTheme = {
   // 전역 설정 컬러 (모드가 바뀌면 바뀜)
-  boxShadowLarge: 'var(--shadows-black-xl)',
+  boxShadowLarge: 'var(--shadows-black-md)',
 
   blackColor100: 'var(--colors-black-100)',
   blackColor90: 'var(--colors-black-90)',
