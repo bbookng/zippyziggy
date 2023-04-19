@@ -43,7 +43,6 @@ public class Prompt {
 	private String description;
 
 	@Column(nullable = false)
-	@ColumnDefault("0")
 	private Integer hit;
 
 	@Column(nullable = false)

@@ -1,5 +1,8 @@
 package com.zippyziggy.prompt.prompt.controller;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -45,8 +48,10 @@ public class PromptController {
 
 	@ApiOperation(value = "프롬프트 상세 조회", notes = "프롬프트 상세 페이지를 조회한다.")
 	@GetMapping("/{promptId}")
-	public ResponseEntity<PromptDetailResponse> readPromptDetail(@PathVariable Long promptId) {
-		promptService.updateHit(promptId);
+	public ResponseEntity<PromptDetailResponse> readPromptDetail(@PathVariable Long promptId,
+		HttpServletRequest request,
+		HttpServletResponse response) {
+		promptService.updateHit(promptId, request, response);
 		PromptDetailResponse prompt = promptService.findPromptById(promptId);
 		return ResponseEntity.ok(prompt);
 	}
