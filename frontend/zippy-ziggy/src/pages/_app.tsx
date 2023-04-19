@@ -39,8 +39,8 @@ export const GlobalStyle = createGlobalStyle`
   optgroup,
   select,
   textarea {
-    box-shadow: ${({ theme }) => theme?.shadows?.boxShadowLarge};
-    /* background-color: ${({ theme }) => theme?.whiteColor70}; */
+    box-shadow: ${({ theme }) => theme.shadows.boxShadowLarge};
+    background-color: ${({ theme }) => theme.colors.whiteColor70};
   }
 
   ::selection {

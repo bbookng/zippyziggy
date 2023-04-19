@@ -71,7 +71,7 @@ const TitleInfoWrapper = styled.div`
   .userName {
     font-size: 10px;
     font-weight: 300;
-    color: ${({ theme }) => theme.blackColor30};
+    color: ${({ theme }) => theme.colors.blackColor30};
   }
 `;
 
@@ -108,12 +108,12 @@ const LeftContainer = styled.div`
 
   .row {
     padding-inline: 1.5rem;
-    background-color: ${({ theme }) => theme.isDark && theme.whiteColor90};
+    background-color: ${({ theme }) => theme.isDark && theme.colors.whiteColor90};
   }
 
   .question {
     display: flex;
-    background-color: ${({ theme }) => theme.isDark && theme.whiteColor90};
+    background-color: ${({ theme }) => theme.isDark && theme.colors.whiteColor90};
 
     .colorBlock {
       width: 0.25rem;
@@ -154,7 +154,7 @@ const SubContainer = styled.div`
 
   .row {
     padding-inline: 1.5rem;
-    background-color: ${({ theme }) => theme.isDark && theme.whiteColor90};
+    background-color: ${({ theme }) => theme.isDark && theme.colors.whiteColor90};
   }
 
   .label {

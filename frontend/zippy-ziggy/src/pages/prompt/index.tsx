@@ -1,13 +1,14 @@
-import Link from 'next/link';
+import CreateFooter from '@/components/createPrompt/CreateFooter';
+import CreatePart1 from '@/components/createPrompt/CreatePrompt_1';
+import CreatePart2 from '@/components/createPrompt/CreatePrompt_2';
 import React from 'react';
 
-export default function Prompt() {
+export default function PromptCreate() {
   return (
     <>
-      <div>프롬프트 피드</div>
-      <button type="button">
-        <Link href="/prompt/create">프롬프트 작성</Link>
-      </button>
+      <CreatePart1 />
+      <CreatePart2 />
+      <CreateFooter />
     </>
   );
 }

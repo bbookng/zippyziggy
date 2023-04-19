@@ -12,7 +12,7 @@ import {
   Textarea,
   TitleInfoWrapper,
   TitleWrapper,
-} from './createPrompt_1.style';
+} from './Create_1.style';
 
 const initialState = {
   prompt1: '',
