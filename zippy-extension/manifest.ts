@@ -24,7 +24,7 @@ const manifest: chrome.runtime.ManifestV3 = {
   },
   content_scripts: [
     {
-      matches: ["https://chat.openai.com/*"],
+      matches: ["<all_urls>"],
       js: ["src/pages/content/index.js"],
       // KEY for cache invalidation
       css: ["assets/css/contentStyle<KEY>.chunk.css"],
@@ -32,11 +32,16 @@ const manifest: chrome.runtime.ManifestV3 = {
   ],
   web_accessible_resources: [
     {
-      resources: ["assets/js/*.js", "assets/css/*.css", "icon.png"],
+      resources: [
+        "assets/js/*.js",
+        "assets/css/*.css",
+        "icon.png",
+        "src/pages/inject/*.js",
+      ],
       matches: ["*://*/*"],
     },
   ],
-  permissions: ["tabs"],
+  permissions: ["tabs", "activeTab", "scripting"],
 };
 
 export default manifest;

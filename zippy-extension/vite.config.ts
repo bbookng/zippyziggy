@@ -49,6 +49,7 @@ export default defineConfig({
         contentStyle: resolve(pagesDir, "content", "style.scss"),
         popup: resolve(pagesDir, "popup", "index.html"),
         options: resolve(pagesDir, "options", "index.html"),
+        inject: resolve(pagesDir, "inject", "index.ts"),
       },
       watch: {
         include: ["src/**", "vite.config.ts"],

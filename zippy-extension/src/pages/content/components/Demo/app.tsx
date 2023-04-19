@@ -1,10 +1,4 @@
-import { useEffect } from "react";
-import styles from "./index.scss";
 export default function App() {
-  useEffect(() => {
-    console.log("content view loaded");
-  }, []);
-
   return (
     <>
       <button

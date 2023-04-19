@@ -1,15 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "./Popup.module.scss";
 import Logo from "@assets/img/logo.png";
-import Button from "@pages/popup/components/Button/Button";
 import Google from "@pages/popup/components/Button/Google";
 import Kakao from "@pages/popup/components/Button/Kakao";
+import packageJson from "../../../package.json";
 
 const Popup = () => {
   return (
     <div className={styles.app}>
       <img className={styles.logo} src={Logo} alt="zippyziggy" />
-      <div>
+      <div className={styles["link-wrapper"]}>
         <a href="#">
           <p>웹사이트 둘러보기</p>
         </a>
@@ -21,6 +21,7 @@ const Popup = () => {
         <Google onClick={() => console.log("구글 로그인")} />
         <Kakao onClick={() => console.log("카카오 로그인")} />
       </div>
+      <span>{`버전 v${packageJson.version}`}</span>
     </div>
   );
 };

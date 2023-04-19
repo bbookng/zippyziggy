@@ -1,3 +1,4 @@
+console.log("inject");
 const ENDPOINT_CONVERSATION =
   "https://chat.openai.com/backend-api/conversation";
 
@@ -12,6 +13,8 @@ window.ZIPPYZIGGY = {
   },
 
   replaceFetch() {
+    console.log("replace 실행");
+    console.log(window.ZIPPYZIGGY);
     window.fetch = async (...t: Parameters<typeof fetch>) => {
       const [requestInfo, requestInit] = t;
 
@@ -39,4 +42,4 @@ window.ZIPPYZIGGY = {
   },
 };
 
-export default window.ZIPPYZIGGY;
+window.ZIPPYZIGGY.init();
