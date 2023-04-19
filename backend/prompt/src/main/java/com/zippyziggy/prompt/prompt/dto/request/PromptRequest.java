@@ -11,7 +11,6 @@ public class PromptRequest {
 
 	private String title;
 	private String content;
-	private String thumbnail;
 	private String category;
 	private MessageRequest message;
 

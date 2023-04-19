@@ -5,7 +5,9 @@ import java.util.UUID;
 
 import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.zippyziggy.prompt.common.aws.AwsS3Uploader;
 import com.zippyziggy.prompt.prompt.dto.request.PromptRequest;
 import com.zippyziggy.prompt.prompt.dto.response.MessageResponse;
 import com.zippyziggy.prompt.prompt.dto.response.PromptDetailResponse;
@@ -20,8 +22,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PromptServiceImpl implements PromptService{
 
+	private final AwsS3Uploader awsS3Uploader;
+
+	// Exception 처리 필요
 	@Override
-	public PromptResponse createPrompt(PromptRequest data) {
+	public PromptResponse createPrompt(PromptRequest data, MultipartFile thumbnail) {
+
+		String thumbnailUrl = awsS3Uploader.upload(thumbnail, "/thumbnails");
 
 		Category category = Category.valueOf(data.getCategory());
 		Prompt prompt = Prompt.builder()
@@ -35,7 +42,7 @@ public class PromptServiceImpl implements PromptService{
 			.example(data.getMessage().getExample())
 			.suffix(data.getMessage().getSuffix())
 			.promptUuid(UUID.randomUUID().toString())
-			.thumbnail(data.getThumbnail())
+			.thumbnail(thumbnailUrl)
 			.build();
 
 		MessageResponse messageResponse = new MessageResponse(prompt.getPrefix(), prompt.getExample(),

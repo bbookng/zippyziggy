@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.zippyziggy.prompt.prompt.dto.request.PromptRequest;
 import com.zippyziggy.prompt.prompt.dto.response.PromptDetailResponse;
@@ -29,16 +30,16 @@ public class PromptController {
 
 	@ApiOperation(value = "프롬프트 생성", notes = "프롬프트를 생성한다.")
 	@PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-	public ResponseEntity<PromptResponse> createPrompt(@RequestPart PromptRequest data) {
-		PromptResponse prompt = promptService.createPrompt(data);
+	public ResponseEntity<PromptResponse> createPrompt(@RequestPart PromptRequest data, @RequestPart MultipartFile thumbnail) {
+		PromptResponse prompt = promptService.createPrompt(data, thumbnail);
 		return ResponseEntity.ok(prompt);
 	}
 
 	// 수정 필요
 	@ApiOperation(value = "프롬프트 임시 저장", notes = "프롬프트를 생성 시 임시 저장한다.")
 	@PostMapping(value = "/temp", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-	public ResponseEntity<PromptResponse> createPromptTemp(@RequestPart PromptRequest data) {
-		PromptResponse prompt = promptService.createPrompt(data);
+	public ResponseEntity<PromptResponse> createPromptTemp(@RequestPart PromptRequest data, @RequestPart MultipartFile thumbnail) {
+		PromptResponse prompt = promptService.createPrompt(data, thumbnail);
 		return ResponseEntity.ok(prompt);
 	}
 

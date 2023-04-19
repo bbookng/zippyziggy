@@ -1,4 +1,4 @@
-package com.zippyziggy.prompt.config;
+package com.zippyziggy.prompt.common.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
