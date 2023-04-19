@@ -1,0 +1,5 @@
+FROM openjdk:11-jdk
+
+ADD build/libs/member-0.0.1-SNAPSHOT.jar app.jar
+
+ENTRYPOINT [ "java", "-jar", "-Dspring.profiles.activate=gcp", "/app.jar"]
