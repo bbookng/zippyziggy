@@ -95,13 +95,15 @@ const Navbar = ({ toggleTheme }) => {
       <NavUser>
         <FaRegBookmark className="item bookmark" />
         <FaRegBell className="item" />
-        <Image
-          src="/images/noProfile.png"
-          alt="프사"
-          width={30}
-          height={30}
-          className="profileImage"
-        />
+        <Link href={{ pathname: '/login' }}>
+          <Image
+            src="/images/noProfile.png"
+            alt="프사"
+            width={30}
+            height={30}
+            className="profileImage"
+          />
+        </Link>
       </NavUser>
       {isOpen && <Overlay onClick={handleNavClose} />}
     </NavWrapper>

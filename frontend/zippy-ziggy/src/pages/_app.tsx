@@ -16,8 +16,8 @@ export const GlobalStyle = createGlobalStyle`
   }
   
   html {
-    background-color: ${({ theme }) => theme?.bgColor};
-    color: ${({ theme }) => theme?.blackColor90};
+    background-color: ${({ theme }) => theme?.colors?.bgColor};
+    color: ${({ theme }) => theme?.colors?.blackColor90};
     /* min-width: var(--breakpoints-desktop); */
     
     ${media.small`
@@ -39,13 +39,13 @@ export const GlobalStyle = createGlobalStyle`
   optgroup,
   select,
   textarea {
-    box-shadow: ${({ theme }) => theme?.boxShadowLarge};
+    box-shadow: ${({ theme }) => theme?.shadows?.boxShadowLarge};
     /* background-color: ${({ theme }) => theme?.whiteColor70}; */
   }
 
   ::selection {
-    background-color: ${({ theme }) => theme?.navColor};
-    color: ${({ theme }) => theme?.blackColor50}
+    background-color: ${({ theme }) => theme?.colors?.navColor};
+    color: ${({ theme }) => theme?.colors?.blackColor30}
   }
 `;
 

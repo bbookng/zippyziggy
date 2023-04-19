@@ -8,8 +8,8 @@ const NavWrapper = styled.div`
   margin: 0 auto 1rem auto;
   padding: 0 1.5rem;
   justify-content: space-between;
-  background-color: ${({ theme }) => theme?.navColor};
-  box-shadow: ${({ theme }) => theme?.boxShadowLarge};
+  background-color: ${({ theme }) => theme?.colors?.whiteColor100};
+  box-shadow: ${({ theme }) => theme?.shadows?.boxShadowLarge};
 
   ${media.small`
     min-height: 3rem;
@@ -40,7 +40,7 @@ const NavList = styled.ul<NavListProps>`
     flex-direction: column;
     align-items: center;
     position: absolute;
-    background-color: ${({ theme }) => theme?.navColor};
+    background-color: ${({ theme: { colors } }) => colors.navColor};
     top: 0px;
     left: -50%;
     width: 40%;
