@@ -95,7 +95,7 @@ const Navbar = ({ toggleTheme }) => {
       <NavUser>
         <FaRegBookmark className="item bookmark" />
         <FaRegBell className="item" />
-        <Link href={{ pathname: '/login' }}>
+        <Link href={{ pathname: '/account/login' }}>
           <Image
             src="/images/noProfile.png"
             alt="프사"

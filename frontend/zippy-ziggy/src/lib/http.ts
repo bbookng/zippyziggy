@@ -1,10 +1,12 @@
 import axios from 'axios';
 
 const serverUrl =
-  process.env.NODE_ENV === 'production' ? process.env.APP_SERVER_URL : 'http://localhost:3000';
+  process.env.NODE_ENV === 'production'
+    ? process.env.NEXT_PUBLIC_APP_SERVER_URL
+    : 'http://localhost:8080';
 
 const instance = axios.create({
-  baseURL: `${serverUrl}/api`,
+  baseURL: `${serverUrl}/`,
 
   headers: {
     'Content-Type': 'application/json',
