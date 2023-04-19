@@ -42,11 +42,18 @@ const StyledParagraph = styled.h1<ParagraphProps>`
   padding: ${({ padding }) => padding || 0};
   font-weight: ${({ fontWeight }) => fontWeight || '400'};
   // letter-spacing: -0.02em;
-  color: ${({ color, theme: { colors } }) => colors[color] || colors.blackColor70};
+  color: ${({ color, theme: { colors } }) => colors[color]};
 
   ${({ sizeType }) => sizeType && sizeList[sizeType]}
 `;
 
+/**
+ * <p>를 사용한다.
+ * @param {SizeType} sizeType 타이틀 크기 default: 'base'
+ * @param {DefaultTheme.colors} color 색 default: 'blackColor70'
+ * @param {string} margin
+ * @param {string} padding
+ */
 const Paragraph = ({
   children,
   sizeType = 'base',

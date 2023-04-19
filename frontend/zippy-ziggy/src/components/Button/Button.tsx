@@ -33,39 +33,33 @@ const StyledButton = styled.button<ButtonProps>`
   margin: ${({ margin }) => margin || 0};
   padding: ${({ padding }) => padding || 0};
   width: ${({ width }) => width || '100%'};
-  height: ${({ height }) => height || '48px'};
+  height: ${({ height }) => height || '3rem'};
   font-weight: 500;
   border-radius: ${({ isRound }) => (isRound ? '100px' : '4px')};
   font-size: ${({ theme: { fonts } }) => fonts.body_base};
   line-height: ${({ theme: { fonts } }) => fonts.body_base};
   cursor: pointer;
-  transition: all 0.1s ease-out;
-
+  transition: all 0.2s ease-out;
+  box-shadow: ${({ theme: { shadows } }) => shadows.boxShadowSmall};
   &:hover {
-    animation: jelly 1s;
+    transform: translate(0, -0.4ex);
+    box-shadow: ${({ theme: { shadows } }) => shadows.boxShadowLarge};
   }
   &:active {
     transform: scale(0.95);
   }
 
-  @keyframes jelly {
-    25% {
-      transform: scale(0.95, 1.05);
-      transform: translate(0, -0.2ex);
-    }
-
-    50% {
-      transform: scale(1.05, 0.98);
-      transform: translate(0, 0.2ex);
-    }
-
-    75% {
-      transform: scale(0.97, 1.02);
-    }
-  }
-
   ${({ buttonType, color }) => buttonType && buttonList(buttonType, color)}
 `;
+
+/**
+ * 타이틀을 사용한다.
+ * @param {ButtonType} buttonType 버튼 종류 default: 'fill'
+ * @param {DefaultTheme.colors} color 색 default: 'blackColor90'
+ * @param {boolean} isRound 라운드 여부
+ * @param {string} width default: 100%
+ * @param {string} height default: 3rem
+ */
 
 const Button = ({
   children,
