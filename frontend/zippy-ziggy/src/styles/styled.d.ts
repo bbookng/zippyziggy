@@ -51,6 +51,8 @@ declare module 'styled-components' {
 
       whiteColor: string;
       blackColor: string;
+
+      grayColor: string;
     };
 
     fonts: {

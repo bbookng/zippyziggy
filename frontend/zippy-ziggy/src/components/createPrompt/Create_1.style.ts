@@ -3,7 +3,7 @@ import { media } from '@/styles/media';
 
 const ContainerTitle = styled.div`
   display: flex;
-  padding: 1rem 6rem;
+  padding: 1rem 10rem;
   justify-content: center;
   align-items: flex-end;
 
@@ -26,6 +26,7 @@ const TitleWrapper = styled.div`
   ${media.small`
     width: 100%;
     margin: 0;
+    justify-content: space-between;
   `}
 
   .title {
@@ -77,7 +78,7 @@ const TitleInfoWrapper = styled.div`
 
 const Container = styled.div`
   display: flex;
-  padding: 1rem 6rem;
+  padding: 1rem 10rem;
   justify-content: center;
   flex-wrap: wrap;
 
@@ -108,12 +109,12 @@ const LeftContainer = styled.div`
 
   .row {
     padding-inline: 1.5rem;
-    background-color: ${({ theme }) => theme.isDark && theme.colors.whiteColor90};
+    background-color: ${({ theme }) => theme.colors.whiteColor80};
   }
 
   .question {
     display: flex;
-    background-color: ${({ theme }) => theme.isDark && theme.colors.whiteColor90};
+    background-color: ${({ theme }) => theme.colors.whiteColor80};
 
     .colorBlock {
       width: 0.25rem;
@@ -121,7 +122,7 @@ const LeftContainer = styled.div`
     }
 
     .questionBox {
-      background-color: var(--colors-primary-05);
+      background-color: var(--colors-primary-10);
       padding: 0 1.25rem;
       width: 100%;
     }
@@ -154,7 +155,7 @@ const SubContainer = styled.div`
 
   .row {
     padding-inline: 1.5rem;
-    background-color: ${({ theme }) => theme.isDark && theme.colors.whiteColor90};
+    background-color: ${({ theme }) => theme.colors.whiteColor80};
   }
 
   .label {
@@ -185,6 +186,27 @@ const SubContainer = styled.div`
       padding-left: 0.5rem;
     }
   }
+
+  .testBtn {
+    height: 2rem;
+    font-size: 0.8rem;
+    font-weight: var(--fonts-heading);
+    background-color: var(--colors-primary-10);
+    color: ${({ theme }) => theme.colors.blackColor90};
+    border-radius: var(--borders-radius-base);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-block: 1rem;
+
+    &:hover {
+      background-color: var(--colors-primary-30);
+    }
+
+    .text {
+      margin-left: 0.25rem;
+    }
+  }
 `;
 
 const Textarea = styled.textarea`
@@ -201,21 +223,6 @@ const Textarea = styled.textarea`
   `}
 `;
 
-const Button = styled.button`
-  width: 100%;
-  height: 2rem;
-  font-size: 0.8rem;
-  font-weight: var(--fonts-heading);
-  background-color: var(--colors-primary-10);
-  padding: 0 auto;
-  border-radius: var(--borders-radius-base);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-block: 1rem;
-  box-shadow: none;
-`;
-
 export {
   Container,
   ContainerTitle,
@@ -225,5 +232,4 @@ export {
   RightContainer,
   Textarea,
   SubContainer,
-  Button,
 };

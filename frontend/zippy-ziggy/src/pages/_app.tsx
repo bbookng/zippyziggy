@@ -44,8 +44,13 @@ export const GlobalStyle = createGlobalStyle`
   }
 
   ::selection {
-    background-color: ${({ theme }) => theme?.colors?.navColor};
-    color: ${({ theme }) => theme?.colors?.blackColor30}
+    background-color: ${({ theme }) => theme.colors.blackColor50};
+    color: ${({ theme }) => theme.colors.blackColor90}
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: ${({ theme }) => theme.colors.blackColor50}
   }
 `;
 
