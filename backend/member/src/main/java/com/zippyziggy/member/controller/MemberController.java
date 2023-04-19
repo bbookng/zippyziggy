@@ -234,7 +234,7 @@ public class MemberController {
     /**
      * 토큰으로 유저 정보 가져오기
      */
-    @GetMapping("/jwt/test/")
+    @GetMapping("/jwt/test")
     @ApiIgnore
     public ResponseEntity<?> totalUser() {
 
@@ -264,9 +264,11 @@ public class MemberController {
     @GetMapping("/jwt/decode/test/{token}")
     @ApiIgnore
     public ResponseEntity<?> decodeTest(@PathVariable String token) throws Exception {
-        JwtResponse data = jwtValidationService.validateAccessToken(token);
+//        JwtResponse data = jwtValidationService.validateAccessToken(token);
         Member member = jwtValidationService.findMemberByJWT(token);
-        return new ResponseEntity<>(member,  HttpStatus.OK);
+        JwtResponse jwtResponse = jwtValidationService.validateRefreshToken(token);
+
+        return new ResponseEntity<>(jwtResponse,  HttpStatus.OK);
     }
 
 

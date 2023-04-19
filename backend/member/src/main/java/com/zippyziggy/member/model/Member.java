@@ -1,20 +1,19 @@
 package com.zippyziggy.member.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.UUID;
 
 import javax.persistence.*;
 
-import org.hibernate.annotations.ColumnDefault;
+import lombok.*;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Builder
@@ -22,8 +21,8 @@ import org.hibernate.annotations.GenericGenerator;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "member")
 @Getter
-@DynamicInsert
-public class Member {
+@ToString
+public class Member implements UserDetails {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,7 +41,7 @@ public class Member {
 	@CreationTimestamp
 	private LocalDateTime regDt;
 
-	@Column(nullable = false, columnDefinition = "boolean not null default 1")
+	@Column(nullable = false, columnDefinition = "boolean default 1")
 	private Boolean activate;
 
 	@Column(nullable = false, length = 10, columnDefinition = "varchar(10) default 'USER'")
@@ -70,5 +69,56 @@ public class Member {
 
 	public void setActivate(Boolean activate) {
 		this.activate = activate;
+	}
+
+
+	@PrePersist
+	public void prePersist() {
+		this.activate = this.activate == null ? true : this.activate;
+		this.role = this.role == null ? RoleType.USER : this.role;
+	}
+
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		Collection<GrantedAuthority> collect = new ArrayList<>();
+        collect.add(new GrantedAuthority() {
+
+            @Override
+            public String getAuthority() {
+                return getRole().toString();
+            }
+        });
+		return collect;
+	}
+
+	@Override
+	public String getPassword() {
+		return null;
+	}
+
+	@Override
+	public String getUsername() {
+		return nickname;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return true;
 	}
 }

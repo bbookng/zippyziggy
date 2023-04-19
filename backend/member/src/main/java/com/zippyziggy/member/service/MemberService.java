@@ -55,15 +55,12 @@ public class MemberService {
             Member member = Member.builder()
                     .name(dto.getName())
                     .nickname(nickname)
-                    .activate(true)
-                    .role(RoleType.USER)
                     .platform(dto.getPlatform())
                     .platformId(dto.getPlatformId())
                     .profileImg(dto.getProfileImg())
                     .userUuid(UUID.randomUUID())
                     .build();
-            System.out.println("member = " + member.getPlatform());
-            System.out.println("member = " + member.getActivate());
+
             memberRepository.save(member);
 
             // 자동 로그인을 위해 JWT Token 부여

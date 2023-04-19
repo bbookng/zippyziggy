@@ -1,6 +1,7 @@
 package com.zippyziggy.member.service;
 
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.zippyziggy.member.model.JwtResponse;
@@ -32,16 +33,13 @@ public class JwtValidationService {
     @Autowired
     private MemberRepository memberRepository;
 
-    @Autowired
-    private JwtProviderService jwtProviderService;
-
     /**
      * access 토큰 유효성 검사
      * ACCESS_TOKEN_MISMATCH: 유효하지 않은 토큰입니다.
      * ACCESS_TOKEN_EXPIRED: 유효 시간이 만료된 토큰입니다.
      * ACCESS_TOKEN_SUCCESS: 정상 토큰
      */
-    public JwtResponse validateAccessToken(String accessToken) throws Exception {
+    public JwtResponse validateAccessToken(String accessToken) {
 
         try {
             boolean contentCheck = tokenContentCheck(accessToken);
@@ -57,13 +55,6 @@ public class JwtValidationService {
 
             // 만료시간이 지난 경우 새로운 accessToken 생성
             if (verify.getExpiresAt().before(new Date())) {
-//                UUID userUuid = UUID.fromString(verify.getClaim("userUuid").asString());
-//                String nickname = verify.getClaim("nickname").asString();
-//
-//                String newAccessToken = jwtProviderService.createAccessToken(userUuid, nickname);
-
-//                Base64.Decoder decoder = Base64.getUrlDecoder();
-//                System.out.println("decoder = " + new String(decoder.decode(verify.getHeader())));
 
                 return JwtResponse.ACCESS_TOKEN_EXPIRED;
             }
@@ -92,25 +83,21 @@ public class JwtValidationService {
     public JwtResponse validateRefreshToken(String refreshToken) {
 
         try {
-            boolean contentCheck = tokenContentCheck(refreshToken);
 
             // token 내용이 유효한지 확인
-            if (!contentCheck) {
+            boolean contentCheck = tokenContentCheck(refreshToken);
+
+            // DB의 refreshToken과 일치하는지 확인
+            boolean refreshTokenDBCheck = refreshTokenDBCheck(refreshToken);
+
+            if (!contentCheck || !refreshTokenDBCheck) {
                 return JwtResponse.REFRESH_TOKEN_MISMATCH;
             }
 
             DecodedJWT verify = require(Algorithm.HMAC512(jwtSecretKey)).build().verify(refreshToken);
 
-
-            // 만료시간이 지난 경우 새로운 accessToken 생성
+            // 만료시간이 지난 경우 새로운 refreshToken 생성
             if (verify.getExpiresAt().before(new Date())) {
-//                UUID userUuid = UUID.fromString(verify.getClaim("userUuid").asString());
-//                String nickname = verify.getClaim("nickname").asString();
-//
-//                String newAccessToken = jwtProviderService.createAccessToken(userUuid, nickname);
-
-//                Base64.Decoder decoder = Base64.getUrlDecoder();
-//                System.out.println("decoder = " + new String(decoder.decode(verify.getHeader())));
 
                 return JwtResponse.REFRESH_TOKEN_EXPIRED;
             }
@@ -166,6 +153,19 @@ public class JwtValidationService {
         return temp;
     }
 
+    // DB에 있는 refreshToken과 일치하는지 확인
+    // 다른 유저의 refreshToken을 들고 올 가능성이 존재
+    public boolean refreshTokenDBCheck(String refreshToken) throws Exception {
+
+        Member member = findMemberByJWT(refreshToken);
+
+        if (!member.getRefreshToken().equals(refreshToken)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
 
     /**
      * JWT Token으로 닉네임 파싱 후 유저 정보 가져오기
@@ -180,4 +180,19 @@ public class JwtValidationService {
         return member.get();
     }
 
+    /**
+     * refreshToken인지 accessToken인지 확인
+     */
+    public String checkToken(String token) {
+        try {
+            DecodedJWT verify = require(Algorithm.HMAC512(jwtSecretKey)).build().verify(token);
+            String subject = verify.getSubject();
+            return subject;
+
+        } catch (JWTDecodeException e) {
+            System.out.println("유효하지 않은 토큰입니다." + e);
+
+            return JwtResponse.REFRESH_TOKEN_MISMATCH.getJwtResponse();
+        }
+    }
 }
