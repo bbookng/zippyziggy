@@ -8,8 +8,8 @@ const NavWrapper = styled.div`
   margin: 0 auto 1rem auto;
   padding: 0 1.5rem;
   justify-content: space-between;
-  background-color: ${({ theme }) => theme?.colors?.whiteColor100};
-  box-shadow: ${({ theme }) => theme?.shadows?.boxShadowLarge};
+  background-color: ${({ theme }) => theme.colors.whiteColor100};
+  box-shadow: ${({ theme }) => theme.shadows.boxShadowLarge};
 
   ${media.small`
     min-height: 3rem;
@@ -83,6 +83,7 @@ const Logo = styled.div`
     height: 40px;
     margin-right: 2rem;
     object-fit: contain;
+    cursor: pointer;
     ${media.small`
       width: 100px;
       height: 48px;

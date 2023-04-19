@@ -42,7 +42,7 @@ const darkTheme: DefaultTheme = {
   // 전역 설정 컬러 (모드가 바뀌면 바뀜)
   shadows: {
     boxShadowSmall: 'var(--shadows-black-sm)',
-    boxShadowLarge: 'var(--shadows-black-xl)',
+    boxShadowLarge: 'var(--shadows-black-lg)',
     boxUpperShadowLarge: 'var(--shadows-upper-black-lg)',
   },
   colors: {
@@ -98,7 +98,7 @@ const lightTheme: DefaultTheme = {
   // 전역 설정 컬러 (모드가 바뀌면 바뀜)
   shadows: {
     boxShadowSmall: 'var(--shadows-black-sm)',
-    boxShadowLarge: 'var(--shadows-black-xl)',
+    boxShadowLarge: 'var(--shadows-black-lg)',
     boxUpperShadowLarge: 'var(--shadows-upper-black-lg)',
   },
   colors: {

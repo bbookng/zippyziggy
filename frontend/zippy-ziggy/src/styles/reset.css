@@ -209,5 +209,4 @@ video {
 
 ::selection {
   color: #000;
-  background-color: var(--colors-background);
 }
