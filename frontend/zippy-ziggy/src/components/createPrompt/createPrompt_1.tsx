@@ -15,7 +15,7 @@ export default function CreatePart1({ prompt1, prompt2, example, handleChange }:
   return (
     <Container>
       <LeftContainer>
-        <div className="row">
+        <div className="row row-1">
           <Textarea
             value={prompt1}
             onChange={(e) => handleChange(e, 'prompt1')}
@@ -30,10 +30,15 @@ export default function CreatePart1({ prompt1, prompt2, example, handleChange }:
                 질문 예시
               </label>
             </div>
-            <Textarea value={example} onChange={(e) => handleChange(e, 'example')} id="example" />
+            <Textarea
+              value={example}
+              placeholder="예시를 작성해주세요"
+              onChange={(e) => handleChange(e, 'example')}
+              id="example"
+            />
           </div>
         </div>
-        <div className="row">
+        <div className="row row-2">
           <Textarea
             value={prompt2}
             onChange={(e) => handleChange(e, 'prompt2')}

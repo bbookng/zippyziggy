@@ -60,6 +60,9 @@ export default function PromptCreate() {
     setIsNext((prev) => !prev);
   };
 
+  // 생성 요청
+  const handleCreatePrompt = () => {};
+
   return (
     <>
       <ContainerTitle>
@@ -70,6 +73,7 @@ export default function PromptCreate() {
             <div>작성이 처음이신가요?</div>
           </div>
         </TitleWrapper>
+        {/* prompt.forkCnt > 0 으로 확인하도록 바꾸기!! */}
         {isForked && (
           <TitleInfoWrapper>
             <div className="fork">포크</div>
@@ -83,7 +87,7 @@ export default function PromptCreate() {
           title={title}
           content={content}
           handleChange={handleChange}
-          image={image}
+          // image={image}
           setImage={setImage}
           preview={preview}
           setPreview={setPreview}

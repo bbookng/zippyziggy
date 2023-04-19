@@ -23,6 +23,10 @@ const Conatiner = styled.div`
 
 const Body = styled.div`
   padding: 1rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  aspect-ratio: calc(3);
 `;
 
 const Title = styled.div`
@@ -56,6 +60,7 @@ const Content = styled.div`
 
 const Infos = styled.div`
   display: flex;
+  margin-top: auto;
 
   .divider {
     margin-inline: 0.5rem;
@@ -88,13 +93,20 @@ const Footer = styled.div`
       display: flex;
       align-items: center;
       padding: 0.5rem;
-      .like {
-        margin-right: 0.5rem;
-      }
       /* box-shadow: inset 2px 2px 2px rgba(0, 0, 0, 0.03); */
       /* border-radius: var(--borders-radius-round); */
-      /* aspect-ratio: calc(1); */
-      /* width: 2rem; */
+      .like {
+        margin-right: 0.25rem;
+        color: var(--colors-heart);
+      }
+      .bookmark {
+        color: var(--colors-bookmark);
+      }
+      .play {
+        width: 1.5rem;
+        height: 1.5rem;
+        color: rgba(16, 198, 0, 1);
+      }
     }
   }
 `;

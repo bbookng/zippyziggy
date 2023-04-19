@@ -1,5 +1,4 @@
 import React from 'react';
-import Image from 'next/image';
 import {
   Container,
   LeftContainer,
@@ -14,7 +13,7 @@ interface PropsTypes {
   title: string | null;
   content: string | null;
   handleChange: (e: unknown, string: string) => void;
-  image: FileList;
+  // image: FileList;
   setImage: (file: FileList) => void;
   preview: string | null;
   setPreview: (url: string) => void;
@@ -24,7 +23,6 @@ export default function CreatePart2({
   title,
   content,
   handleChange,
-  image,
   setImage,
   preview,
   setPreview,
@@ -73,8 +71,8 @@ export default function CreatePart2({
             />
           </div>
           <span>
-            <label htmlFor="image" className="image">
-              <div>image</div>
+            <label htmlFor="image" className="btn">
+              <div>썸네일 등록</div>
               <input
                 type="file"
                 accept="image/*"

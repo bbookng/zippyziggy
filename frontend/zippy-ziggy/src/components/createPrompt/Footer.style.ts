@@ -19,7 +19,7 @@ const Footer = styled.div`
 
   .testBtn {
     font-weight: var(--fonts-heading);
-    background-color: ${({ theme }) => theme.colors.grayColor};
+    background-color: ${({ theme }) => theme.colors.navColor};
     color: ${({ theme }) => theme.colors.blackColor90};
     /* color: black; */
     border-radius: var(--borders-radius-base);

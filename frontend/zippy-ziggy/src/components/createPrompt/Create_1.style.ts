@@ -101,6 +101,8 @@ const LeftContainer = styled.div`
   border-radius: var(--borders-radius-base);
   margin-top: 1rem;
   margin-right: 2rem;
+  box-shadow: ${({ theme }) => theme.shadows.boxShadowLarge};
+  background-color: ${({ theme }) => theme.colors.whiteColor80};
 
   ${media.small`
     width: 100%;
@@ -109,12 +111,18 @@ const LeftContainer = styled.div`
 
   .row {
     padding-inline: 1.5rem;
-    background-color: ${({ theme }) => theme.colors.whiteColor80};
+    /* background-color: ${({ theme }) => theme.colors.whiteColor80}; */
+    .row-1 {
+      border-radius: 8px 8px 0 0;
+    }
+    .row-2 {
+      border-radius: 0 0 8px 8px;
+    }
   }
 
   .question {
     display: flex;
-    background-color: ${({ theme }) => theme.colors.whiteColor80};
+    /* background-color: ${({ theme }) => theme.colors.whiteColor80}; */
 
     .colorBlock {
       width: 0.25rem;
@@ -138,10 +146,11 @@ const RightContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 45%;
+  height: fit-content;
   /* max-width: 600px; */
 
   ${media.small`
-    width: 100%;
+  width: 100%;
   `}
 `;
 
@@ -151,11 +160,14 @@ const SubContainer = styled.div`
   background-color: white;
   height: fit-content;
   border-radius: var(--borders-radius-base);
+  /* background-color: ${({ theme }) => theme.colors.whiteColor80}; */
   margin-top: 1rem;
+  box-shadow: ${({ theme }) => theme.shadows.boxShadowLarge};
+  background-color: ${({ theme }) => theme.colors.whiteColor80};
 
   .row {
     padding-inline: 1.5rem;
-    background-color: ${({ theme }) => theme.colors.whiteColor80};
+    /* background-color: ${({ theme }) => theme.colors.whiteColor80}; */
   }
 
   .label {
@@ -193,7 +205,7 @@ const SubContainer = styled.div`
     font-weight: var(--fonts-heading);
     background-color: var(--colors-primary-10);
     color: ${({ theme }) => theme.colors.blackColor90};
-    border-radius: var(--borders-radius-base);
+    /* border-radius: var(--borders-radius-base); */
     display: flex;
     justify-content: center;
     align-items: center;

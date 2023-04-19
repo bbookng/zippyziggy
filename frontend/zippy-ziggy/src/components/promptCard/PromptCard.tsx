@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { getTodayDate } from '@/lib/utils';
-import { FaHeart } from 'react-icons/fa';
+import { FaHeart, FaBookmark, FaPlayCircle } from 'react-icons/fa';
 import { Body, Conatiner, Content, Footer, Infos, Title } from './Card.style';
 
 interface PromptType {
@@ -68,8 +68,12 @@ export default function PromptCard({ image, title, content, prompt }: PropsType)
             <FaHeart className="like" />
             <div>{prompt?.likeCnt || '0'}</div>
           </div>
-          <div className="item">북</div>
-          <div className="item">텟</div>
+          <div className="item">
+            <FaBookmark className="bookmark" />
+          </div>
+          <div className="item">
+            <FaPlayCircle className="play" />
+          </div>
         </div>
       </Footer>
     </Conatiner>

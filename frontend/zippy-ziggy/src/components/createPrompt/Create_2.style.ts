@@ -26,6 +26,8 @@ const LeftContainer = styled.div`
   border-radius: var(--borders-radius-base);
   margin-top: 1rem;
   margin-right: 2rem;
+  box-shadow: ${({ theme }) => theme.shadows.boxShadowLarge};
+  background-color: ${({ theme }) => theme.colors.whiteColor80};
 
   ${media.small`
     width: 100%;
@@ -33,25 +35,7 @@ const LeftContainer = styled.div`
   `}
 
   .row {
-    /* padding-inline: 1.5rem; */
-    /* background-color: ${({ theme }) => theme.colors.whiteColor80}; */
     margin-bottom: 1rem;
-  }
-
-  .question {
-    display: flex;
-    background-color: ${({ theme }) => theme.colors.whiteColor80};
-
-    .colorBlock {
-      width: 0.25rem;
-      background-color: var(--colors-primary-50);
-    }
-
-    .questionBox {
-      background-color: var(--colors-primary-10);
-      padding: 0 1.25rem;
-      width: 100%;
-    }
   }
 
   .label {
@@ -111,9 +95,9 @@ const Wrapper = styled.div`
     `}
   }
 
-  .image {
+  .btn {
     cursor: pointer;
-    width: 5rem;
+    /* width: 5rem; */
     height: 2.5rem;
     object-fit: cover;
     border-radius: var(--borders-radius-base);
@@ -122,6 +106,10 @@ const Wrapper = styled.div`
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
+    &:hover {
+      background-color: var(--colors-primary-30);
+    }
   }
 `;
 

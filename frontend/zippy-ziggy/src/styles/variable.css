@@ -91,8 +91,8 @@
 
   --colors-white-nav: #ffffff;
   --colors-dark-nav: #202020;
-  --colors-white-gray: #e0e0e0;
-  --colors-dark-gray: #858585;
+  --colors-white-gray: #e6e6e6;
+  --colors-dark-gray: #5f5f5f;
 
   --colors-success: #4ade80;
   --colors-danger: #f87171;
@@ -106,7 +106,7 @@
   --colors-black-background: #363636;
 
   /* Breakpoints */
-  --breakpoints-phone: 768px;
+  --breakpoints-phone: 1024px;
   --breakpoints-desktop: 1440px;
 
   /* Borders */
