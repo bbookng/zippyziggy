@@ -116,7 +116,7 @@ public class JwtProviderService {
     /**
      * JWT 토큰에서 인증 정보 조회
      */
-    public Authentication getAuthentication(String token) throws Exception {
+    public Authentication getAuthentication(String token) {
             DecodedJWT verify = require(Algorithm.HMAC512(jwtSecretKey)).build().verify(token);
             String nickname = verify.getClaim("nickname").asString();
             UserDetails userDetails = customUserDetailService.loadUserByUsername(nickname);

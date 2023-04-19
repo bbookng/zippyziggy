@@ -49,9 +49,10 @@ public class MemberService {
 
         String nickname = dto.getNickname();
 
-        Optional<Member> checkMember = memberRepository.findByNicknameEquals(nickname);
-        System.out.println("dto = " + dto);
-        if (checkMember.isEmpty()) {
+        Optional<Member> checkMemberNickname = memberRepository.findByNicknameEquals(nickname);
+        Member checkMemberPlatform = memberCheck(dto.getPlatform(), dto.getPlatformId());
+
+        if (checkMemberNickname.isEmpty() && checkMemberPlatform == null) {
             Member member = Member.builder()
                     .name(dto.getName())
                     .nickname(nickname)

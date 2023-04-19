@@ -1,5 +1,6 @@
 package com.zippyziggy.member.config;
 
+import com.zippyziggy.member.filter.CustomAuthenticationEntryPoint;
 import com.zippyziggy.member.filter.JwtAuthenticationFilter;
 import com.zippyziggy.member.service.JwtProviderService;
 import com.zippyziggy.member.service.JwtValidationService;
@@ -46,7 +47,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilter(corsFilter)
                 .addFilterBefore(new JwtAuthenticationFilter(jwtValidationService, jwtProviderService),
-                        UsernamePasswordAuthenticationFilter.class); // JwtAuthenticationFilter를 UsernamePasswordAuthenticationFilter 전에 넣는다
+                        UsernamePasswordAuthenticationFilter.class) // JwtAuthenticationFilter를 UsernamePasswordAuthenticationFilter 전에 넣는다
+                .exceptionHandling()
+                .authenticationEntryPoint(new CustomAuthenticationEntryPoint());
     }
 
 }

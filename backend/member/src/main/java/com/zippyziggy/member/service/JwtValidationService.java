@@ -4,17 +4,22 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zippyziggy.member.dto.response.JwtPayLoadResponseDto;
 import com.zippyziggy.member.model.JwtResponse;
 import com.zippyziggy.member.model.Member;
 import com.zippyziggy.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Base64Utils;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Optional;
@@ -33,20 +38,23 @@ public class JwtValidationService {
     @Autowired
     private MemberRepository memberRepository;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     /**
      * access 토큰 유효성 검사
      * ACCESS_TOKEN_MISMATCH: 유효하지 않은 토큰입니다.
      * ACCESS_TOKEN_EXPIRED: 유효 시간이 만료된 토큰입니다.
      * ACCESS_TOKEN_SUCCESS: 정상 토큰
      */
-    public JwtResponse validateAccessToken(String accessToken) {
+    public JwtResponse validateAccessToken(String accessToken) throws TokenExpiredException {
 
         try {
             boolean contentCheck = tokenContentCheck(accessToken);
 
             // token 내용이 유효한지 확인
             if (!contentCheck) {
-                return JwtResponse.ACCESS_TOKEN_MISMATCH;
+                throw new JWTDecodeException(JwtResponse.ACCESS_TOKEN_MISMATCH.getJwtResponse());
             }
 
             // JWT 분리시키기
@@ -56,17 +64,18 @@ public class JwtValidationService {
             // 만료시간이 지난 경우 새로운 accessToken 생성
             if (verify.getExpiresAt().before(new Date())) {
 
-                return JwtResponse.ACCESS_TOKEN_EXPIRED;
+                throw new TokenExpiredException("만료된 토큰입니다.", Instant.now());
             }
+
         } catch (TokenExpiredException e) {
 
             System.out.println("만료된 토큰입니다." + e);
-            return JwtResponse.ACCESS_TOKEN_EXPIRED;
+            throw new TokenExpiredException("만료된 토큰입니다.", Instant.now());
 
         } catch (Exception e) {
 
             System.out.println("유효하지 않은 토큰입니다" + e);
-            return JwtResponse.ACCESS_TOKEN_MISMATCH;
+            throw new JWTDecodeException(JwtResponse.ACCESS_TOKEN_MISMATCH.getJwtResponse());
 
         }
 
@@ -184,15 +193,17 @@ public class JwtValidationService {
      * refreshToken인지 accessToken인지 확인
      */
     public String checkToken(String token) {
+        String[] data = token.split("\\.");
+        String s = data[1];
+        String decode = new String(Base64Utils.decode(s.getBytes()));
         try {
-            DecodedJWT verify = require(Algorithm.HMAC512(jwtSecretKey)).build().verify(token);
-            String subject = verify.getSubject();
-            return subject;
+            JwtPayLoadResponseDto jwtPayLoadResponseDto = objectMapper.readValue(decode, JwtPayLoadResponseDto.class);
+            System.out.println("decode =얄루 " + jwtPayLoadResponseDto.getSub());
 
-        } catch (JWTDecodeException e) {
-            System.out.println("유효하지 않은 토큰입니다." + e);
-
-            return JwtResponse.REFRESH_TOKEN_MISMATCH.getJwtResponse();
+            return jwtPayLoadResponseDto.getSub();
+        } catch (Exception e) {
+            throw new JWTDecodeException("유효하지 않은 토큰입니다.");
         }
+
     }
 }

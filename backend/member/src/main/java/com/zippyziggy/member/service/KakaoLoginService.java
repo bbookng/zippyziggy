@@ -50,6 +50,7 @@ public class KakaoLoginService {
         body.add("redirect_uri", kakaoRedirectUri);
         body.add("code", code);
 
+        System.out.println("body = " + body);
 
         String token = WebClient.create()
                 .post()
@@ -59,7 +60,7 @@ public class KakaoLoginService {
                 .body(BodyInserters.fromFormData(body))
                 .retrieve()
                 .bodyToMono(String.class)
-                .timeout(Duration.ofMillis(5000))
+                .timeout(Duration.ofMillis(50000))
                 .blockOptional().orElseThrow(
                         () -> new RuntimeException("응답 시간을 초과하였습니다.")
                 );
