@@ -4,11 +4,13 @@ import Image from 'next/image';
 import { FaBars, FaRegBell, FaRegBookmark } from 'react-icons/fa';
 import Link from 'next/link';
 import { useTheme } from 'styled-components';
+import { useRouter } from 'next/router';
 import { NavWrapper, NavList, NavOption, Logo, NavUser, Overlay } from './navbar.style';
 
 const Navbar = ({ toggleTheme }) => {
   const [isSelected, setIsSelected] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const router = useRouter();
   const { isDark } = useTheme();
 
   // 네비게이션바 닫기
@@ -19,7 +21,7 @@ const Navbar = ({ toggleTheme }) => {
 
   // 네비게이션바 목록[내용, 인덱스, 라우팅]
   const navOptions: Array<Array<string>> = [
-    ['프롬프트', '0', '/#'],
+    ['프롬프트', '0', '/prompts'],
     ['대화공유', '1', '/#'],
     ['튜토리얼', '2', '/#'],
     ['다운로드', '3', '/#'],
@@ -29,6 +31,14 @@ const Navbar = ({ toggleTheme }) => {
   const handleIsSelected = (e) => {
     e.preventDefault();
     setIsSelected(e.target.innerText);
+    handleNavClose(e);
+  };
+
+  // 메인페이지로 이동
+  const moveMain = (e) => {
+    e.preventDefault();
+    setIsSelected(null);
+    router.push('/');
   };
 
   return (
@@ -43,6 +53,7 @@ const Navbar = ({ toggleTheme }) => {
               width={200}
               height={50}
               className="LogoImage"
+              onClick={moveMain}
             />
           ) : (
             <Image
@@ -51,6 +62,7 @@ const Navbar = ({ toggleTheme }) => {
               width={200}
               height={50}
               className="LogoImage"
+              onClick={moveMain}
             />
           )}
         </Logo>
