@@ -71,13 +71,15 @@ public class Member implements UserDetails {
 		this.activate = activate;
 	}
 
+	public void setNickname(String nickname) {this.nickname = nickname;}
+
+	public void setProfileImg(String profileImg) {this.profileImg = profileImg;}
 
 	@PrePersist
 	public void prePersist() {
 		this.activate = this.activate == null ? true : this.activate;
 		this.role = this.role == null ? RoleType.USER : this.role;
 	}
-
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {

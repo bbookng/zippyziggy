@@ -25,6 +25,15 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
 
+cloud:
+  aws:
+    s3:
+      bucket: zippyziggytest
+    stack:
+      auto: false
+    region:
+      static: ap-northeast-2
+
 #eureka:
 #  instance:
 #    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}

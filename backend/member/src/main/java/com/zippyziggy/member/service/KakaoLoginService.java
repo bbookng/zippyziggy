@@ -50,8 +50,7 @@ public class KakaoLoginService {
         body.add("redirect_uri", kakaoRedirectUri);
         body.add("code", code);
 
-        System.out.println("body = " + body);
-
+        // 카카오에 token 요청
         String token = WebClient.create()
                 .post()
                 .uri(kakaoTokenUri)
@@ -60,14 +59,13 @@ public class KakaoLoginService {
                 .body(BodyInserters.fromFormData(body))
                 .retrieve()
                 .bodyToMono(String.class)
-                .timeout(Duration.ofMillis(50000))
+                .timeout(Duration.ofMillis(5000000))
                 .blockOptional().orElseThrow(
                         () -> new RuntimeException("응답 시간을 초과하였습니다.")
                 );
 
+        // 객체로 전환
         KakaoTokenResponseDto kakaoTokenResponseDto = objectMapper.readValue(token, KakaoTokenResponseDto.class);
-
-//        System.out.println("kakaoTokenResponseDto = " + kakaoTokenResponseDto);
 
         return kakaoTokenResponseDto.getAccess_token();
     }
@@ -87,13 +85,12 @@ public class KakaoLoginService {
                 .header("Authorization", "Bearer " + kakaoAccessToken)
                 .retrieve()
                 .bodyToMono(String.class)
-                .timeout(Duration.ofMillis(5000))
+                .timeout(Duration.ofMillis(500000))
                 .blockOptional().orElseThrow(
                         () -> new RuntimeException("응답 시간을 초과하였습니다.")
                 );
 
-        KakaoUserInfoResponseDto kakaoUserInfoResponseDto = objectMapper.readValue(userInfo, KakaoUserInfoResponseDto.class);
-        return kakaoUserInfoResponseDto;
+        return objectMapper.readValue(userInfo, KakaoUserInfoResponseDto.class);
     }
 
 

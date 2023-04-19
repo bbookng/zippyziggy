@@ -1,10 +1,8 @@
 package com.zippyziggy.member.controller;
 
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.zippyziggy.member.dto.request.MemberSignUpRequestDto;
-import com.zippyziggy.member.dto.response.GoogleTokenResponseDto;
-import com.zippyziggy.member.dto.response.GoogleUserInfoResponseDto;
-import com.zippyziggy.member.dto.response.KakaoUserInfoResponseDto;
-import com.zippyziggy.member.dto.response.SocialSignUpResponseDto;
+import com.zippyziggy.member.dto.response.*;
 import com.zippyziggy.member.model.JwtResponse;
 import com.zippyziggy.member.model.JwtToken;
 import com.zippyziggy.member.model.Member;
@@ -12,6 +10,7 @@ import com.zippyziggy.member.model.Platform;
 import com.zippyziggy.member.repository.MemberRepository;
 import com.zippyziggy.member.service.*;
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -20,6 +19,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
@@ -30,25 +30,16 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/members")
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class MemberController {
 
-    @Autowired
-    private KakaoLoginService kakaoLoginService;
-
-    @Autowired
-    private GoogleLoginService googleLoginService;
-
-    @Autowired
-    private JwtProviderService jwtProviderService;
-
-    @Autowired
-    private MemberService memberService;
-
-    @Autowired
-    private MemberRepository memberRepository;
-
-    @Autowired
-    private JwtValidationService jwtValidationService;
+    private final KakaoLoginService kakaoLoginService;
+    private final GoogleLoginService googleLoginService;
+    private final JwtProviderService jwtProviderService;
+    private final MemberService memberService;
+    private final MemberRepository memberRepository;
+    private final JwtValidationService jwtValidationService;
+    private final S3Service s3Service;
 
     @GetMapping("/test")
     @Operation(summary = "서버 테스트용", description = "문자로 리턴해준다")
@@ -71,7 +62,7 @@ public class MemberController {
         // 기존 회원인지 검증
         String platformId = kakaoUserInfo.getId();
         Member member = memberService.memberCheck(Platform.KAKAO, platformId);
-        System.out.println("kakaoUserInfo = " + kakaoUserInfo);
+
         // DB에 해당 유저가 없다면 회원가입 진행, 없으면 로그인 진행
         // 회원가입을 위해서 일단 프런트로 회원 정보를 넘기고 회원가입 페이지로 넘어가게 해야 할 듯
         if (member == null || member.getActivate().equals(false)) {
@@ -84,8 +75,6 @@ public class MemberController {
                     .platformId(kakaoUserInfo.getId())
                     .build();
 
-            System.out.println("socialSignUpResponseDto = " + socialSignUpResponseDto);
-
             return new ResponseEntity<>(socialSignUpResponseDto, HttpStatus.OK);
         }
 
@@ -97,15 +86,23 @@ public class MemberController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", jwtToken.getAccessToken());
 
+        // refreshToken Cookie에 담기
         ResponseCookie responseCookie = ResponseCookie.from("refreshToken", jwtToken.getRefreshToken())
                 .httpOnly(true)
-                .secure(true)
+//                .secure(true) //https 설정 후 연결
+                .sameSite("Lax")
                 .build();
+
+        // 로그인 시 최소한의 유저 정보 전달
+        MemberInformResponseDto memberInformResponseDto = MemberInformResponseDto.builder()
+                .nickname(member.getNickname())
+                .profileImg(member.getProfileImg())
+                .userUuid(member.getUserUuid()).build();
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
                 .headers(headers)
-                .body(null);
+                .body(memberInformResponseDto);
     }
 
 
@@ -142,18 +139,27 @@ public class MemberController {
 
         member.setRefreshToken(jwtToken.getRefreshToken());
 
+        // AccessToken Header에 담기
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", jwtToken.getAccessToken());
 
+        // refreshToken Cookie 생성(각종 보안 설정)
         ResponseCookie responseCookie = ResponseCookie.from("refreshToken", jwtToken.getRefreshToken())
                 .httpOnly(true)
-                .secure(true)
+//                .secure(true)
+                .sameSite("Lax")
                 .build();
+
+        // 로그인 시 최소한의 유저 정보 전달
+        MemberInformResponseDto memberInformResponseDto = MemberInformResponseDto.builder()
+                .nickname(member.getNickname())
+                .profileImg(member.getProfileImg())
+                .userUuid(member.getUserUuid()).build();
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
                 .headers(headers)
-                .body(null);
+                .body(memberInformResponseDto);
     }
 
     /**
@@ -163,18 +169,22 @@ public class MemberController {
     @Transactional
     @Operation(summary = "로그아웃", description = "refreshToken DB에서 제거, 유효하지 않은 토큰일 경우 에러 발생")
     public ResponseEntity<?> logout(@RequestHeader HttpHeaders headers) throws Exception {
-//        System.out.println("headers = " + headers);
         String accessToken = headers.get("authorization").get(0).replace("Bearer ", "");
 
-        JwtResponse jwtResponse = jwtValidationService.validateAccessToken(accessToken);
-        if (jwtResponse == JwtResponse.ACCESS_TOKEN_MISMATCH) {
-            return ResponseEntity.badRequest().body("토큰이 유효하지 않습니다.");
-        } else {
+        try {
+            // token 유효성 검사
+            jwtValidationService.validateAccessToken(accessToken);
+
+            // 해당 유저 refreshToken 제거
             Member member = jwtValidationService.findMemberByJWT(accessToken);
             member.setRefreshToken(null);
+
+            // Kakao 계정도 함께 로그아웃 진행
             if (member.getPlatform().equals(Platform.KAKAO)) {
                 kakaoLoginService.KakaoLogout();
             }
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("토큰이 유효하지 않습니다.");
         }
 
         return new ResponseEntity<>(HttpStatus.OK);
@@ -209,8 +219,6 @@ public class MemberController {
             System.out.println("e = " + e);
             return new ResponseEntity<>("이미 해당 유저가 존재합니다", HttpStatus.BAD_REQUEST);
         }
-
-
     }
 
     /**
@@ -268,6 +276,57 @@ public class MemberController {
                     .headers(headers)
                     .body("accessToken이 새로 발급되었습니다.");
         }
+    }
+
+    /**
+     * UUID로 회원 조회하기
+     */
+    @GetMapping("/uuid/{userUuid}")
+    @Operation(summary = "UUID로 회원 조회", description = "UUID를 입력하면 해당하는 회원 정보를 추출할 수 있다.")
+    public ResponseEntity<MemberInformResponseDto> findMemberByUUID(UUID userUuid) throws Exception {
+        Member member = memberRepository.findByUserUuidEquals(userUuid).get();
+        MemberInformResponseDto memberInformResponseDto = MemberInformResponseDto.builder()
+                .nickname(member.getNickname())
+                .profileImg(member.getProfileImg())
+                .userUuid(member.getUserUuid()).build();
+
+        return new ResponseEntity<>(memberInformResponseDto, HttpStatus.OK);
+    }
+
+    /**
+     * AccessToken으로 회원 조회하기
+     */
+    @GetMapping("/profile")
+    @Operation(summary = "AccessToken으로 내 정보 가져오기", description = "AccessToken을 헤더에 입력하고 요청하면 프로필 정보를 확인할 수 있다.")
+    public ResponseEntity<MemberInformResponseDto> findProfile(@RequestHeader HttpHeaders headers) throws Exception {
+        String accesstoken = headers.get("authorization").get(0).replace("Bearer ", "");
+
+        Member member = jwtValidationService.findMemberByJWT(accesstoken);
+        MemberInformResponseDto memberInformResponseDto = MemberInformResponseDto.builder()
+                .nickname(member.getNickname())
+                .profileImg(member.getProfileImg())
+                .userUuid(member.getUserUuid()).build();
+
+        return new ResponseEntity<>(memberInformResponseDto, HttpStatus.OK);
+    }
+
+    /**
+     * 회원 정보 수정
+     */
+    @PutMapping("/profile")
+    @Transactional
+    @Operation(summary = "회원 정보 수정", description = "닉네임, 프로필 이미지를 변경한다.")
+    public ResponseEntity<?> updateProfile(@RequestHeader HttpHeaders headers,
+                                           @RequestPart("file") MultipartFile file,
+                                           @RequestPart("nickname") String nickname) throws Exception {
+        String accesstoken = headers.get("authorization").get(0).replace("Bearer ", "");
+        Member member = jwtValidationService.findMemberByJWT(accesstoken);
+        member.setNickname(nickname);
+        System.out.println("file = " + file);
+        System.out.println("nickname = " + nickname);
+        System.out.println("member = " + member);
+
+        return new ResponseEntity<>(HttpStatus.OK);
 
     }
 
@@ -311,5 +370,18 @@ public class MemberController {
         return new ResponseEntity<>(jwtResponse,  HttpStatus.OK);
     }
 
+    @PostMapping("/upload")
+    @ApiIgnore
+    public ResponseEntity<String> FileUploadController(@RequestPart("file") MultipartFile file) throws Exception {
+        String img = s3Service.uploadProfileImg(file);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/image/{fileName}")
+    @ApiIgnore
+    public ResponseEntity<?> FileUploadImage(@PathVariable String fileName) throws Exception {
+        String img = s3Service.findProfileImg(fileName);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
 }
