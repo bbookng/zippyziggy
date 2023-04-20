@@ -19,10 +19,10 @@ import javax.crypto.spec.SecretKeySpec;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Optional;
+import java.util.UUID;
 
 import static com.auth0.jwt.JWT.require;
 
@@ -92,10 +92,8 @@ public class JwtValidationService {
     public JwtResponse validateRefreshToken(String refreshToken) {
 
         try {
-
             // token 내용이 유효한지 확인
             boolean contentCheck = tokenContentCheck(refreshToken);
-
             // DB의 refreshToken과 일치하는지 확인
             boolean refreshTokenDBCheck = refreshTokenDBCheck(refreshToken);
 
@@ -177,15 +175,14 @@ public class JwtValidationService {
 
 
     /**
-     * JWT Token으로 닉네임 파싱 후 유저 정보 가져오기
+     * JWT Token으로 useUuid 파싱 후 유저 정보 가져오기
      */
     public Member findMemberByJWT(String token) {
         DecodedJWT verify = require(Algorithm.HMAC512(jwtSecretKey)).build().verify(token);
-
-        String nickname = verify.getClaim("nickname").asString();
-
-        Optional<Member> member = memberRepository.findByNicknameEquals(nickname);
-
+        String userUuid = verify.getClaim("userUuid").asString();
+        Optional<Member> member = memberRepository.findByUserUuidEquals(UUID.fromString(userUuid));
+        System.out.println("userUuid = " + userUuid);
+        System.out.println("member = " + member);
         return member.get();
     }
 
@@ -198,7 +195,6 @@ public class JwtValidationService {
         String decode = new String(Base64Utils.decode(s.getBytes()));
         try {
             JwtPayLoadResponseDto jwtPayLoadResponseDto = objectMapper.readValue(decode, JwtPayLoadResponseDto.class);
-            System.out.println("decode =얄루 " + jwtPayLoadResponseDto.getSub());
 
             return jwtPayLoadResponseDto.getSub();
         } catch (Exception e) {

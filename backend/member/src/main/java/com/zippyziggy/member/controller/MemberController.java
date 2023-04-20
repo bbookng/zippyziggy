@@ -48,7 +48,9 @@ public class MemberController {
     }
 
 
-    // 인가 코드(인증)를 받고 로직을 실행시킴
+    /**
+     * 카카오 로그인
+     */
     @GetMapping("/auth/kakao/callback")
     @Transactional
     @Operation(summary = "카카오 로그인", description = "기존 회원이면 로그인 성공(refreshToken은 쿠키, accessToken은 헤더에 담긴다), 아닐시 회원가입 요청(isMember : true)가 body에 포함된다")
@@ -79,7 +81,7 @@ public class MemberController {
         }
 
         // Jwt 토큰 생성
-        JwtToken jwtToken = jwtProviderService.createJwtToken(member.getUserUuid(), member.getNickname());
+        JwtToken jwtToken = jwtProviderService.createJwtToken(member.getUserUuid());
 
         member.setRefreshToken(jwtToken.getRefreshToken());
 
@@ -105,7 +107,9 @@ public class MemberController {
                 .body(memberInformResponseDto);
     }
 
-
+    /**
+     * 구글 로그인
+     */
     @GetMapping("/login/oauth2/code/google")
     @Transactional
     @Operation(summary = "구글 로그인", description = "기존 회원이면 로그인 성공(refreshToken은 쿠키, accessToken은 헤더에 담긴다), 아닐시 회원가입 요청(isMember : true)가 body에 포함된다")
@@ -135,7 +139,7 @@ public class MemberController {
         }
 
         // Jwt 토큰 생성
-        JwtToken jwtToken = jwtProviderService.createJwtToken(member.getUserUuid(), member.getNickname());
+        JwtToken jwtToken = jwtProviderService.createJwtToken(member.getUserUuid());
 
         member.setRefreshToken(jwtToken.getRefreshToken());
 
@@ -171,20 +175,13 @@ public class MemberController {
     public ResponseEntity<?> logout(@RequestHeader HttpHeaders headers) throws Exception {
         String accessToken = headers.get("authorization").get(0).replace("Bearer ", "");
 
-        try {
-            // token 유효성 검사
-            jwtValidationService.validateAccessToken(accessToken);
+        // 해당 유저 refreshToken 제거
+        Member member = jwtValidationService.findMemberByJWT(accessToken);
+        member.setRefreshToken(null);
 
-            // 해당 유저 refreshToken 제거
-            Member member = jwtValidationService.findMemberByJWT(accessToken);
-            member.setRefreshToken(null);
-
-            // Kakao 계정도 함께 로그아웃 진행
-            if (member.getPlatform().equals(Platform.KAKAO)) {
-                kakaoLoginService.KakaoLogout();
-            }
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("토큰이 유효하지 않습니다.");
+        // Kakao 계정도 함께 로그아웃 진행
+        if (member.getPlatform().equals(Platform.KAKAO)) {
+            kakaoLoginService.KakaoLogout();
         }
 
         return new ResponseEntity<>(HttpStatus.OK);
@@ -194,14 +191,15 @@ public class MemberController {
      * 회원가입
      * 추후에 사진도 같이 업로드 필요
      */
-    @PostMapping("")
+    @PostMapping("/signup")
     @Transactional
     @Operation(summary = "회원가입", description = "추후 사진 파일 업로드 적용 예정, 현재는 nickname, profileImg, name, platform, platformId 입력 필요" +
             "중복된 유저일 경우 400 상태 코드와 함께 문구가 반환된다.")
-    public ResponseEntity<String> memberSignUp(@RequestBody MemberSignUpRequestDto memberSignUpRequestDto) throws Exception {
+    public ResponseEntity<?> memberSignUp(@RequestPart("user") MemberSignUpRequestDto memberSignUpRequestDto,
+                                               @RequestPart("file") MultipartFile file) throws Exception {
 
         try {
-            JwtToken jwtToken = memberService.memberSignUp(memberSignUpRequestDto);
+            JwtToken jwtToken = memberService.memberSignUp(memberSignUpRequestDto, file);
 
             HttpHeaders headers = new HttpHeaders();
             headers.add("Authorization", jwtToken.getAccessToken());
@@ -211,11 +209,20 @@ public class MemberController {
                     .secure(true)
                     .build();
 
+            Member member = jwtValidationService.findMemberByJWT(jwtToken.getAccessToken());
+
+            MemberInformResponseDto memberInformResponseDto = MemberInformResponseDto.builder()
+                    .nickname(member.getNickname())
+                    .profileImg(member.getProfileImg())
+                    .userUuid(member.getUserUuid()).build();
+
             return ResponseEntity.ok()
                     .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
                     .headers(headers)
-                    .body(null);
+                    .body(memberInformResponseDto);
+
         } catch (Exception e) {
+
             System.out.println("e = " + e);
             return new ResponseEntity<>("이미 해당 유저가 존재합니다", HttpStatus.BAD_REQUEST);
         }
@@ -226,17 +233,13 @@ public class MemberController {
      */
     @PutMapping(value = "", headers = "Authorization")
     @Transactional
-    @Operation(summary = "회원 탈퇴(Authorization 필요)", description = "사용자의 activate를 0으로 변경")
+    @Operation(summary = "회원 탈퇴(Authorization 필요)", description = "사용자의 activate를 0으로 변경, 닉네임도 빈 문자열로 변경")
     public ResponseEntity<?> memberSignOut(@RequestHeader HttpHeaders headers) throws Exception {
-        String accessToken = headers.get("authorization").get(0).replace("Bearer ", "");
-        JwtResponse jwtResponse = jwtValidationService.validateAccessToken(accessToken);
 
-        if (jwtResponse == JwtResponse.ACCESS_TOKEN_MISMATCH) {
-            return ResponseEntity.badRequest().body("토큰이 유효하지 않습니다.");
-        } else {
-            memberService.memberSignOut(accessToken);
-            return new ResponseEntity<>(HttpStatus.OK);
-        }
+        String accessToken = headers.get("authorization").get(0).replace("Bearer ", "");
+        memberService.memberSignOut(accessToken);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     /**
@@ -259,31 +262,24 @@ public class MemberController {
             "만약 만료시간이 지나거나 잘못된 토큰일 경우에는 401에러와 함께 재로그인 문구가 반환된다.")
     public ResponseEntity<?> refreshToken(@RequestHeader HttpHeaders headers) throws Exception {
         String refreshToken = headers.get("authorization").get(0).replace("Bearer ", "");
-        JwtResponse jwtResponse = jwtValidationService.validateRefreshToken(refreshToken);
 
-        // 유효하지 않은 refreshToken 요청된 경우
-        if (jwtResponse.equals(JwtResponse.REFRESH_TOKEN_MISMATCH) || jwtResponse.equals(JwtResponse.REFRESH_TOKEN_EXPIRED)) {
-            return new ResponseEntity<>("유요하지 않은 토큰입니다. 재로그인이 필요합니다", HttpStatus.UNAUTHORIZED);
-        } else {
-            // refreshToken이 유효한 경우
-            Member member = jwtValidationService.findMemberByJWT(refreshToken);
-            String accessToken = jwtProviderService.createAccessToken(member.getUserUuid(), member.getNickname());
+        Member member = jwtValidationService.findMemberByJWT(refreshToken);
+        String accessToken = jwtProviderService.createAccessToken(member.getUserUuid());
 
-            HttpHeaders new_headers = new HttpHeaders();
-            new_headers.add("Authorization", accessToken);
+        HttpHeaders new_headers = new HttpHeaders();
+        new_headers.add("Authorization", accessToken);
 
-            return ResponseEntity.ok()
-                    .headers(headers)
-                    .body("accessToken이 새로 발급되었습니다.");
-        }
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body("accessToken이 새로 발급되었습니다.");
     }
 
     /**
      * UUID로 회원 조회하기
      */
-    @GetMapping("/uuid/{userUuid}")
-    @Operation(summary = "UUID로 회원 조회", description = "UUID를 입력하면 해당하는 회원 정보를 추출할 수 있다.")
-    public ResponseEntity<MemberInformResponseDto> findMemberByUUID(UUID userUuid) throws Exception {
+    @GetMapping("/uuid")
+    @Operation(summary = "UUID로 회원 조회", description = "UUID를 쿼리스트링으로 입력(userUuid)하면 해당하는 회원 정보를 추출할 수 있다.")
+    public ResponseEntity<MemberInformResponseDto> findMemberByUUID(@RequestParam UUID userUuid) throws Exception {
         Member member = memberRepository.findByUserUuidEquals(userUuid).get();
         MemberInformResponseDto memberInformResponseDto = MemberInformResponseDto.builder()
                 .nickname(member.getNickname())
@@ -294,7 +290,7 @@ public class MemberController {
     }
 
     /**
-     * AccessToken으로 회원 조회하기
+     * AccessToken으로 회원 정보 조회하기
      */
     @GetMapping("/profile")
     @Operation(summary = "AccessToken으로 내 정보 가져오기(Authorization 필요)", description = "AccessToken을 헤더에 입력하고 요청하면 프로필 정보를 확인할 수 있다.")
@@ -319,70 +315,19 @@ public class MemberController {
     public ResponseEntity<?> updateProfile(@RequestHeader HttpHeaders headers,
                                            @RequestPart("file") MultipartFile file,
                                            @RequestPart("nickname") String nickname) throws Exception {
+        // 기존 유저 찾아오기
         String accesstoken = headers.get("authorization").get(0).replace("Bearer ", "");
         Member member = jwtValidationService.findMemberByJWT(accesstoken);
-        member.setNickname(nickname);
-        System.out.println("file = " + file);
-        System.out.println("nickname = " + nickname);
-        System.out.println("member = " + member);
+        // 회원 정보 수정
+        Member updateMember = memberService.updateProfile(nickname, file, member);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        MemberInformResponseDto memberInformResponseDto = MemberInformResponseDto.builder()
+                .nickname(updateMember.getNickname())
+                .profileImg(updateMember.getProfileImg())
+                .userUuid(updateMember.getUserUuid()).build();
 
+        return new ResponseEntity<>(memberInformResponseDto, HttpStatus.OK);
     }
 
-    /**
-     * 토큰으로 유저 정보 가져오기
-     */
-    @GetMapping("/jwt/test")
-    @ApiIgnore
-    public ResponseEntity<?> totalUser() {
-
-        List<Member> members = memberRepository.findAll();
-
-        for (Member m: members) {
-            System.out.println("m = " + m);
-            System.out.println("m = " + m.getUserUuid());
-        }
-
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-
-    @GetMapping("/jwt/test/{userUuid}")
-    @ApiIgnore
-    public ResponseEntity<?> jwtTest(@PathVariable String userUuid) {
-        UUID uuid = UUID.fromString(userUuid);
-
-        Optional<Member> member = memberRepository.findByUserUuidEquals(uuid);
-
-        JwtToken jwtToken = jwtProviderService.createJwtToken(uuid, member.get().getNickname());
-
-        return new ResponseEntity<>(jwtToken, HttpStatus.OK);
-    }
-
-    @GetMapping("/jwt/decode/test/{token}")
-    @ApiIgnore
-    public ResponseEntity<?> decodeTest(@PathVariable String token) throws Exception {
-//        JwtResponse data = jwtValidationService.validateAccessToken(token);
-        Member member = jwtValidationService.findMemberByJWT(token);
-        JwtResponse jwtResponse = jwtValidationService.validateRefreshToken(token);
-
-        return new ResponseEntity<>(jwtResponse,  HttpStatus.OK);
-    }
-
-    @PostMapping("/upload")
-    public ResponseEntity<String> FileUploadController(@RequestHeader HttpHeaders headers, @RequestPart("file") MultipartFile file) throws Exception {
-        String accesstoken = headers.get("Authorization").get(0).replace("Bearer ", "");
-        Member member = jwtValidationService.findMemberByJWT(accesstoken);
-        String imgUrl = s3Service.uploadProfileImg(member.getUserUuid(), file);
-        return new ResponseEntity<>(imgUrl, HttpStatus.OK);
-    }
-
-    @GetMapping("/image/{fileName}")
-    @ApiIgnore
-    public ResponseEntity<?> FileUploadImage(@PathVariable String fileName) throws Exception {
-        String img = s3Service.findProfileImg(fileName);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 
 }

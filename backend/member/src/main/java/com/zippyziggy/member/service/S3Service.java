@@ -30,7 +30,7 @@ public class S3Service {
 
     public String uploadProfileImg(UUID userUuid, MultipartFile file) throws Exception {
         String fileName = file.getOriginalFilename();
-        String filepath = createFileName(fileName, userUuid);
+        String filepath = createS3FileName(fileName, userUuid);
 
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentType(file.getContentType());
@@ -45,7 +45,7 @@ public class S3Service {
 
 
     // 파일 이름 및 경로 설정
-    private String createFileName (String fileName, UUID userUuid) {
+    private String createS3FileName (String fileName, UUID userUuid) {
 
         UUID uuid = UUID.randomUUID();
         String newFileUrl = "image/" + userUuid + "/" + fileName + uuid;
@@ -53,8 +53,15 @@ public class S3Service {
     }
 
 
-    public String findProfileImg(String fileName) throws Exception {
-        String S3Url = "https://" + bucket + ".s3." + region + ".amazonaws.com/" + fileName;
-        return null;
+    public void deleteS3File(String fileName) throws Exception {
+        String filePath = fileName.replace("https://zippyziggytest.s3.ap-northeast-2.amazonaws.com/", "");
+        boolean isObjectExist = amazonS3Client.doesObjectExist(bucket, filePath);
+        System.out.println("isObjectExist = " + isObjectExist);
+        if (isObjectExist) {
+            System.out.println("여기 왔군");
+            System.out.println("filePath = " + filePath);
+            amazonS3Client.deleteObject(bucket, filePath);
+        }
+
     }
 }
