@@ -33,8 +33,9 @@ public class PromptComment {
 	private Long memberId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "prompt_id", nullable = false)
+	@JoinColumn(name = "prompt_uuid", nullable = false)
 	private Prompt prompt;
+
 
 	@Lob
 	@Column(nullable = false)
@@ -42,5 +43,16 @@ public class PromptComment {
 
 	@Column(nullable = false)
 	private LocalDateTime regDt;
+
+
+	private LocalDateTime updDt;
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public void setUpdDt(LocalDateTime updDt) {
+		this.updDt = updDt;
+	}
 
 }

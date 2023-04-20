@@ -43,7 +43,7 @@ public class Talk {
 	private Prompt prompt;
 
 	@Column(nullable = false)
-	private Long userId;
+	private Long memberId;
 
 	@Column(nullable = false, length = 255)
 	private String title;

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PromptRequest {
+public class PromptModifyRequest {
 
 	@NotNull
 	private String title;
@@ -19,8 +19,5 @@ public class PromptRequest {
 
 	@NotNull
 	private String category;
-
-	@NotNull
-	private MessageRequest message;
 
 }
