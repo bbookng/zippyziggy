@@ -53,7 +53,7 @@ public class MemberController {
      */
     @GetMapping("/auth/kakao/callback")
     @Transactional
-    @Operation(summary = "카카오 로그인", description = "기존 회원이면 로그인 성공(refreshToken은 쿠키, accessToken은 헤더에 담긴다), 아닐시 회원가입 요청(isMember : true)가 body에 포함된다")
+    @Operation(summary = "카카오 로그인", description = "기존 회원이면 로그인 성공(refreshToken은 쿠키, accessToken은 헤더에 담긴다), 아닐시 회원가입 요청(isSignUp : true)가 body에 포함된다")
     public ResponseEntity<?> kakaoCallback(String code) throws Exception {
         // kakao Token 가져오기(권한)
         String kakaoAccessToken = kakaoLoginService.kakaoGetToken(code);
@@ -65,16 +65,20 @@ public class MemberController {
         String platformId = kakaoUserInfo.getId();
         Member member = memberService.memberCheck(Platform.KAKAO, platformId);
 
+
         // DB에 해당 유저가 없다면 회원가입 진행, 없으면 로그인 진행
         // 회원가입을 위해서 일단 프런트로 회원 정보를 넘기고 회원가입 페이지로 넘어가게 해야 할 듯
         if (member == null || member.getActivate().equals(false)) {
             // 회원가입 요청 메세지
-            SocialSignUpResponseDto socialSignUpResponseDto = SocialSignUpResponseDto.builder()
+            SocialSignUpDataResponseDto socialSignUpDataResponseDto = SocialSignUpDataResponseDto.builder()
                     .name(kakaoUserInfo.getProperties().getNickname())
-                    .isMember(true)
                     .profileImg(kakaoUserInfo.getProperties().getProfile_image())
                     .platform(Platform.KAKAO)
-                    .platformId(kakaoUserInfo.getId())
+                    .platformId(kakaoUserInfo.getId()).build();
+
+            SocialSignUpResponseDto socialSignUpResponseDto = SocialSignUpResponseDto.builder()
+                    .isSignUp(true)
+                    .socialSignUpDataResponseDto(socialSignUpDataResponseDto)
                     .build();
 
             return new ResponseEntity<>(socialSignUpResponseDto, HttpStatus.OK);
@@ -90,10 +94,14 @@ public class MemberController {
 
         // refreshToken Cookie에 담기
         ResponseCookie responseCookie = ResponseCookie.from("refreshToken", jwtToken.getRefreshToken())
+                .path("/")
+                .domain("localhost")
                 .httpOnly(true)
 //                .secure(true) //https 설정 후 연결
                 .sameSite("Lax")
                 .build();
+
+
 
         // 로그인 시 최소한의 유저 정보 전달
         MemberInformResponseDto memberInformResponseDto = MemberInformResponseDto.builder()
@@ -127,12 +135,15 @@ public class MemberController {
         // 회원가입을 위해서 일단 프런트로 회원 정보를 넘기고 회원가입 페이지로 넘어가게 해야 할 듯
         if (member == null || member.getActivate().equals(false)) {
             // 회원가입 요청 메세지
-            SocialSignUpResponseDto socialSignUpResponseDto = SocialSignUpResponseDto.builder()
+            SocialSignUpDataResponseDto socialSignUpDataResponseDto = SocialSignUpDataResponseDto.builder()
                     .name(googleProfile.getName())
-                    .isMember(true)
                     .profileImg(googleProfile.getPicture())
                     .platform(Platform.GOOGLE)
-                    .platformId(googleProfile.getId())
+                    .platformId(googleProfile.getId()).build();
+
+            SocialSignUpResponseDto socialSignUpResponseDto = SocialSignUpResponseDto.builder()
+                    .isSignUp(true)
+                    .socialSignUpDataResponseDto(socialSignUpDataResponseDto)
                     .build();
 
             return new ResponseEntity<>(socialSignUpResponseDto, HttpStatus.OK);
@@ -149,6 +160,8 @@ public class MemberController {
 
         // refreshToken Cookie 생성(각종 보안 설정)
         ResponseCookie responseCookie = ResponseCookie.from("refreshToken", jwtToken.getRefreshToken())
+                .path("/")
+                .domain("localhost")
                 .httpOnly(true)
 //                .secure(true)
                 .sameSite("Lax")
@@ -195,8 +208,8 @@ public class MemberController {
     @Transactional
     @Operation(summary = "회원가입", description = "추후 사진 파일 업로드 적용 예정, 현재는 nickname, profileImg, name, platform, platformId 입력 필요" +
             "중복된 유저일 경우 400 상태 코드와 함께 문구가 반환된다.")
-    public ResponseEntity<?> memberSignUp(@RequestPart("user") MemberSignUpRequestDto memberSignUpRequestDto,
-                                               @RequestPart("file") MultipartFile file) throws Exception {
+    public ResponseEntity<?> memberSignUp(@RequestPart(value = "user", required = false) MemberSignUpRequestDto memberSignUpRequestDto,
+                                               @RequestPart(value = "file", required = false) MultipartFile file) throws Exception {
 
         try {
             JwtToken jwtToken = memberService.memberSignUp(memberSignUpRequestDto, file);
@@ -205,8 +218,11 @@ public class MemberController {
             headers.add("Authorization", jwtToken.getAccessToken());
 
             ResponseCookie responseCookie = ResponseCookie.from("refreshToken", jwtToken.getRefreshToken())
+                    .path("/")
+                    .domain("localhost")
                     .httpOnly(true)
-                    .secure(true)
+                    .sameSite("Lax")
+//                    .secure(true)
                     .build();
 
             Member member = jwtValidationService.findMemberByJWT(jwtToken.getAccessToken());
@@ -216,15 +232,19 @@ public class MemberController {
                     .profileImg(member.getProfileImg())
                     .userUuid(member.getUserUuid()).build();
 
+            MemberSignUpResponseDto memberSignUpResponseDto = MemberSignUpResponseDto.builder()
+                    .isSignUp(false)
+                    .memberInformResponseDto(memberInformResponseDto).build();
+
             return ResponseEntity.ok()
                     .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
                     .headers(headers)
-                    .body(memberInformResponseDto);
+                    .body(memberSignUpResponseDto);
 
         } catch (Exception e) {
 
             System.out.println("e = " + e);
-            return new ResponseEntity<>("이미 해당 유저가 존재합니다", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("회원가입 도중 오류가 발생했습니다 => " + e, HttpStatus.BAD_REQUEST);
         }
     }
 
