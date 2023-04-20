@@ -22,19 +22,19 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @Getter
-public class Temp {
+public class PromptTemp {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@Column(nullable = false)
-	private Long userId;
+	private Long memberId;
 
-	@Column(nullable = false, length = 255)
+	@Column(length = 255)
 	private String title;
 
-	@Column(nullable = false, length = 255)
+	@Column(length = 255)
 	private String description;
 
 	@Column(nullable = false)
@@ -61,5 +61,12 @@ public class Temp {
 
 	@Column(nullable = false, length = 128)
 	private String promptUuid;
+
+	@Column(nullable = false)
+	private Long originPromptId;
+
+	public void setOriginPromptId(Long originPromptId) {
+		this.originPromptId = originPromptId;
+	}
 
 }
