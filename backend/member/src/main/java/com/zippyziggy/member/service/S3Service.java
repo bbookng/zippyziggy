@@ -58,8 +58,6 @@ public class S3Service {
         boolean isObjectExist = amazonS3Client.doesObjectExist(bucket, filePath);
         System.out.println("isObjectExist = " + isObjectExist);
         if (isObjectExist) {
-            System.out.println("여기 왔군");
-            System.out.println("filePath = " + filePath);
             amazonS3Client.deleteObject(bucket, filePath);
         }
 

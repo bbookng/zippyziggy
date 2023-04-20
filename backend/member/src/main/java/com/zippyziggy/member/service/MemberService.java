@@ -46,31 +46,34 @@ public class MemberService {
      * 회원가입
      * 유저가 이미 존재한다면 에러 발생
      */
-    public JwtToken memberSignUp(MemberSignUpRequestDto dto, MultipartFile file) throws Exception {
+    public JwtToken memberSignUp(MemberSignUpRequestDto dto, MultipartFile file) {
 
+        try {
+            // 보내준 파일이 없을 경우 그냥 플랫폼에서 받은 프로필 이미지를 삽입
+            if (file == null || file.isEmpty()) {
+                UUID uuid = UUID.randomUUID();
 
-        // 보내준 파일이 없을 경우 그냥 플랫폼에서 받은 프로필 이미지를 삽입
-        if (file.isEmpty()) {
+                JwtToken jwtToken = signUpLogic(dto, uuid, dto.getProfileImg());
 
-            UUID uuid = UUID.randomUUID();
+                return jwtToken;
 
-            JwtToken jwtToken = signUpLogic(dto, uuid, dto.getProfileImg());
+            } else {
+                // 파일을 업로드해서 보내준 경우
 
-            return jwtToken;
+                UUID uuid = UUID.randomUUID();
 
-        } else {
+                String imgUrl = s3Service.uploadProfileImg(uuid, file);
 
-            // 파일을 업로드해서 보내준 경우
+                JwtToken jwtToken = signUpLogic(dto, uuid, imgUrl);
 
-            UUID uuid = UUID.randomUUID();
+                return jwtToken;
 
-            String imgUrl = s3Service.uploadProfileImg(uuid, file);
-
-            JwtToken jwtToken = signUpLogic(dto, uuid, imgUrl);
-
-            return jwtToken;
-
+            }
+        } catch (Exception e) {
+            System.out.println("e = " + e);
+            throw new NullPointerException();
         }
+
 
     }
 
