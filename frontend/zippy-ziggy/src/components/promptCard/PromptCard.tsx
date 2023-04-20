@@ -36,6 +36,7 @@ export default function PromptCard({ image, title, content, prompt }: PropsType)
   return (
     <Conatiner>
       <Image
+        priority
         src={`${image || prompt?.thumbnail || '/images/ChatGPT_logo.png'}`}
         width={100}
         height={160}
@@ -60,7 +61,7 @@ export default function PromptCard({ image, title, content, prompt }: PropsType)
       </Body>
       <Footer>
         <div className="user">
-          <Image src="/images/noProfile.png" alt="프사" width={30} height={30} />
+          <Image priority src="/images/noProfile.png" alt="프사" width={30} height={30} />
           <div className="nickname">닉네임</div>
         </div>
         <div className="extraBox">

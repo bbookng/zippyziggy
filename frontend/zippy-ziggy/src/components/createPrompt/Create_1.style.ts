@@ -1,81 +1,6 @@
 import styled from 'styled-components';
 import { media } from '@/styles/media';
 
-const ContainerTitle = styled.div`
-  display: flex;
-  padding: 1rem 10rem;
-  justify-content: center;
-  align-items: flex-end;
-
-  ${media.large`
-    padding: 1rem 2rem;
-  `}
-
-  ${media.small`
-    padding: 1rem 1rem;
-  `}
-`;
-
-const TitleWrapper = styled.div`
-  display: flex;
-  align-items: flex-end;
-  width: 45%;
-  /* max-width: 600px; */
-  margin-right: 2rem;
-
-  ${media.small`
-    width: 100%;
-    margin: 0;
-    justify-content: space-between;
-  `}
-
-  .title {
-    font-size: 1.75rem;
-    font-weight: var(--fonts-heading);
-  }
-
-  .help {
-    display: flex;
-    align-items: center;
-    color: var(--colors-link);
-    margin-left: 0.5rem;
-    font-weight: 500;
-    font-size: 0.75rem;
-
-    .icon {
-      margin-right: 0.2rem;
-    }
-  }
-`;
-
-const TitleInfoWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  width: 45%;
-  /* max-width: 600px; */
-
-  ${media.small`
-  display: none;
-  `}
-
-  .fork {
-    font-weight: var(--fonts-heading);
-    font-size: 15px;
-    margin-right: 0.5rem;
-  }
-  .forkName {
-    font-weight: 300;
-    font-size: 13px;
-    margin-right: 0.5rem;
-  }
-  .userName {
-    font-size: 10px;
-    font-weight: 300;
-    color: ${({ theme }) => theme.colors.blackColor30};
-  }
-`;
-
 const Container = styled.div`
   display: flex;
   padding: 1rem 10rem;
@@ -235,13 +160,4 @@ const Textarea = styled.textarea`
   `}
 `;
 
-export {
-  Container,
-  ContainerTitle,
-  TitleWrapper,
-  TitleInfoWrapper,
-  LeftContainer,
-  RightContainer,
-  Textarea,
-  SubContainer,
-};
+export { Container, LeftContainer, RightContainer, Textarea, SubContainer };

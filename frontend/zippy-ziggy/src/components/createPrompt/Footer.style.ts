@@ -26,6 +26,7 @@ const Footer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    box-shadow: none;
     /* margin-block: 1rem; */
 
     &:hover {
@@ -49,12 +50,4 @@ const Exit = styled.div`
   }
 `;
 
-const ButtonWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  .prev {
-    margin-right: 0.5rem;
-  }
-`;
-
-export { Footer, Exit, ButtonWrapper };
+export { Footer, Exit };

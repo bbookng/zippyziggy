@@ -71,7 +71,13 @@ export default function CreatePart1({ prompt1, prompt2, example, handleChange }:
             <div className="label">테스트 결과</div>
             <div className="sentenceBox">
               <div className="questionMark">
-                <Image src="/images/ChatGPT_logo.png" width={40} height={40} alt="GPT 사진" />
+                <Image
+                  priority
+                  src="/images/ChatGPT_logo.png"
+                  width={40}
+                  height={40}
+                  alt="GPT 사진"
+                />
               </div>
               <div className="text">Chat GPT 결과창 - 바꿔야됨!</div>
             </div>

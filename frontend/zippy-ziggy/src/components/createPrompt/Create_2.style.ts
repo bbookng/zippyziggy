@@ -31,6 +31,7 @@ const LeftContainer = styled.div`
 
   ${media.small`
     width: 100%;
+    max-width: 500px;
     margin: 0;
   `}
 
@@ -47,9 +48,14 @@ const LeftContainer = styled.div`
 const RightContainer = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
   width: 45%;
   margin-top: 1rem;
   /* max-width: 600px; */
+
+  .cardBox {
+    max-width: 500px;
+  }
 
   ${media.small`
     width: 100%;

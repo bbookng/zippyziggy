@@ -1,11 +1,7 @@
-import CreateFooter from '@/components/createPrompt/CreateFooter';
-import CreatePart1 from '@/components/createPrompt/CreatePrompt_1';
-import CreatePart2 from '@/components/createPrompt/CreatePrompt_2';
-import {
-  ContainerTitle,
-  TitleInfoWrapper,
-  TitleWrapper,
-} from '@/components/createPrompt/Create_1.style';
+import CreateFooter from '@/components/CreatePrompt/CreateFooter';
+import CreatePart1 from '@/components/CreatePrompt/CreatePrompt_1';
+import CreatePart2 from '@/components/CreatePrompt/CreatePrompt_2';
+import { ContainerTitle, TitleInfoWrapper, TitleWrapper } from '@/styles/prompt/Create.style';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { AiFillQuestionCircle } from 'react-icons/ai';
@@ -27,7 +23,7 @@ const initialState = {
 
 export default function PromptCreate() {
   // isForked 인지 확인하면 로직 짜기!!!!!!!
-  const isForked = true;
+  const isForked = false;
   const [isNext, setIsNext] = useState<boolean>(false);
   const [image, setImage] = useState<FileList | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
@@ -66,7 +62,7 @@ export default function PromptCreate() {
   return (
     <>
       <ContainerTitle>
-        <TitleWrapper>
+        <TitleWrapper isNext={isNext}>
           <div className="title">프롬프트 작성</div>
           <div className="help">
             <AiFillQuestionCircle className="icon" />
@@ -74,11 +70,15 @@ export default function PromptCreate() {
           </div>
         </TitleWrapper>
         {/* prompt.forkCnt > 0 으로 확인하도록 바꾸기!! */}
-        {isForked && (
+        {isForked ? (
           <TitleInfoWrapper>
             <div className="fork">포크</div>
             <div className="forkName">오행시 업그레이드</div>
             <div className="userName">작성자</div>
+          </TitleInfoWrapper>
+        ) : (
+          <TitleInfoWrapper>
+            <div className="userName">작성자 : 내 이름</div>
           </TitleInfoWrapper>
         )}
       </ContainerTitle>

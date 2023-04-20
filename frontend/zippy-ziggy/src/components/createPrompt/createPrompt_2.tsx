@@ -7,7 +7,7 @@ import {
   Wrapper,
   RightContainer,
 } from './Create_2.style';
-import PromptCard from '../promptCard/PromptCard';
+import PromptCard from '../PromptCard/PromptCard';
 
 interface PropsTypes {
   title: string | null;
@@ -85,7 +85,9 @@ export default function CreatePart2({
         </Wrapper>
       </LeftContainer>
       <RightContainer>
-        <PromptCard image={preview} title={title} content={content} />
+        <div className="cardBox">
+          <PromptCard image={preview} title={title} content={content} />
+        </div>
       </RightContainer>
     </Container>
   );
