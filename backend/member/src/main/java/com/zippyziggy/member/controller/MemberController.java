@@ -22,6 +22,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -54,7 +57,7 @@ public class MemberController {
     @GetMapping("/auth/kakao/callback")
     @Transactional
     @Operation(summary = "카카오 로그인", description = "기존 회원이면 로그인 성공(refreshToken은 쿠키, accessToken은 헤더에 담긴다), 아닐시 회원가입 요청(isSignUp : true)가 body에 포함된다")
-    public ResponseEntity<?> kakaoCallback(String code) throws Exception {
+    public ResponseEntity<?> kakaoCallback(String code, HttpServletRequest request, HttpServletResponse response) throws Exception {
         // kakao Token 가져오기(권한)
         String kakaoAccessToken = kakaoLoginService.kakaoGetToken(code);
 
@@ -91,16 +94,39 @@ public class MemberController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", jwtToken.getAccessToken());
+        headers.add("Access-Control-Expose-Headers", "Authorization");
+//        headers.add("Access-Control-Expose-Headers", "Set-Cookie");
 
         // refreshToken Cookie에 담기
-        ResponseCookie responseCookie = ResponseCookie.from("refreshToken", jwtToken.getRefreshToken())
-                .path("/")
-                .domain("localhost")
-                .httpOnly(true)
-//                .secure(true) //https 설정 후 연결
-                .sameSite("Lax")
-                .build();
+//        ResponseCookie responseCookie = ResponseCookie.from("refreshToken", jwtToken.getRefreshToken())
+//                .path("/")
+//                .domain("localhost")
+//                .httpOnly(true)
+////                .secure(true) //https 설정 후 연결
+//                .sameSite("Lax")
+//                .build();
 
+        // 기존 쿠키 제거
+        Cookie[] myCookies = request.getCookies();
+
+        for (int i = 0; i < myCookies.length; i++) {
+            System.out.println("myCookies = " + myCookies[i].getValue());
+            if (myCookies[i].getName().equals("refreshToken")) {
+                myCookies[i].setMaxAge(0);
+                response.addCookie(myCookies[i]);
+            }
+        }
+
+
+        // 쿠키 설정
+        Cookie cookie = new Cookie("refreshToken", jwtToken.getRefreshToken());
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setMaxAge(60 * 60 * 24 * 14);
+
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+        response.addCookie(cookie);
 
 
         // 로그인 시 최소한의 유저 정보 전달
@@ -110,7 +136,7 @@ public class MemberController {
                 .userUuid(member.getUserUuid()).build();
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
+//                .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
                 .headers(headers)
                 .body(memberInformResponseDto);
     }
@@ -121,7 +147,7 @@ public class MemberController {
     @GetMapping("/login/oauth2/code/google")
     @Transactional
     @Operation(summary = "구글 로그인", description = "기존 회원이면 로그인 성공(refreshToken은 쿠키, accessToken은 헤더에 담긴다), 아닐시 회원가입 요청(isMember : true)가 body에 포함된다")
-    public ResponseEntity<?> googleCallback(@RequestParam(value="code", required = false) String code) throws Exception {
+    public ResponseEntity<?> googleCallback(@RequestParam(value="code", required = false) String code, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         GoogleTokenResponseDto token = googleLoginService.googleGetToken(code);
 
@@ -157,15 +183,29 @@ public class MemberController {
         // AccessToken Header에 담기
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", jwtToken.getAccessToken());
+        headers.add("Access-Control-Expose-Headers", "Authorization");
 
-        // refreshToken Cookie 생성(각종 보안 설정)
-        ResponseCookie responseCookie = ResponseCookie.from("refreshToken", jwtToken.getRefreshToken())
-                .path("/")
-                .domain("localhost")
-                .httpOnly(true)
-//                .secure(true)
-                .sameSite("Lax")
-                .build();
+        // 기존 쿠키 제거
+        Cookie[] myCookies = request.getCookies();
+
+        for (int i = 0; i < myCookies.length; i++) {
+            System.out.println("myCookies = " + myCookies[i].getValue());
+            if (myCookies[i].getName().equals("refreshToken")) {
+                myCookies[i].setMaxAge(0);
+                response.addCookie(myCookies[i]);
+            }
+        }
+
+
+        // 쿠키 설정
+        Cookie cookie = new Cookie("refreshToken", jwtToken.getRefreshToken());
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setMaxAge(60 * 60 * 24 * 14);
+
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+        response.addCookie(cookie);
 
         // 로그인 시 최소한의 유저 정보 전달
         MemberInformResponseDto memberInformResponseDto = MemberInformResponseDto.builder()
@@ -174,7 +214,7 @@ public class MemberController {
                 .userUuid(member.getUserUuid()).build();
 
         return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
+//                .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
                 .headers(headers)
                 .body(memberInformResponseDto);
     }
@@ -185,7 +225,7 @@ public class MemberController {
     @PostMapping(value = "/logout", headers = "Authorization")
     @Transactional
     @Operation(summary = "로그아웃(Authorization 필요)", description = "refreshToken DB에서 제거, 유효하지 않은 토큰일 경우 에러 발생")
-    public ResponseEntity<?> logout(@RequestHeader HttpHeaders headers) throws Exception {
+    public ResponseEntity<?> logout(@RequestHeader HttpHeaders headers, HttpServletRequest request, HttpServletResponse response) throws Exception {
         String accessToken = headers.get("authorization").get(0).replace("Bearer ", "");
 
         // 해당 유저 refreshToken 제거
@@ -195,6 +235,17 @@ public class MemberController {
         // Kakao 계정도 함께 로그아웃 진행
         if (member.getPlatform().equals(Platform.KAKAO)) {
             kakaoLoginService.KakaoLogout();
+        }
+
+        // 기존 쿠키 제거
+        Cookie[] myCookies = request.getCookies();
+
+        for (int i = 0; i < myCookies.length; i++) {
+            System.out.println("myCookies = " + myCookies[i].getValue());
+            if (myCookies[i].getName().equals("refreshToken")) {
+                myCookies[i].setMaxAge(0);
+                response.addCookie(myCookies[i]);
+            }
         }
 
         return new ResponseEntity<>(HttpStatus.OK);
@@ -208,22 +259,45 @@ public class MemberController {
     @Transactional
     @Operation(summary = "회원가입", description = "추후 사진 파일 업로드 적용 예정, 현재는 nickname, profileImg, name, platform, platformId 입력 필요" +
             "중복된 유저일 경우 400 상태 코드와 함께 문구가 반환된다.")
-    public ResponseEntity<?> memberSignUp(@RequestPart(value = "user", required = false) MemberSignUpRequestDto memberSignUpRequestDto,
-                                               @RequestPart(value = "file", required = false) MultipartFile file) throws Exception {
+    public ResponseEntity<?> memberSignUp(@RequestPart(value = "user") MemberSignUpRequestDto memberSignUpRequestDto,
+                                          @RequestPart(value = "file", required = false) MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         try {
             JwtToken jwtToken = memberService.memberSignUp(memberSignUpRequestDto, file);
 
             HttpHeaders headers = new HttpHeaders();
             headers.add("Authorization", jwtToken.getAccessToken());
+            headers.add("Access-Control-Expose-Headers", "Authorization");
 
-            ResponseCookie responseCookie = ResponseCookie.from("refreshToken", jwtToken.getRefreshToken())
-                    .path("/")
-                    .domain("localhost")
-                    .httpOnly(true)
-                    .sameSite("Lax")
-//                    .secure(true)
-                    .build();
+//            ResponseCookie responseCookie = ResponseCookie.from("refreshToken", jwtToken.getRefreshToken())
+//                    .path("/")
+//                    .domain("localhost")
+//                    .httpOnly(true)
+//                    .sameSite("Lax")
+////                    .secure(true)
+//                    .build();
+
+            // 기존 쿠키 제거
+            Cookie[] myCookies = request.getCookies();
+
+            for (int i = 0; i < myCookies.length; i++) {
+                System.out.println("myCookies = " + myCookies[i].getValue());
+                if (myCookies[i].getName().equals("refreshToken")) {
+                    myCookies[i].setMaxAge(0);
+                    response.addCookie(myCookies[i]);
+                }
+            }
+
+
+            // 쿠키 설정
+            Cookie cookie = new Cookie("refreshToken", jwtToken.getRefreshToken());
+            cookie.setHttpOnly(true);
+            cookie.setSecure(true);
+            cookie.setMaxAge(60 * 60 * 24 * 14);
+
+            response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+            response.setHeader("Access-Control-Allow-Credentials", "true");
+            response.addCookie(cookie);
 
             Member member = jwtValidationService.findMemberByJWT(jwtToken.getAccessToken());
 
@@ -237,7 +311,7 @@ public class MemberController {
                     .memberInformResponseDto(memberInformResponseDto).build();
 
             return ResponseEntity.ok()
-                    .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
+//                    .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
                     .headers(headers)
                     .body(memberSignUpResponseDto);
 

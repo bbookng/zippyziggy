@@ -28,13 +28,13 @@ public class Member implements UserDetails {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false, length = 10)
+	@Column(nullable = false, length = 50)
 	private String nickname;
 
-	@Column(length = 255)
+	@Column(length = 500)
 	private String profileImg;
 
-	@Column(nullable = false, length = 255)
+	@Column(nullable = false, length = 50)
 	private String name;
 
 	@Column(nullable = false)

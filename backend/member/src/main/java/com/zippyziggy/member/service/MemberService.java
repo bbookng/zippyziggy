@@ -69,6 +69,8 @@ public class MemberService {
                 return jwtToken;
 
             }
+        } catch (NonUniqueResultException error) {
+          throw  new NonUniqueResultException("유저가 이미 존재합니다.");
         } catch (Exception e) {
             System.out.println("e = " + e);
             throw new NullPointerException();
@@ -84,10 +86,9 @@ public class MemberService {
 
         String nickname = dto.getNickname();
 
-        Optional<Member> checkMemberNickname = memberRepository.findByNicknameEquals(nickname);
         Member checkMemberPlatform = memberCheck(dto.getPlatform(), dto.getPlatformId());
 
-        if (checkMemberNickname.isEmpty() && checkMemberPlatform == null) {
+        if (checkMemberPlatform == null) {
             Member member = Member.builder()
                     .name(dto.getName())
                     .nickname(nickname)
