@@ -1,10 +1,10 @@
-console.log("inject");
 const ENDPOINT_CONVERSATION =
   "https://chat.openai.com/backend-api/conversation";
 
 const ZIPPY = (window.ZIPPYZIGGY = {
   fetch: (window._fetch = window._fetch || window.fetch),
   init() {
+    console.log("ZP init");
     this.replaceFetch();
   },
 
