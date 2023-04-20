@@ -1,0 +1,14 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "title": "HTML, CSS, 바닐라 Javascript 코드 생성",
+      "prompt": "full code of \"[PROMPT]\" in HTML, CSS and Javascript. [TARGET_LANGUAGE]"
+    },
+    {
+      "id": 2,
+      "title": "인스타그램 캐러셀 포스트 슬라이드",
+      "prompt": "Say exactly \"Code Highlights Instagram carousel post slide by slide  for [PROMPT]\".\nIn the next line say exactly \"To learn more about Code Highlights visit www.code-hl.com\".\n\nThe text above should not be included in the next text context, just write it on the beginning.\n\nNow add a separator here.\n\n\nWrite me an Instagram carousel topic idea example.\nWrite me also slide by slide with titles. Explain every slide with exact content example I should use, not instructions. Also, give me images for every slide that explain all the titles for \"일본 여행\". Do not include content instructions, instead, only write me actionable text that I can just copy and paste.\n\nAfter writing the carousel slides, add a separator at the end.\n\nNow write me the Instagram post description/caption in just a few sentences.\nFormat every new sentence with new lines so the text is more readable.\nInclude emojis and the best Instagram hashtags for that post.\nThe first caption sentence should hook the readers (spike their curiosity) and please do not start the sentence with \"Are you curious\".\n\nNow add a separator here.\n\nNow say \"If you liked this prompt please like it on the prompt search page so we know to keep enhancing it.\"\n\n[TARGET_LANGUAGE]"
+    }
+  ]
+}
