@@ -38,7 +38,6 @@ public class Member implements UserDetails {
 	private String name;
 
 	@Column(nullable = false)
-	@CreationTimestamp
 	private LocalDateTime regDt;
 
 	@Column(nullable = false, columnDefinition = "boolean default 1")

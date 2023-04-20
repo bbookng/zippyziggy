@@ -92,6 +92,7 @@ public class MemberService {
                     .platformId(dto.getPlatformId())
                     .profileImg(profileImg)
                     .userUuid(uuid)
+                    .regDt(LocalDateTime.now())
                     .build();
 
             memberRepository.save(member);
