@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { http } from '@/lib/http';
+import { http, httpAuth } from '@/lib/http';
+import { createSlice } from '@reduxjs/toolkit';
 
 function KakaoLoginRedirect() {
   const router = useRouter();
@@ -14,18 +15,16 @@ function KakaoLoginRedirect() {
         .get(`${process.env.NEXT_PUBLIC_APP_SERVER_URL}/members/auth/kakao/callback?code=${token}`)
         .then((res) => {
           const { data } = res;
-          const { name, platform, platformId, profileImg } = data;
-          console.log(data);
-          if (data?.isMember) {
-            router.push({
-              pathname: '/account/signup',
-              query: { name, platform, platformId, profileImg },
-            });
+
+          if (data?.isSignUp) {
+            const { name, platform, platformId, profileImg } = data?.socialSignUpDataResponseDto;
+            // router.push({
+            //   pathname: '/account/signup',
+            //   query: { name, platform, platformId, profileImg },
+            // });
           } else {
-            console.log(res);
-            console.log(res?.headers['Authorization']);
-            // originalRequest.headers.Authorization = accessToken;
-            // localStorage.setItem('accessToken', res.);
+            const accessToken = res?.headers?.authorization;
+            localStorage.setItem('accessToken', accessToken);
             router.push({
               pathname: '/',
             });
@@ -35,7 +34,6 @@ function KakaoLoginRedirect() {
           console.log(e);
         });
     }
-    // window.location.replace('/');
   }, [token]);
 
   return <>로그인중입니다</>;

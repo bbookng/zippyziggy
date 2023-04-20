@@ -6,7 +6,7 @@ import axios, {
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from 'axios';
-/* eslint-disable no-useless-concat */
+
 import logOnDev from './logging';
 // import URLS from '@/constants/url';
 

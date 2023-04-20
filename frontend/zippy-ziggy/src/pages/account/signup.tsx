@@ -66,7 +66,7 @@ export default function SignUp() {
     console.log(httpForm);
   };
 
-  const onClickLogin2 = (event) => {
+  const onClickSignup = (event) => {
     event.preventDefault();
     const formData = new FormData();
     const value = {
@@ -126,7 +126,7 @@ export default function SignUp() {
         )}
 
         <Button onClick={handleNickname}>중복 확인</Button>
-        {statusNickname === 'success' && <Button onClick={onClickLogin2}>회원가입</Button>}
+        {statusNickname === 'success' && <Button onClick={onClickSignup}>회원가입</Button>}
       </form>
     </div>
   );

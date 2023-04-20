@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+import { setupInterceptorsTo, tokenInterceptor } from '@/utils/interceptors';
 const serverUrl =
   process.env.NODE_ENV === 'production'
     ? process.env.NEXT_PUBLIC_APP_SERVER_URL
@@ -21,7 +21,7 @@ const httpApi = () => {
     withCredentials: true,
   });
 
-  return instance;
+  return setupInterceptorsTo(instance);
 };
 
 const httpAuthApi = () => {
@@ -39,7 +39,7 @@ const httpAuthApi = () => {
 
     withCredentials: true,
   });
-  return instance;
+  return tokenInterceptor(instance);
 };
 
 const httpFormApi = () => {
@@ -53,7 +53,7 @@ const httpFormApi = () => {
 
     withCredentials: true,
   });
-  return instance;
+  return setupInterceptorsTo(instance);
 };
 
 export const http = httpApi();
