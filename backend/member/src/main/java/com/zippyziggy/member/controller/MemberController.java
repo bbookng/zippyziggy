@@ -167,7 +167,7 @@ public class MemberController {
      */
     @PostMapping(value = "/logout", headers = "Authorization")
     @Transactional
-    @Operation(summary = "로그아웃", description = "refreshToken DB에서 제거, 유효하지 않은 토큰일 경우 에러 발생")
+    @Operation(summary = "로그아웃(Authorization 필요)", description = "refreshToken DB에서 제거, 유효하지 않은 토큰일 경우 에러 발생")
     public ResponseEntity<?> logout(@RequestHeader HttpHeaders headers) throws Exception {
         String accessToken = headers.get("authorization").get(0).replace("Bearer ", "");
 
@@ -226,7 +226,7 @@ public class MemberController {
      */
     @PutMapping(value = "", headers = "Authorization")
     @Transactional
-    @Operation(summary = "회원 탈퇴", description = "사용자의 activate를 0으로 변경")
+    @Operation(summary = "회원 탈퇴(Authorization 필요)", description = "사용자의 activate를 0으로 변경")
     public ResponseEntity<?> memberSignOut(@RequestHeader HttpHeaders headers) throws Exception {
         String accessToken = headers.get("authorization").get(0).replace("Bearer ", "");
         JwtResponse jwtResponse = jwtValidationService.validateAccessToken(accessToken);
@@ -254,7 +254,7 @@ public class MemberController {
      */
     @PostMapping(value = "/refresh/token", headers = "Authorization")
     @Transactional
-    @Operation(summary = "accessToken 재발급", description = "refreshToken을 header에 담아서 요청해야한다. " +
+    @Operation(summary = "accessToken 재발급(Authorization 필요)", description = "refreshToken을 header에 담아서 요청해야한다. " +
             "refreshToken의 유효성 검사 후 성공이면 accessToken을 재발급해서 헤더에 담아서 보낸다." +
             "만약 만료시간이 지나거나 잘못된 토큰일 경우에는 401에러와 함께 재로그인 문구가 반환된다.")
     public ResponseEntity<?> refreshToken(@RequestHeader HttpHeaders headers) throws Exception {
@@ -297,7 +297,7 @@ public class MemberController {
      * AccessToken으로 회원 조회하기
      */
     @GetMapping("/profile")
-    @Operation(summary = "AccessToken으로 내 정보 가져오기", description = "AccessToken을 헤더에 입력하고 요청하면 프로필 정보를 확인할 수 있다.")
+    @Operation(summary = "AccessToken으로 내 정보 가져오기(Authorization 필요)", description = "AccessToken을 헤더에 입력하고 요청하면 프로필 정보를 확인할 수 있다.")
     public ResponseEntity<MemberInformResponseDto> findProfile(@RequestHeader HttpHeaders headers) throws Exception {
         String accesstoken = headers.get("authorization").get(0).replace("Bearer ", "");
 
@@ -315,7 +315,7 @@ public class MemberController {
      */
     @PutMapping("/profile")
     @Transactional
-    @Operation(summary = "회원 정보 수정", description = "닉네임, 프로필 이미지를 변경한다.")
+    @Operation(summary = "회원 정보 수정(Authorization 필요)", description = "닉네임, 프로필 이미지를 변경한다.")
     public ResponseEntity<?> updateProfile(@RequestHeader HttpHeaders headers,
                                            @RequestPart("file") MultipartFile file,
                                            @RequestPart("nickname") String nickname) throws Exception {
@@ -371,10 +371,11 @@ public class MemberController {
     }
 
     @PostMapping("/upload")
-    @ApiIgnore
-    public ResponseEntity<String> FileUploadController(@RequestPart("file") MultipartFile file) throws Exception {
-        String img = s3Service.uploadProfileImg(file);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<String> FileUploadController(@RequestHeader HttpHeaders headers, @RequestPart("file") MultipartFile file) throws Exception {
+        String accesstoken = headers.get("Authorization").get(0).replace("Bearer ", "");
+        Member member = jwtValidationService.findMemberByJWT(accesstoken);
+        String imgUrl = s3Service.uploadProfileImg(member.getUserUuid(), file);
+        return new ResponseEntity<>(imgUrl, HttpStatus.OK);
     }
 
     @GetMapping("/image/{fileName}")
