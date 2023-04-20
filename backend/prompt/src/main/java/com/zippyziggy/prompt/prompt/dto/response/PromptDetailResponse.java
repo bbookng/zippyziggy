@@ -1,19 +1,25 @@
 package com.zippyziggy.prompt.prompt.dto.response;
 
+import org.springframework.lang.Nullable;
+import org.springframework.web.bind.annotation.DeleteMapping;
+
 import com.zippyziggy.prompt.prompt.model.Prompt;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 
 @Data
-@Getter
+@Getter @Setter
 @AllArgsConstructor
 @Builder
 public class PromptDetailResponse {
 
 	private WriterResponse writerResponse;
+
+	@Nullable
 	private OriginerResponse originerResponse;
 
 	private String title;
@@ -26,6 +32,7 @@ public class PromptDetailResponse {
 
 	private MessageResponse messageResponse;
 
+	// writer, originer 추가 필요
 	public static PromptDetailResponse from(Prompt prompt) {
 		MessageResponse message = new MessageResponse(prompt.getPrefix(), prompt.getExample(), prompt.getSuffix());
 

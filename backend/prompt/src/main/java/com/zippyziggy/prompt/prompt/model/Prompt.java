@@ -12,8 +12,6 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 
-import org.hibernate.annotations.ColumnDefault;
-
 import com.zippyziggy.prompt.talk.model.Talk;
 
 import lombok.AccessLevel;
@@ -75,5 +73,14 @@ public class Prompt {
 
 	@OneToMany(mappedBy = "prompt", cascade = CascadeType.ALL)
 	private List<Talk> talks;
+
+	private String originPromptUuid;
+
+	@Column(nullable = false, length = 10)
+	private Languages languages;
+
+	public void setOriginPromptUuid(String originPromptUuid) {
+		this.originPromptUuid = originPromptUuid;
+	}
 
 }
