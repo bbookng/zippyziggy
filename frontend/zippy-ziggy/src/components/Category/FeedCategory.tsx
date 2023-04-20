@@ -42,8 +42,13 @@ const Item = styled.div<Props>`
   `}
 `;
 
+type Category = {
+  name: string;
+  value: string | null;
+};
+
 interface PropsType {
-  categories: Array<Array<string>>;
+  categories: Category[];
   category: string;
   handleCategorySelect: (e: unknown) => void;
   props?: any;
@@ -57,7 +62,7 @@ export default function FeedCategory({
 }: PropsType) {
   return (
     <Container>
-      {categories.map(([name, value]) => {
+      {categories.map(({ name, value }) => {
         return (
           <Item
             key={value}

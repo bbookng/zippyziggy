@@ -46,7 +46,7 @@ export default function PromptCard({ image, title, content, prompt }: PropsType)
       <Body>
         <Title>
           <div className="title">{title || prompt?.title || '제목을 입력해주세요.'}</div>
-          {prompt?.forkCnt && <div className="caption">{prompt?.forkCnt}</div>}
+          {prompt?.forkCnt !== 0 && <div className="caption">{prompt?.forkCnt}</div>}
         </Title>
         <Content>{content || prompt?.content || '설명을 입력해주세요.'}</Content>
         <Infos>

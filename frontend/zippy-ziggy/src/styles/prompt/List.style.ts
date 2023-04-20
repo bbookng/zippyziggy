@@ -7,10 +7,10 @@ const Container = styled.div`
   align-items: center;
   justify-content: space-evenly;
   width: 100%;
-  padding: 4rem;
+  padding: 2rem 6rem;
 
   ${media.small`
-    padding: 0 2rem;
+    padding: 0 1rem;
   `}
 `;
 
@@ -53,7 +53,7 @@ const SortBox = styled.div`
     align-items: center;
     box-shadow: none;
     margin-left: 1rem;
-    padding: 0.5rem 0.75rem;
+    padding: 0.75rem 0.75rem;
   }
 
   .btn.btn1 {
@@ -73,16 +73,19 @@ const SortBox = styled.div`
 `;
 
 const CardList = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
+  margin-block: 1rem;
   width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 3fr);
+  grid-gap: 2rem;
+
+  ${media.large`
+    grid-template-columns: repeat(2, 4fr);
+  `}
+
+  ${media.small`
+    grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+  `}
 `;
 
-const CardBox = styled.div`
-  min-width: 320px;
-  width: 30%;
-  margin: 1rem 0;
-`;
-
-export { Container, SearchBox, TitleBox, Title, SortBox, CardList, CardBox };
+export { Container, SearchBox, TitleBox, Title, SortBox, CardList };
