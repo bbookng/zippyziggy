@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import PromptContainer from '@pages/content/components/PromptContainer';
 import usePromptListPortal from '@pages/content/hooks/usePromptContainerPortal';
 import { ZP_INPUT_WRAPPER_ID } from '@pages/constants';
+import InputWrapper from '@pages/content/components/InputWrapper';
 
 export default function App() {
   // const [shouldRender, setShouldRender] = useState(false);
@@ -26,7 +27,7 @@ export default function App() {
   return (
     <div>
       {portalContainer && createPortal(<PromptContainer />, portalContainer)}
-      {createPortal(<PromptContainer />, document.querySelector(`#${ZP_INPUT_WRAPPER_ID}`))}
+      {createPortal(<InputWrapper />, document.querySelector(`#${ZP_INPUT_WRAPPER_ID}`))}
     </div>
   );
 }
