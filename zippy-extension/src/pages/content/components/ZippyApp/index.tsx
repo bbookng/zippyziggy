@@ -1,5 +1,3 @@
-import { createRoot } from "react-dom/client";
-import App from "@pages/content/components/ZippyApp/ZippyApp";
 import refreshOnUpdate from "virtual:reload-on-update-in-view";
 import injectScript from "@pages/content/components/utils/injectScript";
 import {
@@ -7,6 +5,8 @@ import {
   ZP_PROMPT_CONTAINER_ID,
   ZP_ROOT_ID,
 } from "@pages/constants";
+import { createRoot } from "react-dom/client";
+import App from "@pages/content/components/ZippyApp/ZippyApp";
 
 refreshOnUpdate("pages/content");
 
@@ -14,15 +14,6 @@ const isChatGPT = window.location.href.includes(CHAT_GPT_URL);
 const isNewChatPage = !window.location.href.includes("/c/");
 
 // Define a function to append a button to the body
-const addRoot = async () => {
-  if (document.querySelector(`#${ZP_ROOT_ID}`)) return;
-  console.log("root 생성");
-  const root = document.createElement("div");
-  root.id = ZP_ROOT_ID;
-  const $target = document.querySelector("form").childNodes[0];
-  $target.appendChild(root);
-  createRoot(root).render(<App />);
-};
 
 const addPortal = () => {
   // 이미 프롬프트 container 가 있다면 얼리 리턴
@@ -40,8 +31,10 @@ const addPortal = () => {
     const $target = $parent.querySelector(":first-child .relative");
 
     // ChatGPT 글자 태그 안보이게 display none
-    const title = document.querySelector("h1.text-4xl") as HTMLElement;
-    title.style.display = "none";
+    const $title = document.querySelector("h1.text-4xl") as HTMLElement;
+    if ($title) {
+      $title.style.display = "none";
+    }
 
     $portal.style.position = "absolute";
     $portal.style.top = "0";
@@ -53,16 +46,11 @@ const addPortal = () => {
 // DOM 변경 감지를 위한 observer
 const observer = new MutationObserver((mutations) => {
   mutations.forEach(async (mutation: any) => {
-    if (isChatGPT && mutation.target.id !== ZP_ROOT_ID) {
-      await addRoot();
-    }
-
     if (
       (isNewChatPage &&
         mutation.target.className.includes("react-scroll-to-bottom--css")) ||
       mutation.target.id === "__next"
     ) {
-      console.log(1111);
       addPortal();
     }
   });
@@ -71,3 +59,15 @@ const observer = new MutationObserver((mutations) => {
 observer.observe(document.body, { subtree: true, childList: true });
 
 injectScript();
+
+const addRoot = async () => {
+  if (document.querySelector(`#${ZP_ROOT_ID}`)) return;
+  console.log("root 생성");
+  const root = document.createElement("div");
+  root.id = ZP_ROOT_ID;
+  const $target = document.querySelector("body > div:nth-child(4)");
+  $target.appendChild(root);
+  createRoot(root).render(<App />);
+};
+
+addRoot();

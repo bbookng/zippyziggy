@@ -6,6 +6,7 @@ const Test = () => {
   const [currentURL, setCurrentURL] = useState(window.location.href);
   const isNewChatPage = !currentURL.includes("/c/");
 
+  console.log("렌더");
   if (isNewChatPage) {
     return (
       <>

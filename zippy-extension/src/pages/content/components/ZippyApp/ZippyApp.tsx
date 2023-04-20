@@ -7,11 +7,15 @@ export default function App() {
   // DOM 변경 감지를 위한 observer
   const observer = new MutationObserver((mutations) => {
     mutations.forEach(async (mutation: any) => {
+      console.dir(mutation.target);
       if (
         mutation.target.className ===
         "px-2 py-10 relative w-full flex flex-col h-full"
       ) {
+        console.log("1231231");
+        console.log(showComponent);
         setShowComponent(true);
+        console.log(showComponent);
       }
     });
   });
