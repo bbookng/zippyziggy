@@ -91,6 +91,8 @@ public class MemberController {
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", jwtToken.getAccessToken());
+        headers.add("Access-Control-Expose-Headers", "Authorization");
+        headers.add("Access-Control-Expose-Headers", "Set-Cookie");
 
         // refreshToken Cookie에 담기
         ResponseCookie responseCookie = ResponseCookie.from("refreshToken", jwtToken.getRefreshToken())
@@ -157,6 +159,8 @@ public class MemberController {
         // AccessToken Header에 담기
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", jwtToken.getAccessToken());
+        headers.add("Access-Control-Expose-Headers", "Authorization");
+        headers.add("Access-Control-Expose-Headers", "Set-Cookie");
 
         // refreshToken Cookie 생성(각종 보안 설정)
         ResponseCookie responseCookie = ResponseCookie.from("refreshToken", jwtToken.getRefreshToken())
@@ -208,7 +212,7 @@ public class MemberController {
     @Transactional
     @Operation(summary = "회원가입", description = "추후 사진 파일 업로드 적용 예정, 현재는 nickname, profileImg, name, platform, platformId 입력 필요" +
             "중복된 유저일 경우 400 상태 코드와 함께 문구가 반환된다.")
-    public ResponseEntity<?> memberSignUp(@RequestPart(value = "user", required = false) MemberSignUpRequestDto memberSignUpRequestDto,
+    public ResponseEntity<?> memberSignUp(@RequestPart(value = "user") MemberSignUpRequestDto memberSignUpRequestDto,
                                                @RequestPart(value = "file", required = false) MultipartFile file) throws Exception {
 
         try {
@@ -216,6 +220,8 @@ public class MemberController {
 
             HttpHeaders headers = new HttpHeaders();
             headers.add("Authorization", jwtToken.getAccessToken());
+            headers.add("Access-Control-Expose-Headers", "Authorization");
+            headers.add("Access-Control-Expose-Headers", "Set-Cookie");
 
             ResponseCookie responseCookie = ResponseCookie.from("refreshToken", jwtToken.getRefreshToken())
                     .path("/")
