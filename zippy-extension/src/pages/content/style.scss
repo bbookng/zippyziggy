@@ -1,7 +1,28 @@
 @import "@assets/style/theme.scss";
 
 .content-view {
-  background-color: #61dafb;
+  background-color: red;
   padding: 1rem 2rem;
   border-radius: 0.5rem;
+}
+
+
+#zp-prompt-container-portals{
+  margin: 1.5rem 1rem 0 1rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  text-align: center;
+  gap: 0.625rem;
+  align-items: flex-start;
+  max-width: 100%;
+}
+
+.inner-container {
+  background-color: #61dafb;
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: 0.875rem;
+  min-width: 0;
 }

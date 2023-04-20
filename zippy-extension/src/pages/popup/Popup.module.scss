@@ -7,6 +7,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  color: #F5F6FA;
 
   .logo {
     width: 50%;
@@ -36,6 +37,11 @@
       transform: translate3d(0,-3px,0);
     }
   }
+}
+
+a {
+  text-decoration: none;
+  color: #F5F6FA;
 }
 
 
