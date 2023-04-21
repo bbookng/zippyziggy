@@ -22,3 +22,8 @@ spring:
 #    fetch-registry: true
 #    service-url:
 #      defaultZone: ${eureka_url:http://192.168.0.69:8761/eureka}
+
+
+elasticsearch:
+  property:
+    naming_strategy: org.springframework.data.elasticsearch.core.mapping.SimpleElasticsearchMappingContext$SnakeCasePropertyNamingStrategy
