@@ -1,8 +1,8 @@
 import React from 'react';
-import styles from './Popup.module.scss';
 import Logo from '@assets/img/logo.png';
 import Google from '@pages/popup/components/Button/Google';
 import Kakao from '@pages/popup/components/Button/Kakao';
+import styles from './Popup.module.scss';
 import packageJson from '../../../package.json';
 
 const Popup = () => {
@@ -10,9 +10,11 @@ const Popup = () => {
     <div className={styles.app}>
       <img className={styles.logo} src={Logo} alt="zippyziggy" />
       <div className={styles['link-wrapper']}>
+        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
         <a href="#">
           <p>웹사이트 둘러보기</p>
         </a>
+        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
         <a href="#">
           <p>ChatGPT에서 사용해보기</p>
         </a>
