@@ -1,7 +1,9 @@
 package com.zippyziggy.prompt.prompt.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -14,9 +16,13 @@ import com.zippyziggy.prompt.common.aws.AwsS3Uploader;
 import com.zippyziggy.prompt.prompt.dto.request.PromptRequest;
 import com.zippyziggy.prompt.prompt.dto.response.ForkPromptResponse;
 import com.zippyziggy.prompt.prompt.dto.response.ForkedPromptListResponse;
+import com.zippyziggy.prompt.prompt.dto.response.ForkedPromptResponse;
 import com.zippyziggy.prompt.prompt.model.Category;
+import com.zippyziggy.prompt.prompt.model.Languages;
 import com.zippyziggy.prompt.prompt.model.Prompt;
+import com.zippyziggy.prompt.prompt.repository.PromptCommentRepository;
 import com.zippyziggy.prompt.prompt.repository.PromptRepository;
+import com.zippyziggy.prompt.talk.repository.TalkRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -27,8 +33,10 @@ public class ForkPromptService {
 
 	private final AwsS3Uploader awsS3Uploader;
 	private final PromptRepository promptRepository;
+	private final PromptCommentRepository promptCommentRepository;
+	private final TalkRepository talkRepository;
 
-	public ForkPromptResponse createForkPrompt(String promptUuid, PromptRequest data, MultipartFile thumbnail) {
+	public ForkPromptResponse createForkPrompt(UUID promptUuid, PromptRequest data, MultipartFile thumbnail) {
 
 		String thumbnailUrl = awsS3Uploader.upload(thumbnail, "thumbnails");
 
@@ -46,8 +54,11 @@ public class ForkPromptService {
 			.prefix(data.getMessage().getPrefix())
 			.example(data.getMessage().getExample())
 			.suffix(data.getMessage().getSuffix())
-			.promptUuid(UUID.randomUUID().toString())
+			.hit(0)
+			.likeCnt(0L)
+			.promptUuid(UUID.randomUUID())
 			.thumbnail(thumbnailUrl)
+			.languages(Languages.KOREAN)
 			.build();
 
 		promptRepository.save(prompt);
@@ -56,8 +67,32 @@ public class ForkPromptService {
 		return ForkPromptResponse.from(prompt);
 	}
 
-	public ForkedPromptListResponse getForkedPromptList(String promptUuid, Pageable pageable) {
+	public ForkedPromptListResponse getForkedPromptList(UUID promptUuid, Pageable pageable) {
+
 		Page<Prompt> forkedPrompts = promptRepository.findAllByOriginPromptUuid(promptUuid, pageable);
-		return ForkedPromptListResponse.from(forkedPrompts);
+
+		// fork 프롬프트들 카드 정보 가져오는 메서드
+		List<ForkedPromptResponse> prompts = getForkedPromptResponses(forkedPrompts);
+
+		return new ForkedPromptListResponse(prompts.size(), prompts);
 	}
+
+	private List<ForkedPromptResponse> getForkedPromptResponses(Page<Prompt> forkedPrompts) {
+		List<ForkedPromptResponse> promptDtoList = forkedPrompts.stream().map(prompt -> {
+
+			// 댓글, 포크 프롬프트의 포크 수, 대화 수 가져오기
+			long commentCnt = promptCommentRepository.findAllByPromptPromptUuid(prompt.getPromptUuid()).size();
+			long forkCnt = promptRepository.findAllByOriginPromptUuid(prompt.getPromptUuid()).size();
+			long talkCnt = talkRepository.findAllByPromptPromptUuid(prompt.getPromptUuid()).size();
+
+			// DTO 로 변환
+			ForkedPromptResponse promptDto = ForkedPromptResponse.from(prompt, commentCnt, forkCnt, talkCnt);
+
+			return promptDto;
+
+		}).collect(Collectors.toList());
+
+		return promptDtoList;
+	}
+
 }

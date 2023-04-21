@@ -1,12 +1,12 @@
 package com.zippyziggy.prompt.prompt.dto.response;
 
+import java.util.UUID;
+
 import com.zippyziggy.prompt.prompt.model.Prompt;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
-import lombok.Setter;
 
 @Data
 @Getter
@@ -18,8 +18,8 @@ public class ForkPromptResponse {
 	private String thumbnail;
 	private String category;
 	private MessageResponse message;
-	private String originalUuid;
-	private String promptUuid;
+	private UUID originalUuid;
+	private UUID promptUuid;
 
 	public static ForkPromptResponse from(Prompt prompt) {
 		MessageResponse message = new MessageResponse(prompt.getPrefix(), prompt.getExample(),

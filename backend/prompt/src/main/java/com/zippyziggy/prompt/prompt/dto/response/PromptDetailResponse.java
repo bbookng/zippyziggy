@@ -1,6 +1,5 @@
 package com.zippyziggy.prompt.prompt.dto.response;
 
-import java.time.Instant;
 import java.time.ZoneId;
 import org.springframework.lang.Nullable;
 import com.zippyziggy.prompt.prompt.model.Prompt;
@@ -29,16 +28,16 @@ public class PromptDetailResponse {
 	private Boolean isLiked;
 	private Boolean isBookmarked;
 	private String category;
-	private Instant regDt;
-	private Instant updDt;
+	private long regDt;
+	private long updDt;
 
 	private MessageResponse messageResponse;
 
 	// writer, originer 추가 필요
 	public static PromptDetailResponse from(Prompt prompt) {
 		MessageResponse message = new MessageResponse(prompt.getPrefix(), prompt.getExample(), prompt.getSuffix());
-		Instant regDt = prompt.getRegDt().atZone(ZoneId.systemDefault()).toInstant();
-		Instant updDt = prompt.getRegDt().atZone(ZoneId.systemDefault()).toInstant();
+		long regDt = prompt.getRegDt().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
+		long updDt = prompt.getRegDt().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
 
 		PromptDetailResponse response = PromptDetailResponse.builder()
 			.messageResponse(message)

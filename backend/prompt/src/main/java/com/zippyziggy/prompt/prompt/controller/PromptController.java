@@ -1,5 +1,7 @@
 package com.zippyziggy.prompt.prompt.controller;
 
+import java.util.UUID;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -40,7 +42,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/prompts")
 @RequiredArgsConstructor
-@Api(tags = {"프롬프트"})
+@Api(tags = {"프롬프트 API"})
 public class PromptController {
 
 	private final PromptService promptService;
@@ -66,7 +68,7 @@ public class PromptController {
 		@ApiResponse(code = 400, message = "잘못된 요청"),
 		@ApiResponse(code = 500, message = "서버 에러")
 	})
-	public ResponseEntity<PromptResponse> modifyPrompt(@PathVariable String promptUuid,
+	public ResponseEntity<PromptResponse> modifyPrompt(@PathVariable UUID promptUuid,
 		@RequestPart PromptRequest data,
 		@RequestPart MultipartFile thumbnail) {
 		PromptResponse prompt = promptService.modifyPrompt(promptUuid, data, thumbnail);
@@ -92,7 +94,7 @@ public class PromptController {
 		@ApiResponse(code = 400, message = "잘못된 요청"),
 		@ApiResponse(code = 500, message = "서버 에러")
 	})
-	public ResponseEntity<PromptDetailResponse> getPromptDetail(@PathVariable String promptUuid,
+	public ResponseEntity<PromptDetailResponse> getPromptDetail(@PathVariable UUID promptUuid,
 		HttpServletRequest request,
 		HttpServletResponse response) {
 		promptService.updateHit(promptUuid, request, response);
@@ -107,7 +109,7 @@ public class PromptController {
 		@ApiResponse(code = 400, message = "잘못된 요청"),
 		@ApiResponse(code = 500, message = "서버 에러")
 	})
-	public ResponseEntity<?> removePrompt(@PathVariable String promptUuid) {
+	public ResponseEntity<?> removePrompt(@PathVariable UUID promptUuid) {
 		promptService.removePrompt(promptUuid);
 		return ResponseEntity.ok("삭제 완료");
 	}
@@ -119,7 +121,7 @@ public class PromptController {
 		@ApiResponse(code = 400, message = "잘못된 요청"),
 		@ApiResponse(code = 500, message = "서버 에러")
 	})
-	public ResponseEntity<ForkPromptResponse> createForkPrompt(@PathVariable String promptUuid,
+	public ResponseEntity<ForkPromptResponse> createForkPrompt(@PathVariable UUID promptUuid,
 		@RequestPart PromptRequest data,
 		@RequestPart MultipartFile thumbnail) {
 		ForkPromptResponse forkPrompt = forkPromptService.createForkPrompt(promptUuid, data, thumbnail);
@@ -133,7 +135,7 @@ public class PromptController {
 		@ApiResponse(code = 400, message = "잘못된 요청"),
 		@ApiResponse(code = 500, message = "서버 에러")
 	})
-	public ResponseEntity<ForkedPromptListResponse> getForkedPrompt(@PathVariable String promptUuid, Pageable pageable) {
+	public ResponseEntity<ForkedPromptListResponse> getForkedPrompt(@PathVariable UUID promptUuid, Pageable pageable) {
 		ForkedPromptListResponse forkedPromptList = forkPromptService.getForkedPromptList(promptUuid, pageable);
 		return ResponseEntity.ok(forkedPromptList);
 	}
@@ -145,7 +147,7 @@ public class PromptController {
 		@ApiResponse(code = 400, message = "잘못된 요청"),
 		@ApiResponse(code = 500, message = "서버 에러")
 	})
-	public ResponseEntity<PromptCommentListResponse> getPromptComments(@PathVariable String promptUuid,
+	public ResponseEntity<PromptCommentListResponse> getPromptComments(@PathVariable UUID promptUuid,
 		@PageableDefault(size = 8, sort = "id",  direction = Sort.Direction.DESC)
 		Pageable pageable) {
 		PromptCommentListResponse promptCommentList = promptCommentService.getPromptCommentList(promptUuid, pageable);
@@ -159,7 +161,7 @@ public class PromptController {
 		@ApiResponse(code = 400, message = "잘못된 요청"),
 		@ApiResponse(code = 500, message = "서버 에러")
 	})
-	public ResponseEntity<PromptCommentResponse> createPromptComment(@PathVariable String promptUuid, @RequestBody PromptCommentRequest data) {
+	public ResponseEntity<PromptCommentResponse> createPromptComment(@PathVariable UUID promptUuid, @RequestBody PromptCommentRequest data) {
 		PromptCommentResponse promptComment = promptCommentService.createPromptComment(promptUuid, data);
 		return ResponseEntity.ok(promptComment);
 	}

@@ -1,6 +1,5 @@
 package com.zippyziggy.prompt.prompt.dto.response;
 
-import java.time.Instant;
 import java.time.ZoneId;
 
 import com.zippyziggy.prompt.prompt.model.PromptComment;
@@ -18,8 +17,8 @@ import lombok.Setter;
 public class PromptCommentResponse {
 
 	private CommentWriter member;
-	private Instant regDt;
-	private Instant updDt;
+	private long regDt;
+	private long updDt;
 	private String content;
 
 
@@ -35,8 +34,8 @@ public class PromptCommentResponse {
 	// member 관련 추가 필요
 	public static PromptCommentResponse from(PromptComment comment) {
 
-		Instant regDt = comment.getRegDt().atZone(ZoneId.systemDefault()).toInstant();
-		Instant updDt = comment.getRegDt().atZone(ZoneId.systemDefault()).toInstant();
+		long regDt = comment.getRegDt().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
+		long updDt = comment.getRegDt().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
 
 		PromptCommentResponse response = PromptCommentResponse.builder()
 			.regDt(regDt)

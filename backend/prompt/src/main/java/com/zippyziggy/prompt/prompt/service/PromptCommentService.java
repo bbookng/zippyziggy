@@ -1,7 +1,7 @@
 package com.zippyziggy.prompt.prompt.service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.UUID;
 
 import javax.transaction.Transactional;
 
@@ -29,24 +29,30 @@ public class PromptCommentService {
 	private final PromptCommentRepository promptCommentRepository;
 	private final PromptRepository promptRepository;
 
-	public PromptCommentListResponse getPromptCommentList(String promptUuid, Pageable pageable) {
-		Page<PromptComment> commentList = promptCommentRepository.findAllByPromptUuid(promptUuid, pageable);
+	public PromptCommentListResponse getPromptCommentList(UUID promptUuid, Pageable pageable) {
+		Page<PromptComment> commentList = promptCommentRepository.findAllByPromptPromptUuid(promptUuid, pageable);
 		return PromptCommentListResponse.from(commentList);
 	}
 
-	public PromptCommentResponse createPromptComment(String promptUuid, PromptCommentRequest data) {
+	public PromptCommentResponse createPromptComment(UUID promptUuid, PromptCommentRequest data) {
 		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
 
 		// 댓글 작성자 추가 필요
 		PromptComment promptComment = PromptComment.builder()
+			.memberId(1L)
 			.prompt(prompt)
 			.regDt(LocalDateTime.now())
 			.content(data.getContent())
 			.build();
 
+		promptCommentRepository.save(promptComment);
+
 		return PromptCommentResponse.from(promptComment);
 	}
 
+	/*
+	본인 댓글인지 확인하고 수정
+	 */
 	public PromptCommentResponse modifyPromptComment(Long commentId, PromptCommentRequest data) {
 		PromptComment comment = promptCommentRepository.findById(commentId)
 			.orElseThrow(PromptCommentNotFoundException::new);
@@ -55,6 +61,9 @@ public class PromptCommentService {
 		return PromptCommentResponse.from(comment);
 	}
 
+	/*
+	본인 댓글인지 확인하고 삭제
+	 */
 	public void removePromptComment(Long commentId) {
 		PromptComment comment = promptCommentRepository.findById(commentId)
 			.orElseThrow(PromptCommentNotFoundException::new);

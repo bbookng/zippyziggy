@@ -53,28 +53,29 @@ public class PromptService{
 			.prefix(data.getMessage().getPrefix())
 			.example(data.getMessage().getExample())
 			.suffix(data.getMessage().getSuffix())
-			.promptUuid(UUID.randomUUID().toString())
+			.promptUuid(UUID.randomUUID())
 			.languages(Languages.KOREAN)
 			.hit(0)
+			.likeCnt(0L)
 			.thumbnail(thumbnailUrl)
 			.build();
 
 		promptRepository.save(prompt);
-		prompt.setOriginPromptUuid(prompt.getPromptUuid());
 
 		return PromptResponse.from(prompt);
 	}
 
 	/*
 	수정 로직 작성 해야 함 !!!!!!!!
+	본인 댓글인지 확인 필요
 	 */
-	public PromptResponse modifyPrompt(String promptUuid, PromptRequest data, MultipartFile thumbnail) {
+	public PromptResponse modifyPrompt(UUID promptUuid, PromptRequest data, MultipartFile thumbnail) {
 		return null;
 	}
 
-	public int updateHit(String promptUuid, HttpServletRequest request, HttpServletResponse response) {
+	public int updateHit(UUID promptUuid, HttpServletRequest request, HttpServletResponse response) {
 
-		Long promptId = promptRepository.findIdByPromptUuid(promptUuid);
+		Long promptId = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new).getId();
 		Cookie[] cookies = request.getCookies();
 		boolean checkCookie = false;
 		int result = 0;
@@ -121,7 +122,7 @@ public class PromptService{
 	/*
 	member 연결되면 작성해야함
 	 */
-	public PromptDetailResponse getPromptDetail(String promptUuid) {
+	public PromptDetailResponse getPromptDetail(UUID promptUuid) {
 		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
 		PromptDetailResponse from = PromptDetailResponse.from(prompt);
 
@@ -133,7 +134,11 @@ public class PromptService{
 		return from;
 	}
 
-	public void removePrompt(String promptUuid) {
+	/*
+	본인이 작성한 프롬프트인지 확인 필요
+	 */
+
+	public void removePrompt(UUID promptUuid) {
 		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
 		awsS3Uploader.delete("thumbnails/" , prompt.getThumbnail());
 		promptRepository.delete(prompt);

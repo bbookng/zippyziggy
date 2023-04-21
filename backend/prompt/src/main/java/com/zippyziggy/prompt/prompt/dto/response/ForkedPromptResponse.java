@@ -1,6 +1,5 @@
 package com.zippyziggy.prompt.prompt.dto.response;
 
-import java.time.Instant;
 import java.time.ZoneId;
 import java.util.List;
 
@@ -30,16 +29,16 @@ public class ForkedPromptResponse {
 	private Long talkCnt;
 	private List<String> forkMemberImg;
 
-	private Instant regDt;
-	private Instant updDt;
+	private long regDt;
+	private long updDt;
 
 	// member 연결되면 추가
 	private Boolean isBookmarked;
 
-	public static ForkedPromptResponse from(Prompt prompt) {
+	public static ForkedPromptResponse from(Prompt prompt, Long commentCnt, Long forkCnt, Long talkCnt) {
 
-		Instant regDt = prompt.getRegDt().atZone(ZoneId.systemDefault()).toInstant();
-		Instant updDt = prompt.getRegDt().atZone(ZoneId.systemDefault()).toInstant();
+		long regDt = prompt.getRegDt().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
+		long updDt = prompt.getRegDt().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
 
 		ForkedPromptResponse response = ForkedPromptResponse.builder()
 			.thumbnail(prompt.getThumbnail())
@@ -48,6 +47,9 @@ public class ForkedPromptResponse {
 			.likeCnt(prompt.getLikeCnt())
 			.regDt(regDt)
 			.updDt(updDt)
+			.commentCnt(commentCnt)
+			.forkCnt(forkCnt)
+			.talkCnt(talkCnt)
 			.build();
 
 		return response;
