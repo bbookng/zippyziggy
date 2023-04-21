@@ -10,13 +10,44 @@ const Footer = styled.div`
   align-items: center;
   padding-inline: 6rem;
   height: 4.25rem;
-  background-color: ${({ theme }) => theme.colors.whiteColor100};
+  background-color: ${({ theme }) => theme.colors.navColor};
+  box-shadow: ${({ theme }) => theme.shadows.boxUpperShadowLarge};
 
   ${media.small`
-    padding-inline: 1.5rem;
+    padding-inline: 1rem;
   `}
+
+  .testBtn {
+    font-weight: var(--fonts-heading);
+    background-color: ${({ theme }) => theme.colors.navColor};
+    color: ${({ theme }) => theme.colors.blackColor90};
+    /* color: black; */
+    border-radius: var(--borders-radius-base);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: none;
+    /* margin-block: 1rem; */
+
+    &:hover {
+      background-color: var(--colors-primary-30);
+    }
+
+    .text {
+      margin-left: 0.25rem;
+    }
+  }
 `;
 
-// const;
+const Exit = styled.div`
+  font-weight: var(--fonts-heading);
+  display: flex;
+  align-items: center;
+  cursor: pointer;
 
-export { Footer };
+  .text {
+    margin-left: 0.25rem;
+  }
+`;
+
+export { Footer, Exit };

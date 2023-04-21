@@ -48,6 +48,7 @@ const Navbar = ({ toggleTheme }) => {
         <Logo>
           {isDark ? (
             <Image
+              priority
               src="/images/Logo_dark.png"
               alt="로고주세요"
               width={200}
@@ -57,6 +58,7 @@ const Navbar = ({ toggleTheme }) => {
             />
           ) : (
             <Image
+              priority
               src="/images/Logo_white.png"
               alt="로고주세요"
               width={200}
@@ -97,6 +99,7 @@ const Navbar = ({ toggleTheme }) => {
         <FaRegBell className="item" />
         <Link href={{ pathname: '/account/login' }}>
           <Image
+            priority
             src="/images/noProfile.png"
             alt="프사"
             width={30}

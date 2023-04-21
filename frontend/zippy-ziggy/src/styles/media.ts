@@ -3,7 +3,7 @@ import { css, CSSObject, SimpleInterpolation } from 'styled-components';
 type DeviceType = 'small' | 'large';
 
 const sizes: Record<DeviceType, number> = {
-  small: 768,
+  small: 1024,
   large: 1440,
 };
 

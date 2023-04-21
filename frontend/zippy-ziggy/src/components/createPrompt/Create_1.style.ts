@@ -1,83 +1,9 @@
 import styled from 'styled-components';
 import { media } from '@/styles/media';
 
-const ContainerTitle = styled.div`
-  display: flex;
-  padding: 1rem 6rem;
-  justify-content: center;
-  align-items: flex-end;
-
-  ${media.large`
-    padding: 1rem 2rem;
-  `}
-
-  ${media.small`
-    padding: 1rem 1rem;
-  `}
-`;
-
-const TitleWrapper = styled.div`
-  display: flex;
-  align-items: flex-end;
-  width: 45%;
-  /* max-width: 600px; */
-  margin-right: 2rem;
-
-  ${media.small`
-    width: 100%;
-    margin: 0;
-  `}
-
-  .title {
-    font-size: 1.75rem;
-    font-weight: var(--fonts-heading);
-  }
-
-  .help {
-    display: flex;
-    align-items: center;
-    color: var(--colors-link);
-    margin-left: 0.5rem;
-    font-weight: 500;
-    font-size: 0.75rem;
-
-    .icon {
-      margin-right: 0.2rem;
-    }
-  }
-`;
-
-const TitleInfoWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  width: 45%;
-  /* max-width: 600px; */
-
-  ${media.small`
-  display: none;
-  `}
-
-  .fork {
-    font-weight: var(--fonts-heading);
-    font-size: 15px;
-    margin-right: 0.5rem;
-  }
-  .forkName {
-    font-weight: 300;
-    font-size: 13px;
-    margin-right: 0.5rem;
-  }
-  .userName {
-    font-size: 10px;
-    font-weight: 300;
-    color: ${({ theme }) => theme.colors.blackColor30};
-  }
-`;
-
 const Container = styled.div`
   display: flex;
-  padding: 1rem 6rem;
+  padding: 1rem 10rem;
   justify-content: center;
   flex-wrap: wrap;
 
@@ -100,6 +26,8 @@ const LeftContainer = styled.div`
   border-radius: var(--borders-radius-base);
   margin-top: 1rem;
   margin-right: 2rem;
+  box-shadow: ${({ theme }) => theme.shadows.boxShadowLarge};
+  background-color: ${({ theme }) => theme.colors.whiteColor80};
 
   ${media.small`
     width: 100%;
@@ -108,12 +36,18 @@ const LeftContainer = styled.div`
 
   .row {
     padding-inline: 1.5rem;
-    background-color: ${({ theme }) => theme.isDark && theme.colors.whiteColor90};
+    /* background-color: ${({ theme }) => theme.colors.whiteColor80}; */
+    .row-1 {
+      border-radius: 8px 8px 0 0;
+    }
+    .row-2 {
+      border-radius: 0 0 8px 8px;
+    }
   }
 
   .question {
     display: flex;
-    background-color: ${({ theme }) => theme.isDark && theme.colors.whiteColor90};
+    /* background-color: ${({ theme }) => theme.colors.whiteColor80}; */
 
     .colorBlock {
       width: 0.25rem;
@@ -121,7 +55,7 @@ const LeftContainer = styled.div`
     }
 
     .questionBox {
-      background-color: var(--colors-primary-05);
+      background-color: var(--colors-primary-10);
       padding: 0 1.25rem;
       width: 100%;
     }
@@ -137,10 +71,11 @@ const RightContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 45%;
+  height: fit-content;
   /* max-width: 600px; */
 
   ${media.small`
-    width: 100%;
+  width: 100%;
   `}
 `;
 
@@ -150,11 +85,14 @@ const SubContainer = styled.div`
   background-color: white;
   height: fit-content;
   border-radius: var(--borders-radius-base);
+  /* background-color: ${({ theme }) => theme.colors.whiteColor80}; */
   margin-top: 1rem;
+  box-shadow: ${({ theme }) => theme.shadows.boxShadowLarge};
+  background-color: ${({ theme }) => theme.colors.whiteColor80};
 
   .row {
     padding-inline: 1.5rem;
-    background-color: ${({ theme }) => theme.isDark && theme.colors.whiteColor90};
+    /* background-color: ${({ theme }) => theme.colors.whiteColor80}; */
   }
 
   .label {
@@ -185,6 +123,27 @@ const SubContainer = styled.div`
       padding-left: 0.5rem;
     }
   }
+
+  .testBtn {
+    height: 2rem;
+    font-size: 0.8rem;
+    font-weight: var(--fonts-heading);
+    background-color: var(--colors-primary-10);
+    color: ${({ theme }) => theme.colors.blackColor90};
+    /* border-radius: var(--borders-radius-base); */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-block: 1rem;
+
+    &:hover {
+      background-color: var(--colors-primary-30);
+    }
+
+    .text {
+      margin-left: 0.25rem;
+    }
+  }
 `;
 
 const Textarea = styled.textarea`
@@ -201,29 +160,4 @@ const Textarea = styled.textarea`
   `}
 `;
 
-const Button = styled.button`
-  width: 100%;
-  height: 2rem;
-  font-size: 0.8rem;
-  font-weight: var(--fonts-heading);
-  background-color: var(--colors-primary-10);
-  padding: 0 auto;
-  border-radius: var(--borders-radius-base);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-block: 1rem;
-  box-shadow: none;
-`;
-
-export {
-  Container,
-  ContainerTitle,
-  TitleWrapper,
-  TitleInfoWrapper,
-  LeftContainer,
-  RightContainer,
-  Textarea,
-  SubContainer,
-  Button,
-};
+export { Container, LeftContainer, RightContainer, Textarea, SubContainer };
