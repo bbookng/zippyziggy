@@ -7,6 +7,7 @@ import normalize from 'styled-normalize';
 import '@/styles/index.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import AppLayout from '@/layout/AppLayout';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 export const GlobalStyle = createGlobalStyle`
   ${normalize}
@@ -67,6 +68,7 @@ export default function App({ Component, pageProps }: AppProps) {
           <Component {...pageProps} />
         </AppLayout>
       </ThemeProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
 }

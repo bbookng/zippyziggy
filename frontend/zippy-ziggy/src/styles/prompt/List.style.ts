@@ -10,7 +10,7 @@ const Container = styled.div`
   padding: 2rem 6rem;
 
   ${media.small`
-    padding: 0 1rem;
+    padding: 1rem 1rem;
   `}
 `;
 
@@ -27,6 +27,10 @@ const TitleBox = styled.div`
   align-items: center;
   width: 100%;
   margin-top: 3rem;
+
+  ${media.small`
+    margin-top: 1rem;
+  `}
 `;
 
 const Title = styled.div`
@@ -65,9 +69,11 @@ const SortBox = styled.div`
     display: none;
     ${media.small`
       display: flex;
-      width: 2rem;
+      align-items: center;
+      width: 2.5rem;
       aspect-ratio: calc(1);
       font-size: 1.5rem;
+      padding: 0.5rem 0.5rem
     `}
   }
 `;

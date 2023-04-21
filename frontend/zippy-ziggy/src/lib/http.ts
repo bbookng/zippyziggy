@@ -8,7 +8,7 @@ const serverUrl =
 
 const httpApi = () => {
   const instance = axios.create({
-    baseURL: `${serverUrl}/`,
+    baseURL: `${serverUrl}/api`,
 
     headers: {
       'Content-Type': 'application/json',

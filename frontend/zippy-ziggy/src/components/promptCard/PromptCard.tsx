@@ -2,6 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import { getTodayDate } from '@/lib/utils';
 import { FaHeart, FaBookmark, FaPlayCircle } from 'react-icons/fa';
+import Link from 'next/link';
 import { Body, Conatiner, Content, Footer, Infos, Title } from './Card.style';
 
 interface PromptType {
@@ -29,20 +30,34 @@ interface PropsType {
   image?: string;
   title?: string;
   content?: string;
+  url?: string;
   prompt?: PromptType;
 }
 
-export default function PromptCard({ image, title, content, prompt }: PropsType) {
+export default function PromptCard({ image, title, content, url, prompt }: PropsType) {
   return (
     <Conatiner>
-      <Image
-        priority
-        src={`${image || prompt?.thumbnail || '/images/ChatGPT_logo.png'}`}
-        width={100}
-        height={160}
-        className="image"
-        alt="썸네일"
-      />
+      {url ? (
+        <Link href={url}>
+          <Image
+            priority
+            src={`${image || prompt?.thumbnail || '/images/ChatGPT_logo.png'}`}
+            width={100}
+            height={160}
+            className="image"
+            alt="썸네일"
+          />
+        </Link>
+      ) : (
+        <Image
+          priority
+          src={`${image || prompt?.thumbnail || '/images/ChatGPT_logo.png'}`}
+          width={100}
+          height={160}
+          className="image"
+          alt="썸네일"
+        />
+      )}
       <Body>
         <Title>
           <div className="title">{title || prompt?.title || '제목을 입력해주세요.'}</div>
