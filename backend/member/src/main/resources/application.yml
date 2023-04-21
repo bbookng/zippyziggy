@@ -24,6 +24,11 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+  cache:
+    type: redis
+  redis:
+    host: localhost
+    port: 6379
 
 cloud:
   aws:
@@ -33,6 +38,38 @@ cloud:
       auto: false
     region:
       static: ap-northeast-2
+    credentials:
+      access-key: AKIAZRJEGXHNBKJFORYN
+      secret-key: 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
+
+kakao:
+  client:
+    id: caeb5575d99036003c187adfadea9863
+  redirect:
+    uri: http://localhost:3000/account/oauth
+  logout:
+    redirect:
+      uri: http://localhost:3000/members/logout
+
+google:
+  client:
+    id: 972594831157-fdfm8rq46vrb3tl81ds49o5978hs2ld0.apps.googleusercontent.com
+  secret:
+    key: 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
+  redirect:
+    url: http://localhost:8080/members/login/oauth2/code/google
+jwt:
+  secret:
+    key: 12132413
+  access:
+    token:
+      expiration:
+        time: 10000000
+  refresh:
+    token:
+      expiration:
+        time: 100000000
+
 
 #eureka:
 #  instance:

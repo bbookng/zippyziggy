@@ -37,7 +37,7 @@ out/
 .vscode/
 
 ### application.properties ###
-/src/main/resources/application.properties
+/src/main/resources/application.yml
 
 ### index.html ###
 /src/main/resources/static/index.html
