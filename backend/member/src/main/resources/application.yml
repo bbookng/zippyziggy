@@ -57,7 +57,7 @@ google:
   secret:
     key: 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
   redirect:
-    url: http://localhost:8080/members/login/oauth2/code/google
+    url: http://localhost:3000/members/login/oauth2/code/google
 jwt:
   secret:
     key: zippyziggy1234567890zippyziggy1234567890zippyziggy1234567890e205
