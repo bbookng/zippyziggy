@@ -1,10 +1,9 @@
-import '../../style.scss';
 import { createPortal } from 'react-dom';
-import PromptContainer from '@pages/content/components/PromptContainer';
-import usePromptListPortal from '@pages/content/hooks/usePromptContainerPortal';
 import useInputContainerPortal from '@pages/content/hooks/useInputContainerPortal';
-import { ZP_INPUT_WRAPPER_ID } from '@pages/constants';
 import InputWrapper from '@pages/content/components/InputWrapper';
+import { ZP_INPUT_WRAPPER_ID } from '@pages/constants';
+import usePromptListPortal from '@pages/content/hooks/usePromptContainerPortal';
+import PromptContainer from '@pages/content/components/PromptContainer';
 
 export default function App() {
   const promptContainerPortal = usePromptListPortal();

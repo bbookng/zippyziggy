@@ -8,7 +8,6 @@ const ZIPPY = (window.ZIPPYZIGGY = {
   },
   targetLanguage: '영어',
   replaceFetch() {
-    console.log('replace 실행');
     window.fetch = async (...t: Parameters<typeof fetch>) => {
       const [requestInfo, requestInit] = t;
 

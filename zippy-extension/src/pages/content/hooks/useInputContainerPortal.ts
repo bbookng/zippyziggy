@@ -1,13 +1,12 @@
-import { useEffect, useState } from 'react';
-import { ZP_INPUT_WRAPPER_ID } from '@pages/constants';
+import { useCallback, useEffect, useState } from 'react';
+import { ZP_INPUT_WRAPPER_ID, ZP_PROMPT_CONTAINER_ID } from '@pages/constants';
 
 const useInputContainerPortal = () => {
   const [portalContainer, setPortalContainer] = useState(null);
 
-  const addInputWrapperPortal = () => {
+  const addInputWrapperPortal = useCallback(() => {
     // 이미 포탈이 존재하면 리턴
     if (document.getElementById(ZP_INPUT_WRAPPER_ID)) return;
-
     // textarea의 부모요소를 찾아서 padding-right를 추가
     const $parent = document.querySelector('textarea').parentElement;
     $parent.style.paddingRight = '1rem';
@@ -21,7 +20,7 @@ const useInputContainerPortal = () => {
 
       setPortalContainer($inputWrapperPortal);
     }
-  };
+  }, []);
 
   useEffect(() => {
     // MutationObserver를 이용하여 __next 요소의 자식요소 추가, 제거, 변경을 감지하고,
@@ -30,6 +29,7 @@ const useInputContainerPortal = () => {
       for (const mutation of mutations) {
         const targetElement = mutation.target as Element;
         if (
+          targetElement.id === ZP_PROMPT_CONTAINER_ID ||
           targetElement.id === '__next' ||
           targetElement.className ===
             'h-full flex ml-1 md:w-full md:m-auto md:mb-2 gap-0 md:gap-2 justify-center'
@@ -47,7 +47,7 @@ const useInputContainerPortal = () => {
     return () => {
       observer.disconnect();
     };
-  }, []);
+  }, [addInputWrapperPortal]);
 
   return portalContainer;
 };

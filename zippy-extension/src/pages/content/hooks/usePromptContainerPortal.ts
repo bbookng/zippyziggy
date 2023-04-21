@@ -1,14 +1,13 @@
-import { useEffect, useState } from 'react';
 import { ZP_PROMPT_CONTAINER_ID } from '@pages/constants';
+import { useCallback, useEffect, useState } from 'react';
 
 const usePromptListPortal = () => {
   const [portalContainer, setPortalContainer] = useState(null);
   const [isNewChatPage, setIsNewChatPage] = useState(!window.location.href.includes('/c/'));
 
-  const addPromptContainerPortal = () => {
+  const addPromptContainerPortal = useCallback(() => {
     // 이미 포탈이 존재하는 경우 함수를 종료
     if (document.getElementById(ZP_PROMPT_CONTAINER_ID)) return;
-
     // react-scroll-to-bottom 클래스를 가진 요소를 찾음
     const $parent = document.querySelector('[class*="react-scroll-to-bottom"]');
     if ($parent) {
@@ -35,7 +34,7 @@ const usePromptListPortal = () => {
       }
       setPortalContainer($portalContainer);
     }
-  };
+  }, []);
 
   useEffect(() => {
     // MutationObserver를 이용하여 __next 요소의 자식요소 추가, 제거, 변경을 감지하고,
@@ -60,7 +59,7 @@ const usePromptListPortal = () => {
     return () => {
       observer.disconnect();
     };
-  }, [isNewChatPage]);
+  }, [isNewChatPage, addPromptContainerPortal]);
 
   return portalContainer;
 };
