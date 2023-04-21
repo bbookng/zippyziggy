@@ -17,14 +17,19 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
+import springfox.documentation.spi.service.contexts.SecurityContext;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -42,14 +47,23 @@ public class MemberController {
     private final MemberService memberService;
     private final MemberRepository memberRepository;
     private final JwtValidationService jwtValidationService;
-    private final S3Service s3Service;
+    private final UserDetails userDetails;
 
-    @GetMapping("/test")
-    @Operation(summary = "서버 테스트용", description = "문자로 리턴해준다")
-    public String test() {
-        return "test";
+    /**
+     * SecurityContext에 로그인된 유저 정보 가져오기
+     */
+    @GetMapping("/test/userUtil")
+    @ApiIgnore
+    public void testUserUtil() throws Exception {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        System.out.println("principal = " + principal);
+        String username = userDetails.getUsername();
+        String password = userDetails.getPassword();
+        Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
+        System.out.println("userDetails = " + username);
+        System.out.println("authorities = " + authorities);
+
     }
-
 
     /**
      * 카카오 로그인
@@ -422,6 +436,7 @@ public class MemberController {
 
         return new ResponseEntity<>(memberInformResponseDto, HttpStatus.OK);
     }
+
 
 
 }

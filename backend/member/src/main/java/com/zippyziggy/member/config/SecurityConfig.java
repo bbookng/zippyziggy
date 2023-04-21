@@ -46,6 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/members").authenticated()
                 .antMatchers("/members/refresh/token").authenticated()
                 .antMatchers("/members/profile").authenticated()
+                .antMatchers("/members/test/userUtil").authenticated()
                 .anyRequest().permitAll()
                 .and()
                 .addFilter(corsFilter)

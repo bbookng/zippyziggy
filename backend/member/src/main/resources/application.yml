@@ -60,7 +60,7 @@ google:
     url: http://localhost:8080/members/login/oauth2/code/google
 jwt:
   secret:
-    key: 12132413
+    key: zippyziggy1234567890zippyziggy1234567890zippyziggy1234567890e205
   access:
     token:
       expiration:
