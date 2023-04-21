@@ -1,5 +1,6 @@
 @import "@assets/style/theme.scss";
 
+
 .content-view {
   background-color: red;
   padding: 1rem 2rem;
@@ -19,12 +20,13 @@
 }
 
 .inner-container {
-  background-color: #61dafb;
-  position: relative;
-  display: flex;
-  flex: 1 1 0;
-  flex-direction: column;
-  gap: 0.875rem;
-  min-width: 0;
-  height: 40vh;
+    // 다크 모드일 때 스타일 적용
+    background-color: var(--primary-color);
+    position: relative;
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: column;
+    gap: 0.875rem;
+    min-width: 0;
+    height: 40vh;
 }

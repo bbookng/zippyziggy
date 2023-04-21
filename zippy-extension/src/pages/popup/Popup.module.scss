@@ -33,7 +33,7 @@
     }
 
     button:hover {
-      box-shadow: 0 1rem 2.5rem rgba(map-get($theme-colors, primary),.1),0 .5rem 1rem -.75rem rgba(27,22,66,.1)!important;
+      box-shadow: 0 1rem 2.5rem rgba(16, 198, 0,.1),0 .5rem 1rem -.75rem rgba(27,22,66,.1)!important;
       transform: translate3d(0,-3px,0);
     }
   }

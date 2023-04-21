@@ -8,12 +8,14 @@ refreshOnUpdate('pages/content');
 
 injectScript();
 
+// 리액트의 root 심기
 const addRoot = () => {
   console.log('root 생성');
   const root = document.createElement('div');
   root.id = ZP_ROOT_ID;
   const $target = document.querySelector('body > div:nth-child(4)');
   $target.appendChild(root);
+
   createRoot(root).render(<ContentScript />);
 };
 

@@ -1,7 +1,7 @@
-console.log("content loaded");
+console.log('content loaded');
 
 /**
  * @description
  * Chrome extensions don't support modules in content scripts.
  */
-import("./components/ZippyApp");
+import('./components/ZippyApp');

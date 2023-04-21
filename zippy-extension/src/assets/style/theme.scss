@@ -1,15 +1,31 @@
-$theme-colors: (
-        primary: #10C600,
-        white: #fff,
-        black: #000,
-        success: #4ADE80,
-        danger: #F87171,
-        info: #22DDEE,
-        warn: #FBBF24,
-        link: #60A5FA,
-        heart: #FF2D2D,
-        bookmark: #10C600,
-        background: #F5F6FA,
-        GPT: #74AA9C,
-)
+:root{
+  --primary-color: #10C600;
+  --white-color: #fff;
+  --black-color: #000;
+  --success-color: #4ADE80;
+  --danger-color: #F87171;
+  --info-color: #22DDEE;
+  --warn-color: #FBBF24;
+  --link-color: #60A5FA;
+  --heart-color: #FF2D2D;
+  --bookmark-color: #10C600;
+  --background-color: #F5F6FA;
+  --GPT-color: #74AA9C;
+}
+
+.dark {
+  --primary-color: yellow;
+  --white-color: #fff;
+  --black-color: #000;
+  --success-color: #4ADE80;
+  --danger-color: #F87171;
+  --info-color: #22DDEE;
+  --warn-color: #FBBF24;
+  --link-color: #60A5FA;
+  --heart-color: #FF2D2D;
+  --bookmark-color: #10C600;
+  --background-color: #F5F6FA;
+  --GPT-color: #74AA9C;
+}
+
 
