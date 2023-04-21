@@ -16,6 +16,7 @@ declare module 'virtual:reload-on-update-in-view' {
 
 declare module '*.svg' {
   import React = require('react');
+
   export const ReactComponent: React.SFC<React.SVGProps<SVGSVGElement>>;
   const src: string;
   export default src;
@@ -37,6 +38,7 @@ declare module '*.json' {
 }
 
 interface ZIPPYZIGGY {
+  selectedPrompt: string;
   fetch: typeof fetch;
   init: () => void;
   replaceFetch: () => void;

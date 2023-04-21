@@ -3,6 +3,10 @@ const injectScript = () => {
   script.src = chrome.runtime.getURL('src/pages/inject/index.js');
   script.type = 'module';
 
+  script.onload = () => {
+    script.remove();
+  };
+
   (document.head || document.documentElement).appendChild(script);
 };
 

@@ -8,7 +8,7 @@
 }
 
 
-#zp-prompt-container-portals{
+#zp-prompt-container-portals {
   margin: 1.5rem 1rem 0 1rem;
   font-size: 0.875rem;
   line-height: 1.25rem;
@@ -20,13 +20,14 @@
 }
 
 .inner-container {
-    // 다크 모드일 때 스타일 적용
-    background-color: var(--primary-color);
-    position: relative;
-    display: flex;
-    flex: 1 1 0;
-    flex-direction: column;
-    gap: 0.875rem;
-    min-width: 0;
-    height: 40vh;
+  background-color: var(--primary-color);
+  position: relative;
+  display: flex;
+  gap: 0.875rem;
+  min-width: 0;
+  height: 40vh;
+
+  & > div {
+    background-color: red;
+  }
 }

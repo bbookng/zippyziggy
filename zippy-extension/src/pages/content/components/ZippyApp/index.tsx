@@ -6,8 +6,6 @@ import ContentScript from '@pages/content/components/ZippyApp/ZippyApp';
 
 refreshOnUpdate('pages/content');
 
-injectScript();
-
 // 리액트의 root 심기
 const addRoot = () => {
   const root = document.createElement('div');
@@ -19,3 +17,4 @@ const addRoot = () => {
 };
 
 addRoot();
+injectScript();

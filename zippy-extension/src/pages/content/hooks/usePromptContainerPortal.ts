@@ -6,6 +6,7 @@ const usePromptListPortal = () => {
   const [isNewChatPage, setIsNewChatPage] = useState(!window.location.href.includes('/c/'));
 
   const addPromptContainerPortal = useCallback(() => {
+    console.log('프롬프트 리스트 포탈 생성');
     // 이미 포탈이 존재하는 경우 함수를 종료
     if (document.getElementById(ZP_PROMPT_CONTAINER_ID)) return;
     // react-scroll-to-bottom 클래스를 가진 요소를 찾음
@@ -24,10 +25,6 @@ const usePromptListPortal = () => {
         $title.style.display = 'none';
       }
 
-      // 포탈 스타일 설정
-      // $portalContainer.style.position = 'absolute';
-      // $portalContainer.style.top = '0';
-
       // 포탈을 react-scroll-to-bottom 내부의 요소로 삽입하고, state 업데이트
       if ($target) {
         $target.appendChild($portalContainer);
@@ -42,6 +39,7 @@ const usePromptListPortal = () => {
     const observer = new MutationObserver((mutations) => {
       for (const mutation of mutations) {
         const targetElement = mutation.target as Element;
+
         if (
           (isNewChatPage && targetElement.className.includes('react-scroll-to-bottom--css')) ||
           targetElement.id === '__next'
