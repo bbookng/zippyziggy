@@ -38,6 +38,6 @@ out/
 
 ### application.yml ###
 /src/main/resources/application.yml
-
+*.yml
 ### index.html ###
 /src/main/resources/static/index.html
