@@ -16,22 +16,19 @@ function KakaoLoginRedirect() {
         .then((res) => {
           const { data } = res;
 
-          if (data?.isSignUp) {
+          if (data?.isSignUp === true) {
             const { name, platform, platformId, profileImg } = data?.socialSignUpDataResponseDto;
-            // router.push({
-            //   pathname: '/account/signup',
-            //   query: { name, platform, platformId, profileImg },
-            // });
-          } else {
+            router.push({
+              pathname: '/account/signup',
+              query: { name, platform, platformId, profileImg },
+            });
+          } else if (data?.isSignUp === false) {
             const accessToken = res?.headers?.authorization;
             localStorage.setItem('accessToken', accessToken);
             router.push({
               pathname: '/',
             });
           }
-        })
-        .catch((e) => {
-          console.log(e);
         });
     }
   }, [token]);
