@@ -1,8 +1,7 @@
 package com.zippyziggy.prompt.prompt.dto.response;
 
+import java.time.ZoneId;
 import org.springframework.lang.Nullable;
-import org.springframework.web.bind.annotation.DeleteMapping;
-
 import com.zippyziggy.prompt.prompt.model.Prompt;
 
 import lombok.AllArgsConstructor;
@@ -29,12 +28,16 @@ public class PromptDetailResponse {
 	private Boolean isLiked;
 	private Boolean isBookmarked;
 	private String category;
+	private long regDt;
+	private long updDt;
 
 	private MessageResponse messageResponse;
 
 	// writer, originer 추가 필요
 	public static PromptDetailResponse from(Prompt prompt) {
 		MessageResponse message = new MessageResponse(prompt.getPrefix(), prompt.getExample(), prompt.getSuffix());
+		long regDt = prompt.getRegDt().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
+		long updDt = prompt.getRegDt().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
 
 		PromptDetailResponse response = PromptDetailResponse.builder()
 			.messageResponse(message)
@@ -43,6 +46,8 @@ public class PromptDetailResponse {
 			.thumbnail(prompt.getThumbnail())
 			.category(prompt.getCategory().toString())
 			.likeCnt(prompt.getLikeCnt())
+			.regDt(regDt)
+			.updDt(updDt)
 			.build();
 
 		return response;

@@ -2,13 +2,15 @@ package com.zippyziggy.prompt.prompt.dto.response;
 
 import java.util.List;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Data
 @Getter
-@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ForkedPromptListResponse {
 
 	private Integer forkCnt;

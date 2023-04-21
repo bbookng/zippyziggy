@@ -2,6 +2,7 @@ package com.zippyziggy.prompt.prompt.model;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -11,6 +12,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 
 import com.zippyziggy.prompt.talk.model.Talk;
 
@@ -63,8 +67,11 @@ public class Prompt {
 	@Lob
 	private String example;
 
-	@Column(nullable = false, length = 128)
-	private String promptUuid;
+	@GeneratedValue(generator = "uuid2")
+	@GenericGenerator(name = "uuid2", strategy = "uuid2")
+	// @Column(nullable = false, columnDefinition = "BINARY(16)")
+	@Type(type = "uuid-char")
+	private UUID promptUuid;
 
 	@OneToMany(mappedBy = "prompt", cascade = CascadeType.ALL)
 	private List<PromptComment> promptComments;
@@ -74,12 +81,16 @@ public class Prompt {
 	@OneToMany(mappedBy = "prompt", cascade = CascadeType.ALL)
 	private List<Talk> talks;
 
-	private String originPromptUuid;
+	@GeneratedValue(generator = "uuid2")
+	@GenericGenerator(name = "uuid2", strategy = "uuid2")
+	// @Column(columnDefinition = "BINARY(16)")
+	@Type(type = "uuid-char")
+	private UUID originPromptUuid;
 
 	@Column(nullable = false, length = 10)
 	private Languages languages;
 
-	public void setOriginPromptUuid(String originPromptUuid) {
+	public void setOriginPromptUuid(UUID originPromptUuid) {
 		this.originPromptUuid = originPromptUuid;
 	}
 
