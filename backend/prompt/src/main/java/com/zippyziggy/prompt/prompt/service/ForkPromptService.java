@@ -57,12 +57,12 @@ public class ForkPromptService {
 			.hit(0)
 			.likeCnt(0L)
 			.promptUuid(UUID.randomUUID())
+			.originPromptUuid(promptUuid)
 			.thumbnail(thumbnailUrl)
 			.languages(Languages.KOREAN)
 			.build();
 
 		promptRepository.save(prompt);
-		prompt.setOriginPromptUuid(promptUuid);
 
 		return ForkPromptResponse.from(prompt);
 	}

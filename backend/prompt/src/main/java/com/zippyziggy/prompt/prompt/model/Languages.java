@@ -1,20 +1,22 @@
 package com.zippyziggy.prompt.prompt.model;
 
+import com.zippyziggy.prompt.common.TypeModel;
+
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 @ToString
 @Getter
-public enum Languages {
+@RequiredArgsConstructor
+public enum Languages implements TypeModel {
 	KOREAN("korean"), ENGLISH("english");
 
-	private final String language;
+	private final String description;
 
-	Languages(String language) {
-		this.language = language;
+	@Override
+	public String getKey() {
+		return name();
 	}
 
-	public String getLanguage() {
-		return language;
-	}
 }
