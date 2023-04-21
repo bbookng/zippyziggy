@@ -181,8 +181,6 @@ public class JwtValidationService {
         DecodedJWT verify = require(Algorithm.HMAC512(jwtSecretKey)).build().verify(token);
         String userUuid = verify.getClaim("userUuid").asString();
         Optional<Member> member = memberRepository.findByUserUuidEquals(UUID.fromString(userUuid));
-        System.out.println("userUuid = " + userUuid);
-        System.out.println("member = " + member);
         return member.get();
     }
 
