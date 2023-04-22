@@ -26,7 +26,10 @@ spring:
             - Method=POST
           filters:
             - RemoveRequestHeader=Cookie
-            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+        - id: member
+          uri: lb://MEMBER
+          predicates:
+            - Path=/members/index.html
         - id: member
           uri: lb://MEMBER
           predicates:
