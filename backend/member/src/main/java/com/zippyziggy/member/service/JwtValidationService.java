@@ -100,7 +100,6 @@ public class JwtValidationService {
             if (!contentCheck || !refreshTokenDBCheck) {
                 return JwtResponse.REFRESH_TOKEN_MISMATCH;
             }
-
             DecodedJWT verify = require(Algorithm.HMAC512(jwtSecretKey)).build().verify(refreshToken);
 
             // 만료시간이 지난 경우 새로운 refreshToken 생성
@@ -187,14 +186,14 @@ public class JwtValidationService {
     /**
      * refreshToken인지 accessToken인지 확인
      */
-    public String checkToken(String token) {
+    public JwtPayLoadResponseDto checkToken(String token) {
         String[] data = token.split("\\.");
         String s = data[1];
         String decode = new String(Base64Utils.decode(s.getBytes()));
         try {
             JwtPayLoadResponseDto jwtPayLoadResponseDto = objectMapper.readValue(decode, JwtPayLoadResponseDto.class);
 
-            return jwtPayLoadResponseDto.getSub();
+            return jwtPayLoadResponseDto;
         } catch (Exception e) {
             throw new JWTDecodeException("유효하지 않은 토큰입니다.");
         }

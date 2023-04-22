@@ -1,8 +1,9 @@
 package com.zippyziggy.member.util;
 
-import com.zippyziggy.member.config.CustomModelMapper;
+import com.zippyziggy.member.filter.User.CustomUserDetail;
 import com.zippyziggy.member.model.Member;
-import org.modelmapper.ModelMapper;
+import com.zippyziggy.member.repository.MemberRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -14,18 +15,18 @@ public class SecurityUtil {
     private SecurityUtil() {
     }
 
+    @Autowired
+    private MemberRepository memberRepository;
+
     // SecurityContext에 저장된 유저 정보 가져오기
-    public UUID getCurrentUserUuid() {
+    public Member getCurrentMember() {
 
         // 인증된 유저 가져오기
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        CustomUserDetail principal = (CustomUserDetail) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userUuid = principal.getUsername();
+        UUID uuid = UUID.fromString(userUuid);
 
-        // 객체를 Model entity 형식에 맞게 변환
-        CustomModelMapper customModelMapper = new CustomModelMapper();
-        ModelMapper modelMapper = customModelMapper.strictMapper();
-        Member member = modelMapper.map(principal, Member.class);
-
-        return member.getUserUuid();
+        return memberRepository.findByUserUuidEquals(uuid).get();
     }
 
 }

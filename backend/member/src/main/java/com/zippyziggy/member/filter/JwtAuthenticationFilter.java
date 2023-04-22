@@ -3,6 +3,7 @@ package com.zippyziggy.member.filter;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
+import com.zippyziggy.member.dto.response.JwtPayLoadResponseDto;
 import com.zippyziggy.member.model.JwtResponse;
 import com.zippyziggy.member.model.Member;
 import com.zippyziggy.member.service.JwtProviderService;
@@ -30,7 +31,8 @@ public class JwtAuthenticationFilter extends GenericFilter {
         if (token != null) {
             try {
                 // accessToken인지 refreshToken인지 확인
-                String tokenType = jwtValidationService.checkToken(token);
+                JwtPayLoadResponseDto jwtPayLoadResponseDto = jwtValidationService.checkToken(token);
+                String tokenType = jwtPayLoadResponseDto.getSub();
                 System.out.println("tokenType =  " + tokenType);
                 // accessToken인 경우
                 if (tokenType.equals("accessToken")) {
@@ -54,7 +56,8 @@ public class JwtAuthenticationFilter extends GenericFilter {
             } catch (JWTDecodeException e) {
 
                 System.out.println("e = " + e);
-                String tokenType = jwtValidationService.checkToken(token);
+                JwtPayLoadResponseDto jwtPayLoadResponseDto = jwtValidationService.checkToken(token);
+                String tokenType = jwtPayLoadResponseDto.getSub();
                 request.setAttribute("tokenType", tokenType);
                 if (tokenType.equals("accessToken")) {
                     request.setAttribute("exception", JwtResponse.ACCESS_TOKEN_MISMATCH.getJwtResponse());
@@ -65,7 +68,8 @@ public class JwtAuthenticationFilter extends GenericFilter {
             } catch (TokenExpiredException e) {
 
                 System.out.println("e = " + e);
-                String tokenType = jwtValidationService.checkToken(token);
+                JwtPayLoadResponseDto jwtPayLoadResponseDto = jwtValidationService.checkToken(token);
+                String tokenType = jwtPayLoadResponseDto.getSub();
                 request.setAttribute("tokenType", tokenType);
 
                 if (tokenType.equals("accessToken")) {
@@ -76,7 +80,8 @@ public class JwtAuthenticationFilter extends GenericFilter {
 
             } catch (Exception e) {
 
-                String tokenType = jwtValidationService.checkToken(token);
+                JwtPayLoadResponseDto jwtPayLoadResponseDto = jwtValidationService.checkToken(token);
+                String tokenType = jwtPayLoadResponseDto.getSub();
                 request.setAttribute("tokenType", tokenType);
 
                 if (tokenType.equals("accessToken")) {
