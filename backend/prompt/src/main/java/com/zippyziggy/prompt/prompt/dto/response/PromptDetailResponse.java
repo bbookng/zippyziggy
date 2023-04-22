@@ -27,30 +27,11 @@ public class PromptDetailResponse {
 	private Long likeCnt;
 	private Boolean isLiked;
 	private Boolean isBookmarked;
+	private Boolean isForked;
 	private String category;
 	private long regDt;
 	private long updDt;
 
 	private MessageResponse messageResponse;
-
-	// writer, originer 추가 필요
-	public static PromptDetailResponse from(Prompt prompt) {
-		MessageResponse message = new MessageResponse(prompt.getPrefix(), prompt.getExample(), prompt.getSuffix());
-		long regDt = prompt.getRegDt().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
-		long updDt = prompt.getRegDt().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
-
-		PromptDetailResponse response = PromptDetailResponse.builder()
-			.messageResponse(message)
-			.title(prompt.getTitle())
-			.description(prompt.getDescription())
-			.thumbnail(prompt.getThumbnail())
-			.category(prompt.getCategory().toString())
-			.likeCnt(prompt.getLikeCnt())
-			.regDt(regDt)
-			.updDt(updDt)
-			.build();
-
-		return response;
-	}
 
 }

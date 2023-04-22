@@ -4,11 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 
+import java.util.UUID;
+
 @Data
 @Getter
 @AllArgsConstructor
 public class WriterResponse {
-	private String writerId;
+	private UUID writerUuid;
 	private String writerImg;
 	private String writerNickname;
 }

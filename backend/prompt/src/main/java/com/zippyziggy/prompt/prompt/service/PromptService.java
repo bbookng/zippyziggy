@@ -2,6 +2,8 @@ package com.zippyziggy.prompt.prompt.service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.servlet.http.Cookie;
@@ -9,6 +11,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 
+import com.zippyziggy.prompt.prompt.client.MemberClient;
+import com.zippyziggy.prompt.prompt.dto.response.MemberResponse;
+import com.zippyziggy.prompt.prompt.dto.response.OriginerResponse;
+import com.zippyziggy.prompt.prompt.exception.AwsUploadException;
+import com.zippyziggy.prompt.prompt.exception.ForbiddenMemberException;
+import com.zippyziggy.prompt.prompt.exception.MemberNotFoundException;
+import com.zippyziggy.prompt.prompt.model.PromptBookmark;
+import com.zippyziggy.prompt.prompt.repository.PromptBookmarkRepository;
+import com.zippyziggy.prompt.prompt.repository.PromptLikeRepository;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,9 +46,13 @@ public class PromptService{
 	private static final String VIEWCOOKIENAME = "alreadyViewCookie";
 	private final AwsS3Uploader awsS3Uploader;
 	private final PromptRepository promptRepository;
+	private final MemberClient memberClient;
+	private final CircuitBreakerFactory circuitBreakerFactory;
+	private final PromptLikeRepository promptLikeRepository;
+	private final PromptBookmarkRepository promptBookmarkRepository;
 
 	// Exception 처리 필요
-	public PromptResponse createPrompt(PromptRequest data, MultipartFile thumbnail) {
+	public PromptResponse createPrompt(PromptRequest data, UUID crntMemberUuid, MultipartFile thumbnail) {
 
 		String thumbnailUrl;
 
@@ -45,27 +62,7 @@ public class PromptService{
 			thumbnailUrl = awsS3Uploader.upload(thumbnail, "thumbnails");
 		}
 
-		Category category = Category.valueOf(data.getCategory());
-
-		/*
-		memberId 넣어야 함
-		 */
-		Prompt prompt = Prompt.builder()
-			.title(data.getTitle())
-			.category(category)
-			.memberId(2L)
-			.description(data.getDescription())
-			.regDt(LocalDateTime.now())
-			.updDt(LocalDateTime.now())
-			.prefix(data.getMessage().getPrefix())
-			.example(data.getMessage().getExample())
-			.suffix(data.getMessage().getSuffix())
-			.promptUuid(UUID.randomUUID())
-			.languages(Languages.KOREAN)
-			.hit(0)
-			.likeCnt(0L)
-			.thumbnail(thumbnailUrl)
-			.build();
+		Prompt prompt = Prompt.from(data, crntMemberUuid, thumbnailUrl);
 
 		promptRepository.save(prompt);
 
@@ -73,17 +70,24 @@ public class PromptService{
 	}
 
 	/*
-	수정 로직 작성 해야 함 !!!!!!!!
-	본인 댓글인지 확인 필요
-	 */
-	public PromptResponse modifyPrompt(UUID promptUuid, PromptModifyRequest data, MultipartFile thumbnail) {
+    수정 로직 작성 해야 함 !!!!!!!!
+    본인 댓글인지 확인 필요
+     */
+	public PromptResponse modifyPrompt(UUID promptUuid, PromptModifyRequest data, UUID crntMemberUuid, MultipartFile thumbnail) {
 		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
-		Category category = Category.valueOf(data.getCategory());
+
+		if (crntMemberUuid != prompt.getMemberUuid()) {
+			throw new ForbiddenMemberException();
+		}
 
 		// 기존 thumbnail 지우기
 		if (thumbnail == null) {
-			awsS3Uploader.delete("thumbnails/", prompt.getThumbnail());
-			prompt.setThumbnail("default thumbnail url");
+			try {
+				awsS3Uploader.delete("thumbnails/", prompt.getThumbnail());
+				prompt.setThumbnail("default thumbnail url");
+			} catch (RuntimeException e) {
+				throw new AwsUploadException("삭제하는데 실패하였습니다.");
+			}
 
 		} else {
 			awsS3Uploader.delete("thumbnails/", prompt.getThumbnail());
@@ -93,7 +97,7 @@ public class PromptService{
 
 		prompt.setTitle(data.getTitle());
 		prompt.setDescription(data.getDescription());
-		prompt.setCategory(category);
+		prompt.setCategory(data.getCategory());
 
 		return PromptResponse.from(prompt);
 	}
@@ -105,8 +109,7 @@ public class PromptService{
 		boolean checkCookie = false;
 		int result = 0;
 		if(cookies != null){
-			for (Cookie cookie : cookies)
-			{
+			for (Cookie cookie : cookies) {
 				// 이미 조회를 한 경우 체크
 				if (cookie.getName().equals(VIEWCOOKIENAME+promptId)) checkCookie = true;
 
@@ -131,9 +134,9 @@ public class PromptService{
 	 * */
 	private Cookie createCookieForForNotOverlap(Long promptId) {
 		Cookie cookie = new Cookie(VIEWCOOKIENAME+promptId, String.valueOf(promptId));
-		cookie.setComment("조회수 중복 증가 방지 쿠키");	// 쿠키 용도 설명 기재
-		cookie.setMaxAge(getRemainSecondForTomorrow()); 	// 하루를 준다.
-		cookie.setHttpOnly(true);				// 서버에서만 조작 가능
+		cookie.setComment("조회수 중복 증가 방지 쿠키");    // 쿠키 용도 설명 기재
+		cookie.setMaxAge(getRemainSecondForTomorrow());     // 하루를 준다.
+		cookie.setHttpOnly(true);                // 서버에서만 조작 가능
 		return cookie;
 	}
 
@@ -144,21 +147,35 @@ public class PromptService{
 		return (int) now.until(tomorrow, ChronoUnit.SECONDS);
 	}
 
-	/*
-	member 연결되면 작성해야함
-	 */
-	public PromptDetailResponse getPromptDetail(UUID promptUuid) {
+	public PromptDetailResponse getPromptDetail(UUID promptUuid, UUID crntMemberUuid) {
 		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
-		PromptDetailResponse from = PromptDetailResponse.from(prompt);
+		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
+
+		boolean isLiked = (promptLikeRepository.countAllByMemberUuidAndPrompt(crntMemberUuid, prompt) % 2 > 0) ? true : false;
+		boolean isBookmarked = (promptBookmarkRepository.countAllByMemberUuidAndPrompt(crntMemberUuid, prompt) % 2 > 0) ? true : false;
+
+		PromptDetailResponse promptDetailResponse = prompt.toDetailResponse(isLiked, isBookmarked);
+
+		MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid())
+				.orElseThrow(MemberNotFoundException::new), throwable -> null);
+
+		promptDetailResponse.setWriterResponse(writerInfo.toWriterResponse());
 
 		// 원본 id가 현재 프롬프트 아이디와 같지 않으면 포크된 프롬프트
-		if (prompt.getOriginPromptUuid() != promptUuid) {
-			// from.setOriginerResponse();
+		if (prompt.isForked()) {
+			UUID originalMemberUuid = promptRepository.findByPromptUuid(prompt.getOriginPromptUuid())
+					.orElseThrow(PromptNotFoundException::new).getMemberUuid();
+
+			MemberResponse originalMemberInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(originalMemberUuid)
+							.orElseThrow(MemberNotFoundException::new), throwable -> null);
+
+			promptDetailResponse.setOriginerResponse(originalMemberInfo.toOriginerResponse());
 		}
-		return from;
+
+		return promptDetailResponse;
 	}
 
-	/*
+    /*
 	본인이 작성한 프롬프트인지 확인 필요
 	 */
 
