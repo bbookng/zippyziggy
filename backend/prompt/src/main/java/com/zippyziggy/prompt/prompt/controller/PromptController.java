@@ -119,8 +119,9 @@ public class PromptController {
 		@ApiResponse(code = 400, message = "잘못된 요청"),
 		@ApiResponse(code = 500, message = "서버 에러")
 	})
-	public ResponseEntity<?> removePrompt(@PathVariable UUID promptUuid) {
-		promptService.removePrompt(promptUuid);
+	public ResponseEntity<?> removePrompt(@PathVariable UUID promptUuid,
+										  @RequestHeader UUID crntMemberUuid) {
+		promptService.removePrompt(promptUuid, crntMemberUuid);
 		return ResponseEntity.ok("삭제 완료");
 	}
 
@@ -172,8 +173,10 @@ public class PromptController {
 		@ApiResponse(code = 400, message = "잘못된 요청"),
 		@ApiResponse(code = 500, message = "서버 에러")
 	})
-	public ResponseEntity<PromptCommentResponse> createPromptComment(@PathVariable UUID promptUuid, @RequestBody PromptCommentRequest data) {
-		PromptCommentResponse promptComment = promptCommentService.createPromptComment(promptUuid, data);
+	public ResponseEntity<PromptCommentResponse> createPromptComment(@PathVariable UUID promptUuid,
+																	 @RequestBody PromptCommentRequest data,
+																	 @RequestHeader UUID crntMemberUuid) {
+		PromptCommentResponse promptComment = promptCommentService.createPromptComment(promptUuid, data, crntMemberUuid);
 		return ResponseEntity.ok(promptComment);
 	}
 
@@ -184,8 +187,10 @@ public class PromptController {
 		@ApiResponse(code = 400, message = "잘못된 요청"),
 		@ApiResponse(code = 500, message = "서버 에러")
 	})
-	public ResponseEntity<?> modifyPromptComment(@PathVariable Long commentId, @RequestBody PromptCommentRequest data) {
-		PromptCommentResponse comment = promptCommentService.modifyPromptComment(commentId, data);
+	public ResponseEntity<?> modifyPromptComment(@PathVariable Long commentId,
+												 @RequestBody PromptCommentRequest data,
+												 @RequestHeader UUID crntMemberUuid) {
+		PromptCommentResponse comment = promptCommentService.modifyPromptComment(commentId, data, crntMemberUuid);
 		return ResponseEntity.ok(comment);
 	}
 
@@ -196,8 +201,9 @@ public class PromptController {
 		@ApiResponse(code = 400, message = "잘못된 요청"),
 		@ApiResponse(code = 500, message = "서버 에러")
 	})
-	public ResponseEntity<?> removePromptComment(@PathVariable Long commentId) {
-		promptCommentService.removePromptComment(commentId);
+	public ResponseEntity<?> removePromptComment(@PathVariable Long commentId,
+												 @RequestHeader UUID crntMemberUuid) {
+		promptCommentService.removePromptComment(commentId, crntMemberUuid);
 		return ResponseEntity.ok("댓글 삭제 완료");
 	}
 

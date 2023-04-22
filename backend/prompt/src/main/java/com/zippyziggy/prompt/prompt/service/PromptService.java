@@ -2,8 +2,6 @@ package com.zippyziggy.prompt.prompt.service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Optional;
 import java.util.UUID;
 
 import javax.servlet.http.Cookie;
@@ -13,11 +11,9 @@ import javax.transaction.Transactional;
 
 import com.zippyziggy.prompt.prompt.client.MemberClient;
 import com.zippyziggy.prompt.prompt.dto.response.MemberResponse;
-import com.zippyziggy.prompt.prompt.dto.response.OriginerResponse;
 import com.zippyziggy.prompt.prompt.exception.AwsUploadException;
 import com.zippyziggy.prompt.prompt.exception.ForbiddenMemberException;
 import com.zippyziggy.prompt.prompt.exception.MemberNotFoundException;
-import com.zippyziggy.prompt.prompt.model.PromptBookmark;
 import com.zippyziggy.prompt.prompt.repository.PromptBookmarkRepository;
 import com.zippyziggy.prompt.prompt.repository.PromptLikeRepository;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
@@ -31,8 +27,6 @@ import com.zippyziggy.prompt.prompt.dto.request.PromptRequest;
 import com.zippyziggy.prompt.prompt.dto.response.PromptDetailResponse;
 import com.zippyziggy.prompt.prompt.dto.response.PromptResponse;
 import com.zippyziggy.prompt.prompt.exception.PromptNotFoundException;
-import com.zippyziggy.prompt.prompt.model.Category;
-import com.zippyziggy.prompt.prompt.model.Languages;
 import com.zippyziggy.prompt.prompt.model.Prompt;
 import com.zippyziggy.prompt.prompt.repository.PromptRepository;
 
@@ -179,8 +173,13 @@ public class PromptService{
 	본인이 작성한 프롬프트인지 확인 필요
 	 */
 
-	public void removePrompt(UUID promptUuid) {
+	public void removePrompt(UUID promptUuid, UUID crntMemberUuid) {
 		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
+
+		if (crntMemberUuid != prompt.getMemberUuid()) {
+			throw new ForbiddenMemberException();
+		}
+
 		awsS3Uploader.delete("thumbnails/" , prompt.getThumbnail());
 		promptRepository.delete(prompt);
 	}

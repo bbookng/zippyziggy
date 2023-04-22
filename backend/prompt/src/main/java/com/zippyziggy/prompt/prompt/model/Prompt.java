@@ -1,36 +1,18 @@
 package com.zippyziggy.prompt.prompt.model;
 
+import com.zippyziggy.prompt.prompt.dto.request.PromptRequest;
+import com.zippyziggy.prompt.prompt.dto.response.MessageResponse;
+import com.zippyziggy.prompt.prompt.dto.response.PromptDetailResponse;
+import com.zippyziggy.prompt.talk.model.Talk;
+import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.OneToMany;
-
-import com.zippyziggy.prompt.prompt.dto.request.PromptRequest;
-import com.zippyziggy.prompt.prompt.dto.response.MessageResponse;
-import com.zippyziggy.prompt.prompt.dto.response.OriginerResponse;
-import com.zippyziggy.prompt.prompt.dto.response.PromptDetailResponse;
-import com.zippyziggy.prompt.prompt.dto.response.WriterResponse;
-import org.hibernate.annotations.ColumnDefault;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
-
-import com.zippyziggy.prompt.talk.model.Talk;
-
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Builder
@@ -119,7 +101,6 @@ public class Prompt {
 
 	}
 
-	// writer, originer 추가 필요
 	public PromptDetailResponse toDetailResponse(boolean isLiked, boolean isBookmarked) {
 		MessageResponse message = new MessageResponse(this.getPrefix(), this.getExample(), this.getSuffix());
 		long regDt = this.getRegDt().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
