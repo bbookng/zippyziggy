@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.zippyziggy.prompt.prompt.dto.request.PromptCommentRequest;
+import com.zippyziggy.prompt.prompt.dto.request.PromptModifyRequest;
 import com.zippyziggy.prompt.prompt.dto.request.PromptRequest;
 import com.zippyziggy.prompt.prompt.dto.response.ForkPromptResponse;
 import com.zippyziggy.prompt.prompt.dto.response.ForkedPromptListResponse;
@@ -69,7 +70,7 @@ public class PromptController {
 		@ApiResponse(code = 500, message = "서버 에러")
 	})
 	public ResponseEntity<PromptResponse> modifyPrompt(@PathVariable UUID promptUuid,
-		@RequestPart PromptRequest data,
+		@RequestPart PromptModifyRequest data,
 		@RequestPart MultipartFile thumbnail) {
 		PromptResponse prompt = promptService.modifyPrompt(promptUuid, data, thumbnail);
 		return ResponseEntity.ok(prompt);

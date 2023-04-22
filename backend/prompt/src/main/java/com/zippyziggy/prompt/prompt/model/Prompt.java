@@ -23,12 +23,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter
+@Getter @Setter
 public class Prompt {
 
 	@Id
@@ -91,6 +92,7 @@ public class Prompt {
 	private Languages languages;
 
 	public void setOriginPromptUuid(UUID originPromptUuid) {
+
 		this.originPromptUuid = originPromptUuid;
 	}
 

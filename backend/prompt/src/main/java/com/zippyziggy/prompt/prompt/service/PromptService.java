@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.zippyziggy.prompt.common.aws.AwsS3Uploader;
+import com.zippyziggy.prompt.prompt.dto.request.PromptModifyRequest;
 import com.zippyziggy.prompt.prompt.dto.request.PromptRequest;
 import com.zippyziggy.prompt.prompt.dto.response.PromptDetailResponse;
 import com.zippyziggy.prompt.prompt.dto.response.PromptResponse;
@@ -36,7 +37,13 @@ public class PromptService{
 	// Exception 처리 필요
 	public PromptResponse createPrompt(PromptRequest data, MultipartFile thumbnail) {
 
-		String thumbnailUrl = awsS3Uploader.upload(thumbnail, "thumbnails");
+		String thumbnailUrl;
+
+		if (thumbnail == null) {
+			thumbnailUrl = "default thumbnail image";
+		} else {
+			thumbnailUrl = awsS3Uploader.upload(thumbnail, "thumbnails");
+		}
 
 		Category category = Category.valueOf(data.getCategory());
 
@@ -69,8 +76,26 @@ public class PromptService{
 	수정 로직 작성 해야 함 !!!!!!!!
 	본인 댓글인지 확인 필요
 	 */
-	public PromptResponse modifyPrompt(UUID promptUuid, PromptRequest data, MultipartFile thumbnail) {
-		return null;
+	public PromptResponse modifyPrompt(UUID promptUuid, PromptModifyRequest data, MultipartFile thumbnail) {
+		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
+		Category category = Category.valueOf(data.getCategory());
+
+		// 기존 thumbnail 지우기
+		if (thumbnail == null) {
+			awsS3Uploader.delete("thumbnails/", prompt.getThumbnail());
+			prompt.setThumbnail("default thumbnail url");
+
+		} else {
+			awsS3Uploader.delete("thumbnails/", prompt.getThumbnail());
+			String thumbnailUrl = awsS3Uploader.upload(thumbnail, "thumbnail");
+			prompt.setThumbnail(thumbnailUrl);
+		}
+
+		prompt.setTitle(data.getTitle());
+		prompt.setDescription(data.getDescription());
+		prompt.setCategory(category);
+
+		return PromptResponse.from(prompt);
 	}
 
 	public int updateHit(UUID promptUuid, HttpServletRequest request, HttpServletResponse response) {
@@ -130,7 +155,6 @@ public class PromptService{
 		if (prompt.getOriginPromptUuid() != promptUuid) {
 			// from.setOriginerResponse();
 		}
-
 		return from;
 	}
 

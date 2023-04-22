@@ -1,16 +1,23 @@
 package com.zippyziggy.prompt.talk.model;
 
-public enum Role {
+import java.lang.reflect.Type;
+
+import com.zippyziggy.prompt.common.TypeModel;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+
+@Getter @ToString
+@RequiredArgsConstructor
+public enum Role implements TypeModel {
 	ASSISTANT("assistant"),    // gpt
 	USER("user");
 
-	private final String role;
+	private final String description;
 
-	Role(String role) {
-		this.role = role;
-	}
-
-	public String getRole() {
-		return role;
+	@Override
+	public String getKey() {
+		return name();
 	}
 }
