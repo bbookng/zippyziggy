@@ -38,6 +38,7 @@ declare module 'styled-components' {
 
       // 시맨틱 컬러
       primaryColor: string;
+      primaryColor80: string;
       dangerColor: string;
       infoColor: string;
       linkColor: string;

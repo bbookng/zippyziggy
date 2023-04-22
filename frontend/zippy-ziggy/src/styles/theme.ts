@@ -76,6 +76,7 @@ const darkTheme: DefaultTheme = {
 
     // 시맨틱 컬러 (변경되지 않음)
     primaryColor: 'var(--colors-primary-100)',
+    primaryColor80: 'var(--colors-primary-80)',
     dangerColor: 'var(--colors-danger)',
     infoColor: 'var(--colors-info)',
     linkColor: 'var(--colors-link)',
@@ -134,6 +135,7 @@ const lightTheme: DefaultTheme = {
 
     // 시맨틱 컬러 (변경되지 않음)
     primaryColor: 'var(--colors-primary-100)',
+    primaryColor80: 'var(--colors-primary-80)',
     dangerColor: 'var(--colors-danger)',
     infoColor: 'var(--colors-info)',
     linkColor: 'var(--colors-link)',

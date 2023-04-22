@@ -6,19 +6,19 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     res.status(200).json({
       writer: {
         writerId: '1',
-        writerImg: 'images/noProfile.png',
+        writerImg: '/images/noProfile.png',
         writerNickname: '이승기',
       },
       originer: {
         originerId: '2',
-        originerImg: 'images/noProfile.png',
+        originerImg: '/images/noProfile.png',
         originerNickname: '강호동',
       },
-      title: '개그맨 프롬프트 생성',
+      title: '삼행시 프롬프트',
       description: '개그맨 느낌으로 말을 해주는 프롬프트입니다.',
-      thumbnail: 'images/ChatGPT_logo.png',
-      isLiked: 'false',
-      isBookmarked: 'false',
+      thumbnail: '/images/ChatGPT_logo.png',
+      isLiked: false,
+      isBookmarked: true,
       likeCnt: 12,
       message: {
         prefix: '당신은 개그맨입니다. 웃긴 말투로 말해주세요.',
