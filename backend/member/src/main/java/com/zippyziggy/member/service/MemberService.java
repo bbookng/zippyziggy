@@ -6,9 +6,12 @@ import com.zippyziggy.member.model.Member;
 import com.zippyziggy.member.model.Platform;
 import com.zippyziggy.member.model.RoleType;
 import com.zippyziggy.member.repository.MemberRepository;
+//import com.zippyziggy.member.util.RedisUtils;
+import com.zippyziggy.member.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.NonUniqueResultException;
@@ -18,6 +21,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class MemberService {
 
 
@@ -25,7 +29,8 @@ public class MemberService {
     private final JwtProviderService jwtProviderService;
     private final JwtValidationService jwtValidationService;
     private final S3Service s3Service;
-
+    private final SecurityUtil securityUtil;
+//    private final RedisUtils redisUtils;
 
     /**
      * 기존 회원인지 검증 서비스
@@ -59,7 +64,6 @@ public class MemberService {
 
             } else {
                 // 파일을 업로드해서 보내준 경우
-
                 UUID uuid = UUID.randomUUID();
 
                 String imgUrl = s3Service.uploadProfileImg(uuid, file);
@@ -87,7 +91,6 @@ public class MemberService {
         String nickname = dto.getNickname();
 
         Member checkMemberPlatform = memberCheck(dto.getPlatform(), dto.getPlatformId());
-
         if (checkMemberPlatform == null) {
             Member member = Member.builder()
                     .name(dto.getName())
@@ -98,9 +101,7 @@ public class MemberService {
                     .userUuid(uuid)
                     .regDt(LocalDateTime.now())
                     .build();
-
             memberRepository.save(member);
-
             return autoLogin(nickname);
 
         } else {
@@ -151,11 +152,26 @@ public class MemberService {
     /**
      * 회원탈퇴
      */
-    public void memberSignOut(String accessToken) throws Exception {
+    public void memberSignOut() throws Exception {
 
-        Member member = jwtValidationService.findMemberByJWT(accessToken);
+        Member member = securityUtil.getCurrentMember();
+
         member.setActivate(false);
         member.setNickname("");
+        member.setRefreshToken(null);
+
+        // 기존에 있던 redis 정보 삭제
+//        String MemberKey = "member" + member.getUserUuid();
+//        String RefreshKey = "refreshToken" + member.getUserUuid();
+//
+//        if (redisUtils.isExists(MemberKey)) {
+//            redisUtils.delete(MemberKey);
+//        }
+//
+//        if (redisUtils.isExists(RefreshKey)) {
+//            redisUtils.delete(RefreshKey);
+//        }
+
         s3Service.deleteS3File(member.getProfileImg());
 
     }

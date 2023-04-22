@@ -22,7 +22,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Table(name = "member")
 @Getter
 @ToString
-public class Member implements UserDetails {
+public class Member {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -80,46 +80,4 @@ public class Member implements UserDetails {
 		this.role = this.role == null ? RoleType.USER : this.role;
 	}
 
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		Collection<GrantedAuthority> collect = new ArrayList<>();
-        collect.add(new GrantedAuthority() {
-
-            @Override
-            public String getAuthority() {
-                return getRole().toString();
-            }
-        });
-		return collect;
-	}
-
-	@Override
-	public String getPassword() {
-		return null;
-	}
-
-	@Override
-	public String getUsername() {
-		return nickname;
-	}
-
-	@Override
-	public boolean isAccountNonExpired() {
-		return true;
-	}
-
-	@Override
-	public boolean isAccountNonLocked() {
-		return true;
-	}
-
-	@Override
-	public boolean isCredentialsNonExpired() {
-		return true;
-	}
-
-	@Override
-	public boolean isEnabled() {
-		return true;
-	}
 }

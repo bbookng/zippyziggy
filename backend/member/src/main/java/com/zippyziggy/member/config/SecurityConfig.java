@@ -46,6 +46,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/members").authenticated()
                 .antMatchers("/members/refresh/token").authenticated()
                 .antMatchers("/members/profile").authenticated()
+                .antMatchers("/members/test/userUtil").authenticated()
+                .antMatchers("/members/test/userUtil").hasRole("ADMIN") // ADMIN 권한이 있을 때에만 접근 가능
                 .anyRequest().permitAll()
                 .and()
                 .addFilter(corsFilter)

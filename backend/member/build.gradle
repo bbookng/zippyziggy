@@ -49,6 +49,12 @@ dependencies {
 
 	// S3
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.1.RELEASE'
+
+	// Redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	// ModelMapper
+	implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.3.8'
 }
 
 dependencyManagement {

@@ -3,6 +3,7 @@ package com.zippyziggy.member.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zippyziggy.member.dto.response.KakaoTokenResponseDto;
 import com.zippyziggy.member.dto.response.KakaoUserInfoResponseDto;
+import com.zippyziggy.member.model.Member;
 import com.zippyziggy.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
