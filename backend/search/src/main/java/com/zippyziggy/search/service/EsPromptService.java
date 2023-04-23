@@ -1,14 +1,11 @@
 package com.zippyziggy.search.service;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.elasticsearch.core.SearchResponse;
-import co.elastic.clients.elasticsearch.core.search.Hit;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
 import com.zippyziggy.search.model.EsPrompt;
-import java.io.IOException;
-import java.util.ArrayList;
+import com.zippyziggy.search.repository.EsPromptRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,10 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Service
-@Transactional
 public class EsPromptService {
 
+    private final EsPromptRepository esPromptRepository;
 
     // Create the low-level client
     RestClient restClient = RestClient.builder(
@@ -35,22 +33,22 @@ public class EsPromptService {
     // And create the API client
     ElasticsearchClient client = new ElasticsearchClient(transport);
 
-    public List<EsPrompt> testSearch() throws IOException {
-        SearchResponse<EsPrompt> search = client.search(s -> s
-                .index("test")
-                .query(q -> q
-                    .queryString(qs -> qs
-                        .defaultField("suffix")
-                        .query("ultrices")
-                    )),
-            EsPrompt.class);
+    public List<EsPrompt> testSearch() {
+//        SearchResponse<EsPrompt> search = client.search(s -> s
+//                .index("test")
+//                .query(q -> q
+//                    .queryString(qs -> qs
+//                        .defaultField("suffix")
+//                        .query("ultrices")
+//                    )),
+//            EsPrompt.class);
+//
+//        final List<EsPrompt> esPrompts = new ArrayList<>();
+//        for (Hit<EsPrompt> hit: search.hits().hits()) {
+//            esPrompts.add(hit.source());
+//        }
 
-        final List<EsPrompt> esPrompts = new ArrayList<>();
-        for (Hit<EsPrompt> hit: search.hits().hits()) {
-            esPrompts.add(hit.source());
-        }
-
-        return esPrompts;
+        return esPromptRepository.findBySuffixContains("ultrices");
     }
 
 

@@ -1,21 +1,19 @@
 package com.zippyziggy.search.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import javax.persistence.Entity;
 import lombok.Data;
-import org.springframework.data.annotation.PersistenceConstructor;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
 @Data
-@JsonIgnoreProperties(ignoreUnknown = true)
+//@JsonIgnoreProperties(ignoreUnknown = true)
 @Document(indexName = "test")
 public class EsPrompt {
 
-//    @Id
-//    private String id;        // ES doc create 시 자동 생성되는 id
+    @Id
+    private String id;        // ES doc create 시 자동 생성되는 id
 
     @Field(type = FieldType.Long, name = "prompt_id")
     private Long promptId;   // 내부 로직에서 사용하는 Auto Increment id

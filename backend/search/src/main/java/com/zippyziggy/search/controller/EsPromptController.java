@@ -20,19 +20,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/search")
 public class EsPromptController {
 
-    private final ElasticsearchOperations elasticsearchOperations;
     private final EsPromptService esPromptService;
 
-    @GetMapping("/test/{id}")
-    public EsPrompt findById(@PathVariable("id") String id) {
-        EsPrompt esPrompt = elasticsearchOperations.get(id, EsPrompt.class,
-            IndexCoordinates.of("test"));
-        return esPrompt;
-    }
+//    @GetMapping("/test/{id}")
+//    public EsPrompt findById(@PathVariable("id") String id) {
+//        EsPrompt esPrompt = elasticsearchOperations.get(id, EsPrompt.class,
+//            IndexCoordinates.of("test"));
+//        return esPrompt;
+//    }
 
     // GetMapping 쿼리 검색
     @GetMapping("/test/query")
-    public List<EsPrompt> findByQuery() throws IOException {
+    public List<EsPrompt> findByQuery() {
         return esPromptService.testSearch();
     }
 }
