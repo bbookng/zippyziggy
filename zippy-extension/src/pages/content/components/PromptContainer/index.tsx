@@ -28,16 +28,16 @@ const PromptContainer = () => {
         <div>
           <div>필터</div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)' }}>
-            <div>1</div>
-            <div>1</div>
-            <div>1</div>
-            <div>1</div>
-            <div>1</div>
-            <div>1</div>
-            <div>1</div>
-            <div>1</div>
-            <div>1</div>
-            <div>1</div>v
+            <div style={{ height: '200px', backgroundColor: 'black' }}>1</div>
+            <div style={{ height: '200px', backgroundColor: 'black' }}>1</div>
+            <div style={{ height: '200px', backgroundColor: 'black' }}>1</div>
+            <div style={{ height: '200px', backgroundColor: 'black' }}>1</div>
+            <div style={{ height: '200px', backgroundColor: 'black' }}>1</div>
+            <div style={{ height: '200px', backgroundColor: 'black' }}>1</div>
+            <div style={{ height: '200px', backgroundColor: 'black' }}>1</div>
+            <div style={{ height: '200px', backgroundColor: 'black' }}>1</div>
+            <div style={{ height: '200px', backgroundColor: 'black' }}>1</div>
+            <div style={{ height: '200px', backgroundColor: 'black' }}>1</div>v
           </div>
         </div>
       </div>
