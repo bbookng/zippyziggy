@@ -59,8 +59,8 @@ public class PromptController {
 	})
 	public ResponseEntity<PromptResponse> createPrompt(@RequestPart PromptRequest data,
 													   @RequestPart MultipartFile thumbnail,
-													   @RequestHeader UUID crntMemberUuid) {
-		return ResponseEntity.ok(promptService.createPrompt(data, crntMemberUuid, thumbnail));
+													   @RequestHeader String crntMemberUuid) {
+		return ResponseEntity.ok(promptService.createPrompt(data, UUID.fromString(crntMemberUuid), thumbnail));
 	}
 
 	/**
@@ -78,11 +78,11 @@ public class PromptController {
 		@ApiResponse(code = 400, message = "잘못된 요청"),
 		@ApiResponse(code = 500, message = "서버 에러")
 	})
-	public ResponseEntity<PromptResponse> modifyPrompt(@PathVariable UUID promptUuid,
+	public ResponseEntity<PromptResponse> modifyPrompt(@PathVariable String promptUuid,
 		@RequestPart PromptModifyRequest data,
 		@RequestPart MultipartFile thumbnail,
-		@RequestHeader UUID crntMemberUuid) {
-		return ResponseEntity.ok(promptService.modifyPrompt(promptUuid, data, crntMemberUuid, thumbnail));
+		@RequestHeader String crntMemberUuid) {
+		return ResponseEntity.ok(promptService.modifyPrompt(UUID.fromString(promptUuid), data, UUID.fromString(crntMemberUuid), thumbnail));
 	}
 
 	/**
@@ -104,12 +104,12 @@ public class PromptController {
 		@ApiResponse(code = 400, message = "잘못된 요청"),
 		@ApiResponse(code = 500, message = "서버 에러")
 	})
-	public ResponseEntity<PromptDetailResponse> getPromptDetail(@PathVariable UUID promptUuid,
-		@RequestHeader UUID crntMemberUuid,
+	public ResponseEntity<PromptDetailResponse> getPromptDetail(@PathVariable String promptUuid,
+		@RequestHeader String crntMemberUuid,
 		HttpServletRequest request,
 		HttpServletResponse response) {
-		promptService.updateHit(promptUuid, request, response);
-		return ResponseEntity.ok(promptService.getPromptDetail(promptUuid, crntMemberUuid));
+		promptService.updateHit(UUID.fromString(promptUuid), request, response);
+		return ResponseEntity.ok(promptService.getPromptDetail(UUID.fromString(promptUuid), UUID.fromString(crntMemberUuid)));
 	}
 
 	@ApiOperation(value = "프롬프트 삭제", notes = "프롬프트를 삭제한다.")
@@ -119,9 +119,9 @@ public class PromptController {
 		@ApiResponse(code = 400, message = "잘못된 요청"),
 		@ApiResponse(code = 500, message = "서버 에러")
 	})
-	public ResponseEntity<?> removePrompt(@PathVariable UUID promptUuid,
-										  @RequestHeader UUID crntMemberUuid) {
-		promptService.removePrompt(promptUuid, crntMemberUuid);
+	public ResponseEntity<?> removePrompt(@PathVariable String promptUuid,
+										  @RequestHeader String crntMemberUuid) {
+		promptService.removePrompt(UUID.fromString(promptUuid), UUID.fromString(crntMemberUuid));
 		return ResponseEntity.ok("삭제 완료");
 	}
 
@@ -132,11 +132,11 @@ public class PromptController {
 		@ApiResponse(code = 400, message = "잘못된 요청"),
 		@ApiResponse(code = 500, message = "서버 에러")
 	})
-	public ResponseEntity<ForkPromptResponse> createForkPrompt(@PathVariable UUID promptUuid,
+	public ResponseEntity<ForkPromptResponse> createForkPrompt(@PathVariable String promptUuid,
 		@RequestPart PromptRequest data,
 		@RequestPart MultipartFile thumbnail,
-	    @RequestHeader UUID crntMemberUuid) {
-		ForkPromptResponse forkPrompt = forkPromptService.createForkPrompt(promptUuid, data, thumbnail, crntMemberUuid);
+	    @RequestHeader String crntMemberUuid) {
+		ForkPromptResponse forkPrompt = forkPromptService.createForkPrompt(UUID.fromString(promptUuid), data, thumbnail, UUID.fromString(crntMemberUuid));
 		return ResponseEntity.ok(forkPrompt);
 	}
 
@@ -147,8 +147,8 @@ public class PromptController {
 		@ApiResponse(code = 400, message = "잘못된 요청"),
 		@ApiResponse(code = 500, message = "서버 에러")
 	})
-	public ResponseEntity<ForkedPromptListResponse> getForkedPrompt(@PathVariable UUID promptUuid, Pageable pageable) {
-		ForkedPromptListResponse forkedPromptList = forkPromptService.getForkedPromptList(promptUuid, pageable);
+	public ResponseEntity<ForkedPromptListResponse> getForkedPrompt(@PathVariable String promptUuid, Pageable pageable) {
+		ForkedPromptListResponse forkedPromptList = forkPromptService.getForkedPromptList(UUID.fromString(promptUuid), pageable);
 		return ResponseEntity.ok(forkedPromptList);
 	}
 
@@ -159,10 +159,10 @@ public class PromptController {
 		@ApiResponse(code = 400, message = "잘못된 요청"),
 		@ApiResponse(code = 500, message = "서버 에러")
 	})
-	public ResponseEntity<PromptCommentListResponse> getPromptComments(@PathVariable UUID promptUuid,
+	public ResponseEntity<PromptCommentListResponse> getPromptComments(@PathVariable String promptUuid,
 		@PageableDefault(size = 8, sort = "id",  direction = Sort.Direction.DESC)
 		Pageable pageable) {
-		PromptCommentListResponse promptCommentList = promptCommentService.getPromptCommentList(promptUuid, pageable);
+		PromptCommentListResponse promptCommentList = promptCommentService.getPromptCommentList(UUID.fromString(promptUuid), pageable);
 		return ResponseEntity.ok(promptCommentList);
 	}
 
@@ -173,10 +173,10 @@ public class PromptController {
 		@ApiResponse(code = 400, message = "잘못된 요청"),
 		@ApiResponse(code = 500, message = "서버 에러")
 	})
-	public ResponseEntity<PromptCommentResponse> createPromptComment(@PathVariable UUID promptUuid,
+	public ResponseEntity<PromptCommentResponse> createPromptComment(@PathVariable String promptUuid,
 																	 @RequestBody PromptCommentRequest data,
-																	 @RequestHeader UUID crntMemberUuid) {
-		PromptCommentResponse promptComment = promptCommentService.createPromptComment(promptUuid, data, crntMemberUuid);
+																	 @RequestHeader String crntMemberUuid) {
+		PromptCommentResponse promptComment = promptCommentService.createPromptComment(UUID.fromString(promptUuid), data, UUID.fromString(crntMemberUuid));
 		return ResponseEntity.ok(promptComment);
 	}
 
@@ -189,8 +189,8 @@ public class PromptController {
 	})
 	public ResponseEntity<?> modifyPromptComment(@PathVariable Long commentId,
 												 @RequestBody PromptCommentRequest data,
-												 @RequestHeader UUID crntMemberUuid) {
-		PromptCommentResponse comment = promptCommentService.modifyPromptComment(commentId, data, crntMemberUuid);
+												 @RequestHeader String crntMemberUuid) {
+		PromptCommentResponse comment = promptCommentService.modifyPromptComment(commentId, data, UUID.fromString(crntMemberUuid));
 		return ResponseEntity.ok(comment);
 	}
 
@@ -202,8 +202,8 @@ public class PromptController {
 		@ApiResponse(code = 500, message = "서버 에러")
 	})
 	public ResponseEntity<?> removePromptComment(@PathVariable Long commentId,
-												 @RequestHeader UUID crntMemberUuid) {
-		promptCommentService.removePromptComment(commentId, crntMemberUuid);
+												 @RequestHeader String crntMemberUuid) {
+		promptCommentService.removePromptComment(commentId, UUID.fromString(crntMemberUuid));
 		return ResponseEntity.ok("댓글 삭제 완료");
 	}
 
