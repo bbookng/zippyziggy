@@ -4,8 +4,11 @@ import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.json.jackson.JacksonJsonpMapper;
 import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
+import com.zippyziggy.search.dto.response.ExtensionSearchPromptListDto;
 import com.zippyziggy.search.model.EsPrompt;
 import com.zippyziggy.search.repository.EsPromptRepository;
+
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,22 +36,23 @@ public class EsPromptService {
     // And create the API client
     ElasticsearchClient client = new ElasticsearchClient(transport);
 
-    public List<EsPrompt> testSearch() {
-//        SearchResponse<EsPrompt> search = client.search(s -> s
-//                .index("test")
-//                .query(q -> q
-//                    .queryString(qs -> qs
-//                        .defaultField("suffix")
-//                        .query("ultrices")
-//                    )),
-//            EsPrompt.class);
-//
-//        final List<EsPrompt> esPrompts = new ArrayList<>();
-//        for (Hit<EsPrompt> hit: search.hits().hits()) {
-//            esPrompts.add(hit.source());
-//        }
+    public ExtensionSearchPromptListDto search(
+            String keyword
+//            String category,
+//            String sort
+    ) {
+        List<EsPrompt> esPrompts = new ArrayList<>();
+        if (null != keyword) {
+            esPrompts = esPromptRepository.findByTitleContainsOrDescriptionContainsOrPrefixContainsOrSuffixContainsOrExampleContains(
+                    keyword, keyword, keyword, keyword, keyword
+            );
+        }
+        else {
+            esPromptRepository.findAll()
+                    .forEach(esPrompts::add);
+        }
+        return ExtensionSearchPromptListDto.of(esPrompts);
 
-        return esPromptRepository.findBySuffixContains("ultrices");
     }
 
 

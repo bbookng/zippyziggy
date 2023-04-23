@@ -8,5 +8,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface EsPromptRepository extends ElasticsearchRepository<EsPrompt, String> {
 
-    List<EsPrompt> findBySuffixContains(String suffix);
+    List<EsPrompt> findByTitleContainsOrDescriptionContainsOrPrefixContainsOrSuffixContainsOrExampleContains(
+            String keyword1, String keyword2, String keyword3, String keyword4, String keyword5
+    );
 }

@@ -1,6 +1,5 @@
 package com.zippyziggy.search.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -16,10 +15,10 @@ public class EsPrompt {
     private String id;        // ES doc create 시 자동 생성되는 id
 
     @Field(type = FieldType.Long, name = "prompt_id")
-    private Long promptId;   // 내부 로직에서 사용하는 Auto Increment id
+    private Long promptId;    // 내부 로직에서 사용하는 Auto Increment id
 
-    @Field(type = FieldType.Long, name = "user_nickname")
-    private Long userNickname;      // 더미에 필드명을 닉네임으루 해둠 .. 나중에 userId로 변경
+    @Field(type = FieldType.Long, name = "user_id")
+    private Long userId;
 
     @Field(type = FieldType.Text, name = "title")
     private String title;
@@ -33,14 +32,14 @@ public class EsPrompt {
     @Field(type = FieldType.Integer, name = "like_cnt")
     private Integer likeCnt;
 
-    @Field(type = FieldType.Text, name = "reg_dt")  // 스트링아니게저장
+    @Field(type = FieldType.Date, name = "reg_dt")
     private String regDt;
 
-    @Field(type = FieldType.Text, name = "upd_dt")
+    @Field(type = FieldType.Date, name = "upd_dt")
     private String updDt;
 
-    @Field(type = FieldType.Long, name = "category")
-    private Long category;
+    @Field(type = FieldType.Text, name = "category")
+    private String category;
 
     @Field(type = FieldType.Text, name = "prefix")
     private String prefix;
@@ -52,7 +51,8 @@ public class EsPrompt {
     private String example;
 
     @Field(type = FieldType.Text, name = "prompt_uuid")
-    @JsonProperty("promptUuid")
     private String promptUuid;
 
+    @Field(type = FieldType.Text, name = "original_prompt_uuid")
+    private String originalPromptUuid;
 }
