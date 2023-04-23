@@ -11,15 +11,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.ColumnDefault;
 
-import com.zippyziggy.prompt.prompt.model.Category;
 import com.zippyziggy.prompt.prompt.model.Prompt;
-import com.zippyziggy.prompt.prompt.model.PromptComment;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -39,11 +36,11 @@ public class Talk {
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "prompt_id", nullable = false)
+	@JoinColumn(name = "prompt_uuid", nullable = false)
 	private Prompt prompt;
 
 	@Column(nullable = false)
-	private Long userId;
+	private Long memberId;
 
 	@Column(nullable = false, length = 255)
 	private String title;
