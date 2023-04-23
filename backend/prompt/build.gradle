@@ -37,14 +37,14 @@ dependencies {
 	implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
 
 	// configure server
-//	implementation 'org.springframework.cloud:spring-cloud-starter-config'
-//	implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
+	implementation 'org.springframework.cloud:spring-cloud-starter-config'
+	implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
 
 	// actuator
-//	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
 	// AMQP
-//	implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
+	implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
 	// Feign Client
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 	// resilience4j
