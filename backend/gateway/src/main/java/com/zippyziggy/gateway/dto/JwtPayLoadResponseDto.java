@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -12,7 +11,7 @@ import java.util.UUID;
 public class JwtPayLoadResponseDto {
 
     private String sub;
-    private UUID userUuid;
+    private String userUuid;
     private String nickname;
     private Long exp;
 
@@ -20,4 +19,15 @@ public class JwtPayLoadResponseDto {
         return this.sub;
     }
 
+    public String getUserUuid() {
+        return this.userUuid;
+    }
+
+    public String getNickname() {
+        return this.nickname;
+    }
+
+    public Long getExp() {
+        return this.exp;
+    }
 }
