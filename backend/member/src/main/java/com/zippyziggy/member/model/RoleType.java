@@ -1,5 +1,10 @@
 package com.zippyziggy.member.model;
 
+import lombok.Getter;
+import lombok.ToString;
+
+@Getter
+@ToString
 public enum RoleType {
 	USER("user"), ADMIN("admin");
 
