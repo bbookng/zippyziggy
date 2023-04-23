@@ -10,6 +10,7 @@ export interface AuthState {
 const initialState: AuthState = {
   authState: false,
 };
+
 // Actual Slice
 export const authSlice = createSlice({
   name: 'auth',
@@ -17,7 +18,7 @@ export const authSlice = createSlice({
   reducers: {
     // Action to set the authentication status
     setAuthState(state, action) {
-      state.authState = action.payload;
+      return { ...state, authState: action.payload }; // state.authState = action.payload;
     },
   },
 

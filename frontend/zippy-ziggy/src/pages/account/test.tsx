@@ -16,6 +16,7 @@ const Home = () => {
       <div>REDUX</div>
       <div>{authState ? 'Logged in' : 'Not Logged In'}</div>
       <button
+        type="button"
         onClick={() => {
           authState ? dispatch(setAuthState(false)) : dispatch(setAuthState(true));
         }}
@@ -23,9 +24,13 @@ const Home = () => {
         {authState ? 'Logout' : 'LogIn'}
       </button>
 
-      <button onClick={() => dispatch(increment())}>increment</button>
+      <button type="button" onClick={() => dispatch(increment())}>
+        increment
+      </button>
       <span>{count}</span>
-      <button onClick={() => dispatch(decrement())}>decrement</button>
+      <button type="button" onClick={() => dispatch(decrement())}>
+        decrement
+      </button>
     </div>
   );
 };

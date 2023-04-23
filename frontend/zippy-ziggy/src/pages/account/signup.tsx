@@ -5,6 +5,29 @@ import Paragraph from '@/components/Typography/Paragraph';
 import Button from '@/components/Button/Button';
 import { http, httpForm } from '@/lib/http';
 import axios from 'axios';
+import { media } from '@/styles/media';
+import styled from 'styled-components';
+
+export const LoginWarp = styled.div`
+  max-width: 360px;
+  margin: auto;
+
+  .LogoImage {
+    object-fit: contain;
+    cursor: pointer;
+    margin: auto;
+    ${media.small`
+      width: 100px;
+      height: 48px;
+    `}
+  }
+`;
+
+export const LoginContainer = styled.div`
+  width: 100%;
+  height: 100vh;
+  background-color: ${({ theme: { colors } }) => colors.whiteColor};
+`;
 
 export default function SignUp() {
   const [nickname, setNickname] = useState('');
@@ -54,16 +77,7 @@ export default function SignUp() {
     formData.append('data', blob);
     formData.append('file', file);
     console.log(formData);
-    httpForm
-      .post(`/members/signup`, formData)
-      .then((res) => {
-        const { data } = res;
-        console.log(data);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-    console.log(httpForm);
+    httpForm.post(`/members/signup`, formData);
   };
 
   const onClickSignup = (event) => {
