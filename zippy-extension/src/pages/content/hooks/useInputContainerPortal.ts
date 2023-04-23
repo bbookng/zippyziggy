@@ -17,23 +17,26 @@ const useInputContainerPortal = () => {
       $inputWrapperPortal.id = ZP_INPUT_WRAPPER_ID;
 
       $parent.prepend($inputWrapperPortal);
-
       setPortalContainer($inputWrapperPortal);
     }
   }, []);
 
   useEffect(() => {
+    const shouldCreateInputWrapperPortal = (element: Element): boolean => {
+      const { id, className } = element;
+      const isPromptContainer = id === ZP_PROMPT_CONTAINER_ID;
+      const isRoot = id === '__next';
+      const isInputWrapper =
+        className === 'h-full flex ml-1 md:w-full md:m-auto md:mb-2 gap-0 md:gap-2 justify-center';
+      return isPromptContainer || isRoot || isInputWrapper;
+    };
+
     // MutationObserver를 이용하여 __next 요소의 자식요소 추가, 제거, 변경을 감지하고,
     // 해당되는 경우 포탈을 생성하도록 addPromptContainerPortal 함수를 호출함
     const observer = new MutationObserver((mutations) => {
       for (const mutation of mutations) {
         const targetElement = mutation.target as Element;
-        if (
-          targetElement.id === ZP_PROMPT_CONTAINER_ID ||
-          targetElement.id === '__next' ||
-          targetElement.className ===
-            'h-full flex ml-1 md:w-full md:m-auto md:mb-2 gap-0 md:gap-2 justify-center'
-        ) {
+        if (shouldCreateInputWrapperPortal(targetElement)) {
           addInputWrapperPortal();
           return;
         }

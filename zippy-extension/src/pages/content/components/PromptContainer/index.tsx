@@ -8,10 +8,12 @@ const PromptContainer = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    setIsLoading(true);
-    axios.get('http://localhost:3003/data').then((data) => setTest(data.data));
-    setIsLoading(false);
-  }, []);
+    if (isNewChatPage) {
+      setIsLoading(true);
+      axios.get('http://localhost:3003/data').then((data) => setTest(data.data));
+      setIsLoading(false);
+    }
+  }, [isNewChatPage]);
 
   if (isNewChatPage) {
     return (
@@ -33,7 +35,7 @@ const PromptContainer = () => {
       </div>
     );
   }
-  return null;
+  return <div>123123</div>;
 };
 
 export default PromptContainer;

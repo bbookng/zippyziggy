@@ -10,8 +10,7 @@ refreshOnUpdate('pages/content');
 const addRoot = () => {
   const root = document.createElement('div');
   root.id = ZP_ROOT_ID;
-  const $target = document.querySelector('body > div:nth-child(4)');
-  $target.appendChild(root);
+  document.body.appendChild(root);
 
   createRoot(root).render(<ContentScript />);
 };

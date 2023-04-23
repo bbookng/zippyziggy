@@ -4,12 +4,10 @@ const ENDPOINT_CONVERSATION = 'https://chat.openai.com/backend-api/conversation'
 const ZIPPY = (window.ZIPPYZIGGY = {
   init() {
     console.log('ZP init');
-    const nav = document.querySelector("nav");
-    nav.querySelector("a").id = "new-chat-button";
     this.replaceFetch();
   },
   fetch: (window._fetch = window._fetch || window.fetch),
-  selectedPrompt: "",
+  selectedPrompt: '',
   targetLanguage: '영어',
   replaceFetch() {
     console.log('replace 실행');
@@ -36,22 +34,20 @@ const ZIPPY = (window.ZIPPYZIGGY = {
         return this.fetch(requestInfo, requestInit);
       }
     };
-  }
+  },
 });
 
 ZIPPY.init();
 
-window.addEventListener('message', function(event) {
-  switch (event.data.type){
-    case "test":
+window.addEventListener('message', function (event) {
+  switch (event.data.type) {
+    case 'test':
       ZIPPY.targetLanguage = event.data.selected.targetLanguage;
       console.log(ZIPPY.targetLanguage);
-        break;
+      break;
     default:
       break;
   }
 });
-
-
 
 export default ZIPPY;

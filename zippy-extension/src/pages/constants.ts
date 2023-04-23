@@ -4,7 +4,7 @@ const TARGET_LANGUAGE_PLACEHOLDER = '[TARGET_LANGUAGE]';
 const ZIPPY_URL = 'https://www.naver.com/';
 const ZP_ROOT_ID = 'zp-root';
 const ZP_PROMPT_CONTAINER_ID = 'zp-prompt-container-portals';
-const ZP_INPUT_WRAPPER_ID = 'zp-prompt-wrapper-portals';
+const ZP_INPUT_WRAPPER_ID = 'zp-input-wrapper-portals';
 const CHAT_GPT_URL = 'https://chat.openai.com/';
 
 export {
