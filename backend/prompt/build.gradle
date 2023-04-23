@@ -35,6 +35,22 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
+
+	// configure server
+//	implementation 'org.springframework.cloud:spring-cloud-starter-config'
+//	implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
+
+	// actuator
+//	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+	// AMQP
+//	implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
+	// Feign Client
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+	// resilience4j
+	implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
+
+	// AWS
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 }
 

@@ -36,31 +36,12 @@ public class ForkPromptService {
 	private final PromptCommentRepository promptCommentRepository;
 	private final TalkRepository talkRepository;
 
-	public ForkPromptResponse createForkPrompt(UUID promptUuid, PromptRequest data, MultipartFile thumbnail) {
+	public ForkPromptResponse createForkPrompt(UUID promptUuid, PromptRequest data, MultipartFile thumbnail, UUID crntMemberUuid) {
 
 		String thumbnailUrl = awsS3Uploader.upload(thumbnail, "thumbnails");
 
-		/*
-		memberId 제대로 넣기
-		 */
-		Category category = Category.valueOf(data.getCategory());
-		Prompt prompt = Prompt.builder()
-			.title(data.getTitle())
-			.category(category)
-			.memberId(1L)
-			.description(data.getDescription())
-			.regDt(LocalDateTime.now())
-			.updDt(LocalDateTime.now())
-			.prefix(data.getMessage().getPrefix())
-			.example(data.getMessage().getExample())
-			.suffix(data.getMessage().getSuffix())
-			.hit(0)
-			.likeCnt(0L)
-			.promptUuid(UUID.randomUUID())
-			.originPromptUuid(promptUuid)
-			.thumbnail(thumbnailUrl)
-			.languages(Languages.KOREAN)
-			.build();
+		Prompt prompt = Prompt.from(data, crntMemberUuid, thumbnailUrl);
+		prompt.setOriginPromptUuid(promptUuid);
 
 		promptRepository.save(prompt);
 

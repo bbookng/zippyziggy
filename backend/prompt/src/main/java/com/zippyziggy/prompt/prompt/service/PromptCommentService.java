@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import javax.transaction.Transactional;
 
+import com.zippyziggy.prompt.prompt.exception.ForbiddenMemberException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -34,17 +35,13 @@ public class PromptCommentService {
 		return PromptCommentListResponse.from(commentList);
 	}
 
-	public PromptCommentResponse createPromptComment(UUID promptUuid, PromptCommentRequest data) {
+	public PromptCommentResponse createPromptComment(UUID promptUuid, PromptCommentRequest data, UUID crntMemberUuid) {
 		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
 
-		// 댓글 작성자 추가 필요
-		PromptComment promptComment = PromptComment.builder()
-			.memberId(1L)
-			.prompt(prompt)
-			.regDt(LocalDateTime.now())
-			.content(data.getContent())
-			.build();
-
+		if (crntMemberUuid != prompt.getMemberUuid()) {
+			throw new ForbiddenMemberException();
+		}
+		PromptComment promptComment = PromptComment.from(data, crntMemberUuid, prompt);
 		promptCommentRepository.save(promptComment);
 
 		return PromptCommentResponse.from(promptComment);
@@ -53,9 +50,14 @@ public class PromptCommentService {
 	/*
 	본인 댓글인지 확인하고 수정
 	 */
-	public PromptCommentResponse modifyPromptComment(Long commentId, PromptCommentRequest data) {
+	public PromptCommentResponse modifyPromptComment(Long commentId, PromptCommentRequest data, UUID crntMemberUuid) {
 		PromptComment comment = promptCommentRepository.findById(commentId)
 			.orElseThrow(PromptCommentNotFoundException::new);
+
+		if (crntMemberUuid != comment.getMemberUuid()) {
+			throw new ForbiddenMemberException();
+		}
+
 		comment.setContent(data.getContent());
 		comment.setUpdDt(LocalDateTime.now());
 		return PromptCommentResponse.from(comment);
@@ -64,9 +66,14 @@ public class PromptCommentService {
 	/*
 	본인 댓글인지 확인하고 삭제
 	 */
-	public void removePromptComment(Long commentId) {
+	public void removePromptComment(Long commentId, UUID crntMemberUuid) {
 		PromptComment comment = promptCommentRepository.findById(commentId)
 			.orElseThrow(PromptCommentNotFoundException::new);
+
+		if (crntMemberUuid != comment.getMemberUuid()) {
+			throw new ForbiddenMemberException();
+		}
+
 		promptCommentRepository.delete(comment);
 	}
 }

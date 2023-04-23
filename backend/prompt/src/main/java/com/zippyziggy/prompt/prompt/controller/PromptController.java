@@ -10,15 +10,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.zippyziggy.prompt.prompt.dto.request.PromptCommentRequest;
@@ -50,6 +42,14 @@ public class PromptController {
 	private final ForkPromptService forkPromptService;
 	private final PromptCommentService promptCommentService;
 
+	/**
+	 *
+	 * @param data
+	 * @param thumbnail
+	 * @param crntMemberUuid
+	 * @return
+	 */
+
 	@ApiOperation(value = "프롬프트 생성", notes = "프롬프트를 생성한다.")
 	@PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
 	@ApiResponses({
@@ -57,13 +57,22 @@ public class PromptController {
 		@ApiResponse(code = 400, message = "잘못된 요청"),
 		@ApiResponse(code = 500, message = "서버 에러")
 	})
-	public ResponseEntity<PromptResponse> createPrompt(@RequestPart PromptRequest data, @RequestPart MultipartFile thumbnail) {
-		PromptResponse prompt = promptService.createPrompt(data, thumbnail);
-		return ResponseEntity.ok(prompt);
+	public ResponseEntity<PromptResponse> createPrompt(@RequestPart PromptRequest data,
+													   @RequestPart MultipartFile thumbnail,
+													   @RequestHeader UUID crntMemberUuid) {
+		return ResponseEntity.ok(promptService.createPrompt(data, crntMemberUuid, thumbnail));
 	}
 
+	/**
+	 *
+	 * @param promptUuid
+	 * @param data
+	 * @param thumbnail
+	 * @return
+	 */
 	@ApiOperation(value = "프롬프트 수정", notes = "본인이 작성한 프롬프트를 수정한다.")
-	@PutMapping(value = "/{promptUuid}", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+	@PutMapping(value = "/{promptUuid}",
+				consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
 	@ApiResponses({
 		@ApiResponse(code = 200, message = "성공"),
 		@ApiResponse(code = 400, message = "잘못된 요청"),
@@ -71,9 +80,9 @@ public class PromptController {
 	})
 	public ResponseEntity<PromptResponse> modifyPrompt(@PathVariable UUID promptUuid,
 		@RequestPart PromptModifyRequest data,
-		@RequestPart MultipartFile thumbnail) {
-		PromptResponse prompt = promptService.modifyPrompt(promptUuid, data, thumbnail);
-		return ResponseEntity.ok(prompt);
+		@RequestPart MultipartFile thumbnail,
+		@RequestHeader UUID crntMemberUuid) {
+		return ResponseEntity.ok(promptService.modifyPrompt(promptUuid, data, crntMemberUuid, thumbnail));
 	}
 
 	/**
@@ -81,12 +90,12 @@ public class PromptController {
 	 * 3순위, 나중에 수정 필요
 	 * 임시저장, 임시저장 삭제, 임시저장 후 최종 저장까지 구현해야 함
 	 */
-	@ApiOperation(value = "프롬프트 임시 저장", notes = "프롬프트를 생성 시 임시 저장한다.")
-	@PostMapping(value = "/temp", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
-	public ResponseEntity<PromptResponse> createPromptTemp(@RequestPart PromptRequest data, @RequestPart MultipartFile thumbnail) {
-		PromptResponse prompt = promptService.createPrompt(data, thumbnail);
-		return ResponseEntity.ok(prompt);
-	}
+//	@ApiOperation(value = "프롬프트 임시 저장", notes = "프롬프트를 생성 시 임시 저장한다.")
+//	@PostMapping(value = "/temp", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+//	public ResponseEntity<PromptResponse> createPromptTemp(@RequestPart PromptRequest data, @RequestPart MultipartFile thumbnail) {
+//		PromptResponse prompt = promptService.createPrompt(data, thumbnail);
+//		return ResponseEntity.ok(prompt);
+//	}
 
 	@ApiOperation(value = "프롬프트 상세 조회", notes = "프롬프트 상세 페이지를 조회한다.")
 	@GetMapping("/{promptUuid}")
@@ -96,11 +105,11 @@ public class PromptController {
 		@ApiResponse(code = 500, message = "서버 에러")
 	})
 	public ResponseEntity<PromptDetailResponse> getPromptDetail(@PathVariable UUID promptUuid,
+		@RequestHeader UUID crntMemberUuid,
 		HttpServletRequest request,
 		HttpServletResponse response) {
 		promptService.updateHit(promptUuid, request, response);
-		PromptDetailResponse prompt = promptService.getPromptDetail(promptUuid);
-		return ResponseEntity.ok(prompt);
+		return ResponseEntity.ok(promptService.getPromptDetail(promptUuid, crntMemberUuid));
 	}
 
 	@ApiOperation(value = "프롬프트 삭제", notes = "프롬프트를 삭제한다.")
@@ -110,8 +119,9 @@ public class PromptController {
 		@ApiResponse(code = 400, message = "잘못된 요청"),
 		@ApiResponse(code = 500, message = "서버 에러")
 	})
-	public ResponseEntity<?> removePrompt(@PathVariable UUID promptUuid) {
-		promptService.removePrompt(promptUuid);
+	public ResponseEntity<?> removePrompt(@PathVariable UUID promptUuid,
+										  @RequestHeader UUID crntMemberUuid) {
+		promptService.removePrompt(promptUuid, crntMemberUuid);
 		return ResponseEntity.ok("삭제 완료");
 	}
 
@@ -124,8 +134,9 @@ public class PromptController {
 	})
 	public ResponseEntity<ForkPromptResponse> createForkPrompt(@PathVariable UUID promptUuid,
 		@RequestPart PromptRequest data,
-		@RequestPart MultipartFile thumbnail) {
-		ForkPromptResponse forkPrompt = forkPromptService.createForkPrompt(promptUuid, data, thumbnail);
+		@RequestPart MultipartFile thumbnail,
+	    @RequestHeader UUID crntMemberUuid) {
+		ForkPromptResponse forkPrompt = forkPromptService.createForkPrompt(promptUuid, data, thumbnail, crntMemberUuid);
 		return ResponseEntity.ok(forkPrompt);
 	}
 
@@ -162,8 +173,10 @@ public class PromptController {
 		@ApiResponse(code = 400, message = "잘못된 요청"),
 		@ApiResponse(code = 500, message = "서버 에러")
 	})
-	public ResponseEntity<PromptCommentResponse> createPromptComment(@PathVariable UUID promptUuid, @RequestBody PromptCommentRequest data) {
-		PromptCommentResponse promptComment = promptCommentService.createPromptComment(promptUuid, data);
+	public ResponseEntity<PromptCommentResponse> createPromptComment(@PathVariable UUID promptUuid,
+																	 @RequestBody PromptCommentRequest data,
+																	 @RequestHeader UUID crntMemberUuid) {
+		PromptCommentResponse promptComment = promptCommentService.createPromptComment(promptUuid, data, crntMemberUuid);
 		return ResponseEntity.ok(promptComment);
 	}
 
@@ -174,8 +187,10 @@ public class PromptController {
 		@ApiResponse(code = 400, message = "잘못된 요청"),
 		@ApiResponse(code = 500, message = "서버 에러")
 	})
-	public ResponseEntity<?> modifyPromptComment(@PathVariable Long commentId, @RequestBody PromptCommentRequest data) {
-		PromptCommentResponse comment = promptCommentService.modifyPromptComment(commentId, data);
+	public ResponseEntity<?> modifyPromptComment(@PathVariable Long commentId,
+												 @RequestBody PromptCommentRequest data,
+												 @RequestHeader UUID crntMemberUuid) {
+		PromptCommentResponse comment = promptCommentService.modifyPromptComment(commentId, data, crntMemberUuid);
 		return ResponseEntity.ok(comment);
 	}
 
@@ -186,8 +201,9 @@ public class PromptController {
 		@ApiResponse(code = 400, message = "잘못된 요청"),
 		@ApiResponse(code = 500, message = "서버 에러")
 	})
-	public ResponseEntity<?> removePromptComment(@PathVariable Long commentId) {
-		promptCommentService.removePromptComment(commentId);
+	public ResponseEntity<?> removePromptComment(@PathVariable Long commentId,
+												 @RequestHeader UUID crntMemberUuid) {
+		promptCommentService.removePromptComment(commentId, crntMemberUuid);
 		return ResponseEntity.ok("댓글 삭제 완료");
 	}
 

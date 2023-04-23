@@ -1,6 +1,7 @@
 package com.zippyziggy.prompt.prompt.model;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 
+import com.zippyziggy.prompt.prompt.dto.request.PromptCommentRequest;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,7 +32,7 @@ public class PromptComment {
 	private Long id;
 
 	@Column(nullable = false)
-	private Long memberId;
+	private UUID memberUuid;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "prompt_uuid", nullable = false)
@@ -53,6 +55,16 @@ public class PromptComment {
 
 	public void setUpdDt(LocalDateTime updDt) {
 		this.updDt = updDt;
+	}
+
+
+	public static PromptComment from(PromptCommentRequest data, UUID crntMemberUuid, Prompt prompt) {
+		return PromptComment.builder()
+				.memberUuid(crntMemberUuid)
+				.prompt(prompt)
+				.regDt(LocalDateTime.now())
+				.content(data.getContent())
+				.build();
 	}
 
 }
