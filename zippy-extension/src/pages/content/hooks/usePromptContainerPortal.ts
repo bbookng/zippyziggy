@@ -96,6 +96,20 @@ const usePromptListPortal = () => {
           createPromptContainerPortal();
           return;
         }
+
+        // 대화 화면에서 마지막 부분에 빈 div를 삭제
+        if (
+          targetElement.className === 'flex-1 overflow-hidden' ||
+          targetElement.className ===
+            'h-full flex ml-1 md:w-full md:m-auto md:mb-2 gap-0 md:gap-2 justify-center'
+        ) {
+          const $unlessElement = document.querySelector(
+            'div.w-full.h-32.md\\:h-48.flex-shrink-0'
+          ) as HTMLDivElement;
+          if ($unlessElement) {
+            $unlessElement.style.display = 'none';
+          }
+        }
       }
     });
 
