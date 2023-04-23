@@ -10,7 +10,7 @@ import com.zippyziggy.gateway.dto.JwtPayLoadResponseDto;
 import com.zippyziggy.gateway.dto.JwtResponse;
 import com.zippyziggy.gateway.model.Member;
 import com.zippyziggy.gateway.repository.MemberRepository;
-import com.zippyziggy.gateway.service.CustomUserDetailsService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpHeaders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,10 +21,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Base64Utils;
 import org.springframework.util.StringUtils;
@@ -43,6 +39,7 @@ import java.util.UUID;
 
 import static com.auth0.jwt.JWT.require;
 
+@Slf4j
 @Component
 public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<AuthorizationHeaderFilter.Config> {
     private static final Logger log = LoggerFactory.getLogger(AuthorizationHeaderFilter.class);
@@ -50,17 +47,14 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
     private final String BEARER_PREFIX = "Bearer ";
     private final String jwtSecretKey;
     private final MemberRepository memberRepository;
-    private final CustomUserDetailsService customUserDetailsService;
 
 
     public AuthorizationHeaderFilter(@Value("${jwt.secret.key}") String jwtSecretKey,
                                      MemberRepository memberRepository,
-                                     CustomUserDetailsService customUserDetailsService,
                                      Environment env) {
         super(Config.class);
         this.jwtSecretKey = jwtSecretKey;
         this.memberRepository = memberRepository;
-        this.customUserDetailsService = customUserDetailsService;
     }
 
     public static class Config {
@@ -81,24 +75,23 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
                     // accessToken인지 refreshToken인지 확인
                     JwtPayLoadResponseDto jwtPayLoadResponseDto = checkToken(token);
                     String tokenType = jwtPayLoadResponseDto.getSub();
-                    System.out.println("tokenType =  " + tokenType);
+                    log.info("tokenType =  " + tokenType);
+
                     // accessToken인 경우
+                    JwtResponse jwtResponse = validateRefreshToken(token);
                     if (tokenType.equals("accessToken")) {
                         //유효한 access토큰인지 확인
-                        JwtResponse jwtResponse = validateAccessToken(token);
-                        System.out.println("accessTokenJwtResponse = " + jwtResponse);
+                        log.info("accessTokenJwtResponse = " + jwtResponse);
                     }
                     // refreshToken인 경우
                     else {
                         //유효한 refresh토큰인지 확인
-                        JwtResponse jwtResponse = validateRefreshToken(token);
-                        System.out.println("refreshTokenJwtResponse = " + jwtResponse);
+                        log.info("refreshTokenJwtResponse = " + jwtResponse);
                     }
 
                     // 토큰이 유효하면 토큰으로부터 유저 정보를 받아온다.
                     DecodedJWT verify = require(Algorithm.HMAC512(jwtSecretKey)).build().verify(token);
                     String userUuid = verify.getClaim("userUuid").asString();
-
 
                     exchange.getRequest()
                             .mutate()

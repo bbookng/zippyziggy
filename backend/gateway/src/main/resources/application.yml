@@ -6,16 +6,11 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://k8e205.p.ssafy.io:8761/eureka
 
 spring:
   application:
     name: gateway
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://zippyziggy.cmme5aoanean.ap-northeast-2.rds.amazonaws.com:3306/zippyziggy?serverTimezone=Asia/Seoul&useSSL=false
-    username: deundeun
-    password: ssafyE205!
   cloud:
     gateway:
       routes:
@@ -26,19 +21,23 @@ spring:
             - Method=POST
           filters:
             - RemoveRequestHeader=Cookie
+
         - id: member
           uri: lb://MEMBER
           predicates:
             - Path=/members/index.html
+
         - id: member
           uri: lb://MEMBER
           predicates:
             - Path=/members/auth/kakao/callback
             - Method=GET
+
         - id: member
           uri: lb://MEMBER
           predicates:
             - Path=/members/**
+
         - id: prompt
           uri: lb://PROMPT
           predicates:
@@ -50,18 +49,9 @@ spring:
           uri: lb://SEARCH
           predicates:
             - Path=/search/**
+
         - id: notice
           uri: lb://NOTICE
           predicates:
             - Path=/notice/**
-jwt:
-  secret:
-    key: zippyziggy1234567890zippyziggy1234567890zippyziggy1234567890e205
-  access:
-    token:
-      expiration:
-        time: 10000000
-  refresh:
-    token:
-      expiration:
-        time: 100000000
+
