@@ -26,7 +26,7 @@ public class Rating {
 	private Long id;
 
 	@Column(nullable = false)
-	private Long userId;
+	private Long memberUuid;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "prompt_id", nullable = false)
