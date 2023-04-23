@@ -9,6 +9,7 @@
 
 
 #zp-prompt-container-portals {
+  display: flex;
   margin: 1.5rem 1rem 0 1rem;
   font-size: 0.875rem;
   line-height: 1.25rem;
@@ -17,17 +18,19 @@
   align-items: flex-start;
   max-width: 100%;
   height: 100%;
+
 }
 
 .inner-container {
-  background-color: var(--primary-color);
-  position: relative;
   display: flex;
+  position: relative;
+  flex-direction: column;
+  flex: 1 1 0%;
   gap: 0.875rem;
   min-width: 0;
-  height: 40vh;
 
-  & > div {
-    background-color: red;
+  div {
+    background-color: gray;
+    margin-bottom: 1rem;
   }
 }

@@ -11,6 +11,18 @@ const useInputContainerPortal = () => {
     const $parent = document.querySelector('textarea').parentElement;
     $parent.style.paddingRight = '1rem';
 
+    const $formParent = document.querySelector('form').parentElement;
+
+    if ($formParent) {
+      $formParent.classList.remove(
+        'absolute',
+        'md:!bg-transparent',
+        'md:border-t-0',
+        'md:dark:border-transparent',
+        'md:border-transparent'
+      );
+    }
+
     if ($parent) {
       // 포탈 wrapper div 생성
       const $inputWrapperPortal = document.createElement('div');

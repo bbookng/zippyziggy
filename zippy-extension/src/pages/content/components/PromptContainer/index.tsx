@@ -18,20 +18,28 @@ const PromptContainer = () => {
   if (isNewChatPage) {
     return (
       <div className="inner-container">
-        {isLoading ||
-          test.map((data) => (
-            <div
-              key={data.id}
-              style={{ width: '200px', height: '200px', overflow: 'hidden' }}
-              onClick={() => {
-                window.postMessage({ type: 'test', selected: data });
-              }}
-            >
-              <h1>{data.id}</h1>
-              <h1>{data.title}</h1>
-              <h1>{data.prompt}</h1>
-            </div>
-          ))}
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <div>로고?</div>
+          <div>대분류</div>
+          <div>유저이름?</div>
+        </div>
+        <div>검색바</div>
+
+        <div>
+          <div>필터</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)' }}>
+            <div>1</div>
+            <div>1</div>
+            <div>1</div>
+            <div>1</div>
+            <div>1</div>
+            <div>1</div>
+            <div>1</div>
+            <div>1</div>
+            <div>1</div>
+            <div>1</div>v
+          </div>
+        </div>
       </div>
     );
   }
