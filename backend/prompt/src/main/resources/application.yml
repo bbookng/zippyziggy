@@ -4,11 +4,6 @@ server:
 spring:
   application:
     name: prompt
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://zippyziggy.cmme5aoanean.ap-northeast-2.rds.amazonaws.com:3306/zippyziggy?serverTimezone=UTC&characterEncoding=UTF-8
-    username: deundeun
-    password: ssafyE205!
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     open-in-view: false
@@ -29,16 +24,10 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://127.0.0.1:8761/eureka
+      defaultZone: http://k8e205.p.ssafy.io:8761/eureka
 
-cloud:
-  aws:
-    credentials:
-      access-key: AKIAR2XZF4GZCW4QKL2Q
-      secret-key: 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
-    s3:
-      bucket: zippyziggy
-    region:
-      static: ap-northeast-2
-    stack:
-      auto: false
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, busrefresh
