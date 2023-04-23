@@ -96,10 +96,14 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
                     }
 
                     // 토큰이 유효하면 토큰으로부터 유저 정보를 받아온다.
-                    Authentication authentication = getAuthentication(token);
+                    DecodedJWT verify = require(Algorithm.HMAC512(jwtSecretKey)).build().verify(token);
+                    String userUuid = verify.getClaim("userUuid").asString();
 
-                    // SecurityContext 에 Authentication 객체를 저장합니다.
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                    exchange.getRequest()
+                            .mutate()
+                            .header("crntMemberUuid", userUuid)
+                            .build();
 
                 } catch (JWTDecodeException e) {
                     onError(exchange, "Can not decode token", HttpStatus.UNAUTHORIZED);
@@ -113,12 +117,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
         };
     }
 
-    public Authentication getAuthentication(String token) {
-        DecodedJWT verify = require(Algorithm.HMAC512(jwtSecretKey)).build().verify(token);
-        String userUuid = verify.getClaim("userUuid").asString();
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(userUuid);
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
-    }
+
 
     private JwtResponse validateRefreshToken(String refreshToken) {
         try {
