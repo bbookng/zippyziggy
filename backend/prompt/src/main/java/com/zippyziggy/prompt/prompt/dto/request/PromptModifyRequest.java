@@ -2,6 +2,7 @@ package com.zippyziggy.prompt.prompt.dto.request;
 
 import javax.validation.constraints.NotNull;
 
+import com.zippyziggy.prompt.prompt.model.Category;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,6 @@ public class PromptModifyRequest {
 	private String description;
 
 	@NotNull
-	private String category;
+	private Category category;
 
 }
