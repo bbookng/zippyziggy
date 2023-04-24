@@ -12,6 +12,7 @@ const assetsDir = resolve(root, 'assets');
 const outDir = resolve(__dirname, 'dist');
 const publicDir = resolve(__dirname, 'public');
 
+// eslint-disable-next-line no-underscore-dangle
 const isDev = process.env.__DEV__ === 'true';
 const isProduction = !isDev;
 
@@ -59,6 +60,7 @@ export default defineConfig({
         entryFileNames: 'src/pages/[name]/index.js',
         chunkFileNames: isDev ? 'assets/js/[name].js' : 'assets/js/[name].[hash].js',
         assetFileNames: (assetInfo) => {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           const { dir, name: _name } = path.parse(assetInfo.name);
           const assetFolder = dir.split('/').at(-1);
           const name = assetFolder + firstUpperCase(_name);
@@ -73,6 +75,7 @@ export default defineConfig({
 });
 
 function firstUpperCase(str: string) {
+  // eslint-disable-next-line prefer-regex-literals
   const firstAlphabet = new RegExp(/( |^)[a-z]/, 'g');
   return str.toLowerCase().replace(firstAlphabet, (L) => L.toUpperCase());
 }
