@@ -101,15 +101,7 @@ const Navbar = ({ toggleTheme }) => {
           </NavOption>
         </NavList>
       </div>
-      {userState ? (
-        <NavUser>
-          <Link href="/account/login">
-            <Button buttonType="outline" padding="0 1rem">
-              소셜로그인
-            </Button>
-          </Link>
-        </NavUser>
-      ) : (
+      {userState.isLogin ? (
         <NavUser>
           <FaRegBookmark className="item bookmark" />
           <FaRegBell className="item" />
@@ -122,6 +114,21 @@ const Navbar = ({ toggleTheme }) => {
               height={30}
               className="profileImage"
             />
+          </Link>
+        </NavUser>
+      ) : (
+        <NavUser>
+          <Link href="/account/login">
+            <Button
+              buttonType="outline"
+              isRound
+              color="blackColor05"
+              height="fit-content"
+              padding="0.5rem 1rem"
+              style={{ color: '#4CC857' }}
+            >
+              소셜로그인
+            </Button>
           </Link>
         </NavUser>
       )}
