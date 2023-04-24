@@ -41,7 +41,7 @@ spring:
         - id: prompt
           uri: lb://PROMPT
           predicates:
-            - Path=/prompt/swagger
+            - Path=/prompts/swagger
             - Method=GET
 
         - id: prompt
