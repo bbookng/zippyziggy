@@ -41,10 +41,8 @@ spring:
         - id: prompt
           uri: lb://PROMPT
           predicates:
-            - Path=/prompts/swagger
+            - Path=/prompt/swagger
             - Method=GET
-          filters:
-            - RemoveAuthorizationHeaderFilter
 
         - id: prompt
           uri: lb://PROMPT
