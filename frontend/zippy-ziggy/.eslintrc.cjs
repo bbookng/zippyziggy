@@ -54,5 +54,6 @@ module.exports = {
     'react/no-unused-prop-types': 'warn',
     'import/no-cycle': 'warn',
     'react-hooks/exhaustive-deps': 0,
+    'jsx-a11y/interactive-supports-focus': 0,
   },
 };

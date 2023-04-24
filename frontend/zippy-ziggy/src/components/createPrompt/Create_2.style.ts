@@ -54,6 +54,7 @@ const RightContainer = styled.div`
   /* max-width: 600px; */
 
   .cardBox {
+    width: 100%;
     max-width: 500px;
   }
 

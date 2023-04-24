@@ -1,6 +1,6 @@
-import CreateFooter from '@/components/CreatePrompt/CreateFooter';
-import CreatePart1 from '@/components/CreatePrompt/CreatePrompt_1';
-import CreatePart2 from '@/components/CreatePrompt/CreatePrompt_2';
+import CreateFooter from '@/components/CreatePrompt/createFooter';
+import CreatePart1 from '@/components/CreatePrompt/createPrompt_1';
+import CreatePart2 from '@/components/CreatePrompt/createPrompt_2';
 import { ContainerTitle, TitleInfoWrapper, TitleWrapper } from '@/styles/prompt/Create.style';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -58,6 +58,7 @@ export default function PromptCreate() {
 
   // 생성 요청
   const handleCreatePrompt = () => {};
+  console.log(isNext);
 
   return (
     <>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { FaArrowLeft } from 'react-icons/fa';
-import Link from 'next/link';
-import { Exit, Footer } from './Footer.style';
+import { useRouter } from 'next/router';
+import { Footer } from './Footer.style';
 import Button from '../Button/Button';
 
 interface PropsType {
@@ -10,6 +10,10 @@ interface PropsType {
 }
 
 export default function CreateFooter({ isNext, handleNext }: PropsType) {
+  const router = useRouter();
+  const handleGoBack = () => {
+    router.push('/prompts');
+  };
   return (
     <Footer>
       {isNext ? (
@@ -23,11 +27,9 @@ export default function CreateFooter({ isNext, handleNext }: PropsType) {
         </>
       ) : (
         <>
-          <Button width="6rem" color="primaryColor" onClick={handleNext} className="testBtn">
+          <Button width="6rem" color="primaryColor" onClick={handleGoBack} className="testBtn">
             <FaArrowLeft />
-            <Link href="/prompts" className="text">
-              나가기
-            </Link>
+            <div className="text">나가기</div>
           </Button>
           <Button width="6rem" color="primaryColor" onClick={handleNext} className="testBtn">
             다음

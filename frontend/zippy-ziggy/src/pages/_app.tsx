@@ -10,6 +10,7 @@ import AppLayout from '@/layout/AppLayout';
 import store, { persistor, wrapper } from '@/core/store';
 import { PersistGate } from 'redux-persist/integration/react';
 import { Provider } from 'react-redux';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 export const GlobalStyle = createGlobalStyle`
   ${normalize}
@@ -72,6 +73,7 @@ function App({ Component, pageProps }: AppProps) {
               <Component {...pageProps} />
             </AppLayout>
           </ThemeProvider>
+          <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
       </PersistGate>
     </Provider>

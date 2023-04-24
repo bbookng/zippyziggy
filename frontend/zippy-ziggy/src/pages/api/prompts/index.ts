@@ -1,6 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { useRouter } from 'next/router';
 
 type Data = {
   prompts: any;
@@ -9,9 +8,9 @@ type Data = {
 const getPrompts = (page) => {
   const prompts = [];
   // eslint-disable-next-line no-plusplus
-  for (let i = page * 6; i < page * 6 + 6; i++) {
+  for (let i = (page - 1) * 6; i < (page - 1) * 6 + 6; i++) {
     prompts.push({
-      promptId: String(i),
+      promptUuid: String(i),
       title: `${i}번째 프롬프트`,
       member: {
         memberName: `${i}번째 도전`,
@@ -36,7 +35,6 @@ const getPrompts = (page) => {
 export default function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const { page } = req.query;
   if (req.method === 'GET') {
-    console.log(page);
     res.status(200).json({
       prompts: getPrompts(page),
     });

@@ -68,7 +68,7 @@ const Infos = styled.div`
 `;
 
 const Footer = styled.div`
-  padding: 0 1rem;
+  padding: 0 0.75rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -92,7 +92,7 @@ const Footer = styled.div`
     .item {
       display: flex;
       align-items: center;
-      padding: 0.5rem;
+      padding-left: 0.75rem;
       /* box-shadow: inset 2px 2px 2px rgba(0, 0, 0, 0.03); */
       /* border-radius: var(--borders-radius-round); */
       .like {
@@ -103,8 +103,8 @@ const Footer = styled.div`
         color: var(--colors-bookmark);
       }
       .play {
-        width: 1.5rem;
-        height: 1.5rem;
+        width: 2rem;
+        height: 2rem;
         color: rgba(16, 198, 0, 1);
       }
     }
