@@ -7,6 +7,9 @@ import normalize from 'styled-normalize';
 import '@/styles/index.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import AppLayout from '@/layout/AppLayout';
+import store, { persistor, wrapper } from '@/core/store';
+import { PersistGate } from 'redux-persist/integration/react';
+import { Provider } from 'react-redux';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 export const GlobalStyle = createGlobalStyle`
@@ -57,18 +60,24 @@ export const GlobalStyle = createGlobalStyle`
 
 const queryClient = new QueryClient();
 
-export default function App({ Component, pageProps }: AppProps) {
+function App({ Component, pageProps }: AppProps) {
   const { colorTheme, toggleTheme } = useDarkMode();
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider theme={colorTheme === 'dark' ? darkTheme : lightTheme}>
-        <GlobalStyle />
-        <AppLayout toggleTheme={toggleTheme}>
-          <Component {...pageProps} />
-        </AppLayout>
-      </ThemeProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+    <Provider store={store}>
+      <PersistGate loading={<div>a</div>} persistor={persistor}>
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider theme={colorTheme === 'dark' ? darkTheme : lightTheme}>
+            <GlobalStyle />
+            <AppLayout toggleTheme={toggleTheme}>
+              <Component {...pageProps} />
+            </AppLayout>
+          </ThemeProvider>
+          <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
+      </PersistGate>
+    </Provider>
   );
 }
+
+export default wrapper.withRedux(App);
