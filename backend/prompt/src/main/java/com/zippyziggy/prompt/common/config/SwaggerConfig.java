@@ -82,9 +82,9 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
 			.select()
 			.apis(RequestHandlerSelectors.basePackage("com.zippyziggy.prompt"))
 			.paths(PathSelectors.ant("/**/**/**"))
-			.build()
-			.securityContexts(Arrays.asList(securityContext()))
-			.securitySchemes(Arrays.asList(apiKey()));
+			.build();
+			// .securityContexts(Arrays.asList(securityContext()))
+			// .securitySchemes(Arrays.asList(apiKey()));
 	}
 
 	private ApiInfo apiInfo() {
@@ -92,14 +92,14 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
 			.description("프롬프트 API")
 			.version("1.0").build();
 	}
-
-	private ApiKey apiKey() {
-		return new ApiKey("JWT", "Authorization", "header");
-	}
-
-	private SecurityContext securityContext() {
-		return SecurityContext.builder().securityReferences(defaultAuth()).build();
-	}
+	//
+	// private ApiKey apiKey() {
+	// 	return new ApiKey("JWT", "Authorization", "header");
+	// }
+	//
+	// private SecurityContext securityContext() {
+	// 	return SecurityContext.builder().securityReferences(defaultAuth()).build();
+	// }
 
 	private List<SecurityReference> defaultAuth(){
 		AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
