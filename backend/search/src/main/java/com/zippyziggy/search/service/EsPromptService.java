@@ -25,17 +25,6 @@ public class EsPromptService {
 
     private final EsPromptRepository esPromptRepository;
 
-    // Create the low-level client
-    RestClient restClient = RestClient.builder(
-        new HttpHost("localhost", 9200)).build();
-
-    // Create the transport with a Jackson mapper
-    ElasticsearchTransport transport = new RestClientTransport(
-        restClient, new JacksonJsonpMapper());
-
-    // And create the API client
-    ElasticsearchClient client = new ElasticsearchClient(transport);
-
     public ExtensionSearchPromptListDto search(
             String keyword
 //            String category,
