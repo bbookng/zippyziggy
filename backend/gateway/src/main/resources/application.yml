@@ -43,6 +43,7 @@ spring:
           predicates:
             - Path=/prompts-swagger/**
           filters:
+            - RewritePath=/prompts-swagger/(?<remaining>.*), /${remaining}
             - SetPath=/
             - SetRequestHeader=crntMemberUuid, myDefaultValue
 
