@@ -27,7 +27,6 @@ import springfox.documentation.spring.web.plugins.WebMvcRequestHandlerProvider;
  */
 
 @Configuration
-@EnableWebMvc
 public class SwaggerConfig {
 
     @Bean
