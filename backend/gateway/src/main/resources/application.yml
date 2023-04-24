@@ -57,7 +57,7 @@ spring:
           predicates:
             - Path=/prompts/**
           filters:
-            - AuthorizationHeaderFilter
+#            - AuthorizationHeaderFilter
 
         - id: search
           uri: lb://SEARCH
@@ -68,4 +68,21 @@ spring:
           uri: lb://NOTICE
           predicates:
             - Path=/notice/**
+
+        - id: openapi
+          uri: http://localhost:${server.port}
+          predicates:
+            - Path=/v3/api-docs/**
+          filters:
+            - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs
+            - SetRequestHeader=crntMemberUuid, myDefaultValue
+
+springdoc:
+  swagger-ui:
+    urls[0]:
+      name: prompt
+      url: http://localhost:${server.port}/v3/api-docs/prompts
+    urls[1]:
+      name: member
+      url: http://localhost:${server.port}/v3/api-docs/members
 
