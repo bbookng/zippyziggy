@@ -32,8 +32,3 @@ management:
     web:
       exposure:
         include: health, busrefresh
-
-springfox:
-  documentation:
-    swagger-ui:
-      url: /prompts-swagger/swagger-ui.html
