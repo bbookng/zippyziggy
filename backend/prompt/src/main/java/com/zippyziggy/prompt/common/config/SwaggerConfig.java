@@ -30,6 +30,7 @@ import springfox.documentation.service.SecurityReference;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2WebFlux;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,7 +38,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Configuration
-@EnableOpenApi
+@EnableSwagger2WebFlux
 public class SwaggerConfig extends WebMvcConfigurationSupport {
 
 	@Override
