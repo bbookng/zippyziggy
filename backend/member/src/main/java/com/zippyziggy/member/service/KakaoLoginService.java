@@ -3,6 +3,7 @@ package com.zippyziggy.member.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zippyziggy.member.dto.response.KakaoTokenResponseDto;
 import com.zippyziggy.member.dto.response.KakaoUserInfoResponseDto;
+import com.zippyziggy.member.model.Member;
 import com.zippyziggy.member.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,7 +51,7 @@ public class KakaoLoginService {
         body.add("redirect_uri", kakaoRedirectUri);
         body.add("code", code);
 
-
+        // 카카오에 token 요청
         String token = WebClient.create()
                 .post()
                 .uri(kakaoTokenUri)
@@ -59,14 +60,13 @@ public class KakaoLoginService {
                 .body(BodyInserters.fromFormData(body))
                 .retrieve()
                 .bodyToMono(String.class)
-                .timeout(Duration.ofMillis(5000))
+                .timeout(Duration.ofMillis(5000000))
                 .blockOptional().orElseThrow(
                         () -> new RuntimeException("응답 시간을 초과하였습니다.")
                 );
 
+        // 객체로 전환
         KakaoTokenResponseDto kakaoTokenResponseDto = objectMapper.readValue(token, KakaoTokenResponseDto.class);
-
-//        System.out.println("kakaoTokenResponseDto = " + kakaoTokenResponseDto);
 
         return kakaoTokenResponseDto.getAccess_token();
     }
@@ -86,13 +86,12 @@ public class KakaoLoginService {
                 .header("Authorization", "Bearer " + kakaoAccessToken)
                 .retrieve()
                 .bodyToMono(String.class)
-                .timeout(Duration.ofMillis(5000))
+                .timeout(Duration.ofMillis(500000))
                 .blockOptional().orElseThrow(
                         () -> new RuntimeException("응답 시간을 초과하였습니다.")
                 );
 
-        KakaoUserInfoResponseDto kakaoUserInfoResponseDto = objectMapper.readValue(userInfo, KakaoUserInfoResponseDto.class);
-        return kakaoUserInfoResponseDto;
+        return objectMapper.readValue(userInfo, KakaoUserInfoResponseDto.class);
     }
 
 

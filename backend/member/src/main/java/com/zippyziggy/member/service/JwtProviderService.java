@@ -44,14 +44,13 @@ public class JwtProviderService {
      * accessToken, refreshToken 생성
      * user의 UUID와 nickname
      */
-    public JwtToken createJwtToken(UUID userUuid, String nickname) {
+    public JwtToken createJwtToken(UUID userUuid) {
 
         //Access Token 생성
         String accessToken = JWT.create()
                 .withSubject("accessToken")
                 .withExpiresAt(new Date(System.currentTimeMillis() + + accessTokenExpirationTime))
                 .withClaim("userUuid", userUuid.toString())
-                .withClaim("nickname", nickname)
                 .sign(Algorithm.HMAC512(jwtSecretKey));
 
         //Refresh token 생성
@@ -59,7 +58,6 @@ public class JwtProviderService {
                 .withSubject("refreshToken")
                 .withExpiresAt(new Date(System.currentTimeMillis() + refreshTokenExpierationTime))
                 .withClaim("userUuid", userUuid.toString())
-                .withClaim("nickname", nickname)
                 .sign(Algorithm.HMAC512(jwtSecretKey));
 
         return JwtToken.builder()
@@ -72,14 +70,13 @@ public class JwtProviderService {
     /**
      * accessToken 생성
      */
-    public String createAccessToken(UUID userUuid, String nickname) {
+    public String createAccessToken(UUID userUuid) {
 
         //Access Token 생성
         String accessToken = JWT.create()
                 .withSubject("accessToken")
                 .withExpiresAt(new Date(System.currentTimeMillis() + + accessTokenExpirationTime))
                 .withClaim("userUuid", userUuid.toString())
-                .withClaim("nickname", nickname)
                 .sign(Algorithm.HMAC512(jwtSecretKey));
 
         return accessToken;
@@ -89,14 +86,13 @@ public class JwtProviderService {
     /**
      * refreshToken 생성
      */
-    public String createRefreshToken(UUID userUuid, String nickname) {
+    public String createRefreshToken(UUID userUuid) {
 
         //Refresh token 생성
         String refreshToken = JWT.create()
                 .withSubject("refreshToken")
                 .withExpiresAt(new Date(System.currentTimeMillis() + refreshTokenExpierationTime))
                 .withClaim("userUuid", userUuid.toString())
-                .withClaim("nickname", nickname)
                 .sign(Algorithm.HMAC512(jwtSecretKey));
 
         return refreshToken;
@@ -116,10 +112,10 @@ public class JwtProviderService {
     /**
      * JWT 토큰에서 인증 정보 조회
      */
-    public Authentication getAuthentication(String token) throws Exception {
+    public Authentication getAuthentication(String token) {
             DecodedJWT verify = require(Algorithm.HMAC512(jwtSecretKey)).build().verify(token);
-            String nickname = verify.getClaim("nickname").asString();
-            UserDetails userDetails = customUserDetailService.loadUserByUsername(nickname);
+            String userUuid = verify.getClaim("userUuid").asString();
+            UserDetails userDetails = customUserDetailService.loadUserByUsername(userUuid);
             return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
