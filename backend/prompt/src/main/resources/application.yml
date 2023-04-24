@@ -17,6 +17,7 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
 
+
 eureka:
   instance:
     instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
@@ -31,3 +32,8 @@ management:
     web:
       exposure:
         include: health, busrefresh
+
+springfox:
+  documentation:
+    swagger-ui:
+      url: /prompts/swagger
