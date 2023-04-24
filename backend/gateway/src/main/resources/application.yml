@@ -38,12 +38,12 @@ spring:
           predicates:
             - Path=/members/**
 
-        - id: prompts
+        - id: prompts-swagger
           uri: lb://PROMPT
           predicates:
             - Path=/prompts-swagger/**
           filters:
-            - RewritePath=/prompts-swagger/(?<remaining>.*), /swagger-ui/index.html/${remaining}
+            - RewritePath=/prompts-swagger/(?<remaining>.+), /swagger-ui/$\{remaining}
             - SetRequestHeader=crntMemberUuid, myDefaultValue
 
         - id: prompt
