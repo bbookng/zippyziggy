@@ -40,19 +40,19 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/prompts-swagger/swagger-ui/**").addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/");
+		registry.addResourceHandler("/swagger-ui/**").addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/");
+		registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/");
 	}
 
 	@Bean
 	public WebMvcEndpointHandlerMapping webEndpointServletHandlerMapping
-		(WebEndpointsSupplier webEndpointsSupplier,
-			ServletEndpointsSupplier servletEndpointsSupplier,
-			ControllerEndpointsSupplier controllerEndpointsSupplier,
-			EndpointMediaTypes endpointMediaTypes,
-			CorsEndpointProperties corsProperties,
-			WebEndpointProperties webEndpointProperties,
-			Environment environment)
-	{
+			(WebEndpointsSupplier webEndpointsSupplier,
+			 ServletEndpointsSupplier servletEndpointsSupplier,
+			 ControllerEndpointsSupplier controllerEndpointsSupplier,
+			 EndpointMediaTypes endpointMediaTypes,
+			 CorsEndpointProperties corsProperties,
+			 WebEndpointProperties webEndpointProperties,
+			 Environment environment) {
 		List<ExposableEndpoint<?>> allEndpoints = new ArrayList();
 		Collection<ExposableWebEndpoint> webEndpoints = webEndpointsSupplier.getEndpoints();
 		allEndpoints.addAll(webEndpoints);
@@ -61,40 +61,39 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
 		String basePath = webEndpointProperties.getBasePath();
 		EndpointMapping endpointMapping = new EndpointMapping(basePath);
 		boolean shouldRegisterLinksMapping = this.shouldRegisterLinksMapping(
-			webEndpointProperties, environment, basePath);
+				webEndpointProperties, environment, basePath);
 		return new WebMvcEndpointHandlerMapping(
-			endpointMapping, webEndpoints, endpointMediaTypes,
-			corsProperties.toCorsConfiguration(),
-			new EndpointLinksResolver(allEndpoints, basePath),
-			shouldRegisterLinksMapping, null);
+				endpointMapping, webEndpoints, endpointMediaTypes,
+				corsProperties.toCorsConfiguration(),
+				new EndpointLinksResolver(allEndpoints, basePath),
+				shouldRegisterLinksMapping, null);
 	}
 
 	private boolean shouldRegisterLinksMapping(WebEndpointProperties webEndpointProperties,
-		Environment environment, String basePath)
-	{
+											   Environment environment, String basePath) {
 		return webEndpointProperties.getDiscovery().isEnabled()
-			&& (StringUtils.hasText(basePath) ||
-			ManagementPortType.get(environment).equals(ManagementPortType.DIFFERENT));
+				&& (StringUtils.hasText(basePath) ||
+				ManagementPortType.get(environment).equals(ManagementPortType.DIFFERENT));
 	}
 
 
 	@Bean
 	public Docket postsApi() {
 		return new Docket(DocumentationType.SWAGGER_2)
-			.groupName("팀든든")
-			.apiInfo(apiInfo())
-			.select()
-			.apis(RequestHandlerSelectors.basePackage("com.zippyziggy.prompt"))
-			.paths(PathSelectors.ant("/**/**/**"))
-			.build()
-			.securityContexts(Arrays.asList(securityContext()))
-			.securitySchemes(Arrays.asList(apiKey()));
+				.groupName("팀든든")
+				.apiInfo(apiInfo())
+				.select()
+				.apis(RequestHandlerSelectors.basePackage("com.zippyziggy.prompt"))
+				.paths(PathSelectors.ant("/**/**/**"))
+				.build()
+				.securityContexts(Arrays.asList(securityContext()))
+				.securitySchemes(Arrays.asList(apiKey()));
 	}
 
 	private ApiInfo apiInfo() {
 		return new ApiInfoBuilder().title("Prompt API")
-			.description("프롬프트 API")
-			.version("1.0").build();
+				.description("프롬프트 API")
+				.version("1.0").build();
 	}
 
 	private ApiKey apiKey() {
