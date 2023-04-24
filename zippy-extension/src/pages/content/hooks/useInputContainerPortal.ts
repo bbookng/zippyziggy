@@ -23,11 +23,14 @@ const useInputContainerPortal = () => {
     $formParent.classList.remove(...formClassesToRemove);
     $formParent.classList.add('relative');
     $formParent.id = 'ZP_input-section';
+    const $hideToggleButton = document.createElement('button');
+    $hideToggleButton.id = 'ZP_hide-toggle-button';
+    $formParent.appendChild($hideToggleButton);
 
     const handleInputSectionToggle = () => {
       $formParent.classList.toggle('hide');
     };
-    $formParent.addEventListener('click', handleInputSectionToggle);
+    $hideToggleButton.addEventListener('click', handleInputSectionToggle);
 
     const $parent = document.querySelector('textarea')?.parentElement ?? null;
     if (!$parent) return;
