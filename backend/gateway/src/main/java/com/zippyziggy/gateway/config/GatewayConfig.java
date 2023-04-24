@@ -12,7 +12,7 @@ public class GatewayConfig {
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
                 .route("swagger-ui", r -> r.path("/swagger-ui/index.html") // HTML에서 요청하는 URL 패턴
-                        .uri("lb://PROMPT/prompts/swagger-ui")) // 백엔드에서 등록한 URL 패턴
+                        .uri("lb://PROMPT/prompts-swagger")) // 백엔드에서 등록한 URL 패턴
                 .build();
     }
 }

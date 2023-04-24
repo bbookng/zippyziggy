@@ -41,10 +41,10 @@ spring:
         - id: prompt
           uri: lb://PROMPT
           predicates:
-            - Path=/prompts/swagger-ui/**
+            - Path=/prompts-swagger/**
           filters:
+            - RewritePath=/prompts-swagger/(?<segment>.*), /swagger-ui/$\{segment}
             - SetRequestHeader=crntMemberUuid, myDefaultValue
-            - RewritePath=/prompts/(?<segment>.*), /$\{segment}
 
         - id: prompt
           uri: lb://PROMPT
