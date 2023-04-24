@@ -36,4 +36,4 @@ management:
 springfox:
   documentation:
     swagger-ui:
-      url: /prompts-swagger
+      url: /swagger-ui/html
