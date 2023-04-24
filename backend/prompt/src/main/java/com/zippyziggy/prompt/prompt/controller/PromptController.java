@@ -5,6 +5,10 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -26,16 +30,12 @@ import com.zippyziggy.prompt.prompt.service.ForkPromptService;
 import com.zippyziggy.prompt.prompt.service.PromptCommentService;
 import com.zippyziggy.prompt.prompt.service.PromptService;
 
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/prompts")
 @RequiredArgsConstructor
-@Api(tags = {"프롬프트 API"})
+@Tag(name = "프롬프트 API")
 public class PromptController {
 
 	private final PromptService promptService;
@@ -50,12 +50,12 @@ public class PromptController {
 	 * @return
 	 */
 
-	@ApiOperation(value = "프롬프트 생성", notes = "프롬프트를 생성한다.")
+	@Operation(summary = "프롬프트 생성", description = "프롬프트를 생성한다.")
 	@PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
 	@ApiResponses({
-		@ApiResponse(code = 200, message = "성공"),
-		@ApiResponse(code = 400, message = "잘못된 요청"),
-		@ApiResponse(code = 500, message = "서버 에러")
+		@ApiResponse(responseCode = "200", description = "성공"),
+		@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+		@ApiResponse(responseCode = "500", description = "서버 에러")
 	})
 	public ResponseEntity<PromptResponse> createPrompt(@RequestPart PromptRequest data,
 													   @RequestPart MultipartFile thumbnail,
@@ -70,13 +70,13 @@ public class PromptController {
 	 * @param thumbnail
 	 * @return
 	 */
-	@ApiOperation(value = "프롬프트 수정", notes = "본인이 작성한 프롬프트를 수정한다.")
+	@Operation(summary = "프롬프트 수정", description = "본인이 작성한 프롬프트를 수정한다.")
 	@PutMapping(value = "/{promptUuid}",
 				consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
 	@ApiResponses({
-		@ApiResponse(code = 200, message = "성공"),
-		@ApiResponse(code = 400, message = "잘못된 요청"),
-		@ApiResponse(code = 500, message = "서버 에러")
+			@ApiResponse(responseCode = "200", description = "성공"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+			@ApiResponse(responseCode = "500", description = "서버 에러")
 	})
 	public ResponseEntity<PromptResponse> modifyPrompt(@PathVariable String promptUuid,
 		@RequestPart PromptModifyRequest data,
@@ -97,12 +97,12 @@ public class PromptController {
 //		return ResponseEntity.ok(prompt);
 //	}
 
-	@ApiOperation(value = "프롬프트 상세 조회", notes = "프롬프트 상세 페이지를 조회한다.")
+	@Operation(summary = "프롬프트 상세 조회", description = "프롬프트 상세 페이지를 조회한다.")
 	@GetMapping("/{promptUuid}")
 	@ApiResponses({
-		@ApiResponse(code = 200, message = "성공"),
-		@ApiResponse(code = 400, message = "잘못된 요청"),
-		@ApiResponse(code = 500, message = "서버 에러")
+			@ApiResponse(responseCode = "200", description = "성공"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+			@ApiResponse(responseCode = "500", description = "서버 에러")
 	})
 	public ResponseEntity<PromptDetailResponse> getPromptDetail(@PathVariable String promptUuid,
 		@RequestHeader String crntMemberUuid,
@@ -112,12 +112,12 @@ public class PromptController {
 		return ResponseEntity.ok(promptService.getPromptDetail(UUID.fromString(promptUuid), UUID.fromString(crntMemberUuid)));
 	}
 
-	@ApiOperation(value = "프롬프트 삭제", notes = "프롬프트를 삭제한다.")
+	@Operation(summary = "프롬프트 삭제", description = "프롬프트를 삭제한다.")
 	@DeleteMapping("/{promptUuid}")
 	@ApiResponses({
-		@ApiResponse(code = 200, message = "성공"),
-		@ApiResponse(code = 400, message = "잘못된 요청"),
-		@ApiResponse(code = 500, message = "서버 에러")
+			@ApiResponse(responseCode = "200", description = "성공"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+			@ApiResponse(responseCode = "500", description = "서버 에러")
 	})
 	public ResponseEntity<?> removePrompt(@PathVariable String promptUuid,
 										  @RequestHeader String crntMemberUuid) {
@@ -125,12 +125,12 @@ public class PromptController {
 		return ResponseEntity.ok("삭제 완료");
 	}
 
-	@ApiOperation(value = "프롬프트 포크 생성", notes = "프롬프트를 포크한 새로운 게시물을 생성한다.")
+	@Operation(summary = "프롬프트 포크 생성", description = "프롬프트를 포크한 새로운 게시물을 생성한다.")
 	@PostMapping(value = "/{promptUuid}/fork", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
 	@ApiResponses({
-		@ApiResponse(code = 200, message = "성공"),
-		@ApiResponse(code = 400, message = "잘못된 요청"),
-		@ApiResponse(code = 500, message = "서버 에러")
+			@ApiResponse(responseCode = "200", description = "성공"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+			@ApiResponse(responseCode = "500", description = "서버 에러")
 	})
 	public ResponseEntity<ForkPromptResponse> createForkPrompt(@PathVariable String promptUuid,
 		@RequestPart PromptRequest data,
@@ -140,24 +140,24 @@ public class PromptController {
 		return ResponseEntity.ok(forkPrompt);
 	}
 
-	@ApiOperation(value = "프롬프트 포크 목록 조회", notes = "프롬프트 상세페이지에서 해당 프롬프트를 포크한 포크 프롬프트들을 조회한다.")
+	@Operation(summary = "프롬프트 포크 목록 조회", description = "프롬프트 상세페이지에서 해당 프롬프트를 포크한 포크 프롬프트들을 조회한다.")
 	@GetMapping("/{promptUuid}/fork")
 	@ApiResponses({
-		@ApiResponse(code = 200, message = "성공"),
-		@ApiResponse(code = 400, message = "잘못된 요청"),
-		@ApiResponse(code = 500, message = "서버 에러")
+			@ApiResponse(responseCode = "200", description = "성공"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+			@ApiResponse(responseCode = "500", description = "서버 에러")
 	})
 	public ResponseEntity<ForkedPromptListResponse> getForkedPrompt(@PathVariable String promptUuid, Pageable pageable) {
 		ForkedPromptListResponse forkedPromptList = forkPromptService.getForkedPromptList(UUID.fromString(promptUuid), pageable);
 		return ResponseEntity.ok(forkedPromptList);
 	}
 
-	@ApiOperation(value = "프롬프트 댓글 조회", notes = "프롬프트 상세 페이지에서 해당 프롬프트의 댓글 목록을 조회한다.")
+	@Operation(summary = "프롬프트 댓글 조회", description = "프롬프트 상세 페이지에서 해당 프롬프트의 댓글 목록을 조회한다.")
 	@GetMapping("/{promptUuid}/comments")
 	@ApiResponses({
-		@ApiResponse(code = 200, message = "성공"),
-		@ApiResponse(code = 400, message = "잘못된 요청"),
-		@ApiResponse(code = 500, message = "서버 에러")
+			@ApiResponse(responseCode = "200", description = "성공"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+			@ApiResponse(responseCode = "500", description = "서버 에러")
 	})
 	public ResponseEntity<PromptCommentListResponse> getPromptComments(@PathVariable String promptUuid,
 		@PageableDefault(size = 8, sort = "id",  direction = Sort.Direction.DESC)
@@ -166,12 +166,12 @@ public class PromptController {
 		return ResponseEntity.ok(promptCommentList);
 	}
 
-	@ApiOperation(value = "프롬프트 댓글 생성", notes = "프롬프트에 댓글을 작성한다.")
+	@Operation(summary = "프롬프트 댓글 생성", description = "프롬프트에 댓글을 작성한다.")
 	@PostMapping("/{promptUuid}/comments")
 	@ApiResponses({
-		@ApiResponse(code = 200, message = "성공"),
-		@ApiResponse(code = 400, message = "잘못된 요청"),
-		@ApiResponse(code = 500, message = "서버 에러")
+			@ApiResponse(responseCode = "200", description = "성공"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+			@ApiResponse(responseCode = "500", description = "서버 에러")
 	})
 	public ResponseEntity<PromptCommentResponse> createPromptComment(@PathVariable String promptUuid,
 																	 @RequestBody PromptCommentRequest data,
@@ -180,12 +180,12 @@ public class PromptController {
 		return ResponseEntity.ok(promptComment);
 	}
 
-	@ApiOperation(value = "프롬프트 댓글 수정", notes = "프롬프트에 작성한 본인의 댓글을 수정한다.")
+	@Operation(summary = "프롬프트 댓글 수정", description = "프롬프트에 작성한 본인의 댓글을 수정한다.")
 	@PutMapping("/{promptUuid}/commments/{commentId}")
 	@ApiResponses({
-		@ApiResponse(code = 200, message = "성공"),
-		@ApiResponse(code = 400, message = "잘못된 요청"),
-		@ApiResponse(code = 500, message = "서버 에러")
+			@ApiResponse(responseCode = "200", description = "성공"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+			@ApiResponse(responseCode = "500", description = "서버 에러")
 	})
 	public ResponseEntity<?> modifyPromptComment(@PathVariable Long commentId,
 												 @RequestBody PromptCommentRequest data,
@@ -194,12 +194,12 @@ public class PromptController {
 		return ResponseEntity.ok(comment);
 	}
 
-	@ApiOperation(value = "프롬프트 댓글 삭제", notes = "프롬프트에 작성한 본인의 댓글을 삭제한다.")
+	@Operation(summary = "프롬프트 댓글 삭제", description = "프롬프트에 작성한 본인의 댓글을 삭제한다.")
 	@DeleteMapping("/{promptUuid}/comments/{commentId}")
 	@ApiResponses({
-		@ApiResponse(code = 200, message = "성공"),
-		@ApiResponse(code = 400, message = "잘못된 요청"),
-		@ApiResponse(code = 500, message = "서버 에러")
+			@ApiResponse(responseCode = "200", description = "성공"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+			@ApiResponse(responseCode = "500", description = "서버 에러")
 	})
 	public ResponseEntity<?> removePromptComment(@PathVariable Long commentId,
 												 @RequestHeader String crntMemberUuid) {
