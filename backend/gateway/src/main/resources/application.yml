@@ -44,7 +44,6 @@ spring:
             - Path=/prompts-swagger/**
           filters:
             - RewritePath=/prompts-swagger/(?<remaining>.*), /${remaining}
-            - SetPath=/prompts-swagger
             - SetRequestHeader=crntMemberUuid, myDefaultValue
 
         - id: prompt
