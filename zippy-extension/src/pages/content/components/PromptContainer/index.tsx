@@ -1,12 +1,12 @@
 import '../../style.scss';
-import Logo from '@pages/content/components/PromptContainer/Logo';
 import CategoryFilter from '@pages/content/components/PromptContainer/CategoryFilter';
-import UserInfo from '@pages/content/components/PromptContainer/UserInfo';
 import SearchBar from '@pages/content/components/PromptContainer/SearchBar';
 import PromptCard from '@pages/content/components/PromptContainer/PromptCard';
 import SortFilter from '@pages/content/components/PromptContainer/SortFilter';
 import { useState } from 'react';
-import { Category } from '@pages/content/types';
+import { Category, MockPrompt, Sort } from '@pages/content/types';
+import useFetch from '@pages/content/hooks/useFetch';
+import { ZIPPY_API_URL } from '@pages/constants';
 
 const category: Array<Category> = [
   { id: 'all', text: '전체', value: 'ALL' },
@@ -16,48 +16,67 @@ const category: Array<Category> = [
   { id: 'programming', text: '개발', value: 'PROGRAMMING' },
   { id: 'etc', text: '기타', value: 'ETC' },
 ];
+
+const sort: Array<Sort> = [
+  { id: 'like', text: '좋아요', value: 'LIKE' },
+  { id: 'view', text: '조회수', value: 'VIEW' },
+  { id: 'latest', text: '최신순', value: 'LATEST' },
+];
+
+const defaultCategory = category[0].value;
+const defaultSort = sort[0].value;
+
 const PromptContainer = () => {
+  const [selectedCategory, setSelectedCategory] = useState<Category['value']>(defaultCategory);
+  const [selectedSort, setSelectedSort] = useState<Sort['value']>(defaultSort);
+  const [searchTerm, setSearchTerm] = useState('');
+  const {
+    data: promptList,
+    loading,
+    error,
+  } = useFetch<Array<MockPrompt>>({ url: `${ZIPPY_API_URL}/data` });
+
   const isNewChatPage = !window.location.href.includes('/c/');
-  const [selectedCategory, setSelectedCategory] = useState<Category['value']>(category[0].value);
+
   if (isNewChatPage) {
     return (
       // 내부 컨테이너가 될 inner-container div
       <div className="ZP_prompt-container__inner">
         <section className="ZP_prompt_container__header">
-          <Logo />
+          {/* <Logo /> */}
           <CategoryFilter
             category={category}
             selectedCategory={selectedCategory}
             setSelectedCategory={setSelectedCategory}
           />
-          <UserInfo />
+          {/* <UserInfo /> */}
         </section>
-        <SearchBar />
+        <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 
         <section className="ZP_prompt-container__main">
           <div className="ZP_prompt-container__category-wrapper">
-            <h2 className="ZP_prompt-container__search-info">카테고리 / 검색어</h2>
-            <SortFilter />
+            <h2 className="ZP_prompt-container__search-info">
+              {`${category.find((item) => item.value === selectedCategory)?.text} ${
+                searchTerm.trim().length > 0 ? `/ ${searchTerm}` : ''
+              }`}
+            </h2>
+            <SortFilter sort={sort} selectedSort={selectedSort} setSelectedSort={setSelectedSort} />
           </div>
 
           <ul className="ZP_prompt-container__prompt-card-list">
-            <PromptCard>1</PromptCard>
-            <PromptCard>1</PromptCard>
-            <PromptCard>1</PromptCard>
-            <PromptCard>1</PromptCard>
-            <PromptCard>1</PromptCard>
-            <PromptCard>1</PromptCard>
-            <PromptCard>1</PromptCard>
-            <PromptCard>1</PromptCard>
-            <PromptCard>1</PromptCard>
-            <PromptCard>1</PromptCard>
+            {error && <div>something wrong</div>}
+            {loading && <div>로딩중...</div>}
+            {loading ||
+              promptList.map((prompt) => {
+                return <PromptCard key={prompt.id} prompt={prompt} />;
+              })}
           </ul>
         </section>
       </div>
     );
   }
-  // never mind
-  return <div>123123</div>;
+
+  return null;
 };
 
 export default PromptContainer;

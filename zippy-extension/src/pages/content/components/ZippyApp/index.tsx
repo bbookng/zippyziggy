@@ -1,5 +1,5 @@
 import refreshOnUpdate from 'virtual:reload-on-update-in-view';
-import injectScript from '@pages/content/utils/injectScript';
+import injectScript from '@pages/content/utils/inject-script';
 import { ZP_ROOT_ID } from '@pages/constants';
 import { createRoot } from 'react-dom/client';
 import ContentScript from '@pages/content/components/ZippyApp/ZippyApp';

@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect } from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
 import { Category } from '@pages/content/types';
 
 interface CategoryFilterProps {
@@ -25,12 +25,8 @@ const CategoryFilter = ({
     }
   };
 
-  useEffect(() => {
-    console.log(selectedCategory);
-  }, [selectedCategory]);
-
   return (
-    <nav className="ZP_prompt-container__category-filter">
+    <nav className="ZP_prompt-container__filter ZP_category">
       <ul>
         {category.map((categoryItem) => {
           return (
