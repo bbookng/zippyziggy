@@ -1,16 +1,15 @@
 package com.zippyziggy.prompt.talk.model;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
+
+@Getter @ToString
+@RequiredArgsConstructor
 public enum Role {
 	ASSISTANT("assistant"),    // gpt
 	USER("user");
 
-	private final String role;
+	private final String description;
 
-	Role(String role) {
-		this.role = role;
-	}
-
-	public String getRole() {
-		return role;
-	}
 }

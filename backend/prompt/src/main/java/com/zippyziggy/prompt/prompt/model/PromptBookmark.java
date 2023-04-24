@@ -1,6 +1,7 @@
 package com.zippyziggy.prompt.prompt.model;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -29,7 +30,7 @@ public class PromptBookmark {
 	private Long id;
 
 	@Column(nullable = false)
-	private Long userId;
+	private UUID memberUuid;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "prompt_id", nullable = false)

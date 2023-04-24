@@ -72,3 +72,6 @@ Figma 사이트: https://www.figma.com/file/HduIr84qMUsibOfiwKlAOo/%EC%A7%80%ED%
 ## 아키텍쳐 초안
 
 ![image-20230412225855322](assets/image-20230412225855322.png)
+
+## ERD
+![erd](assets/erd.png)
