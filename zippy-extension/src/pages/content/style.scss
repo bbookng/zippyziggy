@@ -1,12 +1,124 @@
 @import "@assets/style/theme.scss";
 
+// ##### 프롬프트 컨테이너 시작
+#zp-prompt-container-portals {
+  display: flex;
+  margin: 1.5rem 1rem 0 1rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  text-align: center;
+  gap: 0.625rem;
+  align-items: flex-start;
+  max-width: 100%;
+  height: 100%;
 
-.content-view {
-  background-color: red;
-  padding: 1rem 2rem;
-  border-radius: 0.5rem;
 }
 
+.ZP_prompt-container__inner {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  flex: 1 1 0;
+  gap: 0.875rem;
+  min-width: 0;
+
+
+  // 로고, 카테고리 필터, 유저정보
+  .ZP_prompt_container__header{
+    display: flex;
+    justify-content: space-between;
+
+    // 로고
+    .ZP_prompt-container__logo {
+      background-color: transparent;
+    }
+
+    // 카테고리 필터
+    .ZP_prompt-container__category-filter{
+      ul{
+        display: flex;
+        justify-content: space-evenly;
+        width: 100%;
+        max-width: 25rem;
+        background-color: var(--white-color-80);
+        border-radius: var(--borders-radius-base);
+        box-shadow: var(--shadows-sm);
+      }
+
+      li{
+        display: flex;
+        padding: 1rem;
+        width: fit-content;
+        font-size: var(--fonts-body-sm);
+        font-weight: var(--fonts-heading);
+        transition: color 0.1s ease-in, background-color 0.1s ease-in;
+        color: var(--black-color-50);
+        cursor: pointer;
+
+        &.active,
+        &:active,
+        &:hover {
+          font-weight: 800;
+          color: var(--black-color-90);
+        }
+      }
+    }
+    // 유저정보
+    .ZP_prompt-container__user-info{
+
+    }
+  }
+
+  // 검색바
+  .ZP_prompt-container__search-bar{
+
+  }
+}
+
+
+
+// 현재 검색정보, 정렬 필터, 프롬프트 리스트
+.ZP_prompt-container__main{
+
+  // 현재 검색정보, 정렬 필터
+  .ZP_prompt-container__category-wrapper{
+    display: flex;
+    justify-content: space-between;
+
+    // 현재 검색 정보
+    .ZP_prompt-container__search-info{
+
+    }
+
+    // 정렬 필터
+    .ZP_prompt-container__sort-filter{
+
+    }
+  }
+}
+
+// 프롬프트 리스트
+.ZP_prompt-container__prompt-card-list{
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (min-width: 1536px) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  // 프롬프트 카드
+  .ZP_prompt-container__prompt-card {
+
+  }
+}
+//프롬프트 컨테이너 끝 #####
+
+
+//인풋 컨테이너 시작
 #zp-input-wrapper-portals {
   display: flex;
   font-size: 0.875rem;
@@ -22,30 +134,4 @@
     flex-direction: row;
   }
 }
-
-#zp-prompt-container-portals {
-  display: flex;
-  margin: 1.5rem 1rem 0 1rem;
-  font-size: 0.875rem;
-  line-height: 1.25rem;
-  text-align: center;
-  gap: 0.625rem;
-  align-items: flex-start;
-  max-width: 100%;
-  height: 100%;
-
-}
-
-.inner-container {
-  display: flex;
-  position: relative;
-  flex-direction: column;
-  flex: 1 1 0%;
-  gap: 0.875rem;
-  min-width: 0;
-
-  div {
-    background-color: gray;
-    margin-bottom: 1rem;
-  }
-}
+//인풋 컨테이너 끝

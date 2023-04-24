@@ -1,7 +1,32 @@
 :root{
-  --primary-color: #10C600;
-  --white-color: #fff;
-  --black-color: #000;
+  /* Colors */
+  // #ffffff
+  --white-color-100: rgba(255, 255, 255, 1);
+  --white-color-80: rgba(255, 255, 255, 0.8);
+
+  // #000000
+  --black-color-100: rgba(0, 0, 0, 1);
+  --black-color-90: rgba(0, 0, 0, 0.9);
+  --black-color-50: rgba(0, 0, 0, 0.5);
+
+  // #303030
+  --dark-color-100: rgba(48, 48, 48, 1);
+  --dark-color-50: rgba(48, 48, 48, 0.5);
+
+  /* Shadows */
+  --shadows-sm: 0px 10px 15px -3px rgba(255, 255, 255, 0.1),
+  0px 4px 6px -2px rgba(255, 255, 255, 0.05);
+
+  /* Background */
+  --background-color: #F5F6FA;
+
+
+  /* 공통 css */
+  // 시멘틱 컬러 (변경되지 않음)
+  --white-color: rgba(255, 255, 255, 1); // 고정값
+  --black-color: rgba(0, 0, 0, 1); // 고정값
+  --primary-color: rgba(16, 198, 0, 1); // #10C600
+  --primary-color-80: rgba(16, 198, 0, 0.8);
   --success-color: #4ADE80;
   --danger-color: #F87171;
   --info-color: #22DDEE;
@@ -9,23 +34,40 @@
   --link-color: #60A5FA;
   --heart-color: #FF2D2D;
   --bookmark-color: #10C600;
-  --background-color: #F5F6FA;
   --GPT-color: #74AA9C;
+
+  /* Radius */
+  --borders-radius-base: 8px;
+  --borders-radius-lg: 12px;
+  --borders-radius-xl: 16px;
+  --borders-radius-2xl: 24px;
+  --borders-radius-round: 50%;
+
+  /* Font Sizes */
+  --fonts-body-sm: 0.875rem;
+
+  /* Font Weights */
+  --fonts-heading: 600;
+  --fonts-body: 400;
 }
 
 .dark {
-  --primary-color: yellow;
-  --white-color: #fff;
-  --black-color: #000;
-  --success-color: #4ADE80;
-  --danger-color: #F87171;
-  --info-color: #22DDEE;
-  --warn-color: #FBBF24;
-  --link-color: #60A5FA;
-  --heart-color: #FF2D2D;
-  --bookmark-color: #10C600;
-  --background-color: #F5F6FA;
-  --GPT-color: #74AA9C;
+  /* Colors */
+  // #ffffff(라이트) -> #303030(다크)
+  --white-color-100: rgba(48, 48, 48, 1);
+  --white-color-80: rgba(48, 48, 48, 0.8);
+
+  // #000000(라이트) -> #ffffff(다크)
+  --black-color-100: rgba(255,255,255, 1);
+  --black-color-50: rgba(255,255,255, 0.5);
+  --black-color-90: rgba(255,255,255, 0.9);
+
+  /* Shadows */
+  --shadows-sm: 0px 10px 15px -3px rgba(16, 198, 0, 0.1),
+  0px 4px 6px -2px rgba(16, 198, 0, 0.05);
+
+  /* Background */
+  --background-color: #363636;
 }
 
 

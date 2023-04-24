@@ -44,7 +44,7 @@ const manifest: chrome.runtime.ManifestV3 = {
         'assets/js/*.js',
         'assets/css/*.css',
         'icon16.png',
-        'ico32.png',
+        'icon32.png',
         'icon48.png',
         'icon128.png',
         'src/pages/inject/*.js',

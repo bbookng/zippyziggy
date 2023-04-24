@@ -1,7 +1,15 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 
-const PromptCard = () => {
-  return <div>프롬프트 카드</div>;
+interface PromptCardProps {
+  children: ReactNode;
+}
+
+const PromptCard = ({ children }: PromptCardProps) => {
+  return (
+    <li className="ZP_prompt-container__prompt-card">
+      <article>{children}</article>
+    </li>
+  );
 };
 
 export default PromptCard;

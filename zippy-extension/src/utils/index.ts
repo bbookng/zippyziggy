@@ -1,13 +1,10 @@
 /* https://developer.chrome.com/docs/extensions/mv3/security/#sanitize
  * 악의적인 스크립팅 입력 방지 */
 const sanitizeInput = (input: string) => {
-  return input
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/"/g, "&quot;");
+  return input.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 };
 
-/* 첫글자 대문자*/
+/* 첫글자 대문자 */
 const capitalizeWords = (string: string) => {
   return string.replace(
     /\w\S*/g,
@@ -19,12 +16,12 @@ const capitalizeWords = (string: string) => {
 const formatDateTime = function (timestamp: number) {
   const fullDate = new Date(timestamp);
 
-  if (!fullDate || fullDate.toString() === "Invalid Date") {
-    return "";
+  if (!fullDate || fullDate.toString() === 'Invalid Date') {
+    return '';
   }
 
-  const date = fullDate.toISOString().split("T")[0];
-  const time = fullDate.toTimeString().split(" ")[0];
+  const date = fullDate.toISOString().split('T')[0];
+  const time = fullDate.toTimeString().split(' ')[0];
 
   return `${date} ${time}`;
 };
@@ -33,8 +30,8 @@ const formatDateTime = function (timestamp: number) {
 const formatAgo = function (timestamp: number) {
   const fullDate = new Date(timestamp);
 
-  if (!fullDate || fullDate.toString() === "Invalid Date") {
-    return "";
+  if (!fullDate || fullDate.toString() === 'Invalid Date') {
+    return '';
   }
 
   const now = new Date();
@@ -42,31 +39,31 @@ const formatAgo = function (timestamp: number) {
 
   const units = [
     {
-      name: "년",
+      name: '년',
       value: 31556952000,
     },
     {
-      name: "개월",
+      name: '개월',
       value: 2629746000,
     },
     {
-      name: "주",
+      name: '주',
       value: 604800000,
     },
     {
-      name: "일",
+      name: '일',
       value: 86400000,
     },
     {
-      name: "시간",
+      name: '시간',
       value: 3600000,
     },
     {
-      name: "분",
+      name: '분',
       value: 60000,
     },
     {
-      name: "초",
+      name: '초',
       value: 1000,
     },
   ];
@@ -82,7 +79,7 @@ const formatAgo = function (timestamp: number) {
     }
   }
 
-  return "방금 전";
+  return '방금 전';
 };
 
 const formatHumanReadableNumber = (number: number) => {
@@ -97,10 +94,4 @@ const formatHumanReadableNumber = (number: number) => {
   return `${(number / 1000000).toFixed(1)}M`;
 };
 
-export {
-  sanitizeInput,
-  capitalizeWords,
-  formatDateTime,
-  formatAgo,
-  formatHumanReadableNumber,
-};
+export { sanitizeInput, capitalizeWords, formatDateTime, formatAgo, formatHumanReadableNumber };
