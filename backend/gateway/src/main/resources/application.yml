@@ -42,7 +42,6 @@ spring:
           uri: lb://PROMPT
           predicates:
             - Path=/prompts-swagger
-            - Method=GET
           filters:
             - SetRequestHeader=crntMemberUuid, myDefaultValue
 
