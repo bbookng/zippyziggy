@@ -32,7 +32,7 @@ dependencies {
 	implementation 'com.mysql:mysql-connector-j:8.0.32'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-//	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation group: 'com.auth0', name: 'java-jwt', version: '4.2.1'
 
 	implementation 'org.springdoc:springdoc-openapi-webflux-core:1.5.13'
