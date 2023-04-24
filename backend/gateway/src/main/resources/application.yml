@@ -77,7 +77,7 @@ spring:
             - Path=/notice/**
 
         - id: openapi
-          uri: http://localhost:${server.port}
+          uri: http://k8e205.p.ssafy.io:${server.port}
           predicates:
             - Path=/v3/api-docs/**
           filters:
@@ -88,7 +88,7 @@ springdoc:
   swagger-ui:
     urls[0]:
       name: prompt
-      url: http://localhost:${server.port}/v3/api-docs/prompts
+      url: http://k8e205.p.ssafy.io:${server.port}/v3/api-docs/prompts
 #    urls[1]:
 #      name: member
 #      url: http://localhost:${server.port}/v3/api-docs/members
