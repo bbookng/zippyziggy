@@ -4,7 +4,7 @@ import { setupInterceptorsTo, tokenInterceptor } from '@/utils/interceptors';
 const serverUrl =
   process.env.NODE_ENV !== 'development'
     ? process.env.NEXT_PUBLIC_APP_SERVER_URL
-    : 'http://localhost:8080';
+    : process.env.NEXT_PUBLIC_APP_CLIENT_URL;
 
 const httpApi = () => {
   const instance = axios.create({

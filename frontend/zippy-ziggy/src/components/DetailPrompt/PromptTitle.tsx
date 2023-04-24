@@ -10,6 +10,7 @@ import {
   FaRegHeart,
   FaTrash,
 } from 'react-icons/fa';
+import { getDateTime } from '@/lib/utils';
 import { ActionBox, Container, PopUp, TitleBox, UserBox } from './PromptTitleStyle';
 
 interface PropsType {
@@ -19,6 +20,7 @@ interface PropsType {
   likeCnt: number;
   handleLike?: () => void;
   handleBookmark?: () => void;
+  handleOpenDeleteModal?: () => void;
 }
 
 export default function PromptTitle({
@@ -28,6 +30,7 @@ export default function PromptTitle({
   likeCnt,
   handleLike,
   handleBookmark,
+  handleOpenDeleteModal,
 }: PropsType) {
   const [isPopUp, setIsPopUp] = useState<boolean>(false);
   const popUpRef = useRef<HTMLDivElement>(null);
@@ -79,7 +82,7 @@ export default function PromptTitle({
                     <FaPencilAlt className="icon" />
                     수정
                   </div>
-                  <div>
+                  <div onClick={handleOpenDeleteModal}>
                     <FaTrash className="icon" />
                     삭제
                   </div>
@@ -90,7 +93,10 @@ export default function PromptTitle({
         </div>
         <div className="title">{prompt?.title}</div>
       </TitleBox>
-      <div className="time">마지막 업데이트: {prompt?.time || new Date().toTimeString()}</div>
+      <div className="time">
+        마지막 업데이트:{' '}
+        {prompt.time ? getDateTime(new Date(prompt?.time)) : getDateTime(new Date())}
+      </div>
       <UserBox>
         <Image
           src={prompt?.writer.writerImg || '/images/noProfile.png'}
