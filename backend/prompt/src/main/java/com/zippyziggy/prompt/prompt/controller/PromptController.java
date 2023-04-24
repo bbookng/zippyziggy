@@ -42,9 +42,6 @@ public class PromptController {
 	private final ForkPromptService forkPromptService;
 	private final PromptCommentService promptCommentService;
 
-	@GetMapping("/swagger")
-	public String api() { return "redirect:/swagger-ui/index.html"; }
-
 	/**
 	 *
 	 * @param data
