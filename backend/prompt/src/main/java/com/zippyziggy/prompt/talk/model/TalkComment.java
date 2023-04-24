@@ -34,7 +34,7 @@ public class TalkComment {
 	private Long id;
 
 	@Column(nullable = false)
-	private Long userId;
+	private Long memberId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "talk_id", nullable = false)
