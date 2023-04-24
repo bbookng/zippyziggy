@@ -10,7 +10,7 @@ import logger from 'redux-logger';
 import { createWrapper, HYDRATE } from 'next-redux-wrapper';
 import storage from 'redux-persist/lib/storage'; // 로컬 스토리지를 이용하여 상태를 저장합니다.
 import { persistReducer, persistStore } from 'redux-persist';
-import { authSlice } from './auth/authSlice'; // authSlice 모듈을 불러옵니다.
+import { userSlice } from './user/userSlice'; // userSlice 모듈을 불러옵니다.
 import counterReducer from './auth/counterSlice'; // counterSlice 모듈을 불러옵니다.
 
 const persistConfig = { key: 'root', version: 1, storage }; // redux-persist 설정을 합니다.
@@ -19,7 +19,7 @@ const reducer = (state: any, action: PayloadAction<any>) => {
   // 리듀서를 합칩니다.
   return combineReducers({
     counter: counterReducer, // counterSlice 모듈을 사용하여 counter 상태를 관리합니다.
-    [authSlice.name]: authSlice.reducer, // authSlice 모듈을 사용하여 인증 정보를 관리합니다.
+    [userSlice.name]: userSlice.reducer, // userSlice 모듈을 사용하여 인증 정보를 관리합니다.
   })(state, action);
 };
 

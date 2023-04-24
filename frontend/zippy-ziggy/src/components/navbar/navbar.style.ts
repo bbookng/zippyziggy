@@ -2,10 +2,12 @@ import { media } from '@/styles/media';
 import styled from 'styled-components';
 
 const NavWrapper = styled.div`
+  position: relative;
+  width: 100vw;
   display: flex;
   align-items: center;
   min-height: 5rem;
-  margin: 0 auto 1rem auto;
+  margin: 0 auto 0 auto;
   padding: 0 1.5rem;
   justify-content: space-between;
   background-color: ${({ theme }) => theme.colors.navColor};
@@ -44,7 +46,7 @@ const NavList = styled.ul<NavListProps>`
     top: 0px;
     left: -50%;
     width: 40%;
-    height: 100%;
+    height: 100vh;
     z-index: 999;
     padding: 2rem 0;
     transition: transform 0.3s ease-in-out;
