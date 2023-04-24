@@ -43,7 +43,7 @@ spring:
           predicates:
             - Path=/prompts-swagger/**
           filters:
-            - SetPath=/{*}
+            - SetPath=/
             - SetRequestHeader=crntMemberUuid, myDefaultValue
 
         - id: prompt
