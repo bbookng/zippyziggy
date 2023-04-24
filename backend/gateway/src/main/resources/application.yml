@@ -41,6 +41,18 @@ spring:
         - id: prompt
           uri: lb://PROMPT
           predicates:
+            - Path=/prompts/swagger
+            - Method=GET
+
+        - id: prompt
+          uri: lb://PROMPT
+          predicates:
+            - Path=/prompts
+            - Method=POST
+
+        - id: prompt
+          uri: lb://PROMPT
+          predicates:
             - Path=/prompts/**
           filters:
             - AuthorizationHeaderFilter
