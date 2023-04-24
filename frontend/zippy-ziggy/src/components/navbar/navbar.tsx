@@ -5,9 +5,16 @@ import { FaBars, FaRegBell, FaRegBookmark } from 'react-icons/fa';
 import Link from 'next/link';
 import { useTheme } from 'styled-components';
 import { useRouter } from 'next/router';
+
+// 유저 정보 가져오기
+import { useAppSelector } from '@/hooks/reduxHook';
+
 import { NavWrapper, NavList, NavOption, Logo, NavUser, Overlay } from './navbar.style';
+import Button from '../Button/Button';
 
 const Navbar = ({ toggleTheme }) => {
+  const userState = useAppSelector((state) => state.user); // 유저정보
+
   const [isSelected, setIsSelected] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const router = useRouter();
@@ -49,7 +56,7 @@ const Navbar = ({ toggleTheme }) => {
           {isDark ? (
             <Image
               priority
-              src="/images/Logo_dark.png"
+              src="/images/logos/logo_white_128.png"
               alt="로고주세요"
               width={200}
               height={50}
@@ -59,7 +66,7 @@ const Navbar = ({ toggleTheme }) => {
           ) : (
             <Image
               priority
-              src="/images/Logo_white.png"
+              src="/images/logos/logo_black_128.png"
               alt="로고주세요"
               width={200}
               height={50}
@@ -94,20 +101,31 @@ const Navbar = ({ toggleTheme }) => {
           </NavOption>
         </NavList>
       </div>
-      <NavUser>
-        <FaRegBookmark className="item bookmark" />
-        <FaRegBell className="item" />
-        <Link href={{ pathname: '/account/login' }}>
-          <Image
-            priority
-            src="/images/noProfile.png"
-            alt="프사"
-            width={30}
-            height={30}
-            className="profileImage"
-          />
-        </Link>
-      </NavUser>
+      {userState ? (
+        <NavUser>
+          <Link href="/account/login">
+            <Button buttonType="outline" padding="0 1rem">
+              소셜로그인
+            </Button>
+          </Link>
+        </NavUser>
+      ) : (
+        <NavUser>
+          <FaRegBookmark className="item bookmark" />
+          <FaRegBell className="item" />
+          <Link href={{ pathname: '/account/login' }}>
+            <Image
+              priority
+              src="/images/noProfile.png"
+              alt="프사"
+              width={30}
+              height={30}
+              className="profileImage"
+            />
+          </Link>
+        </NavUser>
+      )}
+
       {isOpen && <Overlay onClick={handleNavClose} />}
     </NavWrapper>
   );

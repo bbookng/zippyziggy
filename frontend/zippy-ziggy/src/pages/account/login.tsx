@@ -38,7 +38,7 @@ export const LoginWarp = styled.div`
 export const LoginContainer = styled.div`
   width: 100%;
   height: 100vh;
-  background-color: ${({ theme: { colors } }) => colors.whiteColor};
+  background-color: ${({ theme: { colors } }) => colors.whiteColor100};
 `;
 
 export default function Login() {
