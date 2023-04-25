@@ -20,12 +20,8 @@ public class CorsConfig {
         config.addAllowedOrigin("http://k8e205.p.ssafy.io:8000");
         config.addAllowedOrigin("http://localhost:3000");
         config.addAllowedOrigin("http://localhost:8080"); // 모든 ip에 응답을 허용하겠다.
-        config.addAllowedHeader(CorsConfiguration.ALL); // 모든 header에 응답을 허용하겠다.
-        config.addAllowedMethod(HttpMethod.GET); // 모든 post, get, put, delete, patch 요청을 허용하겠다.
-        config.addAllowedMethod(HttpMethod.POST); // 모든 post, get, put, delete, patch 요청을 허용하겠다.
-        config.addAllowedMethod(HttpMethod.DELETE); // 모든 post, get, put, delete, patch 요청을 허용하겠다.
-        config.addAllowedMethod(HttpMethod.PUT); // 모든 post, get, put, delete, patch 요청을 허용하겠다.
-        config.addAllowedMethod(HttpMethod.OPTIONS); // 모든 post, get, put, delete, patch 요청을 허용하겠다.
+        config.addAllowedHeader("*"); // 모든 header에 응답을 허용하겠다.
+        config.addAllowedMethod("*"); // 모든 post, get, put, delete, patch 요청을 허용하겠다.
 //        config.addExposedHeader("Set-Cookie");
 //        config.addExposedHeader("Authorization");
 
