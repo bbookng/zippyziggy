@@ -10,12 +10,13 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @Configuration
 @EnableWebFluxSecurity
 public class WebConfig {
+
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         return http.authorizeExchange()
-//                .anyExchange().permitAll()
+                .anyExchange().permitAll()
                 .and()
-                .cors().disable()
+                .cors(cors -> cors.disable())
                 .csrf().disable()
                 .formLogin().disable()
                 .httpBasic().disable()
