@@ -56,6 +56,7 @@ public class MemberService {
         try {
             // 보내준 파일이 없을 경우 그냥 플랫폼에서 받은 프로필 이미지를 삽입
             if (file == null || file.isEmpty()) {
+                System.out.println("222222222222222222222222222222222222222222222");
                 UUID uuid = UUID.randomUUID();
 
                 JwtToken jwtToken = signUpLogic(dto, uuid, dto.getProfileImg());
@@ -63,6 +64,7 @@ public class MemberService {
                 return jwtToken;
 
             } else {
+                System.out.println("333333333333333333333333333333333333333333333333");
                 // 파일을 업로드해서 보내준 경우
                 UUID uuid = UUID.randomUUID();
 
@@ -87,10 +89,13 @@ public class MemberService {
      * 회원가입되는 로직
      */
     private JwtToken signUpLogic(MemberSignUpRequestDto dto, UUID uuid, String profileImg) throws Exception {
-
+        System.out.println("5555555555555555555555555555555555555555555");
         String nickname = dto.getNickname();
 
         Member checkMemberPlatform = memberCheck(dto.getPlatform(), dto.getPlatformId());
+        System.out.println("checkMemberPlatform = " + checkMemberPlatform);
+        System.out.println("dto = " + dto.getPlatform());
+        System.out.println("dto = " + dto.getPlatformId());
         if (checkMemberPlatform == null) {
             Member member = Member.builder()
                     .name(dto.getName())
@@ -101,6 +106,7 @@ public class MemberService {
                     .userUuid(uuid)
                     .regDt(LocalDateTime.now())
                     .build();
+            System.out.println("member = " + member);
             memberRepository.save(member);
             return autoLogin(nickname);
 

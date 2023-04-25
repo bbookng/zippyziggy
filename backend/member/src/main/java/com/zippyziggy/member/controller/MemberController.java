@@ -376,7 +376,10 @@ public class MemberController {
             "중복된 유저일 경우 400 상태 코드와 함께 문구가 반환된다.")
     public ResponseEntity<?> memberSignUp(@RequestPart(value = "user") MemberSignUpRequestDto memberSignUpRequestDto,
                                           @RequestPart(value = "file", required = false) MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws Exception {
-
+        System.out.println("0000000000000000000000000000000000000000000000000000");
+        System.out.println("memberSignUpRequestDto = " + memberSignUpRequestDto);
+        System.out.println("memberSignUpRequestDto = " + memberSignUpRequestDto.toString());
+        System.out.println("file = " + file);
         try {
             JwtToken jwtToken = memberService.memberSignUp(memberSignUpRequestDto, file);
             HttpHeaders headers = new HttpHeaders();
