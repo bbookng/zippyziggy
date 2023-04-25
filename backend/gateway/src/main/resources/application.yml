@@ -60,6 +60,11 @@ spring:
 #          filters:
 #            - AuthorizationHeaderFilter
 
+        - id: member
+          uri: lb://MEMBER
+          predicates:
+            - Path=/members/**
+
         - id: prompt
           uri: lb://PROMPT
           predicates:
