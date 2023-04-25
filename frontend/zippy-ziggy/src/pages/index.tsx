@@ -7,9 +7,12 @@ import styled from 'styled-components';
 import css from 'styled-jsx/css';
 import Paragraph from '@/components/Typography/Paragraph';
 import Title from '@/components/Typography/Title';
+import { media } from '@/styles/media';
+import Link from 'next/link';
 
 const Container = styled.div`
   display: flex;
+  padding: 16px;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -17,6 +20,11 @@ const Container = styled.div`
   background-image: url('/images/mainBackground.png');
   background-size: cover;
   background-position: center;
+  ${media.small`
+  .title {
+    font-size: ${({ theme }) => theme.fonts.body_lg};
+  }
+  `}
 `;
 
 const LogoContainer = styled.div`
@@ -30,22 +38,22 @@ export default function Home() {
   return (
     <Container>
       <LogoContainer>
-        <div>
-          <Title color="whiteColor" textAlign="center">
-            재밌고 유용한 프롬프트를 찾으시나요?
-          </Title>
-          <Title color="whiteColor" textAlign="center">
-            지피지기를 사용해보세요
-          </Title>
-        </div>
+        <Title className="title" color="whiteColor" textAlign="center">
+          재밌고 유용한 프롬프트를 찾으시나요?
+          <br /> 지피지기를 사용해보세요
+        </Title>
       </LogoContainer>
-      <Paragraph color="linkColor" style={{ cursor: 'pointer' }}>
-        유용한 프롬프트 찾기 →
-      </Paragraph>
+      <Link href="/prompts">
+        <Paragraph color="linkColor" style={{ cursor: 'pointer' }}>
+          유용한 프롬프트 찾기 →
+        </Paragraph>
+      </Link>
       <br />
-      <Paragraph color="linkColor" style={{ cursor: 'pointer' }}>
-        확장 프로그램으로 쉽게 사용하기 →
-      </Paragraph>
+      <Link href="/download">
+        <Paragraph color="linkColor" style={{ cursor: 'pointer' }}>
+          확장 프로그램으로 쉽게 사용하기 →
+        </Paragraph>
+      </Link>
       <br />
     </Container>
   );

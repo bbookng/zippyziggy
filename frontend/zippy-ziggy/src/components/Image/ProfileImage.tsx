@@ -1,6 +1,10 @@
 import Image from 'next/image';
 
 function ProfileImage({ src, alt = '이미지', size = 64 }) {
+  const handleImgError = (e) => {
+    e.target.src = '/images/noProfile.png';
+  };
+
   return (
     <div
       style={{
@@ -23,6 +27,7 @@ function ProfileImage({ src, alt = '이미지', size = 64 }) {
         }}
         width={size}
         height={size}
+        onError={handleImgError}
       />
     </div>
   );

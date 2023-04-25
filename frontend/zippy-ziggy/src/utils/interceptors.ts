@@ -17,7 +17,7 @@ const tokenInterceptor = (instance: AxiosInstance) => {
       // 토큰을 얻어오는 함수
       const token = localStorage.getItem('accessToken');
       axiosConfig.headers = new AxiosHeaders({
-        Authorization: token,
+        Authorization: `Bearer ${token}`,
       });
       return axiosConfig;
     },
@@ -35,11 +35,14 @@ const tokenInterceptor = (instance: AxiosInstance) => {
         response: { status },
       } = error;
 
+      console.log(status);
       if (status === 401) {
         const originalRequest = config;
 
         // 토큰 refresh 요청
-        const data = await axios.get(`${process.env.NEXT_PUBLIC_APP_SERVER_URL}/users/refresh`);
+        const data = await axios.get(
+          `${process.env.NEXT_PUBLIC_APP_SERVER_URL}/members/refresh/token`
+        );
 
         // 요청 후 새롭게 받은 accToken을 저장
         const {
