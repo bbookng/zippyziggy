@@ -1,5 +1,5 @@
 import React from 'react';
-import Logo from '@assets/img/logo.png';
+import Logo from '@assets/img/logo_white.svg';
 import Google from '@pages/popup/components/Button/Google';
 import Kakao from '@pages/popup/components/Button/Kakao';
 import styles from './Popup.module.scss';
