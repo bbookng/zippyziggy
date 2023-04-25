@@ -1,7 +1,7 @@
 import React from 'react';
 import { FaArrowLeft } from 'react-icons/fa';
 import { useRouter } from 'next/router';
-import { Footer } from './Footer.style';
+import { Footer } from './FooterStyle';
 import Button from '../Button/Button';
 
 interface PropsType {

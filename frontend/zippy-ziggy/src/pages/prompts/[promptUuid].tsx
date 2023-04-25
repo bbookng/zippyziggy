@@ -1,4 +1,3 @@
-import Button from '@/components/Button/Button';
 import CommentList from '@/components/Comment/CommentList';
 import ForkedPromptList from '@/components/DetailPrompt/ForkedPromptList';
 import Introduction from '@/components/DetailPrompt/Introduction';
@@ -7,7 +6,7 @@ import SideBar from '@/components/DetailPrompt/SideBar';
 import Tab from '@/components/DetailPrompt/Tab';
 import TalkComponent from '@/components/DetailPrompt/TalkComponent';
 import Modal from '@/components/Modal/Modal';
-import { http } from '@/lib/http';
+import { bookmarkPrompt, getPromptDetail, likePrompt } from '@/core/prompt/promptAPI';
 import {
   Container,
   LeftContainer,
@@ -17,7 +16,7 @@ import {
 } from '@/styles/prompt/Detail.style';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaArrowAltCircleUp } from 'react-icons/fa';
 
 export default function DetailPrompt() {
@@ -70,26 +69,24 @@ export default function DetailPrompt() {
 
   // Prompt 상세 요청 API
   const handleGetPromptDetail = async () => {
-    const res = await http.get(`/prompts/${promptUuid}`);
-    return res.data;
+    const res = await getPromptDetail({ promptUuid });
+    return res;
   };
 
   // Prompt 상세 가져오기
   const { isLoading, data } = useQuery(['prompt'], handleGetPromptDetail);
 
   // 좋아요
-  const handleLike = () => {
-    http.post(`/prompts/${promptUuid}/like`).then((res) => {
-      setIsLiked(res.data.isLiked);
-      res.data.isLiked ? setLikeCnt((prev) => prev + 1) : setLikeCnt((prev) => prev - 1);
-    });
+  const handleLike = async () => {
+    const res = await likePrompt({ promptUuid });
+    setIsLiked(res.isLiked);
+    res.isLiked ? setLikeCnt((prev) => prev + 1) : setLikeCnt((prev) => prev - 1);
   };
 
   // 북마크
-  const handleBookmark = () => {
-    http.post(`/prompts/${promptUuid}/bookmark`).then((res) => {
-      setIsBookmarked(res.data.isBookmarked);
-    });
+  const handleBookmark = async () => {
+    const res = await bookmarkPrompt({ promptUuid });
+    setIsBookmarked(res.isBookmarked);
   };
 
   useEffect(() => {

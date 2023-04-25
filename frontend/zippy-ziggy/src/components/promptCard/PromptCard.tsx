@@ -3,7 +3,7 @@ import Image from 'next/image';
 import { getDate } from '@/lib/utils';
 import { FaHeart, FaBookmark, FaPlayCircle } from 'react-icons/fa';
 import Link from 'next/link';
-import { Body, Conatiner, Content, Footer, Infos, Title } from './Card.style';
+import { Body, Conatiner, Content, Footer, Infos, Title } from './CardStyle';
 
 interface PromptType {
   promptId: string;

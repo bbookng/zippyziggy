@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 // 유저 정보 가져오기
 import { useAppSelector } from '@/hooks/reduxHook';
 
-import { NavWrapper, NavList, NavOption, Logo, NavUser, Overlay } from './navbar.style';
+import { NavWrapper, NavList, NavOption, Logo, NavUser, Overlay } from './NavbarStyle';
 import Button from '../Button/Button';
 import ProfileImage from '../Image/ProfileImage';
 
