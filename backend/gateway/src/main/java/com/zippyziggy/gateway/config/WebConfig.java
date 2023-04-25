@@ -22,6 +22,7 @@ public class WebConfig {
                     cors.setAllowedOrigins(Arrays.asList("http://k8e205.p.ssafy.io:8000", "http://localhost:3000", "http://localhost:8080"));
                     cors.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     cors.setAllowedHeaders(Arrays.asList("*"));
+                    cors.setAllowCredentials(true);
                     cors.setExposedHeaders(Arrays.asList("Authorization", "Set-Cookie"));
                     return cors.applyPermitDefaultValues();
                 })
