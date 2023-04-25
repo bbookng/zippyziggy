@@ -8,7 +8,7 @@ import {
   RightContainer,
 } from './Create_2Style';
 
-import PromptCard from '../PPromptCard/PromptCard';
+import PromptCard from '../PromptCard/PromptCard';
 
 interface PropsTypes {
   title: string | null;
