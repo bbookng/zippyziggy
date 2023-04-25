@@ -154,7 +154,7 @@ public class MemberController {
         Cookie[] myCookies = request.getCookies();
         if (myCookies != null) {
             for (Cookie myCookie : myCookies) {
-                if (myCookie.getName().equals("refreshToken")) {
+                if (myCookie.getName().equals("refreshToken") || myCookie.getName().equals("accessToken")) {
                     myCookie.setMaxAge(0);
                     response.addCookie(myCookie);
                 }
@@ -272,7 +272,7 @@ public class MemberController {
         Cookie[] myCookies = request.getCookies();
         if (myCookies != null) {
             for (Cookie myCookie : myCookies) {
-                if (myCookie.getName().equals("refreshToken")) {
+                if (myCookie.getName().equals("refreshToken") || myCookie.getName().equals("accessToken")) {
                     myCookie.setMaxAge(0);
                     response.addCookie(myCookie);
                 }
@@ -373,7 +373,7 @@ public class MemberController {
         Cookie[] myCookies = request.getCookies();
         if (myCookies != null) {
             for (Cookie myCookie : myCookies) {
-                if (myCookie.getName().equals("refreshToken")) {
+                if (myCookie.getName().equals("refreshToken") || myCookie.getName().equals("accessToken")) {
                     myCookie.setMaxAge(0);
                     response.addCookie(myCookie);
                 }
@@ -412,7 +412,7 @@ public class MemberController {
             Cookie[] myCookies = request.getCookies();
             if (myCookies != null) {
                 for (Cookie myCookie : myCookies) {
-                    if (myCookie.getName().equals("refreshToken")) {
+                    if (myCookie.getName().equals("refreshToken") || myCookie.getName().equals("accessToken")) {
                         myCookie.setMaxAge(0);
                         response.addCookie(myCookie);
                     }
@@ -468,7 +468,7 @@ public class MemberController {
         Cookie[] myCookies = request.getCookies();
         if (myCookies != null) {
             for (Cookie myCookie : myCookies) {
-                if (myCookie.getName().equals("refreshToken")) {
+                if (myCookie.getName().equals("refreshToken") || myCookie.getName().equals("accessToken")) {
                     myCookie.setMaxAge(0);
                     response.addCookie(myCookie);
                 }
