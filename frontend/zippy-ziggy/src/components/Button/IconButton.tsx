@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 import GoogleIcon from '@/assets/svgs/google.svg';
-import { ButtonProps } from './Button.style';
+import { ButtonProps } from './ButtonStyle';
 
 const buttonList = (buttonType, color) => {
   if (buttonType === 'outline') {

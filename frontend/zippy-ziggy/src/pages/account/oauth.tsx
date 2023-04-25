@@ -22,7 +22,8 @@ function KakaoLoginRedirect() {
 
           if (data?.isSignUp === true) {
             // 회원가입으로 이동
-            const { name, platform, platformId, profileImg } = data?.socialSignUpDataResponseDto;
+            const { name, platform, platformId, profileImg } =
+              data?.socialSignUpDataResponseDto ?? {};
             router.push({
               pathname: '/account/signup',
               query: { name, platform, platformId, profileImg },

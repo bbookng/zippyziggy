@@ -1,4 +1,4 @@
-import { StyledButton, ButtonProps } from './Button.style';
+import { StyledButton, ButtonProps } from './ButtonStyle';
 
 /**
  * 타이틀을 사용한다.
