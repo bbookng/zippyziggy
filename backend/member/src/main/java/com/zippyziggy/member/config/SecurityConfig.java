@@ -15,6 +15,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsUtils;
 import org.springframework.web.filter.CorsFilter;
 
 @Configuration // Ioc 할 수 있게 만들기 위해
@@ -42,6 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .httpBasic().disable() // Bearer 방식 사용 -> header에 authentication에 토큰을 넣어 전달하는 방식
                 .authorizeRequests() // 요청에 대한 사용권한 체크
+                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .antMatchers("/members/logout").authenticated()
                 .antMatchers("/members").authenticated()
                 .antMatchers("/members/refresh/token").authenticated()
