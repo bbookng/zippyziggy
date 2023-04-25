@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useRef } from 'react';
 import { Category } from '@pages/content/types';
 
 interface CategoryFilterProps {
@@ -11,6 +11,7 @@ const CategoryFilter = ({
   setSelectedCategory,
   category,
 }: CategoryFilterProps) => {
+  const navRef = useRef<HTMLDivElement>(null);
   const handleCategoryClick = (
     e: React.MouseEvent<HTMLLIElement> | React.KeyboardEvent<HTMLLIElement>
   ) => {
@@ -25,8 +26,25 @@ const CategoryFilter = ({
     }
   };
 
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          document.querySelector('#ZP_to-top-button').classList.add('hide');
+        } else {
+          document.querySelector('#ZP_to-top-button').classList.remove('hide');
+        }
+      });
+    });
+    observer.observe(navRef.current as HTMLDivElement);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   return (
-    <nav className="ZP_prompt-container__filter ZP_category">
+    <nav className="ZP_prompt-container__filter ZP_category" ref={navRef}>
       <ul>
         {category.map((categoryItem) => {
           return (

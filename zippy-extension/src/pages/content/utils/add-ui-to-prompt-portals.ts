@@ -1,6 +1,5 @@
 /* eslint-disable no-param-reassign */
 import { ZP_PROMPT_CONTAINER_ID } from '@pages/constants';
-import { MutableRefObject } from 'react';
 
 const addRootWrapperToTargetElement = ($target: HTMLElement) => {
   const rootWrapper = document.createElement('div');
@@ -79,33 +78,5 @@ export const hideEmptyDiv = (targetElement: Element) => {
     if ($unlessElement) {
       $unlessElement.style.display = 'none';
     }
-  }
-};
-
-// GPT 사이트의 맨 아래로 가는 버튼의 위치를 조정하는 함수
-export const adjustToBottomButtonPosition = (targetElement: Element) => {
-  if (targetElement.lastChild?.nodeName === 'BUTTON') {
-    const toBottomButton = targetElement.lastChild as Element;
-    toBottomButton.classList.remove('bottom-[124px]', 'md:bottom-[120px]');
-    toBottomButton.classList.add('bottom-1');
-  }
-};
-
-// MutationObserver 감시하고, 대상 요소에 변화가 생겼을 때 포탈을 생성하는 함수
-export const handleMutation = (
-  mutations: MutationRecord[],
-  isNewChatPageRef: MutableRefObject<boolean>,
-  createPromptContainerPortal: () => void
-) => {
-  for (const mutation of mutations) {
-    const targetElement = mutation.target as Element;
-
-    if (shouldCreatePromptContainerPortal(targetElement, isNewChatPageRef)) {
-      createPromptContainerPortal();
-      adjustToBottomButtonPosition(targetElement);
-      return;
-    }
-
-    hideEmptyDiv(targetElement);
   }
 };

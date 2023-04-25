@@ -4,7 +4,8 @@ import {
   findParentElementWithReactScrollClass,
   findRegenerateButton,
   findTargetElement,
-  handleMutation,
+  hideEmptyDiv,
+  shouldCreatePromptContainerPortal,
 } from '@pages/content/utils/add-ui-to-prompt-portals';
 
 const usePromptListPortal = () => {
@@ -45,15 +46,25 @@ const usePromptListPortal = () => {
   }, []);
 
   useEffect(() => {
-    // MutationObserver를 이용하여 __next 요소의 자식요소 추가, 제거, 변경을 감지하고,
-    // 해당되는 경우 포탈을 생성하도록 createPromptContainerPortal 함수를 호출함
+    // MutationObserver 를 이용하여 __next 요소의 자식요소 추가, 제거, 변경을 감지하고,
+    // 해당되는 경우 포탈을 생성하도록 createPromptPortal 함수를 호출함
     const observeNextElement = (
       isNewChatPageRef: MutableRefObject<boolean>,
-      createPromptContainerPortalFn: () => void
+      createPromptContainerPortal: () => void
     ) => {
-      const observer = new MutationObserver((mutations) =>
-        handleMutation(mutations, isNewChatPageRef, createPromptContainerPortalFn)
-      );
+      const observer = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+          const targetElement = mutation.target as Element;
+
+          // 대상 요소가 포탈을 생성해야 하는지 판단
+          if (shouldCreatePromptContainerPortal(targetElement, isNewChatPageRef)) {
+            createPromptContainerPortal();
+            return;
+          }
+          // 필요없는 div 제거
+          hideEmptyDiv(targetElement);
+        }
+      });
       observer.observe(document.getElementById('__next'), { subtree: true, childList: true });
 
       return () => {
