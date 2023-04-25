@@ -58,7 +58,6 @@ export default function PromptCreate() {
 
   // 생성 요청
   const handleCreatePrompt = () => {};
-  console.log(isNext);
 
   return (
     <>
@@ -102,7 +101,11 @@ export default function PromptCreate() {
         />
       )}
       <FooterBox />
-      <CreateFooter isNext={isNext} handleNext={handleNext} />
+      <CreateFooter
+        isNext={isNext}
+        handleNext={handleNext}
+        handleCreatePrompt={handleCreatePrompt}
+      />
     </>
   );
 }
