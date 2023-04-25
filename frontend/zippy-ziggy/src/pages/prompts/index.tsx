@@ -1,6 +1,6 @@
 import Button from '@/components/Button/Button';
 import FeedCategory from '@/components/Category/FeedCategory';
-import PromptCard from '@/components/PromptCard/PromptCard';
+import PromptCard from '@/components/PPromptCard/PromptCard';
 import Search from '@/components/Search/Search';
 import { CardList, Container, SearchBox, SortBox, TitleBox } from '@/styles/prompt/List.style';
 import { useRouter } from 'next/router';
