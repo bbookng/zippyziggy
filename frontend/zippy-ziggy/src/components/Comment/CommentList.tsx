@@ -2,7 +2,6 @@ import { createPromptComment, getPromptCommentList } from '@/core/prompt/promptA
 import { getTalkCommentList } from '@/core/talk/talkAPI';
 import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
 import { checkInputFormToast } from '@/lib/utils';
 import { Container, InputBox, Textarea, Title } from './CommentListStyle';
 import Button from '../Button/Button';
@@ -73,30 +72,27 @@ export default function CommentList({ id, type, nickname, size }: PropsType) {
     e.preventDefault();
     if (content === '') {
       checkInputFormToast();
+      return;
     }
 
-    const payload = { content };
-    const requestData = { id, payload };
+    const requestData = { id, content };
 
-    // const data = await createPromptComment(requestData);
+    const data = await createPromptComment(requestData);
 
-    // if (data.payload.result === 'SUCCESS') {
-    // 	isStop.current = false;
-    // 	setValue('content', '');
-    // 	page.current = 0;
-    // 	handleGetCommentList();
-    // 	await commentAlertFunction(nickname);
-    // 	for (const nickname of mentionNicknameList) {
-    // 		await mentionAlertFunction(nickname.substring(1));
-    // 	}
-    // }
+    if (data.result === 'SUCCESS') {
+      isStop.current = false;
+      setValue('content', '');
+      page.current = 1;
+      setCommentList([]);
+      handleGetCommentList();
+    }
   };
 
   // 댓글 삭제
   const handleDeleteComment = () => {
     isStop.current = false;
     setValue('content', '');
-    page.current = 0;
+    page.current = 1;
     handleGetCommentList();
   };
 
