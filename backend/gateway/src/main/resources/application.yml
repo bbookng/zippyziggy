@@ -17,6 +17,20 @@ spring:
         - id: member
           uri: lb://MEMBER
           predicates:
+            - Path=/members/doc/**
+          filters:
+            - RewritePath=/members/(?<segment>.*), /$\{segment}
+
+        - id: member
+          uri: lb://MEMBER
+          predicates:
+            - Path=/members/v3/**
+          filters:
+            - RewritePath=/members/(?<segment>.*), /$\{segment}
+
+        - id: member
+          uri: lb://MEMBER
+          predicates:
             - Path=/members/signup
             - Method=POST
           filters:
@@ -89,7 +103,7 @@ springdoc:
     urls[0]:
       name: prompt
       url: http://k8e205.p.ssafy.io:${server.port}/v3/api-docs/prompts
-#    urls[1]:
-#      name: member
-#      url: http://localhost:${server.port}/v3/api-docs/members
+    urls[1]:
+      name: member
+      url: http://k8e205.p.ssafy.io:${server.port}/v3/api-docs/members
 
