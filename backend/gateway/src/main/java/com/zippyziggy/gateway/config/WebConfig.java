@@ -16,24 +16,25 @@ public class WebConfig {
 
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-        return http.cors()
-                .configurationSource(request -> {
-                    CorsConfiguration cors = new CorsConfiguration();
-                    cors.setAllowedOrigins(Arrays.asList("http://k8e205.p.ssafy.io:8000", "http://localhost:3000", "http://localhost:8080"));
-                    cors.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-                    cors.setAllowedHeaders(Arrays.asList("*"));
-                    cors.setAllowCredentials(true);
-                    cors.setExposedHeaders(Arrays.asList("Authorization", "Set-Cookie"));
-                    return cors.applyPermitDefaultValues();
-                })
-                .and()
+        return http.cors().disable()
+//                .configurationSource(request -> {
+//                    CorsConfiguration cors = new CorsConfiguration();
+//                    cors.setAllowedOrigins(Arrays.asList("http://k8e205.p.ssafy.io:8000", "http://localhost:3000", "http://localhost:8080"));
+//                    cors.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+//                    cors.setAllowedHeaders(Arrays.asList("*"));
+//                    cors.setAllowCredentials(true);
+//                    cors.setExposedHeaders(Arrays.asList("Authorization", "Set-Cookie"));
+//                    return cors.applyPermitDefaultValues();
+//                })
                 .csrf().disable()
                 .formLogin().disable()
                 .httpBasic().disable()
-                .authorizeExchange(exchange -> exchange
-                        .pathMatchers(HttpMethod.OPTIONS).permitAll()
-                        .anyExchange().permitAll())
-
+//                .authorizeExchange(exchange -> exchange
+//                        .pathMatchers(HttpMethod.OPTIONS).permitAll()
+//                        .anyExchange().permitAll())
+                .authorizeExchange()
+                .anyExchange().permitAll()
+                .and()
                 .build();
     }
 
