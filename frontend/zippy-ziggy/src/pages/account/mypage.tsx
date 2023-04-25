@@ -10,30 +10,9 @@ export default function Index() {
   const userState = useAppSelector((state) => state.user); // 유저정보
   const dispatch = useAppDispatch();
 
-  // 로그아웃
-  const handleLogout = async () => {
-    httpAuth
-      .post(`/members/logout`)
-      .then(() => {
-        dispatch(setIsLogin(false));
-        router.push('/');
-        // localStorage.clear();
-      })
-      .catch(() => {
-        // localStorage.clear();
-      });
-  };
-
   return (
     <div>
       <Title>마이페이지</Title>
-      <Link href="/account/modify">
-        <Button width="326px">정보변경</Button>
-      </Link>
-
-      <Button width="326px" onClick={handleLogout}>
-        로그아웃
-      </Button>
     </div>
   );
 }
