@@ -2,7 +2,6 @@ package com.zippyziggy.gateway.service;
 
 import com.zippyziggy.gateway.model.Member;
 import com.zippyziggy.gateway.repository.MemberRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
