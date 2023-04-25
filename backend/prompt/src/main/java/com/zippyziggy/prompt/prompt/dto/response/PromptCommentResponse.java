@@ -16,6 +16,7 @@ import lombok.Setter;
 @Builder
 public class PromptCommentResponse {
 
+	private Long commentId;
 	private CommentWriter member;
 	private long regDt;
 	private long updDt;
@@ -38,6 +39,7 @@ public class PromptCommentResponse {
 		long updDt = comment.getRegDt().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
 
 		PromptCommentResponse response = PromptCommentResponse.builder()
+			.commentId(comment.getId())
 			.regDt(regDt)
 			.updDt(updDt)
 			.content(comment.getContent())
