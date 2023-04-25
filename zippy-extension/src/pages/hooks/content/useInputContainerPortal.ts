@@ -4,6 +4,7 @@ import {
   addToggleButton,
   addToTopButton,
   createPortalContainer,
+  removeFormParentClasses,
   setInputWrapperStyle,
 } from '@pages/content/utils/add-ui-to-input-portals';
 
@@ -17,16 +18,7 @@ const useInputContainerPortal = () => {
     const $formParent = document.querySelector('form')?.parentElement;
     if (!$formParent) return;
 
-    const formClassesToRemove = [
-      'absolute',
-      'md:!bg-transparent',
-      'md:border-t-0',
-      'md:dark:border-transparent',
-      'md:border-transparent',
-    ];
-    $formParent.classList.remove(...formClassesToRemove);
-    $formParent.classList.add('relative');
-    $formParent.id = 'ZP_input-section';
+    removeFormParentClasses($formParent);
 
     const $inputWrapperPortal = createPortalContainer();
     if (!$inputWrapperPortal) return;

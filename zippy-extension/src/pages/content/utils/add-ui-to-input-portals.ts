@@ -1,5 +1,20 @@
 import { ZP_INPUT_WRAPPER_ID } from '@pages/constants';
 
+export const removeFormParentClasses = (formParent) => {
+  const $formParent = formParent;
+  const classesToRemove = [
+    'absolute',
+    'md:!bg-transparent',
+    'md:border-t-0',
+    'md:dark:border-transparent',
+    'md:border-transparent',
+  ];
+
+  $formParent.classList.remove(...classesToRemove);
+  $formParent.classList.add('relative');
+  $formParent.id = 'ZP_input-section';
+};
+
 export const createPortalContainer = () => {
   const $parent = document.querySelector('textarea')?.parentElement ?? null;
   if (!$parent) return null;
