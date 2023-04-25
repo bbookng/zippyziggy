@@ -11,9 +11,9 @@ import axios from 'axios';
 import { media } from '@/styles/media';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHook';
-import { setIsLogin } from '@/core/user/userSlice';
+import { setIsLogin, setNickname, setProfileImg, setUserUuid } from '@/core/user/userSlice';
 import Image from 'next/image';
-import ProfileImage from '@/components/Image/ProfileImg';
+import ProfileImage from '@/components/Image/ProfileImage';
 
 // css 스타일을 정의
 const LoginWarp = styled.div`
@@ -63,8 +63,12 @@ const ImagePreview = ({ file }) => {
 };
 
 export default function SignUp() {
+  // redux를 사용하여 결과값을 저장합니다.
+  const userState = useAppSelector((state) => state.user); // 유저정보
+  const dispatch = useAppDispatch();
+
   // useState를 사용하여 닉네임과 닉네임의 검증 상태를 저장합니다
-  const [nickname, setNickname] = useState('');
+  const [nickname, setBeforeNickname] = useState('');
   const [statusNickname, setStatusNickname] = useState('');
 
   const inputRef = useRef(null); // useRef를 사용하여 input element를 참조합니다
@@ -122,11 +126,24 @@ export default function SignUp() {
     }
 
     // 회원가입 요청
-    axios({
+    httpForm({
       method: 'post',
       url: `${process.env.NEXT_PUBLIC_APP_SERVER_URL}/members/signup`,
       data: formData,
-    });
+    })
+      .then((res) => {
+        const { data } = res;
+        const { user } = data.memberInformResponseDto;
+        dispatch(setProfileImg(user.profileImg));
+        dispatch(setNickname(user.nickname));
+        dispatch(setUserUuid(user.userUuid));
+        dispatch(setIsLogin(true));
+        router.push({
+          pathname: '/account/welcome',
+          query: { nickname: user.nickname },
+        });
+      })
+      .catch(() => {});
   };
 
   return (
@@ -164,7 +181,7 @@ export default function SignUp() {
             id="nickname"
             placeholder="닉네임을 입력해주세요"
             value={nickname}
-            onChange={(e) => setNickname(e.target.value)}
+            onChange={(e) => setBeforeNickname(e.target.value)}
             required
           />
           {statusNickname === 'error' && (

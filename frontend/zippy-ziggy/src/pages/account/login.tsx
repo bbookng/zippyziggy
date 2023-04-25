@@ -6,7 +6,6 @@ import IconButton from '@/components/Button/IconButton';
 import router from 'next/router';
 import styled, { useTheme } from 'styled-components';
 import Title from '@/components/Typography/Title';
-import { Logo } from '@/components/navbar/navbar.style';
 import { media } from '@/styles/media';
 
 export const LoginWarp = styled.div`
@@ -69,29 +68,6 @@ export default function Login() {
       <LoginWarp>
         <br />
         <br />
-        {/* <Logo>
-          {isDark ? (
-            <Image
-              priority
-              src="/images/Logo_dark.png"
-              alt="로고주세요"
-              width={200}
-              height={50}
-              className="LogoImage"
-              onClick={HandleHomepage}
-            />
-          ) : (
-            <Image
-              priority
-              src="/images/Logo_white.png"
-              alt="로고주세요"
-              width={200}
-              height={50}
-              className="LogoImage"
-              onClick={HandleHomepage}
-            />
-          )}
-        </Logo> */}
         <Title textAlign="center" sizeType="2xl" color="blackColor90">
           소셜로그인
         </Title>

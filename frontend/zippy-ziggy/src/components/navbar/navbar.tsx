@@ -11,6 +11,7 @@ import { useAppSelector } from '@/hooks/reduxHook';
 
 import { NavWrapper, NavList, NavOption, Logo, NavUser, Overlay } from './navbar.style';
 import Button from '../Button/Button';
+import ProfileImage from '../Image/ProfileImage';
 
 const Navbar = ({ toggleTheme }) => {
   const userState = useAppSelector((state) => state.user); // 유저정보
@@ -101,27 +102,27 @@ const Navbar = ({ toggleTheme }) => {
           </NavOption>
         </NavList>
       </div>
-      {userState ? (
+      {userState.isLogin ? (
         <NavUser>
-          <Link href="/account/login">
-            <Button buttonType="outline" padding="0 1rem">
-              소셜로그인
-            </Button>
+          <FaRegBookmark className="item bookmark" />
+          <FaRegBell className="item" />
+          <Link href={{ pathname: '/account/mypage' }}>
+            <ProfileImage src={userState.profileImg} alt="안녕" size={36} />
           </Link>
         </NavUser>
       ) : (
         <NavUser>
-          <FaRegBookmark className="item bookmark" />
-          <FaRegBell className="item" />
-          <Link href={{ pathname: '/account/login' }}>
-            <Image
-              priority
-              src="/images/noProfile.png"
-              alt="프사"
-              width={30}
-              height={30}
-              className="profileImage"
-            />
+          <Link href="/account/login">
+            <Button
+              buttonType="outline"
+              isRound
+              color="blackColor05"
+              height="fit-content"
+              padding="0.5rem 1rem"
+              style={{ color: '#4CC857' }}
+            >
+              소셜로그인
+            </Button>
           </Link>
         </NavUser>
       )}

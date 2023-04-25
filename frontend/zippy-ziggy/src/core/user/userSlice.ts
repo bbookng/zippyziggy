@@ -5,13 +5,17 @@ import { RootState } from '../store';
 // 상태에 대한 타입을 정의
 export interface UserState {
   isLogin: boolean;
-  userState: boolean;
+  nickname: string;
+  profileImg: string;
+  userUuid: string;
 }
 
 // 초기 상태값 정의
 const initialState: UserState = {
   isLogin: false,
-  userState: false,
+  nickname: '',
+  profileImg: '',
+  userUuid: '',
 };
 
 // 액션에 대한 slice 생성
@@ -20,11 +24,17 @@ export const userSlice = createSlice({
   initialState, // 초기 상태값
   reducers: {
     // 로그인 상태를 설정하는 액션
-    setUserState(state, action) {
-      return { ...state, userState: action.payload }; // state.userState = action.payload;
-    },
     setIsLogin(state, action) {
-      return { ...state, isLogin: action.payload }; // state.userState = action.payload;
+      return { ...state, isLogin: action.payload };
+    },
+    setNickname(state, action) {
+      return { ...state, nickname: action.payload };
+    },
+    setProfileImg(state, action) {
+      return { ...state, profileImg: action.payload };
+    },
+    setUserUuid(state, action) {
+      return { ...state, userUuid: action.payload };
     },
   },
 
@@ -40,5 +50,5 @@ export const userSlice = createSlice({
   },
 });
 
-export const { setUserState, setIsLogin } = userSlice.actions; // 액션 생성자 함수와 셀렉터를 export함
+export const { setIsLogin, setNickname, setProfileImg, setUserUuid } = userSlice.actions; // 액션 생성자 함수와 셀렉터를 export함
 export default userSlice.reducer; // slice를 리듀서로 변환하여 export함
