@@ -14,13 +14,13 @@ spring:
     driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:testdb
 
-#eureka:
-#  instance:
-#    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
-#  client:
-#    register-with-eureka: true
-#    fetch-registry: true
-#    service-url:
-#      defaultZone: ${eureka_url:http://192.168.0.69:8761/eureka}
+eureka:
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: ${eureka_url:http://k8e205.p.ssafy.io:8761/eureka}
 
 
