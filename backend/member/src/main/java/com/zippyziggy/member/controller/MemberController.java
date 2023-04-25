@@ -14,10 +14,14 @@ import com.zippyziggy.member.service.*;
 //import com.zippyziggy.member.util.RedisUtils;
 import com.zippyziggy.member.util.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.*;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.security.core.GrantedAuthority;
@@ -55,10 +59,17 @@ public class MemberController {
     private final SecurityUtil securityUtil;
 //    private final RedisUtils redisUtils;
 
+    @Bean
+    public OpenAPI customOpenAPI() {
+        return new OpenAPI().components(new Components().addSecuritySchemes("bearer-key",
+            new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")));
+    }
+
     /**
      * SecurityContext 테스트
      */
     @GetMapping("/test/userUtil")
+    @Operation(hidden = true)
     public void testUserUtil() throws Exception {
         Member member = securityUtil.getCurrentMember();
     }
@@ -67,6 +78,7 @@ public class MemberController {
      * 유저 자동 저장
      */
     @GetMapping("/save/user")
+    @Operation(hidden = true)
     public void saveUser() throws Exception {
 
         // 요청 URL
