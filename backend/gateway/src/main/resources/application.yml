@@ -46,12 +46,7 @@ spring:
           predicates:
             - Path=/members/auth/kakao/callback
             - Method=GET
-
-        - id: member
-          uri: lb://MEMBER
-          predicates:
-            - Path=/members/**
-
+            -
         - id: member
           uri: lb://MEMBER
           predicates:
@@ -59,6 +54,12 @@ spring:
             - Method=POST
           filters:
             - AuthorizationHeaderFilter
+
+        - id: member
+          uri: lb://MEMBER
+          predicates:
+            - Path=/members/**
+
 
         - id: prompt
           uri: lb://PROMPT
