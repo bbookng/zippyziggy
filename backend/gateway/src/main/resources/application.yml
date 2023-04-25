@@ -80,10 +80,10 @@ spring:
           filters:
            - AuthorizationHeaderFilter
 
-#        - id: search
-#          uri: lb://SEARCH
-#          predicates:
-#            - Path=/search/**
+        - id: search
+          uri: lb://SEARCH
+          predicates:
+            - Path=/search/**
 
         - id: notice
           uri: lb://NOTICE
