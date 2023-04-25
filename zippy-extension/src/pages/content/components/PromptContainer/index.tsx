@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { Category, MockPrompt, Sort } from '@pages/content/types';
 import useFetch from '@pages/hooks/@shared/useFetch';
 import { ZIPPY_API_URL } from '@pages/constants';
+import useDebounce from '@pages/hooks/@shared/useDebounce';
 
 const category: Array<Category> = [
   { id: 'all', text: '전체', value: 'ALL' },
@@ -30,6 +31,7 @@ const PromptContainer = () => {
   const [selectedCategory, setSelectedCategory] = useState<Category['value']>(defaultCategory);
   const [selectedSort, setSelectedSort] = useState<Sort['value']>(defaultSort);
   const [searchTerm, setSearchTerm] = useState('');
+  const debouncedSearchTerm = useDebounce(searchTerm);
   const {
     data: promptList,
     loading,
@@ -67,9 +69,13 @@ const PromptContainer = () => {
             {error && <div>something wrong</div>}
             {loading && <div>로딩중...</div>}
             {loading ||
-              promptList.map((prompt) => {
-                return <PromptCard key={prompt.id} prompt={prompt} />;
-              })}
+              promptList
+                .filter((prompt) => {
+                  return prompt.title.includes(debouncedSearchTerm);
+                })
+                .map((prompt) => {
+                  return <PromptCard key={prompt.id} prompt={prompt} />;
+                })}
           </ul>
         </section>
       </div>

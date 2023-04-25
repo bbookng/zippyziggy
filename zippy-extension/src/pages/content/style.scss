@@ -17,8 +17,17 @@
   height: 30px;
   background-color: red;
   top: 0;
-  right: 0;
+  left: 0;
   transform: translateY(-100%);
+}
+
+#ZP_to-top-button {
+  position: absolute;
+  width: 60px;
+  height: 30px;
+  background-color: blue;
+  top: 0;
+  right: 0;
 }
 
 // ##### 프롬프트 컨테이너 시작

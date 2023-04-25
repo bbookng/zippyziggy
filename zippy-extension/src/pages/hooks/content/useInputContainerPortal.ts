@@ -1,18 +1,22 @@
 import { useCallback, useEffect, useState } from 'react';
 import { ZP_INPUT_WRAPPER_ID, ZP_PROMPT_CONTAINER_ID } from '@pages/constants';
+import {
+  addToggleButton,
+  addToTopButton,
+  createPortalContainer,
+  setInputWrapperStyle,
+} from '@pages/content/utils/add-ui-to-input-portals';
 
 const useInputContainerPortal = () => {
   const [portalContainer, setPortalContainer] = useState<HTMLDivElement | null>(null);
 
   const addInputWrapperPortal = useCallback(() => {
-    // 이미 포탈이 존재하면 리턴
     const existingPortal = document.getElementById(ZP_INPUT_WRAPPER_ID);
     if (existingPortal) return;
 
     const $formParent = document.querySelector('form')?.parentElement;
     if (!$formParent) return;
 
-    // 이 부분 css를 제거해줘야 메인 프롬프트 리스트가 잘리지않음
     const formClassesToRemove = [
       'absolute',
       'md:!bg-transparent',
@@ -23,37 +27,13 @@ const useInputContainerPortal = () => {
     $formParent.classList.remove(...formClassesToRemove);
     $formParent.classList.add('relative');
     $formParent.id = 'ZP_input-section';
-    const $hideToggleButton = document.createElement('button');
-    $hideToggleButton.id = 'ZP_hide-toggle-button';
-    $formParent.appendChild($hideToggleButton);
 
-    const handleInputSectionToggle = () => {
-      $formParent.classList.toggle('hide');
-    };
-    $hideToggleButton.addEventListener('click', handleInputSectionToggle);
+    const $inputWrapperPortal = createPortalContainer();
+    if (!$inputWrapperPortal) return;
 
-    const $parent = document.querySelector('textarea')?.parentElement ?? null;
-    if (!$parent) return;
-
-    // textarea의 부모요소를 찾아서 스타일 추가
-    $parent.style.paddingRight = '1rem';
-    $parent.style.border = '2px solid #10C600';
-
-    const handleFocus = () => {
-      $parent.style.border = '1px solid #10C600';
-    };
-
-    const handleBlur = () => {
-      $parent.style.border = '1px solid transparent';
-    };
-
-    document.querySelector('textarea')?.addEventListener('focus', handleFocus);
-    document.querySelector('textarea')?.addEventListener('blur', handleBlur);
-
-    // 포탈 wrapper div 생성
-    const $inputWrapperPortal = document.createElement('div');
-    $inputWrapperPortal.id = ZP_INPUT_WRAPPER_ID;
-    $parent.prepend($inputWrapperPortal);
+    addToggleButton($formParent);
+    addToTopButton($formParent);
+    setInputWrapperStyle($inputWrapperPortal);
 
     setPortalContainer($inputWrapperPortal);
   }, []);
