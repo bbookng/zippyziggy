@@ -4,6 +4,9 @@ server:
 spring:
   application:
     name: search
+  jpa:
+    hibernate:
+      ddl-auto: none
 
 eureka:
   instance:
