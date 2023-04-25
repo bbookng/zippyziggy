@@ -7,10 +7,15 @@ import router from 'next/router';
 // 정보 변경 페이지
 const Index = () => {
   // 유저정보
-  const [saveUser, setSaveUser] = useState('');
+  interface User {
+    nickname: string;
+    profileImg: string;
+    userUuid: string;
+  }
+  const [saveUser, setSaveUser] = useState<User | null>(null);
 
   // 유저 변경 정보
-  const [file, setFile] = useState(); // 파일
+  const [file, setFile] = useState<File | null>(null);
   const [nickname, setNickname] = useState(''); // 닉네임
   const [statusNickname, setStatusNickname] = useState(''); // 닉네임 유효성
 
@@ -47,7 +52,7 @@ const Index = () => {
   };
 
   // 파일변경
-  const onChange = (e: React.FormEvent<HTMLInputElement>) => {
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFile(e.target.files[0]);
   };
 

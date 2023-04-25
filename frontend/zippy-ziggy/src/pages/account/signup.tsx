@@ -73,10 +73,10 @@ export default function SignUp() {
 
   const inputRef = useRef(null); // useRef를 사용하여 input element를 참조합니다
 
-  const [file, setFile] = useState(); // 파일 정보를 저장하는 state를 설정합니다
+  const [file, setFile] = useState<File | null>(null); // 파일 정보를 저장하는 state를 설정합니다
 
   // 파일을 선택하는 input의 onChange 이벤트 핸들러 함수입니다
-  const registerImage = (e: React.FormEvent<HTMLInputElement>) => {
+  const registerImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFile(e.target.files[0]);
   };
 

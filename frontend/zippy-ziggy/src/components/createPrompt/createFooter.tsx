@@ -11,6 +11,7 @@ interface PropsType {
 
 export default function CreateFooter({ isNext, handleNext }: PropsType) {
   const router = useRouter();
+
   const handleGoBack = () => {
     router.push('/prompts');
   };

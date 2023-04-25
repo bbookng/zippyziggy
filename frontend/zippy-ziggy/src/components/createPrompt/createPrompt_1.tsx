@@ -8,6 +8,7 @@ interface PropTypes {
   prompt1: string | null;
   prompt2: string | null;
   example: string | null;
+
   handleChange: (e: unknown, string: string) => void;
 }
 
