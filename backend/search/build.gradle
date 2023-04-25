@@ -37,7 +37,6 @@ dependencies {
 	// Elasticsearch
 	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
 	implementation 'co.elastic.clients:elasticsearch-java:8.7.0'
-	implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
 	implementation 'jakarta.json:jakarta.json-api:2.0.1'
 
 	// Query DSL
