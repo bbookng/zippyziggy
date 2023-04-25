@@ -21,6 +21,4 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: ${eureka_url:http://k8e205.p.ssafy.io:8761/eureka}
-
-
+      defaultZone: http://k8e205.p.ssafy.io:8761/eureka
