@@ -12,6 +12,7 @@ interface PromptType {
     memberName: string;
     memberImg: string;
   };
+
   cateory: string;
   content: string;
   likeCnt: number;

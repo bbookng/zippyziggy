@@ -31,6 +31,8 @@
     "typescript": "5.0.4"
   },
   "devDependencies": {
+    "@types/react-js-pagination": "^3.0.4",
+    "@types/toastify-js": "^1.11.1",
     "babel-plugin-styled-components": "^2.1.1",
     "eslint": "^8.38.0",
     "eslint-config-airbnb": "^19.0.4",

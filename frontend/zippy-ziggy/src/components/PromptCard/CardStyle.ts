@@ -9,6 +9,7 @@ const Conatiner = styled.div`
     background-color: ${({ theme }) => theme.colors.grayColor};
     /* cursor: pointer; */
     width: 100%;
+
     /* height: 10rem; */
     object-fit: contain;
     border-radius: 4px 4px 0 0;
