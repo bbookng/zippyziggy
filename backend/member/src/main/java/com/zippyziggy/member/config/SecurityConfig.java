@@ -47,7 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic().disable() // Bearer 방식 사용 -> header에 authentication에 토큰을 넣어 전달하는 방식
                 .authorizeRequests() // 요청에 대한 사용권한 체크
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                .antMatchers("/members/logout").permitAll()
+//                .antMatchers("/members/logout").permitAll()
                 .antMatchers("/members").authenticated()
                 .antMatchers("/members/refresh/token").authenticated()
                 .antMatchers("/members/profile").authenticated()
