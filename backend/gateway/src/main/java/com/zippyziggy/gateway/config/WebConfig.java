@@ -16,13 +16,15 @@ public class WebConfig {
         return http.authorizeExchange()
 //                .anyExchange().permitAll()
                 .and()
-                .cors().disable()
+                .cors()
+                .and()
                 .csrf().disable()
                 .formLogin().disable()
                 .httpBasic().disable()
                 .authorizeExchange(exchange -> exchange
                         .pathMatchers(HttpMethod.OPTIONS).permitAll()
                         .anyExchange().permitAll())
+
                 .build();
     }
 }
