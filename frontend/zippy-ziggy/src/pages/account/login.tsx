@@ -41,11 +41,9 @@ export const LoginContainer = styled.div`
 `;
 
 export default function Login() {
-  const { isDark } = useTheme();
-
   const HandleKokaoLogin = () => {
     // const redirectUri = `${process.env.NEXT_PUBLIC_APP_SERVER_URL}/members/auth/kakao/callback`;
-    const redirectUri = `${process.env.NEXT_PUBLIC_APP_CLIENT_URL}/account/oauth`;
+    const redirectUri = `${window.location.origin}/account/oauth`;
     router.push(
       `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=code`
     );
@@ -53,7 +51,7 @@ export default function Login() {
 
   const HandlegoogleLogin = () => {
     // const redirectUri = `${process.env.NEXT_PUBLIC_APP_SERVER_URL}/members/login/oauth2/code/google`;
-    const redirectUri = `${process.env.NEXT_PUBLIC_APP_CLIENT_URL}/account/oauth`;
+    const redirectUri = `${window.location.origin}/account/oauth`;
     router.push(
       `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=code&scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile`
     );
