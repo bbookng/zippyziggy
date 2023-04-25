@@ -55,8 +55,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/members/test/userUtil").hasRole("ADMIN") // ADMIN 권한이 있을 때에만 접근 가능
                 .anyRequest().permitAll()
                 .and()
-//                .addFilter(corsFilter)
-                .cors().and()
+                .addFilter(corsFilter)
+//                .cors().and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtValidationService, jwtProviderService),
                         UsernamePasswordAuthenticationFilter.class) // JwtAuthenticationFilter를 UsernamePasswordAuthenticationFilter 전에 넣는다
                 .exceptionHandling()
