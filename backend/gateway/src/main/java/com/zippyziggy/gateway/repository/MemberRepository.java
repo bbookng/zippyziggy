@@ -11,9 +11,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     Optional<Member> findByPlatformAndPlatformId(Platform platform, String platformId);
 
-    // nickname과 일치하는 유저 찾기
-    Optional<Member> findByNicknameEquals(String nickname);
-
     // UUID와 일차하는 유저 찾기
     Optional<Member> findByUserUuidEquals(UUID userUuid);
 }
