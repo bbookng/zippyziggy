@@ -90,7 +90,7 @@ spring:
             - Path=/notice/**
 
         - id: openapi
-          uri: http://k8e205.p.ssafy.io:${server.port}
+          uri: https://k8e205.p.ssafy.io:${server.port}
           predicates:
             - Path=/v3/api-docs/**
           filters:
