@@ -30,4 +30,9 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = {
+  publicRuntimeConfig: {
+    // 현재 도메인 주소로 변경
+    APP_URL: 'http://zippyziggy:3000',
+  },
+};
