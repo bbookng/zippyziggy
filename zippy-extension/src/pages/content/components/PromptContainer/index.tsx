@@ -5,7 +5,7 @@ import PromptCard from '@pages/content/components/PromptContainer/PromptCard';
 import SortFilter from '@pages/content/components/PromptContainer/SortFilter';
 import { useState } from 'react';
 import { Category, MockPrompt, Sort } from '@pages/content/types';
-import useFetch from '@pages/content/hooks/useFetch';
+import useFetch from '@pages/hooks/@shared/useFetch';
 import { ZIPPY_API_URL } from '@pages/constants';
 
 const category: Array<Category> = [
