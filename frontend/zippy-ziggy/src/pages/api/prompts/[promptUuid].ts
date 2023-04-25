@@ -26,5 +26,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         suffix: '저를 웃겨주세요.',
       },
     });
+  } else if (req.method === 'DELETE') {
+    res.status(200).json({});
   }
 }

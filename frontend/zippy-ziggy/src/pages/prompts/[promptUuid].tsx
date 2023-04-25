@@ -6,7 +6,7 @@ import SideBar from '@/components/DetailPrompt/SideBar';
 import Tab from '@/components/DetailPrompt/Tab';
 import TalkComponent from '@/components/DetailPrompt/TalkComponent';
 import Modal from '@/components/Modal/Modal';
-import { bookmarkPrompt, getPromptDetail, likePrompt } from '@/core/prompt/promptAPI';
+import { bookmarkPrompt, deletePrompt, getPromptDetail, likePrompt } from '@/core/prompt/promptAPI';
 import {
   Container,
   LeftContainer,
@@ -89,6 +89,11 @@ export default function DetailPrompt() {
     setIsBookmarked(res.isBookmarked);
   };
 
+  // 프롬프트 삭제
+  const handleDeletePrompt = async () => {
+    deletePrompt({ promptUuid, router });
+  };
+
   useEffect(() => {
     if (!isLoading) {
       window.addEventListener('scroll', handleScroll);
@@ -109,7 +114,7 @@ export default function DetailPrompt() {
           title="프롬프트 삭제"
           content="프롬프트를 삭제하시겠습니까?"
           handleModalClose={() => setIsOpenPromptDeleteModal(false)}
-          // handleModalConfirm={handleDeleteComment}
+          handleModalConfirm={handleDeletePrompt}
         />
       )}
       <Container>
