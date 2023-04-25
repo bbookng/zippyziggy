@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -30,6 +32,9 @@ import com.zippyziggy.prompt.prompt.service.ForkPromptService;
 import com.zippyziggy.prompt.prompt.service.PromptCommentService;
 import com.zippyziggy.prompt.prompt.service.PromptService;
 
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -41,6 +46,12 @@ public class PromptController {
 	private final PromptService promptService;
 	private final ForkPromptService forkPromptService;
 	private final PromptCommentService promptCommentService;
+
+	@Bean
+	public OpenAPI customOpenAPI() {
+		return new OpenAPI().components(new Components().addSecuritySchemes("bearer-key",
+			new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")));
+	}
 
 	/**
 	 *
