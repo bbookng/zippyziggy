@@ -43,6 +43,24 @@ dependencies {
 	// Query DSL
 	implementation "com.querydsl:querydsl-jpa"
 	annotationProcessor "com.querydsl:querydsl-apt"
+
+	// config
+	implementation 'org.springframework.cloud:spring-cloud-starter-config'
+	implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
+
+	// actuator
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+	// AMQP
+	implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
+
+	// Feign Client
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+	// resilience4j
+	implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
+
+	// AWS
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 }
 
 dependencyManagement {

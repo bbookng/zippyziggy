@@ -1,10 +1,6 @@
 package com.zippyziggy.search.service;
 
-import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.json.jackson.JacksonJsonpMapper;
-import co.elastic.clients.transport.ElasticsearchTransport;
-import co.elastic.clients.transport.rest_client.RestClientTransport;
-import com.zippyziggy.search.dto.response.ExtensionSearchPromptListDto;
+import com.zippyziggy.search.dto.response.ExtensionSearchPromptList;
 import com.zippyziggy.search.model.EsPrompt;
 import com.zippyziggy.search.repository.EsPromptRepository;
 
@@ -12,8 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpHost;
-import org.elasticsearch.client.RestClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +19,7 @@ public class EsPromptService {
 
     private final EsPromptRepository esPromptRepository;
 
-    public ExtensionSearchPromptListDto search(
+    public ExtensionSearchPromptList search(
             String keyword
 //            String category,
 //            String sort
@@ -40,7 +34,7 @@ public class EsPromptService {
             esPromptRepository.findAll()
                     .forEach(esPrompts::add);
         }
-        return ExtensionSearchPromptListDto.of(esPrompts);
+        return ExtensionSearchPromptList.of(esPrompts);
 
     }
 

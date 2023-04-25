@@ -5,9 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 
 @Data
-public class ExtensionSearchPromptDto {
-    public static ExtensionSearchPromptDto of (EsPrompt esPrompt) {
-        return ExtensionSearchPromptDto.builder()
+public class ExtensionSearchPrompt {
+    public static ExtensionSearchPrompt of (EsPrompt esPrompt) {
+        return ExtensionSearchPrompt.builder()
                 .promptUuid(esPrompt.getPromptUuid())
                 .title(esPrompt.getTitle())
                 .description(esPrompt.getDescription())
@@ -37,7 +37,7 @@ public class ExtensionSearchPromptDto {
     private final String originalPromptUuid;
 
     @Builder
-    public ExtensionSearchPromptDto(
+    public ExtensionSearchPrompt(
             String promptUuid,
             String title,
             String description,

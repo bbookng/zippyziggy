@@ -1,6 +1,6 @@
 package com.zippyziggy.search.controller;
 
-import com.zippyziggy.search.dto.response.ExtensionSearchPromptListDto;
+import com.zippyziggy.search.dto.response.ExtensionSearchPromptList;
 import com.zippyziggy.search.service.EsPromptService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ public class EsPromptController {
     private final EsPromptService esPromptService;
 
     @GetMapping("/extension")
-    public ResponseEntity<ExtensionSearchPromptListDto> searchInExtension(
+    public ResponseEntity<ExtensionSearchPromptList> searchInExtension(
             @RequestParam(required = false) String keyword
 //            @RequestParam(required = false) String category,
 //            @RequestParam(required = false) String sort
