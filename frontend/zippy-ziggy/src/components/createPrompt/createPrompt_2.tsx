@@ -6,7 +6,7 @@ import {
   Textarea,
   Wrapper,
   RightContainer,
-} from './Create_2.style';
+} from './Create_2Style';
 import PromptCard from '../PromptCard/PromptCard';
 
 interface PropsTypes {

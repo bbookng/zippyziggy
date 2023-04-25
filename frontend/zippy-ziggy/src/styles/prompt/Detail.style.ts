@@ -36,4 +36,21 @@ const TopBox = styled.div`
   flex-direction: column;
 `;
 
-export { Container, LeftContainer, RightContainer, TopBox };
+const MoveTopBtn = styled.button`
+  width: 50px;
+  height: 50px;
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  bottom: 3rem;
+  right: 3rem;
+
+  .icon {
+    width: 100%;
+    height: 100%;
+  }
+`;
+
+export { Container, LeftContainer, RightContainer, TopBox, MoveTopBtn };

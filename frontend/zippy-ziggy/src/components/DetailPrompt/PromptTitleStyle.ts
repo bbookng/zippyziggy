@@ -49,6 +49,15 @@ const ActionBox = styled.div`
     margin-right: 0.75rem;
     .heart {
       color: ${({ theme }) => theme.colors.heartColor};
+      cursor: pointer;
+      transition: all 0.2s ease-out;
+      &:hover {
+        transform: translate(0, -0.4ex);
+        box-shadow: ${({ theme: { shadows } }) => shadows.boxShadowLarge};
+      }
+      &:active {
+        transform: scale(0.95);
+      }
     }
     .likeCnt {
       margin-left: 0.25rem;
@@ -58,6 +67,15 @@ const ActionBox = styled.div`
   .bookmark {
     color: ${({ theme }) => theme.colors.bookmarkColor};
     margin-right: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease-out;
+    &:hover {
+      transform: translate(0, -0.4ex);
+      box-shadow: ${({ theme: { shadows } }) => shadows.boxShadowLarge};
+    }
+    &:active {
+      transform: scale(0.95);
+    }
   }
 
   .dot {

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   FaArrowRight,
   FaBookmark,
@@ -17,6 +17,7 @@ interface PropsType {
   likeCnt: number;
   handleLike?: () => void;
   handleBookmark?: () => void;
+  handleOpenDeleteModal?: () => void;
 }
 
 export default function SideBar({
@@ -25,6 +26,7 @@ export default function SideBar({
   likeCnt,
   handleLike,
   handleBookmark,
+  handleOpenDeleteModal,
 }: PropsType) {
   return (
     <Container className="sidebar">
@@ -64,7 +66,7 @@ export default function SideBar({
           <FaPencilAlt className="icon" />
           수정
         </div>
-        <div className="editBtnBox">
+        <div className="editBtnBox" onClick={handleOpenDeleteModal}>
           <FaTrash className="icon" />
           삭제
         </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import Pagination from 'react-js-pagination';
-import { Container } from './Pagination.style';
+import { Container } from './PaginationStyle';
 
 interface PropsType {
   page: number;

@@ -45,6 +45,7 @@
     "react-hook-form": "^7.43.9",
     "react-icons": "^4.8.0",
     "react-js-pagination": "^3.0.3",
-    "react-transition-group": "^4.4.5"
+    "react-transition-group": "^4.4.5",
+    "toastify-js": "^1.12.0"
   }
 }

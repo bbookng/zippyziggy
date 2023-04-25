@@ -1,6 +1,6 @@
 import React from 'react';
 import { FaSearch } from 'react-icons/fa';
-import { Container, Input } from './Search.style';
+import { Container, Input } from './SearchStyle';
 
 interface PropsType {
   value: string | null;

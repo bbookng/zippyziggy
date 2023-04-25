@@ -11,6 +11,7 @@ import store, { persistor, wrapper } from '@/core/store';
 import { PersistGate } from 'redux-persist/integration/react';
 import { Provider } from 'react-redux';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import 'toastify-js/src/toastify.css';
 
 export const GlobalStyle = createGlobalStyle`
   ${normalize}

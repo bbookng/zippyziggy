@@ -1,4 +1,4 @@
-import Navbar from '@/components/Navbar/navbar';
+import Navbar from '@/components/Navbar/Navbar';
 import Head from 'next/head';
 import React from 'react';
 

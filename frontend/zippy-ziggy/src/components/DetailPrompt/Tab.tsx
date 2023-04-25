@@ -16,9 +16,9 @@ const Item = styled.div`
   display: flex;
   justify-content: center;
 
-  ${media.small`
+  /* ${media.small`
     font-size: var(--fonts-body-xm)
-  `}
+  `} */
 
   &.active,
   &:active {

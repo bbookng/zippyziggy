@@ -1,7 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { FaPlayCircle } from 'react-icons/fa';
-import { Container, LeftContainer, RightContainer, SubContainer, Textarea } from './Create_1.style';
+import { Container, LeftContainer, RightContainer, SubContainer, Textarea } from './Create_1Style';
 import Button from '../Button/Button';
 
 interface PropTypes {

@@ -1,9 +1,9 @@
 import React from 'react';
 import Image from 'next/image';
-import { getTodayDate } from '@/lib/utils';
+import { getDate } from '@/lib/utils';
 import { FaHeart, FaBookmark, FaPlayCircle } from 'react-icons/fa';
 import Link from 'next/link';
-import { Body, Conatiner, Content, Footer, Infos, Title } from './Card.style';
+import { Body, Conatiner, Content, Footer, Infos, Title } from './CardStyle';
 
 interface PromptType {
   promptId: string;
@@ -66,7 +66,7 @@ export default function PromptCard({ image, title, content, url, prompt }: Props
         <Content>{content || prompt?.content || '설명을 입력해주세요.'}</Content>
         <Infos>
           <div className="caption">
-            {prompt?.updDt ? getTodayDate(new Date(prompt?.updDt)) : getTodayDate(new Date())}
+            {prompt?.updDt ? getDate(new Date(prompt?.updDt)) : getDate(new Date())}
           </div>
           <div className="divider caption">·</div>
           <div className="caption">{prompt?.commentCnt ? prompt?.commentCnt : '0'}개의 댓글</div>

@@ -1,14 +1,23 @@
+import CommentList from '@/components/Comment/CommentList';
+import ForkedPromptList from '@/components/DetailPrompt/ForkedPromptList';
 import Introduction from '@/components/DetailPrompt/Introduction';
 import PromptTitle from '@/components/DetailPrompt/PromptTitle';
 import SideBar from '@/components/DetailPrompt/SideBar';
 import Tab from '@/components/DetailPrompt/Tab';
 import TalkComponent from '@/components/DetailPrompt/TalkComponent';
-import TalkList from '@/components/TalkListLayout/TalkListLayout';
-import { http } from '@/lib/http';
-import { Container, LeftContainer, RightContainer, TopBox } from '@/styles/prompt/Detail.style';
+import Modal from '@/components/Modal/Modal';
+import { bookmarkPrompt, getPromptDetail, likePrompt } from '@/core/prompt/promptAPI';
+import {
+  Container,
+  LeftContainer,
+  MoveTopBtn,
+  RightContainer,
+  TopBox,
+} from '@/styles/prompt/Detail.style';
 import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
+import { FaArrowAltCircleUp } from 'react-icons/fa';
 
 export default function DetailPrompt() {
   const router = useRouter();
@@ -17,6 +26,19 @@ export default function DetailPrompt() {
   const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
   const [likeCnt, setLikeCnt] = useState<number>(0);
   const [tab, setTab] = useState<number>(0);
+  const [isOpenPromptDeleteModal, setIsOpenPromptDeleteModal] = useState<boolean>(false);
+
+  const handleScroll = () => {
+    const scrollPosition = document.documentElement.scrollTop;
+    const sections = document.querySelectorAll('section');
+    sections.forEach((section) => {
+      const offset = section.offsetTop;
+      const height = section.offsetHeight;
+      if (scrollPosition >= offset && scrollPosition < offset + height) {
+        setTab(Number(section.id));
+      }
+    });
+  };
 
   // Tab 리스트
   const itemList = [
@@ -31,73 +53,117 @@ export default function DetailPrompt() {
     e.preventDefault();
     for (let i = 0; i < itemList.length; i += 1) {
       if (itemList[i][0] === e.target.innerText) {
+        const element = document.getElementById(String(itemList[i][1]));
+        const offset = element.offsetTop;
+        window.scrollTo({ top: offset, behavior: 'smooth' });
         setTab(i);
         break;
       }
     }
   };
 
+  // 젤 위로 스크롤 올리기
+  const handleButtonClick = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   // Prompt 상세 요청 API
-  const handleGetPromptDetail = () => {
-    return http.get(`/prompts/${promptUuid}`).then((res) => res.data);
+  const handleGetPromptDetail = async () => {
+    const res = await getPromptDetail({ promptUuid });
+    return res;
   };
 
   // Prompt 상세 가져오기
   const { isLoading, data } = useQuery(['prompt'], handleGetPromptDetail);
 
+  // 좋아요
+  const handleLike = async () => {
+    const res = await likePrompt({ promptUuid });
+    setIsLiked(res.isLiked);
+    res.isLiked ? setLikeCnt((prev) => prev + 1) : setLikeCnt((prev) => prev - 1);
+  };
+
+  // 북마크
+  const handleBookmark = async () => {
+    const res = await bookmarkPrompt({ promptUuid });
+    setIsBookmarked(res.isBookmarked);
+  };
+
   useEffect(() => {
     if (!isLoading) {
+      window.addEventListener('scroll', handleScroll);
       setIsLiked(data.isLiked);
       setIsBookmarked(data.isBookmarked);
       setLikeCnt(data.likeCnt);
     }
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, [isLoading]);
 
-  // 좋아요
-  const handleLike = () => {
-    http.post(`/prompts/${promptUuid}/like`).then((res) => {
-      setIsLiked(res.data.isLiked);
-      res.data.isLiked ? setLikeCnt((prev) => prev + 1) : setLikeCnt((prev) => prev - 1);
-    });
-  };
-
-  // 북마크
-  const handleBookmark = () => {
-    http.post(`/prompts/${promptUuid}/bookmark`).then((res) => {
-      setIsBookmarked(res.data.isBookmarked);
-    });
-  };
-
   return (
-    <Container>
-      {promptUuid && !isLoading && (
-        <>
-          <LeftContainer>
-            <TopBox>
-              <PromptTitle
-                prompt={data}
+    <>
+      {isOpenPromptDeleteModal && (
+        <Modal
+          isOpen={isOpenPromptDeleteModal}
+          title="프롬프트 삭제"
+          content="프롬프트를 삭제하시겠습니까?"
+          handleModalClose={() => setIsOpenPromptDeleteModal(false)}
+          // handleModalConfirm={handleDeleteComment}
+        />
+      )}
+      <Container>
+        {promptUuid && !isLoading && (
+          <>
+            <LeftContainer>
+              <TopBox>
+                <PromptTitle
+                  prompt={data}
+                  isLiked={isLiked}
+                  isBookmarked={isBookmarked}
+                  likeCnt={likeCnt}
+                  handleLike={handleLike}
+                  handleBookmark={handleBookmark}
+                  handleOpenDeleteModal={() => setIsOpenPromptDeleteModal(true)}
+                />
+              </TopBox>
+              <Tab itemList={itemList} tab={tab} handleIsSelected={handleIsSelectedTab} />
+              <section id="0">
+                <Introduction prompt={data} />
+              </section>
+              <section id="1">
+                <TalkComponent promptUuid={promptUuid} size={2} />
+              </section>
+              <section id="2">
+                <CommentList
+                  id={promptUuid}
+                  type="prompt"
+                  size={5}
+                  nickname={data?.writer?.writerNickname}
+                />
+              </section>
+              <section id="3">
+                <ForkedPromptList promptUuid={promptUuid} size={4} />
+              </section>
+            </LeftContainer>
+            <RightContainer>
+              <SideBar
                 isLiked={isLiked}
                 isBookmarked={isBookmarked}
                 likeCnt={likeCnt}
                 handleLike={handleLike}
                 handleBookmark={handleBookmark}
+                handleOpenDeleteModal={() => setIsOpenPromptDeleteModal(true)}
               />
-            </TopBox>
-            <Tab itemList={itemList} tab={tab} handleIsSelected={handleIsSelectedTab} />
-            <Introduction prompt={data} />
-            <TalkComponent promptUuid={promptUuid} size={2} />
-          </LeftContainer>
-          <RightContainer>
-            <SideBar
-              isLiked={isLiked}
-              isBookmarked={isBookmarked}
-              likeCnt={likeCnt}
-              handleLike={handleLike}
-              handleBookmark={handleBookmark}
-            />
-          </RightContainer>
-        </>
-      )}
-    </Container>
+            </RightContainer>
+            {tab > 0 && (
+              <MoveTopBtn>
+                <FaArrowAltCircleUp className="icon" onClick={handleButtonClick} />
+              </MoveTopBtn>
+            )}
+          </>
+        )}
+      </Container>
+    </>
   );
 }
