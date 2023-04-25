@@ -30,8 +30,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-import springfox.documentation.annotations.ApiIgnore;
-import springfox.documentation.spi.service.contexts.SecurityContext;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -61,7 +59,6 @@ public class MemberController {
      * SecurityContext 테스트
      */
     @GetMapping("/test/userUtil")
-    @ApiIgnore
     public void testUserUtil() throws Exception {
         Member member = securityUtil.getCurrentMember();
     }
@@ -70,7 +67,6 @@ public class MemberController {
      * 유저 자동 저장
      */
     @GetMapping("/save/user")
-    @ApiIgnore
     public void saveUser() throws Exception {
 
         // 요청 URL
