@@ -92,8 +92,16 @@ const usePromptListPortal = () => {
     const observer = new MutationObserver((mutations) => {
       for (const mutation of mutations) {
         const targetElement = mutation.target as Element;
+
         if (shouldCreatePromptContainerPortal(targetElement, isNewChatPage)) {
           createPromptContainerPortal();
+
+          // GPT 사이트의 맨 아래로 가는 버튼의 bottom 을 재조정
+          if (targetElement.lastChild?.nodeName === 'BUTTON') {
+            const toBottomButton = targetElement.lastChild as Element;
+            toBottomButton.classList.remove('bottom-[124px]', 'md:bottom-[120px]');
+            toBottomButton.classList.add('bottom-1');
+          }
           return;
         }
 
