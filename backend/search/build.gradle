@@ -37,12 +37,29 @@ dependencies {
 	// Elasticsearch
 	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
 	implementation 'co.elastic.clients:elasticsearch-java:8.7.0'
-	implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.3'
 	implementation 'jakarta.json:jakarta.json-api:2.0.1'
 
 	// Query DSL
 	implementation "com.querydsl:querydsl-jpa"
 	annotationProcessor "com.querydsl:querydsl-apt"
+
+	// config
+	implementation 'org.springframework.cloud:spring-cloud-starter-config'
+	implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
+
+	// actuator
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+	// AMQP
+	implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
+
+	// Feign Client
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+	// resilience4j
+	implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
+
+	// AWS
+	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 }
 
 dependencyManagement {
