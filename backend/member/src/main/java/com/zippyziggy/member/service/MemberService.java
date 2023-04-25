@@ -161,10 +161,10 @@ public class MemberService {
     public void memberSignOut() throws Exception {
 
         Member member = securityUtil.getCurrentMember();
-
-        member.setActivate(false);
-        member.setNickname("");
-        member.setRefreshToken(null);
+        memberRepository.delete(member);
+//        member.setActivate(false);
+//        member.setNickname("");
+//        member.setRefreshToken(null);
 
         // 기존에 있던 redis 정보 삭제
 //        String MemberKey = "member" + member.getUserUuid();
