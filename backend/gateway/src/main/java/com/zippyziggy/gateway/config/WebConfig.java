@@ -16,7 +16,7 @@ public class WebConfig {
         return http.authorizeExchange()
                 .anyExchange().permitAll()
                 .and()
-                .cors(cors -> cors.disable())
+                .cors().disable()
                 .csrf().disable()
                 .formLogin().disable()
                 .httpBasic().disable()
