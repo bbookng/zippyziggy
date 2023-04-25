@@ -65,13 +65,12 @@ spring:
             - Path=/prompts/v3/**
           filters:
             - RewritePath=/prompts/(?<segment>.*), /$\{segment}
-#            - SetRequestHeader=crntMemberUuid, myDefaultValue
 
-#        - id: prompt
-#          uri: lb://PROMPT
-#          predicates:
-#            - Path=/prompts
-#            - Method=GET
+        - id: prompt
+          uri: lb://PROMPT
+          predicates:
+            - Path=/prompts
+            - Method=GET
 
         - id: prompt
           uri: lb://PROMPT
@@ -102,8 +101,8 @@ springdoc:
   swagger-ui:
     urls[0]:
       name: prompt
-      url: http://k8e205.p.ssafy.io:${server.port}/v3/api-docs/prompts
+      url: https://k8e205.p.ssafy.io:${server.port}/v3/api-docs/prompts
     urls[1]:
       name: member
-      url: http://k8e205.p.ssafy.io:${server.port}/v3/api-docs/members
+      url: https://k8e205.p.ssafy.io:${server.port}/v3/api-docs/members
 
