@@ -14,7 +14,7 @@ public class WebConfig {
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         return http.authorizeExchange()
-                .anyExchange().permitAll()
+//                .anyExchange().permitAll()
                 .and()
                 .cors().disable()
                 .csrf().disable()
