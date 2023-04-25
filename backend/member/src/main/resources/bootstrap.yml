@@ -2,6 +2,6 @@ spring:
   cloud:
     config:
       uri: http://k8e205.p.ssafy.io:8888
-      name: common
+      name: member
   profiles:
     active: default

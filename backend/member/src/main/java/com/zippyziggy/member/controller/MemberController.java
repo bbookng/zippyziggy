@@ -14,6 +14,8 @@ import com.zippyziggy.member.service.*;
 //import com.zippyziggy.member.util.RedisUtils;
 import com.zippyziggy.member.util.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.security.SecurityScheme;
@@ -65,46 +67,49 @@ public class MemberController {
             new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")));
     }
 
-    /**
-     * SecurityContext 테스트
-     */
-    @GetMapping("/test/userUtil")
-    @Operation(hidden = true)
-    public void testUserUtil() throws Exception {
-        Member member = securityUtil.getCurrentMember();
-    }
-
-    /**
-     * 유저 자동 저장
-     */
-    @GetMapping("/save/user")
-    @Operation(hidden = true)
-    public void saveUser() throws Exception {
-
-        // 요청 URL
-        String signUpUrl = "http://localhost:8080/members/signup";
-
-
-        for (int i = 5000; i < 50000; i++) {
-            MemberSignUpRequestDto memberSignUpRequestDto = MemberSignUpRequestDto.builder()
-                    .name("name")
-                    .platform(Platform.KAKAO)
-                    .platformId(Integer.toString(i))
-                    .profileImg("image")
-                    .nickname(Integer.toString(i)).build();
-            MultipartFile file = null;
-            memberService.memberSignUp(memberSignUpRequestDto, file);
-
-        }
-
-
-    }
+//    /**
+//     * SecurityContext 테스트
+//     */
+//    @GetMapping("/test/userUtil")
+//    @Operation(hidden = true)
+//    public void testUserUtil() throws Exception {
+//        Member member = securityUtil.getCurrentMember();
+//    }
+//
+//    /**
+//     * 유저 자동 저장
+//     */
+//    @GetMapping("/save/user")
+//    @Operation(hidden = true)
+//    public void saveUser() throws Exception {
+//
+//        // 요청 URL
+//        String signUpUrl = "http://localhost:8080/members/signup";
+//
+//
+//        for (int i = 5000; i < 50000; i++) {
+//            MemberSignUpRequestDto memberSignUpRequestDto = MemberSignUpRequestDto.builder()
+//                    .name("name")
+//                    .platform(Platform.KAKAO)
+//                    .platformId(Integer.toString(i))
+//                    .profileImg("image")
+//                    .nickname(Integer.toString(i)).build();
+//            MultipartFile file = null;
+//            memberService.memberSignUp(memberSignUpRequestDto, file);
+//
+//        }
+//    }
 
     /**
      * 카카오 로그인
      */
     @GetMapping("/auth/kakao/callback")
     @Operation(summary = "카카오 로그인", description = "기존 회원이면 로그인 성공(refreshToken은 쿠키, accessToken은 헤더에 담긴다), 아닐시 회원가입 요청(isSignUp : true)가 body에 포함된다")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
     public ResponseEntity<?> kakaoCallback(String code, HttpServletRequest request, HttpServletResponse response) throws Exception {
         // kakao Token 가져오기(권한)
         String kakaoAccessToken = kakaoLoginService.kakaoGetToken(code);
@@ -220,6 +225,11 @@ public class MemberController {
      */
     @GetMapping("/login/oauth2/code/google")
     @Operation(summary = "구글 로그인", description = "기존 회원이면 로그인 성공(refreshToken은 쿠키, accessToken은 헤더에 담긴다), 아닐시 회원가입 요청(isMember : true)가 body에 포함된다")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
     public ResponseEntity<?> googleCallback(@RequestParam(value="code", required = false) String code, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         GoogleTokenResponseDto token = googleLoginService.googleGetToken(code);
@@ -329,6 +339,12 @@ public class MemberController {
      */
     @PostMapping(value = "/logout", headers = "Authorization")
     @Operation(summary = "로그아웃(Authorization 필요)", description = "refreshToken DB에서 제거, 유효하지 않은 토큰일 경우 에러 발생")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
+
     public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         // 기존 유저 찾아온 후 refreshToken 제거
@@ -364,7 +380,7 @@ public class MemberController {
             }
         }
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>("로그아웃 완료" ,HttpStatus.OK);
     }
 
     /**
@@ -374,6 +390,11 @@ public class MemberController {
     @PostMapping("/signup")
     @Operation(summary = "회원가입", description = "추후 사진 파일 업로드 적용 예정, 현재는 nickname, profileImg, name, platform, platformId 입력 필요" +
             "중복된 유저일 경우 400 상태 코드와 함께 문구가 반환된다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
     public ResponseEntity<?> memberSignUp(@RequestPart(value = "user") MemberSignUpRequestDto memberSignUpRequestDto,
                                           @RequestPart(value = "file", required = false) MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws Exception {
         System.out.println("0000000000000000000000000000000000000000000000000000");
@@ -434,6 +455,11 @@ public class MemberController {
      */
     @PutMapping(value = "", headers = "Authorization")
     @Operation(summary = "회원 탈퇴(Authorization 필요)", description = "사용자의 activate를 0으로 변경, 닉네임도 빈 문자열로 변경")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
     public ResponseEntity<?> memberSignOut(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         memberService.memberSignOut();
@@ -449,7 +475,7 @@ public class MemberController {
             }
         }
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>("회원 탈퇴 완료",HttpStatus.OK);
     }
 
     /**
@@ -457,6 +483,11 @@ public class MemberController {
      */
     @GetMapping("/nickname/{nickname}")
     @Operation(summary = "닉네임 중복 검사", description = "중복된 닉네임 존재 시 true반환, 중복된 닉네임이 존재하지 않으면 false 반환")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
     public ResponseEntity<Boolean> nicknameCheck(@PathVariable String nickname) throws Exception {
         boolean execute = memberService.nicknameCheck(nickname);
         return new ResponseEntity<>(execute, HttpStatus.OK);
@@ -469,6 +500,11 @@ public class MemberController {
     @Operation(summary = "accessToken 재발급(Authorization 필요)", description = "refreshToken을 header에 담아서 요청해야한다. " +
             "refreshToken의 유효성 검사 후 성공이면 accessToken을 재발급해서 헤더에 담아서 보낸다." +
             "만약 만료시간이 지나거나 잘못된 토큰일 경우에는 401에러와 함께 재로그인 문구가 반환된다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
     public ResponseEntity<?> refreshToken() throws Exception {
 
         // 기존 유저 찾아오기
@@ -488,6 +524,11 @@ public class MemberController {
      */
     @GetMapping("/uuid")
     @Operation(summary = "UUID로 회원 조회", description = "UUID를 쿼리스트링으로 입력(userUuid)하면 해당하는 회원 정보를 추출할 수 있다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
     public ResponseEntity<MemberInformResponseDto> findMemberByUUID(@RequestParam UUID userUuid) throws Exception {
 
 //        if (redisUtils.isExists("member" + userUuid)) {
@@ -513,6 +554,11 @@ public class MemberController {
      */
     @GetMapping("/profile")
     @Operation(summary = "AccessToken으로 내 정보 가져오기(Authorization 필요)", description = "AccessToken을 헤더에 입력하고 요청하면 프로필 정보를 확인할 수 있다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
     public ResponseEntity<MemberInformResponseDto> findProfile() throws Exception {
 
         // 기존 유저 찾아오기
@@ -532,6 +578,11 @@ public class MemberController {
     @PutMapping("/profile")
     @Transactional
     @Operation(summary = "회원 정보 수정(Authorization 필요)", description = "닉네임, 프로필 이미지를 변경한다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
     public ResponseEntity<?> updateProfile(@RequestPart("file") MultipartFile file,
                                            @RequestPart("nickname") String nickname) throws Exception {
         // 기존 유저 찾아오기
