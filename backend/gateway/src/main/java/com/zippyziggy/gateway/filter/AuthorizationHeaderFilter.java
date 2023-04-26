@@ -84,7 +84,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
                     JwtPayLoadResponseDto jwtPayLoadResponseDto = checkToken(token);
                     String tokenType = jwtPayLoadResponseDto.getSub();
                     log.info("tokenType =  " + tokenType);
-                    log.info("jwtPayLoadResponseDto = " + jwtPayLoadResponseDto)
+                    log.info("jwtPayLoadResponseDto = " + jwtPayLoadResponseDto);
                     // accessToken인 경우
                     JwtResponse jwtResponse = validateRefreshToken(token);
                     if (tokenType.equals("accessToken")) {
@@ -125,7 +125,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
         log.info("validateRefreshToken까지는 들어왔어요오오!!");
         try {
             // token 내용이 유효한지 확인
-            log.info("1111111111111111111111111111111111111111111111111111")
+            log.info("1111111111111111111111111111111111111111111111111111");
             boolean contentCheck = tokenContentCheck(refreshToken);
             log.info("22222222222222222222222222222222222");
             // DB의 refreshToken과 일치하는지 확인
@@ -243,7 +243,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
     }
 
     private JwtPayLoadResponseDto checkToken(String token) {
-        log.info("checkToken 중입니다")
+        log.info("checkToken 중입니다");
         String[] data = token.split("\\.");
         String s = data[1];
         String decode = new String(Base64Utils.decode(s.getBytes()));
