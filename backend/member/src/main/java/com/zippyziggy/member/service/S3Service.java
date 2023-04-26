@@ -1,10 +1,7 @@
 package com.zippyziggy.member.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.services.s3.model.PutObjectResult;
+import com.amazonaws.services.s3.model.*;
 import com.zippyziggy.member.model.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -61,7 +58,8 @@ public class S3Service {
         if (isObjectExist) {
             System.out.println("여기까지 왔는데요");
             System.out.println("filePath = " + filePath);
-            amazonS3Client.deleteObject(bucket, filePath);
+            DeleteObjectRequest request = new DeleteObjectRequest(bucket, filePath);
+            amazonS3Client.deleteObject(request);
         }
 
     }
