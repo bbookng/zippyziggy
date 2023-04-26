@@ -172,9 +172,13 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
     }
 
     public Member findMemberByJWT(String token) {
+        log.info("제발");
         DecodedJWT verify = require(Algorithm.HMAC512(jwtSecretKey)).build().verify(token);
+        log.info("여긴가" + verify);
         String userUuid = verify.getClaim("userUuid").asString();
+        log.info("userUuid" + userUuid);
         Optional<Member> member = memberRepository.findByUserUuidEquals(UUID.fromString(userUuid));
+        log.info("member를 찾아라" + member);
         return member.get();
     }
 
