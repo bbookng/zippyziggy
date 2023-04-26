@@ -34,6 +34,13 @@ export default function PromptTitle({
 }: PropsType) {
   const [isPopUp, setIsPopUp] = useState<boolean>(false);
   const popUpRef = useRef<HTMLDivElement>(null);
+  const Category = {
+    STUDY: '학업',
+    FUN: '오락',
+    BUSINESS: '비즈니스',
+    PROGRAMMING: '프로그래밍',
+    ETC: '기타',
+  };
 
   function handlePopUpOutsideClick(e) {
     if (popUpRef.current && !popUpRef.current.contains(e.target)) setIsPopUp(false);
@@ -51,7 +58,7 @@ export default function PromptTitle({
     <Container>
       <TitleBox>
         <div className="category">
-          <div>{prompt?.category || '카테고리'}</div>
+          <div>{Category[prompt?.category] || '카테고리'}</div>
           <ActionBox>
             <div className="heartBox">
               {isLiked ? (
@@ -99,7 +106,7 @@ export default function PromptTitle({
       </div>
       <UserBox>
         <Image
-          src={prompt?.writer.writerImg || '/images/noProfile.png'}
+          src={prompt?.writerResponse?.writerImg || '/images/noProfile.png'}
           width={50}
           height={50}
           alt="작성자 프로필 이미지"
@@ -107,20 +114,24 @@ export default function PromptTitle({
         />
         <div className="user">
           <div className="info">작성자</div>
-          <div className="name">{prompt?.writer?.writerNickname}</div>
+          <div className="name">{prompt?.writerResponse?.writerNickname}</div>
         </div>
-        <FaArrowLeft className="icon" />
-        <Image
-          src={prompt?.originer.originerImg || '/images/noProfile.png'}
-          width={50}
-          height={50}
-          alt="원작자 프로필 이미지"
-          className="image"
-        />
-        <div className="user">
-          <div className="info">원작자</div>
-          <div className="name">{prompt?.originer?.originerNickname}</div>
-        </div>
+        {prompt?.originerResponse && (
+          <>
+            <FaArrowLeft className="icon" />
+            <Image
+              src={prompt?.originerResponse?.originerImg || '/images/noProfile.png'}
+              width={50}
+              height={50}
+              alt="원작자 프로필 이미지"
+              className="image"
+            />
+            <div className="user">
+              <div className="info">원작자</div>
+              <div className="name">{prompt?.originerResponse?.originerNickname}</div>
+            </div>
+          </>
+        )}
       </UserBox>
     </Container>
   );

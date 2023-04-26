@@ -1,7 +1,10 @@
 import CreateFooter from '@/components/CreatePrompt/CreateFooter';
 import CreatePart1 from '@/components/CreatePrompt/CreatePrompt_1';
 import CreatePart2 from '@/components/CreatePrompt/CreatePrompt_2';
+import { createPrompt } from '@/core/prompt/promptAPI';
+import { checkInputFormToast } from '@/lib/utils';
 import { ContainerTitle, TitleInfoWrapper, TitleWrapper } from '@/styles/prompt/Create.style';
+import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { AiFillQuestionCircle } from 'react-icons/ai';
@@ -19,6 +22,7 @@ const initialState = {
   title: '',
   content: '',
   image: null,
+  category: '',
 };
 
 export default function PromptCreate() {
@@ -27,18 +31,20 @@ export default function PromptCreate() {
   const [isNext, setIsNext] = useState<boolean>(false);
   const [image, setImage] = useState<FileList | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+  const router = useRouter();
 
   // react-hook-form 설정
   const { setValue, getValues, watch } = useForm({
     defaultValues: initialState,
     mode: 'onChange',
   });
-  const [prompt1, prompt2, example, title, content] = getValues([
+  const [prompt1, prompt2, example, title, content, category] = getValues([
     'prompt1',
     'prompt2',
     'example',
     'title',
     'content',
+    'category',
   ]);
   useEffect(() => {
     watch();
@@ -51,13 +57,55 @@ export default function PromptCreate() {
     e.target.style.height = `${e.target.scrollHeight}px`;
   };
 
+  // category 설정
+  const handleSetCategory = (e) => {
+    setValue('category', e.target.dataset.value);
+  };
+
   // 페이지내 요소 바꿈(page1, page2)
   const handleNext = () => {
     setIsNext((prev) => !prev);
   };
 
+  // 유효성 검사
+  const handleCheck = () => {
+    if (prompt1 === '' && prompt2 === '' && example === '') {
+      checkInputFormToast();
+      return false;
+    }
+    if (title === '' || content === '' || category === '' || image === null) {
+      checkInputFormToast();
+      return false;
+    }
+    return true;
+  };
+
   // 생성 요청
-  const handleCreatePrompt = () => {};
+  const handleCreatePrompt = async () => {
+    handleCheck();
+    try {
+      const data = {
+        title,
+        description: content,
+        category,
+        message: {
+          prefix: prompt1,
+          example,
+          suffix: prompt2,
+        },
+      };
+      const formData = new FormData();
+      formData.append('thumbnail', image[0]);
+      formData.append('data', new Blob([JSON.stringify(data)], { type: 'application/json' }));
+      const requestData = {
+        data: formData,
+        router,
+      };
+      createPrompt(requestData);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <>
@@ -91,6 +139,7 @@ export default function PromptCreate() {
           setImage={setImage}
           preview={preview}
           setPreview={setPreview}
+          handleSetCategory={handleSetCategory}
         />
       ) : (
         <CreatePart1

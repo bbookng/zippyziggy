@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { http } from '@/lib/http';
+import { getTalkListUsePrompt } from '@/core/prompt/promptAPI';
+import { useQuery } from '@tanstack/react-query';
 import { Container } from './ComponentStyle';
 import TalkListLayout from '../TalkListLayout/TalkListLayout';
 
@@ -14,25 +15,27 @@ export default function TalkComponent({ promptUuid, size }: PropsType) {
   const page = useRef<number>(1);
 
   // Talk 가져오기
-  const handleGetTalk = () => {
-    http
-      .get(`/prompts/${promptUuid}/talks`, {
-        params: {
-          page: page.current,
-          size,
-        },
-      })
-      .then((res) => {
-        setTalkList((prev) => [...prev, ...res.data.talks]);
-        setTalkCnt(res.data.talkCnt);
-        page.current += 1;
-      });
+  const handleGetTalk = async () => {
+    const requestData = {
+      promptUuid,
+      page: page.current,
+      size,
+    };
+    const data = await getTalkListUsePrompt(requestData);
+    return data;
   };
 
-  // 초기값 세팅
+  const { isLoading, data } = useQuery(['talkListUsingPrompt'], handleGetTalk, {
+    enabled: !!promptUuid,
+  });
+  // console.log(isLoading, data);
   useEffect(() => {
-    handleGetTalk();
-  }, []);
+    if (!isLoading && data.result === 'SUCCESS') {
+      setTalkList((prev) => [...prev, ...data.data.talks]);
+      setTalkCnt(data.data.talkCnt);
+      page.current += 1;
+    }
+  }, [isLoading]);
 
   return (
     <Container>

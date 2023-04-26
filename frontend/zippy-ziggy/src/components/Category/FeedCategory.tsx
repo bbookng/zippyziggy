@@ -44,7 +44,7 @@ const Item = styled.div<Props>`
 
 type Category = {
   name: string;
-  value: string | null;
+  value: string | number | null;
 };
 
 interface PropsType {

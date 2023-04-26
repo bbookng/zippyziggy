@@ -43,18 +43,20 @@ export default function CommentList({ id, type, nickname, size }: PropsType) {
   const handleGetCommentList = async () => {
     const requestData = { id, page: page.current, size: sizeRef.current };
     try {
-      let data: any;
+      let res: any;
       if (type === 'prompt') {
-        data = await getPromptCommentList(requestData);
+        res = await getPromptCommentList(requestData);
       } else {
-        data = await getTalkCommentList(requestData);
+        res = await getTalkCommentList(requestData);
       }
-      setTotalCnt(data.commentCnt);
-      setCommentList((prev) => [...prev, ...data.comments]);
-      if (data.comments.length < sizeRef.current) {
-        isStop.current = true;
+      if (res.result === 'SUCCESS') {
+        setTotalCnt(res.data.commentCnt);
+        setCommentList((prev) => [...prev, ...res.data.comments]);
+        if (res.data.comments.length < sizeRef.current) {
+          isStop.current = true;
+        }
+        page.current += 1;
       }
-      page.current += 1;
     } catch (err) {
       isStop.current = true;
     }

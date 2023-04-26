@@ -2,15 +2,13 @@
 const nextConfig = {
   reactStrictMode: false, // useEffect twice
   images: {
-    domains: ['http://k.kakaocdn.net'],
+    domains: ['zippyziggytest.s3.ap-northeast-2.amazonaws.com', 'http://k.kakaocdn.net'],
     unoptimized: true,
   },
-
   publicRuntimeConfig: {
     // 현재 도메인 주소로 변경
     APP_URL: 'http://zippyziggy:3000',
   },
-
   async headers() {
     return [
       {
