@@ -20,6 +20,7 @@ import com.zippyziggy.prompt.prompt.dto.response.ForkedPromptResponse;
 import com.zippyziggy.prompt.prompt.model.Category;
 import com.zippyziggy.prompt.prompt.model.Languages;
 import com.zippyziggy.prompt.prompt.model.Prompt;
+import com.zippyziggy.prompt.prompt.repository.PromptBookmarkRepository;
 import com.zippyziggy.prompt.prompt.repository.PromptCommentRepository;
 import com.zippyziggy.prompt.prompt.repository.PromptRepository;
 import com.zippyziggy.prompt.talk.repository.TalkRepository;
@@ -35,6 +36,7 @@ public class ForkPromptService {
 	private final PromptRepository promptRepository;
 	private final PromptCommentRepository promptCommentRepository;
 	private final TalkRepository talkRepository;
+	private final PromptBookmarkRepository promptBookmarkRepository;
 
 	public ForkPromptResponse createForkPrompt(UUID promptUuid, PromptRequest data, MultipartFile thumbnail, UUID crntMemberUuid) {
 
@@ -48,26 +50,28 @@ public class ForkPromptService {
 		return ForkPromptResponse.from(prompt);
 	}
 
-	public ForkedPromptListResponse getForkedPromptList(UUID promptUuid, Pageable pageable) {
+	public ForkedPromptListResponse getForkedPromptList(UUID promptUuid, Pageable pageable, UUID crntMemberUuid) {
 
 		Page<Prompt> forkedPrompts = promptRepository.findAllByOriginPromptUuid(promptUuid, pageable);
 
 		// fork 프롬프트들 카드 정보 가져오는 메서드
-		List<ForkedPromptResponse> prompts = getForkedPromptResponses(forkedPrompts);
+		List<ForkedPromptResponse> prompts = getForkedPromptResponses(forkedPrompts, crntMemberUuid);
 
 		return new ForkedPromptListResponse(prompts.size(), prompts);
 	}
 
-	private List<ForkedPromptResponse> getForkedPromptResponses(Page<Prompt> forkedPrompts) {
+	private List<ForkedPromptResponse> getForkedPromptResponses(Page<Prompt> forkedPrompts, UUID crntMemberUuid) {
 		List<ForkedPromptResponse> promptDtoList = forkedPrompts.stream().map(prompt -> {
 
 			// 댓글, 포크 프롬프트의 포크 수, 대화 수 가져오기
 			long commentCnt = promptCommentRepository.findAllByPromptPromptUuid(prompt.getPromptUuid()).size();
 			long forkCnt = promptRepository.findAllByOriginPromptUuid(prompt.getPromptUuid()).size();
 			long talkCnt = talkRepository.findAllByPromptPromptUuid(prompt.getPromptUuid()).size();
+			boolean isBookmarked = (promptBookmarkRepository.countAllByMemberUuidAndPrompt(crntMemberUuid, prompt) % 2 > 0) ? true : false;
+
 
 			// DTO 로 변환
-			ForkedPromptResponse promptDto = ForkedPromptResponse.from(prompt, commentCnt, forkCnt, talkCnt);
+			ForkedPromptResponse promptDto = ForkedPromptResponse.from(prompt, commentCnt, forkCnt, talkCnt, isBookmarked);
 
 			return promptDto;
 
