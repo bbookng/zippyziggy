@@ -63,10 +63,6 @@ public class PromptService{
 		return PromptResponse.from(prompt);
 	}
 
-	/*
-    수정 로직 작성 해야 함 !!!!!!!!
-    본인 댓글인지 확인 필요
-     */
 	public PromptResponse modifyPrompt(UUID promptUuid, PromptModifyRequest data, UUID crntMemberUuid, MultipartFile thumbnail) {
 		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
 
@@ -145,8 +141,16 @@ public class PromptService{
 		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
 		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 
-		boolean isLiked = (promptLikeRepository.countAllByMemberUuidAndPrompt(crntMemberUuid, prompt) % 2 > 0) ? true : false;
-		boolean isBookmarked = (promptBookmarkRepository.countAllByMemberUuidAndPrompt(crntMemberUuid, prompt) % 2 > 0) ? true : false;
+		boolean isLiked;
+		boolean isBookmarked;
+
+		if (crntMemberUuid == null) {
+			isLiked = false;
+			isBookmarked = false;
+		} else {
+			isLiked = (promptLikeRepository.countAllByMemberUuidAndPrompt(crntMemberUuid, prompt) % 2 > 0) ? true : false;
+			isBookmarked = (promptBookmarkRepository.countAllByMemberUuidAndPrompt(crntMemberUuid, prompt) % 2 > 0) ? true : false;
+		}
 
 		PromptDetailResponse promptDetailResponse = prompt.toDetailResponse(isLiked, isBookmarked);
 

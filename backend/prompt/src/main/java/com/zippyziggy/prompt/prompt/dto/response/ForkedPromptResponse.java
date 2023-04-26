@@ -1,7 +1,6 @@
 package com.zippyziggy.prompt.prompt.dto.response;
 
 import java.time.ZoneId;
-import java.util.List;
 
 import com.zippyziggy.prompt.prompt.model.Prompt;
 
@@ -19,23 +18,21 @@ public class ForkedPromptResponse {
 	private String title;
 	private String description;
 
-	// member 연결되면 추가
-	private String writerNickname;
-	private String writerImg;
-
+	private MemberResponse writer;
 	private Long likeCnt;
 	private Long commentCnt;
 	private Long forkCnt;
 	private Long talkCnt;
-	private List<String> forkMemberImg;
 
 	private long regDt;
 	private long updDt;
 
-	// member 연결되면 추가
 	private Boolean isBookmarked;
+	private Boolean isLiked;
 
-	public static ForkedPromptResponse from(Prompt prompt, Long commentCnt, Long forkCnt, Long talkCnt, Boolean isBookmarked) {
+	public static ForkedPromptResponse from(MemberResponse writerInfo, Prompt prompt,
+		Long commentCnt, Long forkCnt, Long talkCnt,
+		Boolean isBookmarked, Boolean isLiked) {
 
 		long regDt = prompt.getRegDt().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
 		long updDt = prompt.getRegDt().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
@@ -44,13 +41,15 @@ public class ForkedPromptResponse {
 			.thumbnail(prompt.getThumbnail())
 			.title(prompt.getTitle())
 			.description(prompt.getDescription())
+			.writer(writerInfo)
 			.likeCnt(prompt.getLikeCnt())
-			.regDt(regDt)
-			.updDt(updDt)
 			.commentCnt(commentCnt)
-			.isBookmarked(isBookmarked)
 			.forkCnt(forkCnt)
 			.talkCnt(talkCnt)
+			.regDt(regDt)
+			.updDt(updDt)
+			.isBookmarked(isBookmarked)
+			.isLiked(isLiked)
 			.build();
 
 		return response;

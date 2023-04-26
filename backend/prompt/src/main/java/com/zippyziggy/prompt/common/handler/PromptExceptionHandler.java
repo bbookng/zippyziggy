@@ -29,4 +29,5 @@ public class PromptExceptionHandler {
 		return ResponseEntity.badRequest()
 			.body(BaseResponseBody.of(e.getMessage()));
 	}
+
 }

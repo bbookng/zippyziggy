@@ -16,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -116,7 +117,7 @@ public class PromptController {
 			@ApiResponse(responseCode = "500", description = "서버 에러")
 	})
 	public ResponseEntity<PromptDetailResponse> getPromptDetail(@PathVariable String promptUuid,
-		@RequestHeader String crntMemberUuid,
+		@Nullable @RequestHeader String crntMemberUuid,
 		HttpServletRequest request,
 		HttpServletResponse response) {
 		promptService.updateHit(UUID.fromString(promptUuid), request, response);
@@ -160,7 +161,7 @@ public class PromptController {
 	})
 	public ResponseEntity<ForkedPromptListResponse> getForkedPrompt(@PathVariable String promptUuid,
 		Pageable pageable,
-		@RequestHeader String crntMemberUuid) {
+		@Nullable @RequestHeader String crntMemberUuid) {
 		ForkedPromptListResponse forkedPromptList = forkPromptService.getForkedPromptList(UUID.fromString(promptUuid),
 			pageable, UUID.fromString(crntMemberUuid));
 		return ResponseEntity.ok(forkedPromptList);
