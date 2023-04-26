@@ -7,11 +7,13 @@ import { StyledButton, ButtonProps } from './ButtonStyle';
  * @param {boolean} isRound 라운드 여부
  * @param {string} width default: 100%
  * @param {string} height default: 3rem
+ * @param {DefaultTheme.colors} fontColor 글자색 default: color
  */
 
 const Button = ({
   children,
   color = 'primaryColor',
+  fontColor,
   buttonType = 'fill',
   isRound = false,
   width,
@@ -31,6 +33,7 @@ const Button = ({
       isRound={isRound}
       display={display}
       color={color}
+      fontColor={fontColor}
       buttonType={buttonType}
       {...rest}
     >
