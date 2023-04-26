@@ -26,18 +26,10 @@ public class S3Service {
     @Value("${cloud.aws.region.static}")
     private String region;
 
-    @Value("${cloud.aws.credentials.access-key}")
-    private String accessKey;
-
-    @Value("${cloud.aws.credentials.secret-key}")
-    private String secretKey;
-
 
     private final AmazonS3Client amazonS3Client;
 
     public String uploadProfileImg(UUID userUuid, MultipartFile file) throws Exception {
-        System.out.println("accessKey우캬캬 = " + accessKey);
-        System.out.println("secretKey우케케케 = " + secretKey);
         String fileName = file.getOriginalFilename();
         String filepath = createS3FileName(fileName, userUuid);
 
@@ -63,7 +55,7 @@ public class S3Service {
 
 
     public void deleteS3File(String fileName) throws Exception {
-        String filePath = fileName.replace("https://zippyziggytest.s3.ap-northeast-2.amazonaws.com/", "");
+        String filePath = fileName.replace("https://zippyziggyimage.s3.ap-northeast-2.amazonaws.com/", "");
         boolean isObjectExist = amazonS3Client.doesObjectExist(bucket, filePath);
         System.out.println("isObjectExist = " + isObjectExist);
         if (isObjectExist) {
