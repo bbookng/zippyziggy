@@ -15,33 +15,36 @@ function KakaoLoginRedirect() {
 
   useEffect(() => {
     if (token !== undefined) {
-      http
-        .get(`${process.env.NEXT_PUBLIC_APP_SERVER_URL}/members/auth/kakao/callback?code=${token}`)
-        .then((res) => {
-          const { data } = res;
+      const callbackUrl = `/members/auth/kakao/callback`;
+      const queryParams = new URLSearchParams({
+        code: token,
+        redirect: `${window.location.origin}/account/oauth`,
+        // redirect: `${window.location.origin}/account/aouth`,
+      }).toString();
+      http.get(`${callbackUrl}?${queryParams}`).then((res) => {
+        const { data } = res;
 
-          if (data?.isSignUp === true) {
-            // 회원가입으로 이동
-            const { name, platform, platformId, profileImg } =
-              data?.socialSignUpDataResponseDto ?? {};
-            router.push({
-              pathname: '/account/signup',
-              query: { name, platform, platformId, profileImg },
-            });
-          } else if (data?.nickname) {
-            // 로그인으로 이동
-            const { nickname, profileImg, userUuid } = data;
-            const accessToken = res?.headers?.authorization;
-            localStorage.setItem('accessToken', accessToken);
-            dispatch(setIsLogin(true));
-            dispatch(setUserUuid(userUuid));
-            dispatch(setProfileImg(profileImg));
-            dispatch(setNickname(nickname));
-            router.push({
-              pathname: '/',
-            });
-          }
-        });
+        if (data?.isSignUp === true) {
+          // 회원가입으로 이동
+          const { name, platform, platformId, profileImg } =
+            data?.socialSignUpDataResponseDto ?? {};
+          router.push({
+            pathname: '/account/signup',
+            query: { name, platform, platformId, profileImg },
+          });
+        } else if (data?.nickname) {
+          // 로그인으로 이동
+          const { nickname, profileImg, userUuid } = data;
+          localStorage.setItem('accessToken', res?.headers?.authorization);
+          dispatch(setIsLogin(true));
+          dispatch(setUserUuid(userUuid));
+          dispatch(setProfileImg(profileImg));
+          dispatch(setNickname(nickname));
+          router.push({
+            pathname: '/',
+          });
+        }
+      });
     }
   }, [token]);
 

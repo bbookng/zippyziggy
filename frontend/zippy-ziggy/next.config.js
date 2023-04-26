@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: false, // useEffect twice
   images: {
-    domains: ['zippyziggytest.s3.ap-northeast-2.amazonaws.com'],
+    domains: ['zippyziggytest.s3.ap-northeast-2.amazonaws.com', 'http://k.kakaocdn.net'],
     unoptimized: true,
   },
   publicRuntimeConfig: {

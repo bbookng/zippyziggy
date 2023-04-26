@@ -13,11 +13,24 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   height?: string;
   isRound?: boolean;
   color?: keyof DefaultTheme['colors'];
+  fontColor?: keyof DefaultTheme['colors'];
   display?: 'block' | 'inline-block' | 'inline-flex' | 'inline';
 }
 
 // 버튼이 'fill' | 'outline'일 경우 css
-const buttonList = (buttonType, color) => {
+const buttonList = (buttonType, color, fontColor) => {
+  if (fontColor) {
+    if (buttonType === 'outline') {
+      return css`
+        border: 1px solid ${({ theme: { colors } }) => colors[color]};
+        color: ${({ theme: { colors } }) => colors[fontColor]};
+      `;
+    }
+    return css`
+      background-color: ${({ theme: { colors } }) => colors[color]};
+      color: ${({ theme: { colors } }) => colors[fontColor]};
+    `;
+  }
   if (buttonType === 'outline') {
     return css`
       border: 1px solid ${({ theme: { colors } }) => colors[color]};
@@ -52,5 +65,5 @@ export const StyledButton = styled.button<ButtonProps>`
     transform: scale(0.95);
   }
 
-  ${({ buttonType, color }) => buttonType && buttonList(buttonType, color)}
+  ${({ buttonType, color, fontColor }) => buttonType && buttonList(buttonType, color, fontColor)}
 `;
