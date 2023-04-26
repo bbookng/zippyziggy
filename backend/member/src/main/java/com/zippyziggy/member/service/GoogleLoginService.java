@@ -23,13 +23,13 @@ public class GoogleLoginService {
     @Value("${google.secret.key}")
     private String googleSecretKey;
 
-    @Value("${google.redirect.url}")
-    private String googleRedirectUrl;
+//    @Value("${google.redirect.url}")
+//    private String googleRedirectUrl;
 
     @Autowired
     private ObjectMapper objectMapper;
 
-    public GoogleTokenResponseDto googleGetToken(String code) throws Exception{
+    public GoogleTokenResponseDto googleGetToken(String code, String redirectUrl) throws Exception{
 
         String googleTokenUrl = "https://oauth2.googleapis.com/token";
 
@@ -37,7 +37,7 @@ public class GoogleLoginService {
         body.add("code", code);
         body.add("client_id", googleClientId);
         body.add("client_secret", googleSecretKey);
-        body.add("redirect_uri", googleRedirectUrl);
+        body.add("redirect_uri", redirectUrl);
         body.add("grant_type", "authorization_code");
 
         String token = WebClient.create()
@@ -54,9 +54,7 @@ public class GoogleLoginService {
                 );
 
 
-        GoogleTokenResponseDto googleTokenResponseDto = objectMapper.readValue(token, GoogleTokenResponseDto.class);
-
-        return googleTokenResponseDto;
+        return objectMapper.readValue(token, GoogleTokenResponseDto.class);
     }
 
     public GoogleUserInfoResponseDto googleGetProfile(String googleAccessToken) throws Exception {
@@ -76,9 +74,7 @@ public class GoogleLoginService {
                         () -> new RuntimeException("응답 시간을 초과하였습니다.")
                 );
 
-        GoogleUserInfoResponseDto googleUserInfoResponseDto = objectMapper.readValue(googleProfile, GoogleUserInfoResponseDto.class);
-
-        return googleUserInfoResponseDto;
+        return objectMapper.readValue(googleProfile, GoogleUserInfoResponseDto.class);
     }
 
 }

@@ -110,9 +110,9 @@ public class MemberController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
-    public ResponseEntity<?> kakaoCallback(String code, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public ResponseEntity<?> kakaoCallback(String code, @RequestParam(value = "redirect") String redirectUrl,HttpServletRequest request, HttpServletResponse response) throws Exception {
         // kakao Token 가져오기(권한)
-        String kakaoAccessToken = kakaoLoginService.kakaoGetToken(code);
+        String kakaoAccessToken = kakaoLoginService.kakaoGetToken(code, redirectUrl);
 
         // Token으로 사용자 정보 가져오기
         KakaoUserInfoResponseDto kakaoUserInfo = kakaoLoginService.kakaoGetProfile(kakaoAccessToken);
@@ -230,9 +230,9 @@ public class MemberController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
-    public ResponseEntity<?> googleCallback(@RequestParam(value="code", required = false) String code, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public ResponseEntity<?> googleCallback(@RequestParam(value="code", required = false) String code, @RequestParam(value = "redirect") String redirectUrl, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        GoogleTokenResponseDto token = googleLoginService.googleGetToken(code);
+        GoogleTokenResponseDto token = googleLoginService.googleGetToken(code, redirectUrl);
 
         GoogleUserInfoResponseDto googleProfile = googleLoginService.googleGetProfile(token.getAccess_token());
 
@@ -345,7 +345,7 @@ public class MemberController {
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
 
-    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public ResponseEntity<?> logout(@RequestParam(value = "redirect", required = false) String redirectUrl ,HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         // 기존 유저 찾아온 후 refreshToken 제거
         Member member = securityUtil.getCurrentMember();
@@ -366,7 +366,7 @@ public class MemberController {
 
         // Kakao 계정도 함께 로그아웃 진행
         if (member.getPlatform().equals(Platform.KAKAO)) {
-            kakaoLoginService.KakaoLogout();
+            kakaoLoginService.KakaoLogout(redirectUrl);
         }
 
         // 기존 쿠키 제거
@@ -397,10 +397,6 @@ public class MemberController {
     })
     public ResponseEntity<?> memberSignUp(@RequestPart(value = "user") MemberSignUpRequestDto memberSignUpRequestDto,
                                           @RequestPart(value = "file", required = false) MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws Exception {
-        System.out.println("0000000000000000000000000000000000000000000000000000");
-        System.out.println("memberSignUpRequestDto = " + memberSignUpRequestDto);
-        System.out.println("memberSignUpRequestDto = " + memberSignUpRequestDto.toString());
-        System.out.println("file = " + file);
         try {
             JwtToken jwtToken = memberService.memberSignUp(memberSignUpRequestDto, file);
             HttpHeaders headers = new HttpHeaders();

@@ -24,12 +24,12 @@ public class KakaoLoginService {
     private String kakaoClientId;
 
     // redirect_url
-    @Value("${kakao.redirect.uri}")
-    private String kakaoRedirectUri;
+//    @Value("${kakao.redirect.uri}")
+//    private String kakaoRedirectUri;
 
     // logout_redirect_url
-    @Value("${kakao.logout.redirect.uri}")
-    private String kakaoLogoutRedirectUri;
+//    @Value("${kakao.logout.redirect.uri}")
+//    private String kakaoLogoutRedirectUri;
 
     // json타입을 객체로 변환하기 위한 객체
     @Autowired
@@ -39,7 +39,7 @@ public class KakaoLoginService {
     private MemberRepository memberRepository;
 
     // code를 이용해 kakaoToken 가져오기
-    public String kakaoGetToken(String code) throws Exception {
+    public String kakaoGetToken(String code, String redirectUrl) throws Exception {
 
         // 요청 URL
         String kakaoTokenUri = "https://kauth.kakao.com/oauth/token";
@@ -48,7 +48,7 @@ public class KakaoLoginService {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", kakaoClientId);
-        body.add("redirect_uri", kakaoRedirectUri);
+        body.add("redirect_uri", redirectUrl);
         body.add("code", code);
 
         // 카카오에 token 요청
@@ -96,8 +96,8 @@ public class KakaoLoginService {
 
 
     // 카카오계정과 함께 로그아웃
-    public void KakaoLogout() throws Exception {
-        String kakaoLogoutUrl = "https://kauth.kakao.com/oauth/logout?client_id=" + kakaoClientId + "&logout_redirect_uri=" + kakaoLogoutRedirectUri;
+    public void KakaoLogout(String redirectUrl) throws Exception {
+        String kakaoLogoutUrl = "https://kauth.kakao.com/oauth/logout?client_id=" + kakaoClientId + "&logout_redirect_uri=" + redirectUrl;
 
         WebClient.create()
                 .get()
