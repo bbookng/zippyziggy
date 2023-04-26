@@ -42,6 +42,8 @@ interface ZIPPYZIGGY {
   fetch: typeof fetch;
   init: () => void;
   replaceFetch: () => void;
+  // showContinueActionsButton: () => void;
+  // hideContinueActionsButton: () => void;
   targetLanguage: string;
 }
 

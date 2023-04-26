@@ -55,7 +55,6 @@ const usePromptListPortal = () => {
       const observer = new MutationObserver((mutations) => {
         for (const mutation of mutations) {
           const targetElement = mutation.target as Element;
-
           // 대상 요소가 포탈을 생성해야 하는지 판단
           if (shouldCreatePromptContainerPortal(targetElement, isNewChatPageRef)) {
             createPromptContainerPortal();

@@ -92,7 +92,7 @@ export const addToTopButton = ($formParent) => {
 export const setInputWrapperStyle = (parent) => {
   const $parent = parent;
   $parent.style.paddingRight = '1rem';
-  $parent.style.border = '2px solid #10C600';
+  $parent.style.border = '1px solid #10C600';
 
   const handleFocus = () => {
     $parent.style.border = '1px solid #10C600';
