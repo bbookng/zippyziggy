@@ -8,6 +8,7 @@ import {
   removeFormParentClasses,
   setInputWrapperStyle,
 } from '@pages/content/utils/add-ui-to-input-portals';
+import { findRegenerateButton } from '@pages/content/utils/add-ui-to-prompt-portals';
 
 const useInputContainerPortal = () => {
   const [portalContainer, setPortalContainer] = useState<HTMLDivElement | null>(null);
@@ -84,6 +85,13 @@ const useInputContainerPortal = () => {
     const observer = new MutationObserver((mutations) => {
       for (const mutation of mutations) {
         const targetElement = mutation.target as Element;
+
+        if (targetElement.id === ZP_INPUT_WRAPPER_ID) {
+          const a = document.querySelector('#ZP_actionGroup');
+          const isNewChatPage = !window.location.href.includes('/c/');
+          if (!isNewChatPage) a.classList.remove('ZP_invisible');
+          if (findRegenerateButton()) a.classList.remove('ZP_invisible');
+        }
 
         if (targetElement.className === 'flex flex-col items-center text-sm dark:bg-gray-800') {
           setIntersectionTrigger(true);

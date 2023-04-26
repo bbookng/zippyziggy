@@ -78,7 +78,8 @@ const PromptContainer = () => {
           <ul className="ZP_prompt-container__prompt-card-list">
             {error && <div>something wrong</div>}
             {loading && <div>로딩중...</div>}
-            {loading ||
+            {!loading &&
+              promptList.length > 0 &&
               promptList
                 .slice(offset, offset + limit)
                 // .filter((prompt) => {
