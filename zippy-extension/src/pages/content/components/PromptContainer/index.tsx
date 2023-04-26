@@ -8,6 +8,7 @@ import { Category, MockPrompt, Sort } from '@pages/content/types';
 import useFetch from '@pages/hooks/@shared/useFetch';
 import { ZIPPY_API_URL } from '@pages/constants';
 import useDebounce from '@pages/hooks/@shared/useDebounce';
+import Pagination from '@pages/content/components/PromptContainer/Pagination';
 
 const category: Array<Category> = [
   { id: 'all', text: '전체', value: 'ALL' },
@@ -37,6 +38,15 @@ const PromptContainer = () => {
     loading,
     error,
   } = useFetch<Array<MockPrompt>>({ url: `${ZIPPY_API_URL}/data` });
+  const [limit, setLimit] = useState(12);
+  const [page, setPage] = useState(1);
+  const offset = (page - 1) * limit;
+
+  // useEffect(() => {
+  //   if (!loading) {
+  //     console.log(promptList?.length, limit, page, offset);
+  //   }
+  // }, [loading, limit, offset, page, promptList]);
 
   const isNewChatPage = !window.location.href.includes('/c/');
 
@@ -70,14 +80,24 @@ const PromptContainer = () => {
             {loading && <div>로딩중...</div>}
             {loading ||
               promptList
-                .filter((prompt) => {
-                  return prompt.title.includes(debouncedSearchTerm);
-                })
+                .slice(offset, offset + limit)
+                // .filter((prompt) => {
+                //   if (selectedCategory === 'ALL') {
+                //     return prompt;
+                //   }
+                //   return prompt.category === selectedCategory;
+                // })
+                // .filter((prompt) => {
+                //   return prompt.title.includes(debouncedSearchTerm);
+                // })
                 .map((prompt) => {
                   return <PromptCard key={prompt.id} prompt={prompt} />;
                 })}
           </ul>
         </section>
+        {loading || (
+          <Pagination total={promptList.length} limit={limit} page={page} setPage={setPage} />
+        )}
       </div>
     );
   }

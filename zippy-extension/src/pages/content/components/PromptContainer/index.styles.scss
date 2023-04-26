@@ -1,9 +1,11 @@
-@import "@pages/content/components/PromptContainer/CategoryFilter/index.styles.scss";
-@import "@pages/content/components/PromptContainer/Logo/index.styles.scss";
-@import "@pages/content/components/PromptContainer/PromptCard/index.styles.scss";
-@import "@pages/content/components/PromptContainer/SearchBar/index.styles.scss";
-@import "@pages/content/components/PromptContainer/SortFilter/index.styles.scss";
-@import "@pages/content/components/PromptContainer/UserInfo/index.styles.scss";
+@import "./CategoryFilter/index.styles.scss";
+@import "./Logo/index.styles.scss";
+@import "./PromptCard/index.styles.scss";
+@import "./SearchBar/index.styles.scss";
+@import "./SortFilter/index.styles.scss";
+@import "./UserInfo/index.styles.scss";
+@import "./Pagination/index.styles.scss";
+
 // ##### 프롬프트 컨테이너 시작
 #ZP_promptContainerPortals {
   display: flex;

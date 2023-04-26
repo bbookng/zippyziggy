@@ -1,8 +1,7 @@
 @import "@assets/style/theme.scss";
-@import "@pages/content/components/InputWrapper/ActionGroup/index.styles.scss";
-@import "@pages/content/components/InputWrapper/OutputSettingGroup/index.styles.scss";
-@import '@pages/content/components/PromptContainer/index.styles.scss';
 @import '@pages/content/components/InputWrapper/index.styles.scss';
+@import '@pages/content/components/PromptContainer/index.styles.scss';
+
 
 #ZP_inputSection{
   transition: all 0.5s ease;
@@ -75,6 +74,7 @@
     &:hover {
       font-weight: 800;
       color: var(--black-color-90);
+      background-color: rgba(130, 200, 255, 0.08);
     }
   }
 }

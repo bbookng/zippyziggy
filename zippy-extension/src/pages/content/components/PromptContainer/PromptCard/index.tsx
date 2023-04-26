@@ -5,26 +5,26 @@ interface PromptCardProps {
   prompt: MockPrompt;
 }
 
-const classList = ['w-full', 'bg-gray-50', 'dark:bg-white/5', 'p-3', 'rounded-md'];
+const classList = ['w-full', 'p-3', 'rounded-md'];
 const PromptCard = ({ prompt }: PromptCardProps) => {
-  const {
-    message: { prefix, suffix, example },
-    title,
-    category,
-    id,
-    description,
-  } = prompt;
+  // const {
+  //   message: { prefix, suffix, example },
+  //   title,
+  //   category,
+  //   id,
+  //   description,
+  // } = prompt;
 
   return (
     <li className={`ZP_prompt-container__prompt-card ${classList.join(' ')}`}>
       <article>
         <div>
           <div>
-            <h3>{title}</h3>
+            <h3>{prompt.title}</h3>
             <div>포크</div>
           </div>
           <div>
-            <p>{description}</p>
+            <p>설명</p>
           </div>
           <div>
             <p>2023년 04월 24일</p>

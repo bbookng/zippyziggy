@@ -1,13 +1,11 @@
 import React from 'react';
-import ActionGroup from '@pages/content/components/InputWrapper/ActionGroup';
-import OutputSettingGroup from '@pages/content/components/InputWrapper/OutputSettingGroup';
+import ActionGroup from './ActionGroup';
+import OutputSettingGroup from './OutputSettingGroup';
 
 const InputWrapper = () => {
   return (
     <>
       <OutputSettingGroup>
-        <div>asd</div>
-        <div>asd</div>
         <div>asd</div>
       </OutputSettingGroup>
       <ActionGroup>

@@ -2,6 +2,7 @@
 .ZP_prompt-container__prompt-card {
   background-color: var(--background-color);
   cursor: pointer;
+
   &:hover {
     background-color: rgba(130, 200, 255, 0.08);
   }
