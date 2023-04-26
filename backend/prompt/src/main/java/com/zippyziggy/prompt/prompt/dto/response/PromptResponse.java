@@ -1,5 +1,7 @@
 package com.zippyziggy.prompt.prompt.dto.response;
 
+import java.util.UUID;
+
 import com.zippyziggy.prompt.prompt.model.Prompt;
 
 import lombok.Builder;
@@ -11,6 +13,7 @@ import lombok.Getter;
 @Builder
 public class PromptResponse {
 
+	private UUID promptUuid;
 	private String title;
 	private String description;
 	private String thumbnail;
@@ -22,6 +25,7 @@ public class PromptResponse {
 			prompt.getSuffix());
 
 		PromptResponse response = PromptResponse.builder()
+			.promptUuid(prompt.getPromptUuid())
 			.title(prompt.getTitle())
 			.description(prompt.getDescription())
 			.thumbnail(prompt.getThumbnail())
