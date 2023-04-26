@@ -171,7 +171,7 @@ public class MemberService {
 //            redisUtils.delete(RefreshKey);
 //        }
 
-        s3Service.deleteS3File(member.getProfileImg());
+//        s3Service.deleteS3File(member.getProfileImg());
 
     }
 
