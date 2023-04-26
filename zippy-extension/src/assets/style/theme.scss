@@ -1,3 +1,6 @@
+* {
+  box-sizing: content-box;
+}
 :root{
   /* Colors */
   // #ffffff
@@ -12,13 +15,15 @@
   // #303030
   --dark-color-100: rgba(48, 48, 48, 1);
   --dark-color-50: rgba(48, 48, 48, 0.5);
+  --dark-color-30: rgba(48, 48, 48, 0.3);
+
 
   /* Shadows */
   --shadows-sm: 0px 10px 15px -3px rgba(0, 0, 0, 0.1),
   0px 4px 6px -2px rgba(0, 0, 0, 0.05);
 
   /* Background */
-  --background-color: #F5F6FA;
+  --background-color: rgba(247, 247, 247, 1);
 
 
   /* 공통 css */
@@ -45,6 +50,7 @@
 
   /* Font Sizes */
   --fonts-body-sm: 0.875rem;
+  --fonts-body-base: 1rem;
 
   /* Font Weights */
   --fonts-heading: 600;
@@ -67,7 +73,7 @@
   0px 4px 6px -2px rgba(16, 198, 0, 0.05);
 
   /* Background */
-  --background-color: #363636;
+  --background-color: rgba(255, 255, 255, 0.05);
 }
 
 

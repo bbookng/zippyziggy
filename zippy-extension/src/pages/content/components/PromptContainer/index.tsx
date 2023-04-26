@@ -44,7 +44,7 @@ const PromptContainer = () => {
     return (
       // 내부 컨테이너가 될 inner-container div
       <div className="ZP_prompt-container__inner">
-        <section className="ZP_prompt_container__header">
+        <section className="ZP_prompt-container__header">
           {/* <Logo /> */}
           <CategoryFilter
             category={category}

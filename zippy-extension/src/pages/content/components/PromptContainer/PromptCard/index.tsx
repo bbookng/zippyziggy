@@ -5,6 +5,7 @@ interface PromptCardProps {
   prompt: MockPrompt;
 }
 
+const classList = ['w-full', 'bg-gray-50', 'dark:bg-white/5', 'p-3', 'rounded-md'];
 const PromptCard = ({ prompt }: PromptCardProps) => {
   const {
     message: { prefix, suffix, example },
@@ -15,7 +16,7 @@ const PromptCard = ({ prompt }: PromptCardProps) => {
   } = prompt;
 
   return (
-    <li className="ZP_prompt-container__prompt-card">
+    <li className={`ZP_prompt-container__prompt-card ${classList.join(' ')}`}>
       <article>
         <div>
           <div>

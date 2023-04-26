@@ -1,4 +1,10 @@
-import { ZP_INPUT_WRAPPER_ID } from '@pages/constants';
+import {
+  ZP_HIDE_TOGGLE_BUTTON_ID,
+  ZP_INPUT_SECTION_ID,
+  ZP_INPUT_WRAPPER_ID,
+  ZP_TO_TOP_BUTTON_ID,
+} from '@pages/constants';
+import logo from '@assets/img/icon16.png';
 
 export const removeFormParentClasses = (formParent) => {
   const $formParent = formParent;
@@ -12,7 +18,7 @@ export const removeFormParentClasses = (formParent) => {
 
   $formParent.classList.remove(...classesToRemove);
   $formParent.classList.add('relative');
-  $formParent.id = 'ZP_input-section';
+  $formParent.id = ZP_INPUT_SECTION_ID;
 };
 
 export const createPortalContainer = () => {
@@ -28,7 +34,16 @@ export const createPortalContainer = () => {
 
 export const addToggleButton = ($formParent) => {
   const $hideToggleButton = document.createElement('button');
-  $hideToggleButton.id = 'ZP_hide-toggle-button';
+  $hideToggleButton.id = ZP_HIDE_TOGGLE_BUTTON_ID;
+
+  const $img = document.createElement('img');
+  $img.src = logo;
+  $hideToggleButton.appendChild($img);
+
+  const $text = document.createTextNode('Zippy');
+  $hideToggleButton.appendChild($text);
+  $hideToggleButton.classList.add('bg-white', 'dark:bg-gray-800', 'dark:border-white/20');
+
   $formParent.appendChild($hideToggleButton);
 
   const handleInputSectionToggle = () => {
@@ -39,7 +54,7 @@ export const addToggleButton = ($formParent) => {
 
 export const addToTopButton = ($formParent) => {
   const $toTopButton = document.createElement('button');
-  $toTopButton.id = 'ZP_to-top-button';
+  $toTopButton.id = ZP_TO_TOP_BUTTON_ID;
   $toTopButton.innerHTML = `
   <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4 m-1" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg" style="transform: scale(1, -1);">
   <line x1="12" y1="5" x2="12" y2="19"></line>

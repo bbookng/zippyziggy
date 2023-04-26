@@ -1,5 +1,6 @@
 import React, { Dispatch, SetStateAction, useEffect, useRef } from 'react';
 import { Category } from '@pages/content/types';
+import { ZP_TO_TOP_BUTTON_ID } from '@pages/constants';
 
 interface CategoryFilterProps {
   category: Array<Category>;
@@ -30,9 +31,9 @@ const CategoryFilter = ({
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          document.querySelector('#ZP_to-top-button').classList.add('hide');
+          document.getElementById(ZP_TO_TOP_BUTTON_ID).classList.add('hide');
         } else {
-          document.querySelector('#ZP_to-top-button').classList.remove('hide');
+          document.getElementById(ZP_TO_TOP_BUTTON_ID).classList.remove('hide');
         }
       });
     });
