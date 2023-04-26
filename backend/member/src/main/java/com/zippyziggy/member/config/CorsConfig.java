@@ -22,7 +22,7 @@ public class CorsConfig {
 //        config.addAllowedOriginPattern("*");
 //        config.addAllowedOrigin("*");
         config.addAllowedOrigin("http://k8e205.p.ssafy.io:8000");
-        config.addAllowedOrigin("http://k8e205.p.ssafy.io:8888");
+        config.addAllowedOrigin("http://zippyziggy.kr:3000");
 //        config.addAllowedOrigin("http://k8e205.p.ssafy.io");
         config.addAllowedOrigin("http://localhost:3000");
         config.addAllowedOrigin("http://localhost:8080"); // 모든 ip에 응답을 허용하겠다.
