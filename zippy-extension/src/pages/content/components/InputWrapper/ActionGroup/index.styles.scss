@@ -17,7 +17,7 @@
     width: 0.5rem;
     display: block;
     text-transform: none;
-    background-color: transparent;
+    background-color: var(--background-color);
     background-image: url("@assets/img/icon32.png");
     background-position: right .5rem center;
     background-repeat: no-repeat;
@@ -25,6 +25,10 @@
     border-width: 0;
     border-left-width: 1px;
     cursor: pointer;
+
+    option {
+      background-color: rgb(78, 85, 101);
+    }
 
     &:hover{
       background-color: var(--background-color-hover);
