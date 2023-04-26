@@ -1,5 +1,5 @@
 import router from 'next/router';
-import { http, httpAuth, httpForm } from '@/lib/http';
+import { http, httpAuth, httpForm, httpAuthForm } from '@/lib/http';
 import Toastify from 'toastify-js';
 import toastifyCSS from '@/assets/toastify.json';
 import message from '@/assets/message.json';
@@ -30,7 +30,7 @@ export const getTokenAPI = async () => {
 // TODO : Form으로 수정
 export const putUserAPI = async () => {
   try {
-    const res = await httpAuth.put(`/members/profile`);
+    const res = await httpAuthForm.put(`/members/profile`);
     return res;
   } catch (err) {
     return err;
