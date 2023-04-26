@@ -116,7 +116,7 @@ spring:
           predicates:
             - Path=/prompts/**
           filters:
-           - AuthorizationHeaderFilter
+            - AuthorizationHeaderFilter
 
         - id: search
           uri: lb://SEARCH

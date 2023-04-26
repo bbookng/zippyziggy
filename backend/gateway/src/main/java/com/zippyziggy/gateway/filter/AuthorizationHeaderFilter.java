@@ -6,7 +6,6 @@ import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mysql.cj.xdevapi.Type;
 import com.zippyziggy.gateway.dto.JwtPayLoadResponseDto;
 import com.zippyziggy.gateway.dto.JwtResponse;
 import com.zippyziggy.gateway.model.Member;
@@ -66,51 +65,51 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
             ServerHttpRequest request = exchange.getRequest();
-            System.out.println(exchange.getRequest().getHeaders());
 
             if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
                  exchange.getRequest()
                      .mutate()
-                     .header("crntMemberUuid", null)
+                     .header("crntMemberUuid", "null")
                      .build();
-
-                return chain.filter(exchange);
             }
-            String token = resolveToken(request);
-            if (token != null) {
-                try {
-                    // accessToken인지 refreshToken인지 확인
-                    JwtPayLoadResponseDto jwtPayLoadResponseDto = checkToken(token);
-                    String tokenType = jwtPayLoadResponseDto.getSub();
-                    log.info("tokenType =  " + tokenType);
-                    log.info("jwtPayLoadResponseDto = " + jwtPayLoadResponseDto);
-                    // accessToken인 경우
-                    JwtResponse jwtResponse = validateRefreshToken(token);
-                    if (tokenType.equals("accessToken")) {
-                        //유효한 access토큰인지 확인
-                        log.info("accessTokenJwtResponse = " + jwtResponse);
+            else {
+
+                String token = resolveToken(request);
+                if (token != null) {
+                    try {
+                        // accessToken인지 refreshToken인지 확인
+                        JwtPayLoadResponseDto jwtPayLoadResponseDto = checkToken(token);
+                        String tokenType = jwtPayLoadResponseDto.getSub();
+                        log.info("tokenType =  " + tokenType);
+                        log.info("jwtPayLoadResponseDto = " + jwtPayLoadResponseDto);
+                        // accessToken인 경우
+                        JwtResponse jwtResponse = validateRefreshToken(token);
+                        if (tokenType.equals("accessToken")) {
+                            //유효한 access토큰인지 확인
+                            log.info("accessTokenJwtResponse = " + jwtResponse);
+                        }
+                        // refreshToken인 경우
+                        else {
+                            //유효한 refresh토큰인지 확인
+                            log.info("refreshTokenJwtResponse = " + jwtResponse);
+                        }
+
+                        // 토큰이 유효하면 토큰으로부터 유저 정보를 받아온다.
+                        DecodedJWT verify = require(Algorithm.HMAC512(jwtSecretKey)).build().verify(token);
+                        String userUuid = verify.getClaim("userUuid").asString();
+
+                        exchange.getRequest()
+                                .mutate()
+                                .header("crntMemberUuid", userUuid)
+                                .build();
+
+                    } catch (JWTDecodeException e) {
+                        onError(exchange, "Can not decode token", HttpStatus.UNAUTHORIZED);
+                    } catch (TokenExpiredException e) {
+                        onError(exchange, "Token is expired", HttpStatus.UNAUTHORIZED);
+                    } catch (Exception e) {
+                        onError(exchange, "어떤어떤익셉션", HttpStatus.UNAUTHORIZED);
                     }
-                    // refreshToken인 경우
-                    else {
-                        //유효한 refresh토큰인지 확인
-                        log.info("refreshTokenJwtResponse = " + jwtResponse);
-                    }
-
-                    // 토큰이 유효하면 토큰으로부터 유저 정보를 받아온다.
-                    DecodedJWT verify = require(Algorithm.HMAC512(jwtSecretKey)).build().verify(token);
-                    String userUuid = verify.getClaim("userUuid").asString();
-
-                    exchange.getRequest()
-                            .mutate()
-                            .header("crntMemberUuid", userUuid)
-                            .build();
-
-                } catch (JWTDecodeException e) {
-                    onError(exchange, "Can not decode token", HttpStatus.UNAUTHORIZED);
-                } catch (TokenExpiredException e) {
-                    onError(exchange, "Token is expired", HttpStatus.UNAUTHORIZED);
-                } catch (Exception e) {
-                    onError(exchange, "어떤어떤익셉션", HttpStatus.UNAUTHORIZED);
                 }
             }
             return chain.filter(exchange);
