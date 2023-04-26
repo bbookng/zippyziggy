@@ -12,7 +12,6 @@ public class JwtPayLoadResponseDto {
 
     private String sub;
     private String userUuid;
-    private String nickname;
     private Long exp;
 
     public String getSub() {
@@ -21,10 +20,6 @@ public class JwtPayLoadResponseDto {
 
     public String getUserUuid() {
         return this.userUuid;
-    }
-
-    public String getNickname() {
-        return this.nickname;
     }
 
     public Long getExp() {

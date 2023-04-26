@@ -84,7 +84,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
                     JwtPayLoadResponseDto jwtPayLoadResponseDto = checkToken(token);
                     String tokenType = jwtPayLoadResponseDto.getSub();
                     log.info("tokenType =  " + tokenType);
-
+                    log.info("jwtPayLoadResponseDto = " + jwtPayLoadResponseDto)
                     // accessToken인 경우
                     JwtResponse jwtResponse = validateRefreshToken(token);
                     if (tokenType.equals("accessToken")) {
@@ -122,6 +122,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
 
     private JwtResponse validateRefreshToken(String refreshToken) {
         System.out.println("refreshToken = " + refreshToken);
+        log.info("validateRefreshToken까지는 들어왔어요오오!!");
         try {
             // token 내용이 유효한지 확인
             log.info("1111111111111111111111111111111111111111111111111111")
@@ -242,14 +243,18 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
     }
 
     private JwtPayLoadResponseDto checkToken(String token) {
+        log.info("checkToken 중입니다")
         String[] data = token.split("\\.");
         String s = data[1];
         String decode = new String(Base64Utils.decode(s.getBytes()));
+        log.warn("중간 데이터" + s);
+        log.warn("decode" + decode);
         try {
             JwtPayLoadResponseDto jwtPayLoadResponseDto = objectMapper.readValue(decode, JwtPayLoadResponseDto.class);
-
+            log.info("에러 발생" + jwtPayLoadResponseDto);
             return jwtPayLoadResponseDto;
         } catch (Exception e) {
+            log.warn("checkToken 에러 발생입니다.");
             throw new JWTDecodeException("유효하지 않은 토큰입니다.");
         }
     }
