@@ -179,7 +179,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
         String userUuid = verify.getClaim("userUuid").asString();
         log.info("userUuid = " + userUuid);
         log.warn("uuid = " + UUID.fromString(userUuid));
-        Optional<Member> member = memberRepository.findByUserUuidEquals(UUID.fromString(userUuid));
+        Optional<Member> member = memberRepository.findByUserUuid(UUID.fromString(userUuid));
         log.info("member를 찾아라" + member);
         return member.get();
     }
