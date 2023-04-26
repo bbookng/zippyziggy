@@ -114,17 +114,23 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
 
 
     private JwtResponse validateRefreshToken(String refreshToken) {
+        System.out.println("refreshToken = " + refreshToken);
         try {
             // token 내용이 유효한지 확인
+            log.info("1111111111111111111111111111111111111111111111111111")
             boolean contentCheck = tokenContentCheck(refreshToken);
+            log.info("22222222222222222222222222222222222");
             // DB의 refreshToken과 일치하는지 확인
             boolean refreshTokenDBCheck = refreshTokenDBCheck(refreshToken);
-
+            log.info("33333333333333333333333333333333");
             if (!contentCheck || !refreshTokenDBCheck) {
+                log.info("4444444444444444444444444444444444");
+                log.info("contentCheck = " + contentCheck);
+                log.info("refreshTokenDBCheck = " + refreshTokenDBCheck);
                 return JwtResponse.REFRESH_TOKEN_MISMATCH;
             }
             DecodedJWT verify = require(Algorithm.HMAC512(jwtSecretKey)).build().verify(refreshToken);
-
+            log.info("verify = " + verify);
             // 만료시간이 지난 경우 새로운 refreshToken 생성
             if (verify.getExpiresAt().before(new Date())) {
 
@@ -132,12 +138,12 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
             }
         } catch (TokenExpiredException e) {
 
-            System.out.println("만료된 토큰입니다." + e);
+            log.info("만료된 토큰입니다." + e);
             return JwtResponse.REFRESH_TOKEN_EXPIRED;
 
         } catch (Exception e) {
-
-            System.out.println("유효하지 않은 토큰입니다" + e);
+            log.info("Exception e에서 에러 발생");
+            log.info("유효하지 않은 토큰입니다" + e);
             return JwtResponse.REFRESH_TOKEN_MISMATCH;
 
         }
@@ -145,10 +151,12 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
     }
 
     public boolean refreshTokenDBCheck(String refreshToken) throws Exception {
-
+        log.info("1001010101010101010");
         Member member = findMemberByJWT(refreshToken);
+        log.info("343434343434343434");
 
         if (!member.getRefreshToken().equals(refreshToken)) {
+            log.info("DB와 일치하지 않음");
             return false;
         } else {
             return true;
@@ -199,7 +207,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
     private boolean tokenContentCheck(String token) throws NoSuchAlgorithmException, InvalidKeyException {
 
         DecodedJWT verify = require(Algorithm.HMAC512(jwtSecretKey)).build().verify(token);
-
+        log.info("9999999999999999999999999999999999999999");
         // token이 가지고 있는 signature 추출
         String signature = verify.getSignature();
 
