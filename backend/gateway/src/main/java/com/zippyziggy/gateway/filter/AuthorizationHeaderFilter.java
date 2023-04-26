@@ -182,8 +182,9 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
         log.warn("uuid = " + UUID.fromString(userUuid));
 //        UUID uuid = UUID.fromString(userUuid);
         byte[] uuidBytes = Hex.decodeHex(userUuid.replace("-", "").toCharArray());
+        System.out.println("uuidBytes = " + uuidBytes);
         UUID uuid = UUID.nameUUIDFromBytes(uuidBytes);
-
+        System.out.println("uuid = " + uuid);
         Optional<Member> member = memberRepository.findByUserUuid(uuid);
         log.info("member를 찾아라" + member);
         return member.get();
