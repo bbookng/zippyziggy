@@ -26,9 +26,18 @@ public class S3Service {
     @Value("${cloud.aws.region.static}")
     private String region;
 
+    @Value("${cloud.aws.credentials.access-key}")
+    private String accessKey;
+
+    @Value("${cloud.aws.credentials.secret-key}")
+    private String secretKey;
+
+
     private final AmazonS3Client amazonS3Client;
 
     public String uploadProfileImg(UUID userUuid, MultipartFile file) throws Exception {
+        System.out.println("accessKey우캬캬 = " + accessKey);
+        System.out.println("secretKey우케케케 = " + secretKey);
         String fileName = file.getOriginalFilename();
         String filepath = createS3FileName(fileName, userUuid);
 
