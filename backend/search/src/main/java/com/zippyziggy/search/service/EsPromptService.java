@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,19 +23,27 @@ public class EsPromptService {
     private final EsPromptRepository esPromptRepository;
 
     public ExtensionSearchPromptList search(
-            String keyword
-//            String category,
-//            String sort
+        String keyword,
+        String category,
+        String sort,
+        Pageable pageable
     ) {
-        List<EsPrompt> esPrompts = new ArrayList<>();
-        if (null != keyword) {
-            esPrompts = esPromptRepository.findByTitleContainsOrDescriptionContainsOrPrefixContainsOrSuffixContainsOrExampleContains(
-                    keyword, keyword, keyword, keyword, keyword
-            );
-        }
-        else {
-            esPromptRepository.findAll()
-                    .forEach(esPrompts::add);
+        final String sortType = (null != sort) ? sort : "LIKE";
+
+        Page<EsPrompt> esPrompts;
+
+        if (null != keyword & null != category) {
+
+        } else if (null == keyword & null != category) {
+            esPrompts = esPromptRepository
+                .findByCategory(category, pageable);
+        } else if (null != keyword & null == category) {
+            esPrompts = esPromptRepository
+                .findByTitleContainsOrDescriptionContainsOrPrefixContainsOrSuffixContainsOrExampleContains(
+                    keyword, keyword, keyword, keyword, keyword, pageable);
+        } else if (null == keyword & null == category) {
+            esPrompts = esPromptRepository
+                .findAll(pageable);
         }
         return ExtensionSearchPromptList.of(esPrompts);
 

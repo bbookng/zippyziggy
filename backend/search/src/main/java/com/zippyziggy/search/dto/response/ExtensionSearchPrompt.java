@@ -1,6 +1,9 @@
 package com.zippyziggy.search.dto.response;
 
 import com.zippyziggy.search.model.EsPrompt;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Data;
 
@@ -28,8 +31,8 @@ public class ExtensionSearchPrompt {
     private final String description;
     private final Integer hit;
     private final Integer likeCnt;
-    private final String regDt;
-    private final String updDt;
+    private final Long regDt;
+    private final Long updDt;
     private final String category;
     private final String prefix;
     private final String suffix;
@@ -43,8 +46,8 @@ public class ExtensionSearchPrompt {
             String description,
             Integer hit,
             Integer likeCnt,
-            String regDt,
-            String updDt,
+            Long regDt,
+            Long updDt,
             String category,
             String prefix,
             String suffix,
