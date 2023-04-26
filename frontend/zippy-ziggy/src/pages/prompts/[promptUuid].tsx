@@ -14,7 +14,7 @@ import {
   RightContainer,
   TopBox,
 } from '@/styles/prompt/Detail.style';
-import { useQuery } from '@tanstack/react-query';
+import { isError, useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { FaArrowAltCircleUp } from 'react-icons/fa';
@@ -74,19 +74,28 @@ export default function DetailPrompt() {
   };
 
   // Prompt 상세 가져오기
-  const { isLoading, data } = useQuery(['prompt'], handleGetPromptDetail);
+  const { isLoading, data } = useQuery(['prompt'], handleGetPromptDetail, {
+    enabled: !!promptUuid,
+    onError: (err) => {
+      console.log(err);
+    },
+  });
 
   // 좋아요
   const handleLike = async () => {
     const res = await likePrompt({ promptUuid });
-    setIsLiked(res.isLiked);
-    res.isLiked ? setLikeCnt((prev) => prev + 1) : setLikeCnt((prev) => prev - 1);
+    if (res.result === 'SUCCESS') {
+      setIsLiked(res.data.isLiked);
+      res.data.isLiked ? setLikeCnt((prev) => prev + 1) : setLikeCnt((prev) => prev - 1);
+    }
   };
 
   // 북마크
   const handleBookmark = async () => {
     const res = await bookmarkPrompt({ promptUuid });
-    setIsBookmarked(res.isBookmarked);
+    if (res.result === 'SUCCESS') {
+      setIsBookmarked(res.data.isBookmarked);
+    }
   };
 
   // 프롬프트 삭제
@@ -95,17 +104,17 @@ export default function DetailPrompt() {
   };
 
   useEffect(() => {
-    if (!isLoading) {
+    if (!isLoading && data.result === 'SUCCESS') {
       window.addEventListener('scroll', handleScroll);
-      setIsLiked(data.isLiked);
-      setIsBookmarked(data.isBookmarked);
-      setLikeCnt(data.likeCnt);
+      setIsLiked(data.data.isLiked);
+      setIsBookmarked(data.data.isBookmarked);
+      setLikeCnt(data.data.likeCnt);
     }
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, [isLoading]);
-
+  console.log(data);
   return (
     <>
       {isOpenPromptDeleteModal && (
@@ -118,12 +127,12 @@ export default function DetailPrompt() {
         />
       )}
       <Container>
-        {promptUuid && !isLoading && (
+        {!isLoading && data.result === 'SUCCESS' && (
           <>
             <LeftContainer>
               <TopBox>
                 <PromptTitle
-                  prompt={data}
+                  prompt={data.data}
                   isLiked={isLiked}
                   isBookmarked={isBookmarked}
                   likeCnt={likeCnt}
@@ -134,7 +143,7 @@ export default function DetailPrompt() {
               </TopBox>
               <Tab itemList={itemList} tab={tab} handleIsSelected={handleIsSelectedTab} />
               <section id="0">
-                <Introduction prompt={data} />
+                <Introduction prompt={data.data} />
               </section>
               <section id="1">
                 <TalkComponent promptUuid={promptUuid} size={2} />
@@ -144,11 +153,11 @@ export default function DetailPrompt() {
                   id={promptUuid}
                   type="prompt"
                   size={5}
-                  nickname={data?.writer?.writerNickname}
+                  nickname={data?.data?.writerResponse?.writerNickname}
                 />
               </section>
               <section id="3">
-                <ForkedPromptList promptUuid={promptUuid} size={4} />
+                {/* <ForkedPromptList promptUuid={promptUuid} size={4} /> */}
               </section>
             </LeftContainer>
             <RightContainer>

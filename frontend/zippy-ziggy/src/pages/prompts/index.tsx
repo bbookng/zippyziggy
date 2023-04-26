@@ -43,17 +43,17 @@ export default function Prompt() {
   // 카테고리 타입
   type Category = {
     name: string;
-    value: string | null;
+    value: string | number | null;
   };
 
   // 카테코리 목록들
   const categories: Category[] = [
     { name: '전체', value: null },
-    { name: '학업', value: 'study' },
-    { name: '오락', value: 'fun' },
-    { name: '비즈니스', value: 'business' },
-    { name: '프로그래밍', value: 'programming' },
-    { name: '기타', value: 'etc' },
+    { name: '학업', value: 'STUDY' },
+    { name: '오락', value: 'FUN' },
+    { name: '비즈니스', value: 'BUSINESS' },
+    { name: '프로그래밍', value: 'PROGRAMMING' },
+    { name: '기타', value: 'ETC' },
   ];
 
   // 선택된 카테고리 옵션 표시
@@ -66,9 +66,9 @@ export default function Prompt() {
 
   // 정렬 목록들
   const sortList: Category[] = [
-    { name: '조회수', value: '0' },
-    { name: '좋아요', value: '1' },
-    { name: '최신순', value: '2' },
+    { name: '조회수', value: 0 },
+    { name: '좋아요', value: 1 },
+    { name: '최신순', value: 2 },
   ];
 
   // 선택된 정렬 옵션 표시
