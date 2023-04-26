@@ -146,7 +146,7 @@ public class PromptService{
 		boolean isLiked;
 		boolean isBookmarked;
 
-		if (crntMemberUuid == "defaultValue") {
+		if (crntMemberUuid.equals("defaultValue")) {
 			isLiked = false;
 			isBookmarked = false;
 		} else {
