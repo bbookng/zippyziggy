@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.nio.ByteBuffer;
 import java.util.UUID;
 
 @Service
@@ -19,7 +20,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String userUuid) throws UsernameNotFoundException {
-        Member member = memberRepository.findByUserUuid(UUID.fromString(userUuid))
+        UUID uuid = UUID.fromString(userUuid);
+        byte[] uuidBytes = ByteBuffer.allocate(16)
+                .putLong(uuid.getMostSignificantBits())
+                .putLong(uuid.getLeastSignificantBits())
+                .array();
+        Member member = memberRepository.findByUserUuid(uuidBytes)
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
         if (member != null) {
             return new CustomUserDetail(member);
