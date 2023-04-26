@@ -146,16 +146,16 @@ public class PromptService{
 		boolean isLiked;
 		boolean isBookmarked;
 
-		if (crntMemberUuid != null) {
+		if (crntMemberUuid == "defaultValue") {
+			isLiked = false;
+			isBookmarked = false;
+		} else {
 			isLiked = (promptLikeRepository
 					.countAllByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) % 2 > 0)
 					? true : false;
 			isBookmarked = (promptBookmarkRepository
 					.countAllByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) % 2 > 0)
 					? true : false;
-		} else {
-			isLiked = false;
-			isBookmarked = false;
 		}
 
 		PromptDetailResponse promptDetailResponse = prompt.toDetailResponse(isLiked, isBookmarked);
