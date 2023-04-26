@@ -144,8 +144,9 @@ public class PromptService{
 
 		boolean isLiked;
 		boolean isBookmarked;
+		System.out.println(crntMemberUuid);
 
-		if (crntMemberUuid == "null") {
+		if (crntMemberUuid == null) {
 			isLiked = false;
 			isBookmarked = false;
 		} else {
@@ -170,7 +171,7 @@ public class PromptService{
 					.orElseThrow(PromptNotFoundException::new).getMemberUuid();
 
 			MemberResponse originalMemberInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(originalMemberUuid)
-							.orElseThrow(MemberNotFoundException::new), throwable -> null);
+					.orElseThrow(MemberNotFoundException::new), throwable -> null);
 
 			promptDetailResponse.setOriginerResponse(originalMemberInfo.toOriginerResponse());
 		}
