@@ -31,11 +31,11 @@ public class EsPrompt {
     @Field(type = FieldType.Integer, name = "like_cnt")
     private Integer likeCnt;
 
-    @Field(type = FieldType.Date, name = "reg_dt")
-    private String regDt;
+    @Field(type = FieldType.Long, name = "reg_dt")
+    private Long regDt;
 
-    @Field(type = FieldType.Date, name = "upd_dt")
-    private String updDt;
+    @Field(type = FieldType.Long, name = "upd_dt")
+    private Long updDt;
 
     @Field(type = FieldType.Text, name = "category")
     private String category;
