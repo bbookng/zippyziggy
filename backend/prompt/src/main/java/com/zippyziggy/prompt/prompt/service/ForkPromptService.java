@@ -57,12 +57,12 @@ public class ForkPromptService {
 		return ForkPromptResponse.from(prompt);
 	}
 
-	public ForkedPromptListResponse getForkedPromptList(UUID promptUuid, Pageable pageable, @Nullable UUID crntMemberUuid) {
+	public ForkedPromptListResponse getForkedPromptList(UUID promptUuid, Pageable pageable, String crntMemberUuid) {
 
 		Page<Prompt> forkedPrompts = promptRepository.findAllByOriginPromptUuid(promptUuid, pageable);
 
 		// fork 프롬프트들 카드 정보 가져오는 메서드
-		List<ForkedPromptResponse> prompts = getForkedPromptResponses(forkedPrompts, crntMemberUuid);
+		List<ForkedPromptResponse> prompts = getForkedPromptResponses(forkedPrompts, UUID.fromString(crntMemberUuid));
 
 		return new ForkedPromptListResponse(prompts.size(), prompts);
 	}

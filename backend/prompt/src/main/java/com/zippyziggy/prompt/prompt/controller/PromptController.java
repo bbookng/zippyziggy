@@ -121,7 +121,7 @@ public class PromptController {
 		HttpServletRequest request,
 		HttpServletResponse response) {
 		promptService.updateHit(UUID.fromString(promptUuid), request, response);
-		return ResponseEntity.ok(promptService.getPromptDetail(UUID.fromString(promptUuid), UUID.fromString(crntMemberUuid)));
+		return ResponseEntity.ok(promptService.getPromptDetail(UUID.fromString(promptUuid), crntMemberUuid));
 	}
 
 	@Operation(summary = "프롬프트 삭제", description = "프롬프트를 삭제한다.")
@@ -161,9 +161,9 @@ public class PromptController {
 	})
 	public ResponseEntity<ForkedPromptListResponse> getForkedPrompt(@PathVariable String promptUuid,
 		Pageable pageable,
-		@RequestHeader(required = false) String crntMemberUuid) {
+		@RequestHeader String crntMemberUuid) {
 		ForkedPromptListResponse forkedPromptList = forkPromptService.getForkedPromptList(UUID.fromString(promptUuid),
-			pageable, UUID.fromString(crntMemberUuid));
+			pageable, crntMemberUuid);
 		return ResponseEntity.ok(forkedPromptList);
 	}
 
