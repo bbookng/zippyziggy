@@ -67,6 +67,7 @@ export default function Modify() {
   // useState를 사용하여 닉네임과 닉네임의 검증 상태를 저장합니다
   const [nickname, setBeforeNickname] = useState('');
   const [statusNickname, setStatusNickname] = useState('default');
+  const [fileUrl, setBeforeFileUrl] = useState('');
   const [file, setFile] = useState<File | null>(null); // 파일 정보를 저장하는 state를 설정합니다
 
   const inputRef = useRef(null); // useRef를 사용하여 input element를 참조합니다
@@ -74,6 +75,8 @@ export default function Modify() {
   // Prompt 상세 요청 API
   const handleGetUserDetail = async () => {
     const res = await httpAuth.get(`/members/profile`);
+    console.log(res);
+    setBeforeFileUrl(res.data.profileImg);
     setBeforeNickname(res.data.nickname);
     return res;
   };
@@ -148,7 +151,8 @@ export default function Modify() {
         <form onSubmit={(e) => e.preventDefault()}>
           <label htmlFor="image" className="btn">
             <div style={{ flex: '1', display: 'flex', alignItems: 'center', margin: '0 0 12px 0' }}>
-              <ImagePreview file={file} />
+              {file ? <ImagePreview file={file} /> : <ProfileImage src={fileUrl} alt="image" />}
+
               <Button
                 width="fit-content"
                 padding="0 1rem"

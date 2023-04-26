@@ -45,7 +45,6 @@ const httpAuthApi = () => {
 };
 
 const httpFormApi = () => {
-  console.log('폼데이터 요청');
   const instance = axios.create({
     baseURL: `${serverUrl}/`,
 

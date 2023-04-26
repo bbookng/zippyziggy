@@ -36,6 +36,9 @@ export const userSlice = createSlice({
     setUserUuid(state, action) {
       return { ...state, userUuid: action.payload };
     },
+    setUserReset(state) {
+      return { ...initialState };
+    },
   },
 
   /** 페이지 이동 시 상태 초기화가 필요한 경우 추가해야 함 */
@@ -50,5 +53,6 @@ export const userSlice = createSlice({
   },
 });
 
-export const { setIsLogin, setNickname, setProfileImg, setUserUuid } = userSlice.actions; // 액션 생성자 함수와 셀렉터를 export함
+export const { setIsLogin, setNickname, setProfileImg, setUserUuid, setUserReset } =
+  userSlice.actions; // 액션 생성자 함수와 셀렉터를 export함
 export default userSlice.reducer; // slice를 리듀서로 변환하여 export함
