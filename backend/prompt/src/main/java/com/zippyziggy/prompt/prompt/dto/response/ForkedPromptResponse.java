@@ -35,7 +35,7 @@ public class ForkedPromptResponse {
 	// member 연결되면 추가
 	private Boolean isBookmarked;
 
-	public static ForkedPromptResponse from(Prompt prompt, Long commentCnt, Long forkCnt, Long talkCnt) {
+	public static ForkedPromptResponse from(Prompt prompt, Long commentCnt, Long forkCnt, Long talkCnt, Boolean isBookmarked) {
 
 		long regDt = prompt.getRegDt().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
 		long updDt = prompt.getRegDt().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
@@ -48,6 +48,7 @@ public class ForkedPromptResponse {
 			.regDt(regDt)
 			.updDt(updDt)
 			.commentCnt(commentCnt)
+			.isBookmarked(isBookmarked)
 			.forkCnt(forkCnt)
 			.talkCnt(talkCnt)
 			.build();

@@ -158,8 +158,11 @@ public class PromptController {
 			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
 			@ApiResponse(responseCode = "500", description = "서버 에러")
 	})
-	public ResponseEntity<ForkedPromptListResponse> getForkedPrompt(@PathVariable String promptUuid, Pageable pageable) {
-		ForkedPromptListResponse forkedPromptList = forkPromptService.getForkedPromptList(UUID.fromString(promptUuid), pageable);
+	public ResponseEntity<ForkedPromptListResponse> getForkedPrompt(@PathVariable String promptUuid,
+		Pageable pageable,
+		@RequestHeader String crntMemberUuid) {
+		ForkedPromptListResponse forkedPromptList = forkPromptService.getForkedPromptList(UUID.fromString(promptUuid),
+			pageable, UUID.fromString(crntMemberUuid));
 		return ResponseEntity.ok(forkedPromptList);
 	}
 
