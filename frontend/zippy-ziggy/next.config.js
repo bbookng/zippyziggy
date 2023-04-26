@@ -2,10 +2,13 @@
 const nextConfig = {
   reactStrictMode: false, // useEffect twice
   images: {
-    domains: [],
+    domains: ['zippyziggytest.s3.ap-northeast-2.amazonaws.com'],
     unoptimized: true,
   },
-
+  publicRuntimeConfig: {
+    // 현재 도메인 주소로 변경
+    APP_URL: 'http://zippyziggy:3000',
+  },
   async headers() {
     return [
       {
@@ -22,7 +25,8 @@ const nextConfig = {
           },
           {
             key: 'Access-Control-Allow-Headers',
-            value: 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version',
+            value:
+              'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version',
           },
         ],
       },
@@ -30,9 +34,4 @@ const nextConfig = {
   },
 };
 
-module.exports = {
-  publicRuntimeConfig: {
-    // 현재 도메인 주소로 변경
-    APP_URL: 'http://zippyziggy:3000',
-  },
-};
+module.exports = nextConfig;

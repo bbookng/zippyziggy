@@ -30,13 +30,26 @@ const httpAuthApi = () => {
     baseURL: `${serverUrl}/`,
 
     headers: {
-      'Content-Type': 'application/json',
+      // 'Content-Type': 'application/json',
       // 'Access-Control-Allow-Origin': 'http://localhost:3000',
       // 'Access-Control-Allow-Origin': '*',
       // 'Access-Control-Allow-Credentials': true,
       // 'Access-Control-Allow-Methods': 'GET,OPTIONS,PATCH,DELETE,POST,PUT',
       // 'Access-Control-Allow-Headers': '*',
       // 'Access-Control-Expose-Headers': '*',
+    },
+
+    withCredentials: true,
+  });
+  return tokenInterceptor(instance);
+};
+
+const httpAuthFormApi = () => {
+  const instance = axios.create({
+    baseURL: `${serverUrl}/`,
+
+    headers: {
+      'Content-Type': 'multipart/form-data',
     },
 
     withCredentials: true,
@@ -60,4 +73,5 @@ const httpFormApi = () => {
 
 export const http = httpApi();
 export const httpAuth = httpAuthApi();
+export const httpAuthForm = httpAuthFormApi();
 export const httpForm = httpFormApi();

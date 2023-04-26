@@ -17,14 +17,14 @@ export default function Introduction({ prompt }: PropsType) {
         <div className="colorBlock" />
         <div className="colorBox">
           <div className="exampleLabel">질문 예시</div>
-          <div className="example">{prompt.message.example}</div>
+          <div className="example">{prompt.messageResponse.example}</div>
         </div>
       </SubContainer>
       <SubContainer>
         <div className="colorBox">
-          <div>{prompt.message.prefix}</div>
-          <div className="example">{prompt.message.example}</div>
-          <div>{prompt.message.suffix}</div>
+          <div>{prompt.messageResponse.prefix}</div>
+          <div className="example">{prompt.messageResponse.example}</div>
+          <div>{prompt.messageResponse.suffix}</div>
         </div>
       </SubContainer>
       <div />

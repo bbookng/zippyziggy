@@ -37,7 +37,7 @@ function getDateTime(data: Date = new Date()) {
   return `${year}. ${month}. ${day}. ${ampm} ${hours}:${minutes}`;
 }
 
-export function checkInputFormToast() {
+function checkInputFormToast() {
   Toastify({
     text: message.CheckInputForm,
     duration: 1500,
@@ -47,4 +47,4 @@ export function checkInputFormToast() {
   }).showToast();
 }
 
-export { getDate, getDateTime };
+export { getDate, getDateTime, checkInputFormToast };

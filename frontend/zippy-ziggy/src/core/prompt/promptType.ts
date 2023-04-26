@@ -1,16 +1,18 @@
 import { NextRouter } from 'next/router';
 
 export type CreatePromptType = {
-  data: {
-    description: string;
-    category: string;
-    message: {
-      prefix: string;
-      example: string;
-      suffix: string;
-    };
-  };
-  thumbnail: string;
+  data: FormData;
+  // data: {
+  //   title: string;
+  //   description: string;
+  //   category: string;
+  //   message: {
+  //     prefix: string;
+  //     example: string;
+  //     suffix: string;
+  //   };
+  // };
+  // thumbnail: FormData;
   router: NextRouter;
 };
 
@@ -29,6 +31,18 @@ export type LikePromptType = {
 
 export type BookmarkPromptType = {
   promptUuid: string | string[] | number;
+};
+
+export type GetTalkListUsePromptType = {
+  promptUuid: string | string[] | number;
+  page: number;
+  size: number;
+};
+
+export type GetForkListUsePromptType = {
+  promptUuid: string | string[] | number;
+  page: number;
+  size: number;
 };
 
 export type CreatePromptCommentType = {

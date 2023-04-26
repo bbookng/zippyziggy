@@ -13,5 +13,8 @@
   "WriteCommentFail": "❌ 댓글 생성에 실패하셨습니다",
 
   "DeleteCommentSuccess": "✅ 댓글을 삭제하셨습니다",
-  "DeleteCommentFail": "❌ 댓글 삭제에 실패하셨습니다"
+  "DeleteCommentFail": "❌ 댓글 삭제에 실패하셨습니다",
+
+  "CreatePromptSuccess": "✅ 프롬프트를 생성하셨습니다",
+  "CreatePromptFail": "❌ 프롬프트 생성에 실패하셨습니다"
 }

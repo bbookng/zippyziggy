@@ -9,6 +9,7 @@ import {
 } from './Create_2Style';
 
 import PromptCard from '../PromptCard/PromptCard';
+import DropBox from '../DropBox/DropBox';
 
 interface PropsTypes {
   title: string | null;
@@ -18,6 +19,7 @@ interface PropsTypes {
   setImage: (file: FileList) => void;
   preview: string | null;
   setPreview: (url: string) => void;
+  handleSetCategory: (e) => void;
 }
 
 export default function CreatePart2({
@@ -27,6 +29,7 @@ export default function CreatePart2({
   setImage,
   preview,
   setPreview,
+  handleSetCategory,
 }: PropsTypes) {
   // 이미지 미리보기
   const handlePreview = (e) => {
@@ -37,12 +40,22 @@ export default function CreatePart2({
     };
   };
 
+  // 이미지 등록
   const registerImage = (e) => {
     if (e.target.files.length) {
       setImage(e.target.files);
       handlePreview(e);
     }
   };
+
+  // 카테고리 설정
+  const itemList = [
+    ['학업', 'STUDY'],
+    ['오락', 'FUN'],
+    ['비즈니스', 'BUSINESS'],
+    ['프로그래밍', 'PROGRAMMING'],
+    ['기타', 'ETC'],
+  ];
 
   return (
     <Container>
@@ -70,6 +83,12 @@ export default function CreatePart2({
               placeholder="프롬프트에 대한 설명을 작성해주세요."
               onChange={(e) => handleChange(e, 'content')}
             />
+          </div>
+          <div className="row">
+            <label htmlFor="category" className="label">
+              카테고리
+            </label>
+            <DropBox itemList={itemList} handleChange={handleSetCategory} />
           </div>
           <span>
             <label htmlFor="image" className="btn">
