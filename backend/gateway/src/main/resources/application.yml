@@ -108,6 +108,12 @@ spring:
         - id: prompt
           uri: lb://PROMPT
           predicates:
+            - Path=/prompts/{promptUuid}/comments
+            - Method=GET
+
+        - id: prompt
+          uri: lb://PROMPT
+          predicates:
             - Path=/prompts/**
           filters:
            - AuthorizationHeaderFilter
