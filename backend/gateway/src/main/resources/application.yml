@@ -61,7 +61,6 @@ spring:
             - Path=/members/auth/kakao/callback
             - Method=GET
 
-
         - id: member
           uri: lb://MEMBER
           predicates:
