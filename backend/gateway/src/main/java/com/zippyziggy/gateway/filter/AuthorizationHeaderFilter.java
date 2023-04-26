@@ -6,6 +6,7 @@ import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mysql.cj.xdevapi.Type;
 import com.zippyziggy.gateway.dto.JwtPayLoadResponseDto;
 import com.zippyziggy.gateway.dto.JwtResponse;
 import com.zippyziggy.gateway.model.Member;
@@ -176,7 +177,8 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
         DecodedJWT verify = require(Algorithm.HMAC512(jwtSecretKey)).build().verify(token);
         log.info("여긴가" + verify);
         String userUuid = verify.getClaim("userUuid").asString();
-        log.info("userUuid" + userUuid);
+        log.info("userUuid = " + userUuid);
+        log.warn("uuid = " + UUID.fromString(userUuid));
         Optional<Member> member = memberRepository.findByUserUuidEquals(UUID.fromString(userUuid));
         log.info("member를 찾아라" + member);
         return member.get();
