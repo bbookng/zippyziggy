@@ -25,7 +25,7 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://k8e205.p.ssafy.io:8761/eureka
+      defaultZone: http://zippyziggy.kr:8761/eureka
 
 springdoc:
   swagger-ui:

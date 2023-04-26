@@ -57,7 +57,7 @@ public class ForkPromptService {
 		return ForkPromptResponse.from(prompt);
 	}
 
-	public ForkedPromptListResponse getForkedPromptList(UUID promptUuid, Pageable pageable, UUID crntMemberUuid) {
+	public ForkedPromptListResponse getForkedPromptList(UUID promptUuid, Pageable pageable, @Nullable UUID crntMemberUuid) {
 
 		Page<Prompt> forkedPrompts = promptRepository.findAllByOriginPromptUuid(promptUuid, pageable);
 

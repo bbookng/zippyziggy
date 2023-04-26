@@ -25,8 +25,7 @@ public class Prompt {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false)
-	@Type(type = "uuid-char")
+	@Column(nullable = false, columnDefinition = "BINARY(16)")
 	private UUID memberUuid;
 
 	@Column(nullable = false)
@@ -39,7 +38,6 @@ public class Prompt {
 	private Integer hit;
 
 	@Column(nullable = false)
-//	@ColumnDefault(value = "CURRENT_TIMESTAMP")
 	private LocalDateTime regDt;
 
 	@Column(nullable = false)
@@ -62,7 +60,6 @@ public class Prompt {
 	@GeneratedValue(generator = "uuid2")
 	@GenericGenerator(name = "uuid2", strategy = "uuid2")
 	@Column(nullable = false, columnDefinition = "BINARY(16)")
-//	@Type(type = "uuid-char")
 	private UUID promptUuid;
 
 	@OneToMany(mappedBy = "prompt", cascade = CascadeType.ALL)
@@ -74,7 +71,6 @@ public class Prompt {
 	private List<Talk> talks;
 
 	@Column(columnDefinition = "BINARY(16)")
-//	@Type(type = "uuid-char")
 	private UUID originPromptUuid;
 
 	@Column(nullable = false, length = 10)
@@ -111,7 +107,7 @@ public class Prompt {
 				.title(this.getTitle())
 				.description(this.getDescription())
 				.thumbnail(this.getThumbnail())
-				.category(this.getCategory().toString())
+				.category(this.getCategory().getDescription().toUpperCase())
 				.isBookmarked(isBookmarked)
 				.isLiked(isLiked)
 				.isForked(this.isForked())

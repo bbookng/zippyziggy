@@ -117,7 +117,7 @@ public class PromptController {
 			@ApiResponse(responseCode = "500", description = "서버 에러")
 	})
 	public ResponseEntity<PromptDetailResponse> getPromptDetail(@PathVariable String promptUuid,
-		@Nullable @RequestHeader String crntMemberUuid,
+		@RequestHeader(required = false) String crntMemberUuid,
 		HttpServletRequest request,
 		HttpServletResponse response) {
 		promptService.updateHit(UUID.fromString(promptUuid), request, response);
@@ -161,7 +161,7 @@ public class PromptController {
 	})
 	public ResponseEntity<ForkedPromptListResponse> getForkedPrompt(@PathVariable String promptUuid,
 		Pageable pageable,
-		@Nullable @RequestHeader String crntMemberUuid) {
+		@RequestHeader(required = false) String crntMemberUuid) {
 		ForkedPromptListResponse forkedPromptList = forkPromptService.getForkedPromptList(UUID.fromString(promptUuid),
 			pageable, UUID.fromString(crntMemberUuid));
 		return ResponseEntity.ok(forkedPromptList);

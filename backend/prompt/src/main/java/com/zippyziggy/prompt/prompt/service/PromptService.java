@@ -18,6 +18,7 @@ import com.zippyziggy.prompt.prompt.repository.PromptBookmarkRepository;
 import com.zippyziggy.prompt.prompt.repository.PromptLikeRepository;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -137,7 +138,7 @@ public class PromptService{
 		return (int) now.until(tomorrow, ChronoUnit.SECONDS);
 	}
 
-	public PromptDetailResponse getPromptDetail(UUID promptUuid, UUID crntMemberUuid) {
+	public PromptDetailResponse getPromptDetail(UUID promptUuid, @Nullable UUID crntMemberUuid) {
 		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
 		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 
