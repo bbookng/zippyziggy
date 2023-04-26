@@ -4,7 +4,7 @@ interface OutputSettingGroupProps {
   children: ReactNode;
 }
 const OutputSettingGroup = ({ children }: OutputSettingGroupProps) => {
-  return <div style={{ width: '100%', display: 'flex' }}>{children}</div>;
+  return <div className="ZP_output-setting-group">{children}</div>;
 };
 
 export default OutputSettingGroup;

@@ -1,0 +1,25 @@
+// 검색바
+.ZP_prompt-container__search-bar {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 20rem;
+  border-radius: 40px;
+  background-color: var(--background-color);
+  padding: 0.5rem 1rem;
+
+  input {
+    box-shadow: none;
+    font-size: var(--fonts-body-base);
+    width: 100%;
+    outline: none;
+    background-color: transparent;
+  }
+
+  svg {
+    margin-right: 1rem;
+    path {
+      fill: var(--black-color-90);
+    }
+  }
+}

@@ -1,0 +1,17 @@
+//인풋 컨테이너 시작
+#ZP_inputWrapperPortals {
+  display: flex;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  padding: 0.5rem 0;
+  border-bottom-width: 1px;
+  gap: 0.75rem;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin: 0 0.5rem 0.5rem 0.5rem;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+  }
+}
+//인풋 컨테이너 끝

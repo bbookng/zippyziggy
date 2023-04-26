@@ -6,7 +6,7 @@ interface ActionGroupProps {
 
 const ActionGroup = ({ children }: ActionGroupProps) => {
   return (
-    <div style={{ display: 'inline-flex' }} role="group" id="actionGroup">
+    <div className="ZP_action-group" role="group" id="ZP_actionGroup">
       {children}
     </div>
   );

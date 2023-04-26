@@ -11,10 +11,10 @@ const InputWrapper = () => {
         <div>asd</div>
       </OutputSettingGroup>
       <ActionGroup>
-        <button id="actionWritingButton" type="button">
+        <button id="ZP_actionWritingButton" type="button">
           a
         </button>
-        <select id="actionSelect">
+        <select id="ZP_actionSelect">
           <option>1</option>
           <option>2</option>
           <option>3</option>
