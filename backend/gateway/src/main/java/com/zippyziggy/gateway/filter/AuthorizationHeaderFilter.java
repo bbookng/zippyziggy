@@ -30,6 +30,7 @@ import reactor.core.publisher.Mono;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import java.nio.ByteBuffer;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
@@ -177,7 +178,9 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
         String userUuid = verify.getClaim("userUuid").asString();
         log.info("userUuid = " + userUuid);
         log.warn("uuid = " + UUID.fromString(userUuid));
-        Optional<Member> member = memberRepository.findByUserUuid(UUID.fromString(userUuid));
+        UUID uuid = UUID.fromString(userUuid);
+
+        Optional<Member> member = memberRepository.findByUserUuid(uuid);
         log.info("member를 찾아라" + member);
         return member.get();
     }
