@@ -38,9 +38,6 @@ public class PromptCommentService {
 	public PromptCommentResponse createPromptComment(UUID promptUuid, PromptCommentRequest data, UUID crntMemberUuid) {
 		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
 
-		if (crntMemberUuid != prompt.getMemberUuid()) {
-			throw new ForbiddenMemberException();
-		}
 		PromptComment promptComment = PromptComment.from(data, crntMemberUuid, prompt);
 		promptCommentRepository.save(promptComment);
 
