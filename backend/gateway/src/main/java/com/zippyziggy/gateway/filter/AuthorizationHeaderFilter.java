@@ -69,7 +69,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
             if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
                  exchange.getRequest()
                      .mutate()
-                     .header("crntMemberUuid", "null")
+                     .header("crntMemberUuid", "defaultValue")
                      .build();
             }
             else {
