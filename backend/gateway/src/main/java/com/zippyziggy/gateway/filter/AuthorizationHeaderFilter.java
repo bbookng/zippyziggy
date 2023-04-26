@@ -12,8 +12,6 @@ import com.zippyziggy.gateway.dto.JwtResponse;
 import com.zippyziggy.gateway.model.Member;
 import com.zippyziggy.gateway.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.codec.DecoderException;
-import org.apache.commons.codec.binary.Hex;
 import org.apache.http.HttpHeaders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +30,6 @@ import reactor.core.publisher.Mono;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import java.nio.ByteBuffer;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
@@ -173,19 +170,14 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
         }
     }
 
-    public Member findMemberByJWT(String token) throws DecoderException {
+    public Member findMemberByJWT(String token) {
         log.info("제발");
         DecodedJWT verify = require(Algorithm.HMAC512(jwtSecretKey)).build().verify(token);
         log.info("여긴가" + verify);
         String userUuid = verify.getClaim("userUuid").asString();
         log.info("userUuid = " + userUuid);
         log.warn("uuid = " + UUID.fromString(userUuid));
-//        UUID uuid = UUID.fromString(userUuid);
-        byte[] uuidBytes = Hex.decodeHex(userUuid.replace("-", "").toCharArray());
-        System.out.println("uuidBytes = " + uuidBytes);
-        UUID uuid = UUID.nameUUIDFromBytes(uuidBytes);
-        System.out.println("uuid = " + uuid);
-        Optional<Member> member = memberRepository.findByUserUuid(uuid);
+        Optional<Member> member = memberRepository.findByUserUuid(UUID.fromString(userUuid));
         log.info("member를 찾아라" + member);
         return member.get();
     }
