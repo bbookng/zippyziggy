@@ -1,5 +1,6 @@
 package com.zippyziggy.prompt.prompt.service;
 
+import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
@@ -138,24 +139,23 @@ public class PromptService{
 		return (int) now.until(tomorrow, ChronoUnit.SECONDS);
 	}
 
-	public PromptDetailResponse getPromptDetail(UUID promptUuid, String crntMemberUuid) {
+	public PromptDetailResponse getPromptDetail(UUID promptUuid, @Nullable String crntMemberUuid) {
 		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
 		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 
 		boolean isLiked;
 		boolean isBookmarked;
-		System.out.println(crntMemberUuid);
 
-		if (crntMemberUuid == null) {
-			isLiked = false;
-			isBookmarked = false;
-		} else {
+		if (crntMemberUuid != null) {
 			isLiked = (promptLikeRepository
 					.countAllByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) % 2 > 0)
 					? true : false;
 			isBookmarked = (promptBookmarkRepository
 					.countAllByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) % 2 > 0)
 					? true : false;
+		} else {
+			isLiked = false;
+			isBookmarked = false;
 		}
 
 		PromptDetailResponse promptDetailResponse = prompt.toDetailResponse(isLiked, isBookmarked);
