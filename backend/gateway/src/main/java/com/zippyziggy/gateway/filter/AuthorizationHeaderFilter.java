@@ -69,14 +69,12 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
             System.out.println(exchange.getRequest().getHeaders());
 
             if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-                // 인증 토큰이 존재하지 않는 경우, 기본값 설정
-                // exchange.getRequest()
-                //     .mutate()
-                //     .header("crntMemberUuid", "default")
-                //     .build();
+                 exchange.getRequest()
+                     .mutate()
+                     .header("crntMemberUuid", null)
+                     .build();
 
-                // 기본값 반환
-                return null;
+                return chain.filter(exchange);
             }
             String token = resolveToken(request);
             if (token != null) {
