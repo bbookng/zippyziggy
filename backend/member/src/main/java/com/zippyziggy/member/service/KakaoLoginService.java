@@ -50,7 +50,7 @@ public class KakaoLoginService {
         body.add("client_id", kakaoClientId);
         body.add("redirect_uri", redirectUrl);
         body.add("code", code);
-
+        System.out.println("body = " + body);
         // 카카오에 token 요청
         String token = WebClient.create()
                 .post()
