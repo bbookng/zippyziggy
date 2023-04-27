@@ -159,6 +159,38 @@ spring:
             - PromptAuthorizationHeaderFilter
             - RewritePath=/api/(?<segment>.*), /$\{segment}
 
+        - id: talks
+          uri: lb://PROMPT
+          predicates:
+            - Path=/api/talks
+            - Method=GET, POST, OPTIONS
+          filters:
+            - PromptAuthorizationHeaderFilter
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
+
+        - id: talks
+          uri: lb://PROMPT
+          predicates:
+            - Path=/api/talks/{talkId}/**
+            - Method=GET, POST, PUT, DELETE, OPTIONS
+          filters:
+            - PromptAuthorizationHeaderFilter
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
+
+        - id: search
+          uri: lb://SEARCH
+          predicates:
+            - Path=/search/doc/**
+          filters:
+            - RewritePath=search/(?<segment>.*), /$\{segment}
+
+        - id: search
+          uri: lb://SEARCH
+          predicates:
+            - Path=/search/v3/**
+          filters:
+            - RewritePath=search/(?<segment>.*), /$\{segment}
+
         - id: search
           uri: lb://SEARCH
           predicates:
@@ -189,4 +221,7 @@ springdoc:
     urls[1]:
       name: member
       url: http://zippyziggy.kr:${server.port}/v3/api-docs/members
+    urls[2]:
+      name: search
+      url: http://zippyziggy.kr:${server.port}/v3/api-docs/search
 
