@@ -43,7 +43,7 @@ public class TalkController {
 	}
 
 	@Operation(summary = "톡 댓글 생성", description = "톡에 새로운 댓글을 생성한다.")
-	@PostMapping("/{talkId]/comments")
+	@PostMapping("/{talkId}/comments")
 	public ResponseEntity<?> createTalkComment() {
 		return null;
 	}

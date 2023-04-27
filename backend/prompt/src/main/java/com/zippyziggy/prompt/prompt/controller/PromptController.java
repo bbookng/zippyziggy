@@ -53,11 +53,6 @@ public class PromptController {
 	private final PromptCommentService promptCommentService;
 	private final PromptRepository promptRepository;
 
-	@Bean
-	public OpenAPI customOpenAPI() {
-		return new OpenAPI().components(new Components().addSecuritySchemes("bearer-key",
-				new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")));
-	}
 
 	/**
 	 *
