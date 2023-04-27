@@ -1,10 +1,5 @@
-import { FcGoogle } from 'react-icons/fc';
-import GoogleIcon from '@/assets/svgs/google.svg';
-import kakao from '@/assets/svgs/kakao.svg';
-import Image from 'next/image';
 import React from 'react';
 import styled from 'styled-components';
-import css from 'styled-jsx/css';
 import Paragraph from '@/components/Typography/Paragraph';
 import Title from '@/components/Typography/Title';
 import { media } from '@/styles/media';
