@@ -11,21 +11,25 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:8080")
-                .allowedOrigins("https://zippyziggy.kr")
-                .allowedOrigins("http://zippyziggy.kr")
-                .allowedOrigins("http://zippyziggy.kr:3000")
-                .allowedOrigins("http://k8e205.p.ssafy.io:3000")
-                .allowedOrigins("http://localhost:3000")
                 .allowCredentials(true)
+                .allowedOrigins("http://localhost:8080",
+                        "https://zippyziggy.kr",
+                        "http://zippyziggy.kr",
+                        "http://zippyziggy.kr:3000",
+                        "http://k8e205.p.ssafy.io:3000",
+                        "http://localhost:3000"
+                        )
                 .allowedHeaders("*")
-                .exposedHeaders("Set-Cookie")
-                .exposedHeaders("Authorization")
-                .allowedMethods(HttpMethod.GET.name())
-                .allowedMethods(HttpMethod.HEAD.name())
-                .allowedMethods(HttpMethod.PUT.name())
-                .allowedMethods(HttpMethod.DELETE.name())
-                .allowedMethods(HttpMethod.OPTIONS.name());
+                .exposedHeaders(
+                        "Set-Cookie",
+                        "Authorization")
+                .allowedMethods(
+                        HttpMethod.GET.name(),
+                        HttpMethod.HEAD.name(),
+                        HttpMethod.PUT.name(),
+                        HttpMethod.DELETE.name(),
+                        HttpMethod.POST.name(),
+                        HttpMethod.OPTIONS.name());
     }
 
 }
