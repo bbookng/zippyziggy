@@ -1,11 +1,9 @@
 package com.zippyziggy.prompt.prompt.service;
 
-import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 import javax.servlet.http.Cookie;
@@ -19,6 +17,8 @@ import com.zippyziggy.prompt.prompt.exception.*;
 import com.zippyziggy.prompt.prompt.model.PromptLike;
 import com.zippyziggy.prompt.prompt.repository.PromptBookmarkRepository;
 import com.zippyziggy.prompt.prompt.repository.PromptLikeRepository;
+import com.zippyziggy.prompt.talk.dto.response.TalkListResponse;
+import com.zippyziggy.prompt.talk.service.TalkService;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.data.domain.Pageable;
@@ -48,6 +48,7 @@ public class PromptService{
 	private final CircuitBreakerFactory circuitBreakerFactory;
 	private final PromptLikeRepository promptLikeRepository;
 	private final PromptBookmarkRepository promptBookmarkRepository;
+	private final TalkService talkService;
 
 	// Exception 처리 필요
 	public PromptResponse createPrompt(PromptRequest data, UUID crntMemberUuid, MultipartFile thumbnail) {
@@ -152,16 +153,16 @@ public class PromptService{
 			isLiked = false;
 			isBookmarked = false;
 		} else {
-			isLiked = (promptLikeRepository
-					.countAllByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) % 2 > 0)
+			isBookmarked = promptBookmarkRepository.
+					findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
 					? true : false;
-			isBookmarked = (promptBookmarkRepository
-					.countAllByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) % 2 > 0)
+			isLiked =  promptLikeRepository.
+					findByPromptAndMemberUuid(prompt, UUID.fromString(crntMemberUuid)) != null
 					? true : false;
 		}
 
 		PromptDetailResponse promptDetailResponse = prompt.toDetailResponse(isLiked, isBookmarked);
-		System.out.println(prompt.getPromptUuid());
+
 		MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid())
 				.orElseThrow(MemberNotFoundException::new));
 
@@ -181,6 +182,12 @@ public class PromptService{
 		return promptDetailResponse;
 	}
 
+	public List<TalkListResponse> getPromptTalkList(UUID promptUuid, String crntMemberUuid) {
+		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
+		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
+		return talkService.getTalkListResponses(circuitBreaker, prompt, crntMemberUuid);
+	}
+
     /*
 	본인이 작성한 프롬프트인지 확인 필요
 	 */
@@ -196,10 +203,10 @@ public class PromptService{
 		promptRepository.delete(prompt);
 	}
 
-
-	/*
+    /*
     프롬프트 좋아요 처리
      */
+
 	public void likePrompt(UUID promptUuid, String crntMemberUuid) {
 		System.out.println("promptUuid = " + promptUuid);
 		System.out.println("crntMemberUuid = " + crntMemberUuid);
@@ -237,11 +244,11 @@ public class PromptService{
 		}
 	}
 
-
-	/*
+    /*
     로그인한 유저가 프롬프트를 좋아요 했는지 확인하는 로직
     null이 아니면 좋아요를 한 상태, null이면 좋아요를 하지 않은 상태
      */
+
 	private PromptLike likePromptExist(UUID promptUuid, String crntMemberUuid) {
 		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
 		PromptLike promptLike = promptLikeRepository.findByPromptAndMemberUuid(prompt, UUID.fromString(crntMemberUuid));
@@ -251,10 +258,10 @@ public class PromptService{
 			return null;
 		}
 	}
-
-	/*
+    /*
     로그인한 유저가 좋아요를 누른 프롬프트 조회하기
      */
+
 	public List<PromptResponse> likePromptsByMember (UUID memberUuid, Pageable pageable) {
 		System.out.println("memberUuid = " + memberUuid);
 		System.out.println("pageable = " + pageable);

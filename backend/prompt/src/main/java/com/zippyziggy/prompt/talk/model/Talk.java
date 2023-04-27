@@ -17,7 +17,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-import org.hibernate.annotations.ColumnDefault;
+import com.zippyziggy.prompt.talk.dto.response.TalkResponse;
 
 import com.zippyziggy.prompt.prompt.dto.response.MemberResponse;
 import com.zippyziggy.prompt.prompt.model.Prompt;
@@ -60,6 +60,10 @@ public class Talk {
 	@OneToMany(mappedBy = "talk", cascade = CascadeType.ALL)
 	private List<Message> messages;
 
+	public void setPrompt(Prompt prompt) {
+		this.prompt = prompt;
+	}
+
 	public void setMessages(List<Message> messages) {
 		this.messages = messages;
 	}
@@ -71,6 +75,17 @@ public class Talk {
 			.regDt(LocalDateTime.now())
 			.likeCnt(0L)
 			.build();
+	}
+
+	public TalkResponse toTalkResponse() {
+		List<MessageResponse> messageResponses = this.messages.stream()
+				.map(m -> m.toMessageResponse()).collect(Collectors.toList());
+		return TalkResponse.builder()
+				.title(this.title)
+				.regDt(this.regDt)
+				.memberUuid(this.memberUUid)
+				.messages(messageResponses)
+				.build();
 	}
 
 	public TalkDetailResponse toDetailResponse(boolean isLiked, Long likeCnt, MemberResponse writerInfo) {

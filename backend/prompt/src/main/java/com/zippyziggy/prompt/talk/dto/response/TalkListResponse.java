@@ -1,6 +1,5 @@
 package com.zippyziggy.prompt.talk.dto.response;
 
-import com.zippyziggy.prompt.talk.model.Talk;
 import lombok.Builder;
 import lombok.Data;
 
@@ -14,11 +13,20 @@ public class TalkListResponse {
 	private String memberNickname;
 	private Long likeCnt;
 	private Long commentCnt;
+	private Boolean isLiked;
 
 
-	public TalkListResponse from(Talk talk) {
+	public static TalkListResponse from(String question, String answer,
+								 String memberImg, String memberNickname,
+								 Long likeCnt, Long commentCnt, Boolean isLiked) {
 		return TalkListResponse.builder()
+				.question(question)
+				.answer(answer)
+				.memberImg(memberImg)
+				.memberNickname(memberNickname)
+				.likeCnt(likeCnt)
+				.commentCnt(commentCnt)
+				.isLiked(isLiked)
 				.build();
-
 	}
 }
