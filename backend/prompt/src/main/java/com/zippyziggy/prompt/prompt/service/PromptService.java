@@ -258,6 +258,10 @@ public class PromptService{
 	public List<PromptResponse> likePromptsByMember (UUID memberUuid, Pageable pageable) {
 		System.out.println("memberUuid = " + memberUuid);
 		System.out.println("pageable = " + pageable);
+
+		List<PromptLike> all = promptLikeRepository.findAll();
+		System.out.println("all = " + all);
+
 		List<PromptLike> promptLikes = promptLikeRepository.findAllByMemberUuidOrderByRegDtDesc(memberUuid, pageable);
 		List<Prompt> prompts = new ArrayList<>();
 		for (PromptLike pt: promptLikes) {
