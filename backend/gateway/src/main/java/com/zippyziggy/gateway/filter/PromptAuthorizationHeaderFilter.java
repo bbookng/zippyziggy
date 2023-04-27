@@ -68,7 +68,7 @@ public class PromptAuthorizationHeaderFilter extends AbstractGatewayFilterFactor
 			if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
 				exchange.getRequest()
 					.mutate()
-					.header("crntMemberUuid", null)
+					.header("crntMemberUuid", "defaultValue")
 					.build();
 			}
 			else {
