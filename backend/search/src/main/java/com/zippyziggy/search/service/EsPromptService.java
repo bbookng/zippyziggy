@@ -1,9 +1,9 @@
 package com.zippyziggy.search.service;
 
+import com.zippyziggy.exception.PromptNotFoundException;
 import com.zippyziggy.search.client.MemberClient;
-import com.zippyziggy.search.dto.response.ExtensionSearchPromptList;
-import com.zippyziggy.search.dto.response.SearchPromptList;
-import com.zippyziggy.search.dto.response.Writer;
+import com.zippyziggy.search.client.PromptClient;
+import com.zippyziggy.search.dto.response.*;
 import com.zippyziggy.search.model.EsPrompt;
 import com.zippyziggy.search.repository.EsPromptRepository;
 
@@ -31,6 +31,7 @@ public class EsPromptService {
     private final EsPromptRepository esPromptRepository;
 
     private final CircuitBreakerFactory circuitBreakerFactory;
+    private final PromptClient promptClient;
     private final MemberClient memberClient;
 
     public SearchPromptList searchPrompts(
@@ -45,23 +46,46 @@ public class EsPromptService {
         final long totalPromptsCnt = pagedEsPrompt.getTotalElements();
         final int totalPageCnt = pagedEsPrompt.getTotalPages();
 
+        final List<SearchPrompt> searchPrompts = new ArrayList<>();
         for (EsPrompt esPrompt : pagedEsPrompt) {
             // prompt 조회
-            UUID
+            final UUID promptUuid = UUID.fromString(esPrompt.getPromptUuid());
+            final Prompt prompt = circuitBreaker
+                    .run(() -> promptClient
+                            .getPromptDetail(promptUuid)
+                            .orElseThrow(PromptNotFoundException::new));
 
             // 사용자 조회
-            Writer writer = circuitBreaker.run(
-                () -> memberClient.getMemberInfo())
+            //TODO server to server api 만든 후 Member application에서 호출하는 방식으로 변경해야함
+            Writer writer = prompt.getWriterResponse();
 
-            // 포크 목록 조회 후 size
+            // 톡 목록 조회 후 size
+            //TODO server to server api 만든 후 dto에서 바로 호출
+            final Integer talkCnt = circuitBreaker
+                    .run(() -> promptClient
+                            .getTalks(promptUuid)
+                            .size());
+
             // 댓글 목록 조회 후 size
-            // dto로 변환하기
-        }
+            //TODO server to server api 만든 후 dto에서 바로 호출
+            final Integer commentCnt = circuitBreaker
+                    .run(() -> promptClient
+                            .getPromptComments(promptUuid)
+                            .size());
 
-//        List<ForkedPromptResponse> promptDtoList = forkedPrompts.stream().map(prompt -> {
-//            MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid())
-//                .orElseThrow(MemberNotFoundException::new), throwable -> null);
-        return null;
+            // dto로 변환하기
+            searchPrompts.add(SearchPrompt.of(
+                            esPrompt,
+                            prompt,
+                            talkCnt,
+                            commentCnt,
+                            prompt.getLikeCnt(),
+                            prompt.getIsLiked(),
+                            prompt.getIsBookmarked(),
+                            writer));
+
+        }
+        return SearchPromptList.of(totalPromptsCnt, totalPageCnt, searchPrompts);
     }
 
     public ExtensionSearchPromptList extensionSearch(

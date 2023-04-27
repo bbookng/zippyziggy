@@ -2,10 +2,9 @@ package com.zippyziggy.search.dto.response;
 
 import java.time.LocalDateTime;
 import lombok.Data;
-import net.bytebuddy.asm.Advice.Local;
 
 @Data
-public class promptComment {
+public class PromptComment {
     private final Long id;
     private final String memberUuid;
     private final String promptUuid;

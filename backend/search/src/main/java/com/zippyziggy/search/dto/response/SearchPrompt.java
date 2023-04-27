@@ -13,9 +13,9 @@ public class SearchPrompt {
         Prompt prompt,
         Integer talkCnt,
         Integer commentCnt,
-        Integer likeCnt,
-        Integer isLiked,
-        Integer isBookmarked,
+        Long likeCnt,
+        Boolean isLiked,
+        Boolean isBookmarked,
         Writer writer
     ) {
 
@@ -33,6 +33,8 @@ public class SearchPrompt {
             .talkCnt(talkCnt)
             .commentCnt(commentCnt)
             .likeCnt(likeCnt)
+            .isLiked(isLiked)
+            .isBookmarked(isBookmarked)
 
             .writer(writer)
             .build();
@@ -48,10 +50,10 @@ public class SearchPrompt {
     private final Integer hit;
     private final Long regDt;
     private final Long updDt;
+
     private final Integer talkCnt;
     private final Integer commentCnt;
-
-    private final Integer likeCnt;
+    private final Long likeCnt;
     private final Boolean isLiked;
     private final Boolean isBookmarked;
 
@@ -69,10 +71,10 @@ public class SearchPrompt {
         Integer hit,
         Long regDt,
         Long updDt,
+
         Integer talkCnt,
         Integer commentCnt,
-
-        Integer likeCnt,
+        Long likeCnt,
         Boolean isLiked,
         Boolean isBookmarked,
 
@@ -88,9 +90,9 @@ public class SearchPrompt {
         this.hit = hit;
         this.regDt = regDt;
         this.updDt = updDt;
+
         this.talkCnt = talkCnt;
         this.commentCnt = commentCnt;
-
         this.likeCnt = likeCnt;
         this.isLiked = isLiked;
         this.isBookmarked = isBookmarked;

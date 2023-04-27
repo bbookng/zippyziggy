@@ -9,13 +9,8 @@ import lombok.Data;
 @Data
 public class SearchPromptList {
 
-    public static SearchPromptList of(Long totalPromptsCnt, Integer totalPageCnt,
-        List<EsPrompt> esPrompts) {
-        final List<SearchPrompt> dtos = new ArrayList<>();
-//        for (EsPrompt esPrompt : esPrompts) {
-//            dtos.add(SearchPrompt.of(esPrompt, prompt, ));
-        }
-        return new SearchPromptList(totalPromptsCnt, totalPageCnt, dtos);
+    public static SearchPromptList of(Long totalPromptsCnt, Integer totalPageCnt, List<SearchPrompt> searchPrompts) {
+        return new SearchPromptList(totalPromptsCnt, totalPageCnt, searchPrompts);
     }
 
     private final Long totalPromptsCnt;
