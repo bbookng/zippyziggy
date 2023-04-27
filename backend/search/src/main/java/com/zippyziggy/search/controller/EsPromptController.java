@@ -40,6 +40,24 @@ public class EsPromptController {
                 UUID.fromString(crntMemberUuid), keyword, category, pageable));
     }
 
+    @PostMapping("/prompts")
+    public ResponseEntity<Void> insertDoc(
+            @RequestBody InsertEsPrompt insertEsPrompt
+    ) {
+//        new EsPrompt(insertEsPrompt);
+//        esPromptService.saveDocument();
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/prompts")
+    public ResponseEntity<Void> modifyDoc(
+        @RequestBody InsertEsPrompt insertEsPrompt
+    ) {
+//        new EsPrompt(insertEsPrompt);
+//        esPromptService.saveDocument();
+        return ResponseEntity.ok().build();
+    }
+
     @Operation(summary = "[확장] 프롬프트 검색", description = "확장 프로그램에서 프롬프트를 검색한다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "성공"),
@@ -55,11 +73,4 @@ public class EsPromptController {
         return ResponseEntity.ok(esPromptService.extensionSearch(keyword, category, pageable));
     }
 
-    @GetMapping("/insert-test")
-    public ResponseEntity<Void> insertDoc(
-            @RequestBody InsertEsPrompt insertEsPrompt
-    ) {
-        new EsPrompt(insertEsPrompt);
-        esPromptService.saveDocument();
-    }
 }
