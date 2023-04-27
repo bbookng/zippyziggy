@@ -179,7 +179,7 @@ public class JwtValidationService {
     public Member findMemberByJWT(String token) {
         DecodedJWT verify = require(Algorithm.HMAC512(jwtSecretKey)).build().verify(token);
         String userUuid = verify.getClaim("userUuid").asString();
-        Optional<Member> member = memberRepository.findByUserUuidEquals(UUID.fromString(userUuid));
+        Optional<Member> member = memberRepository.findByUserUuid(UUID.fromString(userUuid));
         return member.get();
     }
 

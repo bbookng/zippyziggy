@@ -26,7 +26,7 @@ public class SecurityUtil {
         String userUuid = principal.getUsername();
         UUID uuid = UUID.fromString(userUuid);
 
-        return memberRepository.findByUserUuidEquals(uuid).get();
+        return memberRepository.findByUserUuid(uuid).get();
     }
 
 }

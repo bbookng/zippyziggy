@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zippyziggy.member.config.CustomModelMapper;
 import com.zippyziggy.member.dto.request.MemberSignUpRequestDto;
 import com.zippyziggy.member.dto.response.*;
+import com.zippyziggy.member.exception.MemberNotFoundException;
 import com.zippyziggy.member.model.JwtResponse;
 import com.zippyziggy.member.model.JwtToken;
 import com.zippyziggy.member.model.Member;
@@ -59,7 +60,6 @@ public class MemberController {
     private final MemberRepository memberRepository;
     private final JwtValidationService jwtValidationService;
     private final SecurityUtil securityUtil;
-//    private final RedisUtils redisUtils;
 
     @Bean
     public OpenAPI customOpenAPI() {
@@ -112,8 +112,6 @@ public class MemberController {
     })
     public ResponseEntity<?> kakaoCallback(String code, @RequestParam(value = "redirect") String redirectUrl,HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        System.out.println("code = " + code);
-        System.out.println("redirectUrl = " + redirectUrl);
         // kakao Token 가져오기(권한)
         String kakaoAccessToken = kakaoLoginService.kakaoGetToken(code, redirectUrl);
 
@@ -281,7 +279,6 @@ public class MemberController {
                 }
             }
         }
-
 
         // 쿠키 설정
         Cookie cookie = new Cookie("refreshToken", jwtToken.getRefreshToken());
@@ -492,6 +489,7 @@ public class MemberController {
         return new ResponseEntity<>(execute, HttpStatus.OK);
     }
 
+
     /**
      * refresh토큰으로 유효성 검사 진행하고 유효하면 accessToken재발급, 검사 실패시 재로그인 필요
      */
@@ -518,6 +516,7 @@ public class MemberController {
                 .body("accessToken이 새로 발급되었습니다.");
     }
 
+
     /**
      * UUID로 회원 조회하기
      */
@@ -536,7 +535,7 @@ public class MemberController {
 //            return new ResponseEntity<>(memberInformResponseDto, HttpStatus.OK);
 //        } else {
 //            System.out.println("DB 실행");
-            Member member = memberRepository.findByUserUuidEquals(userUuid).get();
+            Member member = memberRepository.findByUserUuid(userUuid).orElseThrow(MemberNotFoundException::new);
 
             MemberInformResponseDto memberInformResponseDto = MemberInformResponseDto.builder()
                     .nickname(member.getNickname())

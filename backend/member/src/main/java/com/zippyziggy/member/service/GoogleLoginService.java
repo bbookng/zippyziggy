@@ -23,9 +23,6 @@ public class GoogleLoginService {
     @Value("${google.secret.key}")
     private String googleSecretKey;
 
-//    @Value("${google.redirect.url}")
-//    private String googleRedirectUrl;
-
     @Autowired
     private ObjectMapper objectMapper;
 

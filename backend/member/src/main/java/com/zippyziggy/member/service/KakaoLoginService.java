@@ -23,14 +23,6 @@ public class KakaoLoginService {
     @Value("${kakao.client.id}")
     private String kakaoClientId;
 
-    // redirect_url
-//    @Value("${kakao.redirect.uri}")
-//    private String kakaoRedirectUri;
-
-    // logout_redirect_url
-//    @Value("${kakao.logout.redirect.uri}")
-//    private String kakaoLogoutRedirectUri;
-
     // json타입을 객체로 변환하기 위한 객체
     @Autowired
     private ObjectMapper objectMapper;
@@ -50,7 +42,7 @@ public class KakaoLoginService {
         body.add("client_id", kakaoClientId);
         body.add("redirect_uri", redirectUrl);
         body.add("code", code);
-        System.out.println("body = " + body);
+
         // 카카오에 token 요청
         String token = WebClient.create()
                 .post()
