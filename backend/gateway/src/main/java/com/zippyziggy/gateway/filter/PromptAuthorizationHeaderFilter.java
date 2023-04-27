@@ -80,7 +80,6 @@ public class PromptAuthorizationHeaderFilter extends AbstractGatewayFilterFactor
 						JwtPayLoadResponseDto jwtPayLoadResponseDto = checkToken(token);
 						String tokenType = jwtPayLoadResponseDto.getSub();
 						log.info("tokenType =  " + tokenType);
-						log.info("jwtPayLoadResponseDto = " + jwtPayLoadResponseDto);
 						// accessToken인 경우
 						JwtResponse jwtResponse = validateRefreshToken(token);
 						if (tokenType.equals("accessToken")) {
@@ -119,23 +118,14 @@ public class PromptAuthorizationHeaderFilter extends AbstractGatewayFilterFactor
 
 	private JwtResponse validateRefreshToken(String refreshToken) {
 		System.out.println("refreshToken = " + refreshToken);
-		log.info("validateRefreshToken까지는 들어왔어요오오!!");
 		try {
 			// token 내용이 유효한지 확인
-			log.info("1111111111111111111111111111111111111111111111111111");
 			boolean contentCheck = tokenContentCheck(refreshToken);
-			log.info("22222222222222222222222222222222222");
-			// DB의 refreshToken과 일치하는지 확인
-//			boolean refreshTokenDBCheck = refreshTokenDBCheck(refreshToken);
-			log.info("33333333333333333333333333333333");
+
 			if (!contentCheck) {
-				log.info("4444444444444444444444444444444444");
-				log.info("contentCheck = " + contentCheck);
-				log.info("refreshTokenDBCheck = ");
 				throw new JWTDecodeException(JwtResponse.REFRESH_TOKEN_MISMATCH.getJwtResponse());
 			}
 			DecodedJWT verify = require(Algorithm.HMAC512(jwtSecretKey)).build().verify(refreshToken);
-			log.info("verify = " + verify);
 			// 만료시간이 지난 경우 새로운 refreshToken 생성
 			if (verify.getExpiresAt().before(new Date())) {
 
@@ -147,7 +137,6 @@ public class PromptAuthorizationHeaderFilter extends AbstractGatewayFilterFactor
 			throw new TokenExpiredException("만료된 refresh 토큰입니다.", Instant.now());
 
 		} catch (Exception e) {
-			log.info("Exception e에서 에러 발생");
 			log.info("유효하지 않은 토큰입니다" + e);
 			throw new JWTDecodeException(JwtResponse.REFRESH_TOKEN_MISMATCH.getJwtResponse());
 
@@ -155,30 +144,6 @@ public class PromptAuthorizationHeaderFilter extends AbstractGatewayFilterFactor
 		return JwtResponse.REFRESH_TOKEN_SUCCESS;
 	}
 
-	public boolean refreshTokenDBCheck(String refreshToken) throws Exception {
-		log.info("1001010101010101010");
-		Member member = findMemberByJWT(refreshToken);
-		log.info("343434343434343434");
-
-		if (!member.getRefreshToken().equals(refreshToken)) {
-			log.info("DB와 일치하지 않음");
-			return false;
-		} else {
-			return true;
-		}
-	}
-
-	public Member findMemberByJWT(String token) {
-		log.info("제발");
-		DecodedJWT verify = require(Algorithm.HMAC512(jwtSecretKey)).build().verify(token);
-		log.info("여긴가" + verify);
-		String userUuid = verify.getClaim("userUuid").asString();
-		log.info("userUuid = " + userUuid);
-		log.warn("uuid = " + UUID.fromString(userUuid));
-		Optional<Member> member = memberRepository.findByUserUuid(UUID.fromString(userUuid));
-		log.info("member를 찾아라" + member);
-		return member.get();
-	}
 
 	private JwtResponse validateAccessToken(String accessToken) {
 		try {
@@ -217,7 +182,6 @@ public class PromptAuthorizationHeaderFilter extends AbstractGatewayFilterFactor
 	private boolean tokenContentCheck(String token) throws NoSuchAlgorithmException, InvalidKeyException {
 
 		DecodedJWT verify = require(Algorithm.HMAC512(jwtSecretKey)).build().verify(token);
-		log.info("9999999999999999999999999999999999999999");
 		// token이 가지고 있는 signature 추출
 		String signature = verify.getSignature();
 
@@ -245,18 +209,13 @@ public class PromptAuthorizationHeaderFilter extends AbstractGatewayFilterFactor
 	}
 
 	private JwtPayLoadResponseDto checkToken(String token) {
-		log.info("checkToken 중입니다");
 		String[] data = token.split("\\.");
 		String s = data[1];
 		String decode = new String(Base64Utils.decode(s.getBytes()));
-		log.warn("중간 데이터" + s);
-		log.warn("decode" + decode);
 		try {
 			JwtPayLoadResponseDto jwtPayLoadResponseDto = objectMapper.readValue(decode, JwtPayLoadResponseDto.class);
-			log.info("에러 발생" + jwtPayLoadResponseDto);
 			return jwtPayLoadResponseDto;
 		} catch (Exception e) {
-			log.warn("checkToken 에러 발생입니다.");
 			throw new JWTDecodeException("유효하지 않은 토큰입니다.");
 		}
 	}
