@@ -117,18 +117,20 @@ export default function SignUp() {
     });
 
     const { data } = res;
-    const user = data.memberInformResponseDto;
-    dispatch(setProfileImg(user.profileImg));
-    dispatch(setNickname(user.nickname));
-    dispatch(setUserUuid(user.userUuid));
-    dispatch(setIsLogin(true));
-    router.push({
-      pathname: '/account/signup/welcome',
-      query: { nickname: user.nickname },
-    });
-    // catch {
-    //   setStatusNickname('error');
-    // }
+    try {
+      const user = data.memberInformResponseDto;
+      localStorage.setItem('accessToken', res?.headers?.authorization);
+      dispatch(setProfileImg(user.profileImg));
+      dispatch(setNickname(user.nickname));
+      dispatch(setUserUuid(user.userUuid));
+      dispatch(setIsLogin(true));
+      router.push({
+        pathname: '/account/signup/welcome',
+        query: { nickname: user.nickname },
+      });
+    } catch {
+      setStatusNickname('error');
+    }
   };
 
   const statusMessages = {

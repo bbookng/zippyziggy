@@ -73,7 +73,6 @@ export default function Modify() {
   // Prompt 상세 요청 API
   const handleGetUserDetail = async () => {
     const res = await httpAuth.get(`/members/profile`);
-    console.log(res);
     setBeforeFileUrl(res.data.profileImg);
     setBeforeNickname(res.data.nickname);
     return res;
@@ -89,18 +88,6 @@ export default function Modify() {
   // 회원가입 버튼 클릭
   const handleProfileImgBtnClick = () => {
     inputRef.current.click();
-  };
-
-  // 닉네임 변경 버튼 클릭
-  const handleNicknameBtnClick = () => {
-    http
-      .get(`/members/nickname/${nickname}`)
-      .then(() => {
-        setStatusNickname('success');
-      })
-      .catch(() => {
-        setStatusNickname('error');
-      });
   };
 
   // 정보변경 버튼 선택
@@ -120,12 +107,16 @@ export default function Modify() {
       method: 'put',
       url: `/members/profile`,
       data: formData,
-    }).then((res) => {
-      const { data } = res;
-      dispatch(setProfileImg(data.profileImg));
-      dispatch(setNickname(data.nickname));
-      dispatch(setUserUuid(data.userUuid));
-    });
+    })
+      .then((res) => {
+        const { data } = res;
+        dispatch(setProfileImg(data.profileImg));
+        dispatch(setNickname(data.nickname));
+        dispatch(setUserUuid(data.userUuid));
+      })
+      .catch(() => {
+        setStatusNickname('error');
+      });
   };
 
   const statusMessages = {
@@ -176,10 +167,6 @@ export default function Modify() {
           <Paragraph color={statusMessages[statusNickname].color}>
             {statusMessages[statusNickname].text}
           </Paragraph>
-
-          <Button margin="0 0 6px 0" onClick={handleNicknameBtnClick}>
-            중복 확인
-          </Button>
           <Button
             onClick={handleSignupBtnClick}
             color={statusNickname === 'success' ? 'primaryColor' : 'blackColor05'}
