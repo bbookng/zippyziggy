@@ -120,13 +120,10 @@ export const getKakaoAPI = async (code: string) => {
         socialSignUpDataResponseDto: data?.socialSignUpDataResponseDto ?? {},
       };
     }
-    if (data?.nickname) {
-      // 로그인으로 이동
-      const { nickname, profileImg, userUuid } = data;
-      localStorage.setItem('accessToken', res?.headers?.authorization);
-      return { result: 'SUCCESS_LOGIN', userUuid, profileImg, nickname };
-    }
-    return { result: 'FAIL' };
+    // 로그인으로 이동
+    const { nickname, profileImg, userUuid } = data;
+    localStorage.setItem('accessToken', res?.headers?.authorization);
+    return { result: 'SUCCESS_LOGIN', userUuid, profileImg, nickname };
   } catch (err) {
     return err;
   }

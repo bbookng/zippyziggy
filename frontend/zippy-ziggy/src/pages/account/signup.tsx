@@ -93,7 +93,7 @@ export default function SignUp() {
   };
 
   // 회원가입 버튼 클릭
-  const handleSignupBtnClick = (event) => {
+  const handleSignupBtnClick = async (event) => {
     event.preventDefault();
     const formData = new FormData();
     const value = {
@@ -110,22 +110,25 @@ export default function SignUp() {
     formData.append('user', new Blob([JSON.stringify(value)], { type: 'application/json' }));
 
     // 회원가입 요청
-    httpForm({
+    const res = await httpForm({
       method: 'post',
       url: `/members/signup`,
       data: formData,
-    }).then((res) => {
-      const { data } = res;
-      const { user } = data.memberInformResponseDto;
-      dispatch(setProfileImg(user.profileImg));
-      dispatch(setNickname(user.nickname));
-      dispatch(setUserUuid(user.userUuid));
-      dispatch(setIsLogin(true));
-      router.push({
-        pathname: '/account/welcome',
-        query: { nickname: user.nickname },
-      });
     });
+
+    const { data } = res;
+    const user = data.memberInformResponseDto;
+    dispatch(setProfileImg(user.profileImg));
+    dispatch(setNickname(user.nickname));
+    dispatch(setUserUuid(user.userUuid));
+    dispatch(setIsLogin(true));
+    router.push({
+      pathname: '/account/signup/welcome',
+      query: { nickname: user.nickname },
+    });
+    // catch {
+    //   setStatusNickname('error');
+    // }
   };
 
   const statusMessages = {

@@ -35,7 +35,7 @@ const LeftContainer = styled.div`
   `}
 
   .row {
-    padding-inline: 1.5rem;
+    padding: 1.2rem;
     /* background-color: ${({ theme }) => theme.colors.whiteColor80}; */
     .row-1 {
       border-radius: 8px 8px 0 0;
@@ -55,15 +55,14 @@ const LeftContainer = styled.div`
     }
 
     .questionBox {
+      padding: 1.2rem;
       background-color: var(--colors-primary-10);
-      padding: 0 1.25rem;
       width: 100%;
     }
   }
 
   .label {
     font-weight: var(--fonts-heading);
-    margin-top: 1rem;
   }
 `;
 
@@ -91,13 +90,12 @@ const SubContainer = styled.div`
   background-color: ${({ theme }) => theme.colors.whiteColor80};
 
   .row {
-    padding-inline: 1.5rem;
+    padding: 1.2rem;
     /* background-color: ${({ theme }) => theme.colors.whiteColor80}; */
   }
 
   .label {
     font-weight: var(--fonts-heading);
-    margin-top: 1rem;
   }
 
   .sentenceBox {
@@ -134,7 +132,6 @@ const SubContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-block: 1rem;
 
     &:hover {
       background-color: var(--colors-primary-30);
@@ -148,11 +145,11 @@ const SubContainer = styled.div`
 
 const Textarea = styled.textarea`
   width: 100%;
-  min-height: 8rem;
+  min-height: 2rem;
   resize: none;
   box-shadow: none;
   padding: 0;
-  margin-block: 1rem;
+  margin: 12px 0 0 0;
   background-color: rgba(0, 0, 0, 0);
 
   ${media.small`

@@ -8,6 +8,13 @@ import styled, { useTheme } from 'styled-components';
 import Title from '@/components/Typography/Title';
 import { media } from '@/styles/media';
 
+export const LoginContainer = styled.div`
+  width: 100%;
+  height: 100vh;
+  padding: 16px;
+  background-color: ${({ theme: { colors } }) => colors.whiteColor100};
+`;
+
 export const LoginWarp = styled.div`
   max-width: 360px;
   margin: auto;
@@ -34,15 +41,8 @@ export const LoginWarp = styled.div`
   }
 `;
 
-export const LoginContainer = styled.div`
-  width: 100%;
-  height: 100vh;
-  background-color: ${({ theme: { colors } }) => colors.whiteColor100};
-`;
-
 export default function Login() {
   const HandleKokaoLogin = () => {
-    // const redirectUri = `${process.env.NEXT_PUBLIC_APP_SERVER_URL}/members/auth/kakao/callback`;
     const redirectUri = `${window.location.origin}/account/oauth`;
     router.push(
       `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=code`
@@ -50,7 +50,6 @@ export default function Login() {
   };
 
   const HandlegoogleLogin = () => {
-    // const redirectUri = `${process.env.NEXT_PUBLIC_APP_SERVER_URL}/members/login/oauth2/code/google`;
     const redirectUri = `${window.location.origin}/account/oauth`;
     router.push(
       `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=code&scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile`
