@@ -159,9 +159,9 @@ public class PromptService{
 		}
 
 		PromptDetailResponse promptDetailResponse = prompt.toDetailResponse(isLiked, isBookmarked);
-
-		MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid())
-				.orElseThrow(MemberNotFoundException::new), throwable -> null);
+		System.out.println(prompt.getPromptUuid());
+		MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid().toString())
+				.orElseThrow(MemberNotFoundException::new));
 
 		promptDetailResponse.setWriterResponse(writerInfo.toWriterResponse());
 
@@ -170,7 +170,7 @@ public class PromptService{
 			UUID originalMemberUuid = promptRepository.findByPromptUuid(prompt.getOriginPromptUuid())
 					.orElseThrow(PromptNotFoundException::new).getMemberUuid();
 
-			MemberResponse originalMemberInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(originalMemberUuid)
+			MemberResponse originalMemberInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(originalMemberUuid.toString())
 					.orElseThrow(MemberNotFoundException::new), throwable -> null);
 
 			promptDetailResponse.setOriginerResponse(originalMemberInfo.toOriginerResponse());
