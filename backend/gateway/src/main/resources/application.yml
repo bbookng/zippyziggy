@@ -40,46 +40,56 @@ spring:
         - id: member
           uri: lb://MEMBER
           predicates:
-            - Path=/members/doc/**
+            - Path=/api/members/doc/**
           filters:
-            - RewritePath=/members/(?<segment>.*), /$\{segment}
+            - RewritePath=/api/members/(?<segment>.*), /$\{segment}
 
         - id: member
           uri: lb://MEMBER
           predicates:
-            - Path=/members/v3/**
+            - Path=/api/members/v3/**
           filters:
-            - RewritePath=/members/(?<segment>.*), /$\{segment}
+            - RewritePath=/api/members/(?<segment>.*), /$\{segment}
 
         - id: member
           uri: lb://MEMBER
           predicates:
-            - Path=/members/signup
+            - Path=/api/members/signup
             - Method=POST
           filters:
             - RemoveRequestHeader=Cookie
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
 
         - id: member
           uri: lb://MEMBER
           predicates:
-            - Path=/members/index.html
+            - Path=/api/members/index.html
+          filters:
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
 
         - id: member
           uri: lb://MEMBER
           predicates:
-            - Path=/members/auth/kakao/callback
+            - Path=/api/members/auth/kakao/callback
             - Method=GET
+          filters:
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
 
         - id: member
           uri: lb://MEMBER
           predicates:
-            - Path=/members/logout
+            - Path=/api/members/logout
             - Method=POST
+          filters:
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
 
         - id: member
           uri: lb://MEMBER
           predicates:
-            - Path=/members/**
+            - Path=/api/members/**
+          filters:
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
 
 #          filters:
 #            - AuthorizationHeaderFilter
@@ -88,22 +98,24 @@ spring:
         - id: prompt
           uri: lb://PROMPT
           predicates:
-            - Path=/prompts/doc/**
+            - Path=/api/prompts/doc/**
           filters:
-            - RewritePath=/prompts/(?<segment>.*), /$\{segment}
+            - RewritePath=/api/prompts/(?<segment>.*), /$\{segment}
 
         - id: prompt
           uri: lb://PROMPT
           predicates:
-            - Path=/prompts/v3/**
+            - Path=/api/prompts/v3/**
           filters:
-            - RewritePath=/prompts/(?<segment>.*), /$\{segment}
+            - RewritePath=/api/prompts/(?<segment>.*), /$\{segment}
 
         - id: prompt
           uri: lb://PROMPT
           predicates:
-            - Path=/prompts
+            - Path=/api/prompts
             - Method=GET
+          filters:
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
 #
 #        - id: prompt
 #          uri: lb://PROMPT
@@ -119,17 +131,21 @@ spring:
             - Path=/api/prompts/**
           filters:
             - PromptAuthorizationHeaderFilter
-            - RewritePath=/api/prompts/(?<segment>.*), /$\{segment}
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
 
         - id: search
           uri: lb://SEARCH
           predicates:
-            - Path=/search/**
+            - Path=/api/search/**
+          filters:
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
 
         - id: notice
           uri: lb://NOTICE
           predicates:
-            - Path=/notice/**
+            - Path=/api/notice/**
+          filters:
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
 
         - id: openapi
           uri: http://zippyziggy.kr:${server.port}
