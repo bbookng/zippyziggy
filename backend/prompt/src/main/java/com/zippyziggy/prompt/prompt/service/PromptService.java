@@ -14,9 +14,7 @@ import javax.transaction.Transactional;
 
 import com.zippyziggy.prompt.prompt.client.MemberClient;
 import com.zippyziggy.prompt.prompt.dto.response.MemberResponse;
-import com.zippyziggy.prompt.prompt.exception.AwsUploadException;
-import com.zippyziggy.prompt.prompt.exception.ForbiddenMemberException;
-import com.zippyziggy.prompt.prompt.exception.MemberNotFoundException;
+import com.zippyziggy.prompt.prompt.exception.*;
 import com.zippyziggy.prompt.prompt.model.PromptLike;
 import com.zippyziggy.prompt.prompt.repository.PromptBookmarkRepository;
 import com.zippyziggy.prompt.prompt.repository.PromptLikeRepository;
@@ -32,7 +30,6 @@ import com.zippyziggy.prompt.prompt.dto.request.PromptModifyRequest;
 import com.zippyziggy.prompt.prompt.dto.request.PromptRequest;
 import com.zippyziggy.prompt.prompt.dto.response.PromptDetailResponse;
 import com.zippyziggy.prompt.prompt.dto.response.PromptResponse;
-import com.zippyziggy.prompt.prompt.exception.PromptNotFoundException;
 import com.zippyziggy.prompt.prompt.model.Prompt;
 import com.zippyziggy.prompt.prompt.repository.PromptRepository;
 
@@ -205,19 +202,29 @@ public class PromptService{
 	public void likePrompt(UUID promptUuid, String crntMemberUuid) {
 		System.out.println("promptUuid = " + promptUuid);
 		System.out.println("crntMemberUuid = " + crntMemberUuid);
-		// 프롬프트 조회
-		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
-		System.out.println("prompt = " + prompt);
 
-		PromptLike promptLike = PromptLike.builder()
-				.prompt(prompt)
-				.memberUuid(UUID.fromString(crntMemberUuid))
-				.regDt(LocalDateTime.now()).build();
-
-		// 프롬프트 - 사용자 좋아요 관계 생성
-		promptLikeRepository.save(promptLike);
-
+		// 좋아요 상태 추적
 		boolean promptStatus = likePromptStatus(promptUuid, crntMemberUuid);
+
+		// 좋아요를 이미 한 상태일 경우
+		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
+
+		if (!promptStatus) {
+			// 프롬프트 조회
+			System.out.println("prompt = " + prompt);
+
+			PromptLike promptLike = PromptLike.builder()
+					.prompt(prompt)
+					.memberUuid(UUID.fromString(crntMemberUuid))
+					.regDt(LocalDateTime.now()).build();
+
+			// 프롬프트 - 사용자 좋아요 관계 생성
+			promptLikeRepository.save(promptLike);
+		} else {
+
+		}
+
+
 
 		if (promptStatus && prompt.getLikeCnt() != 0) {
 			// 프롬프트 좋아요 개수 1 감소
@@ -233,11 +240,16 @@ public class PromptService{
 
 	/*
     로그인한 유저가 프롬프트를 좋아요 했는지 확인하는 로직
+    true면 좋아요를 한 상태, false이면 좋아요를 하지 않은 상태
      */
 	private boolean likePromptStatus(UUID promptUuid, String crntMemberUuid) {
 		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
-		return promptLikeRepository.countAllByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) % 2 == 0;
-
+		PromptLike promptLike = promptLikeRepository.findByPromptAndMemberUuid(prompt, UUID.fromString(crntMemberUuid)).orElseThrow(PromptLikeNotFoundException::new);
+		if (promptLike != null) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 
@@ -251,8 +263,6 @@ public class PromptService{
 			System.out.println("pt = " + pt.getMemberUuid());
 		}
 		return null;
+
 	}
-
-
-
 }
