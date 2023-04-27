@@ -27,7 +27,7 @@ spring:
       globalcors:
         cors-configurations:
           '[/**]':
-            allowedOrigins: 'http://zippyziggy.kr:3000, http://k8e205.p.ssafy.io:3000, http://localhost:3000, http://zippyziggy.kr, https://zippyziggy.kr'
+            allowedOrigins: 'http://zippyziggy.kr:3000, http://k8e205.p.ssafy.io:3000, http://localhost:3000, http://zippyziggy.kr, https://zippyziggy.kr, http://localhost:8080, http://k8e205.p.ssafy.io:8000'
             allow-credentials: true
             allowedHeaders: '*'
             allowedMethods:
