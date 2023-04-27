@@ -29,8 +29,8 @@ public class EsPromptService {
         Pageable pageable
     ) {
         List<EsPrompt> esPrompts = new ArrayList<>();
-        Long totalPromptsCnt = 0L;
-        Integer totalPageCnt = 0;
+        long totalPromptsCnt = 0L;
+        int totalPageCnt = 0;
 
         if (null != keyword & null != category) {
 
