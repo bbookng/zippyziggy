@@ -29,13 +29,20 @@ spring:
           '[/**]':
             allowedOrigins: 'https://zippyziggy.kr/api/prompts,http://zippyziggy.kr:3000,http://k8e205.p.ssafy.io:3000,http://localhost:3000,http://zippyziggy.kr,https://zippyziggy.kr,http://localhost:8080,http://k8e205.p.ssafy.io:8000,59.20.195.127:3000,59.20.195.127'
             allow-credentials: true
-            allowedHeaders: '*'
+            allowedHeaders:
+              - x-requested-with
+              - authorization
+              - content-type
+              - credential
+              - X-AUTH-TOKEN
+              - X-CSRF-TOKEN
             allowedMethods:
               - PUT
               - GET
               - POST
               - DELETE
               - OPTIONS
+
       routes:
         - id: api_route
           uri: https://zippyziggy.kr/
