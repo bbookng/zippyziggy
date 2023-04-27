@@ -114,9 +114,10 @@ spring:
         - id: prompt
           uri: lb://PROMPT
           predicates:
-            - Path=/prompts/**
+            - Path=/api/prompts/**
           filters:
-            - AuthorizationHeaderFilter
+            - PromptAuthorizationHeaderFilter
+            - RewritePath=/api/prompts/(?<segment>.*), /$\{segment}
 
         - id: search
           uri: lb://SEARCH

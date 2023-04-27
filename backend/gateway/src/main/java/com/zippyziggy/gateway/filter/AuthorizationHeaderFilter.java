@@ -67,10 +67,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
             ServerHttpRequest request = exchange.getRequest();
 
             if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-                 exchange.getRequest()
-                     .mutate()
-                     .header("crntMemberUuid", "defaultValue")
-                     .build();
+                return onError(exchange, "No authorization header", HttpStatus.UNAUTHORIZED);
             }
             else {
 
