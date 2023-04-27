@@ -1,6 +1,7 @@
 package com.zippyziggy.prompt.talk.model;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -30,7 +31,7 @@ public class TalkLike {
 	private Long id;
 
 	@Column(nullable = false)
-	private Long memberId;
+	private UUID memberUuid;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "talk_id", nullable = false)

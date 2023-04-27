@@ -22,6 +22,6 @@ public class PromptRequest {
 	private Category category;
 
 	@NotNull
-	private MessageRequest message;
+	private PromptMessageRequest message;
 
 }

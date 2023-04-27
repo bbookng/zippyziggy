@@ -1,12 +1,11 @@
 package com.zippyziggy.prompt.prompt.model;
 
 import com.zippyziggy.prompt.prompt.dto.request.PromptRequest;
-import com.zippyziggy.prompt.prompt.dto.response.MessageResponse;
+import com.zippyziggy.prompt.prompt.dto.response.PromptMessageResponse;
 import com.zippyziggy.prompt.prompt.dto.response.PromptDetailResponse;
 import com.zippyziggy.prompt.talk.model.Talk;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -98,7 +97,7 @@ public class Prompt {
 	}
 
 	public PromptDetailResponse toDetailResponse(boolean isLiked, boolean isBookmarked) {
-		MessageResponse message = new MessageResponse(this.getPrefix(), this.getExample(), this.getSuffix());
+		PromptMessageResponse message = new PromptMessageResponse(this.getPrefix(), this.getExample(), this.getSuffix());
 		long regDt = this.getRegDt().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
 		long updDt = this.getRegDt().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
 

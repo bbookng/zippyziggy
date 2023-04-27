@@ -8,4 +8,6 @@ import java.util.UUID;
 
 public interface PromptBookmarkRepository extends JpaRepository<PromptBookmark, Long> {
     Long countAllByMemberUuidAndPrompt(UUID crntMemberUuid, Prompt prompt);
+
+	PromptBookmark findByMemberUuidAndPrompt(UUID crntMemberUuid, Prompt originPrompt);
 }

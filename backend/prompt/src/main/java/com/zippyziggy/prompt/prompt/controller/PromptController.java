@@ -6,8 +6,8 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.zippyziggy.prompt.prompt.model.Prompt;
 import com.zippyziggy.prompt.prompt.repository.PromptRepository;
+import com.zippyziggy.prompt.talk.dto.response.TalkListResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -20,7 +20,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -166,6 +165,17 @@ public class PromptController {
 		return ResponseEntity.ok(forkedPromptList);
 	}
 
+	@Operation(summary = "프롬프트 활용 톡 목록 조회", description = "해당 프롬프트를 활용하여 대화한 톡 목록을 조회한다.")
+	@GetMapping("{promptUuid}/talks")
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", description = "성공"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+			@ApiResponse(responseCode = "500", description = "서버 에러")
+	})
+	public ResponseEntity<List<TalkListResponse>> getPromptTalkList(@PathVariable UUID promptUuid, @RequestHeader String crntMemberUuid) {
+		return ResponseEntity.ok(promptService.getPromptTalkList(promptUuid, crntMemberUuid));
+	}
+
 	@Operation(summary = "프롬프트 댓글 조회", description = "프롬프트 상세 페이지에서 해당 프롬프트의 댓글 목록을 조회한다.")
 	@GetMapping("/{promptUuid}/comments")
 	@ApiResponses({
@@ -242,11 +252,5 @@ public class PromptController {
 		return ResponseEntity.ok(promptService.likePromptsByMember(UUID.fromString(crntMemberUuid), pageRequest));
 	}
 
-
-	@Operation(summary = "프롬프트 활용 톡 목록 조회", description = "해당 프롬프트를 활용하여 대화한 톡 목록을 조회한다.")
-	@GetMapping("{promptUuid}/talks")
-	public ResponseEntity<?> getPromptTalkList(@PathVariable UUID promptUuid) {
-		return null;
-	}
 
 }

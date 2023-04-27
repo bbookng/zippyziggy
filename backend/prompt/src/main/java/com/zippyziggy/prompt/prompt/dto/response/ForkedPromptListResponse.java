@@ -14,6 +14,6 @@ import lombok.NoArgsConstructor;
 public class ForkedPromptListResponse {
 
 	private Integer forkCnt;
-	private List<ForkedPromptResponse> forkedPromptResponseList;
+	private List<PromptCardResponse> forkedPromptResponseList;
 
 }
