@@ -2,6 +2,7 @@ package com.zippyziggy.prompt.talk.model;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -39,8 +40,8 @@ public class Talk {
 	@JoinColumn(name = "prompt_uuid", nullable = false)
 	private Prompt prompt;
 
-	@Column(nullable = false)
-	private Long memberId;
+	@Column(nullable = false, columnDefinition = "BINARY(16)")
+	private UUID memberUUid;
 
 	@Column(nullable = false, length = 255)
 	private String title;
@@ -48,8 +49,6 @@ public class Talk {
 	@Column(nullable = false)
 	private LocalDateTime regDt;
 
-	@Column(nullable = false)
-	@ColumnDefault("0")
 	private Long likeCnt;
 
 	@OneToMany(mappedBy = "talk", cascade = CascadeType.ALL)
