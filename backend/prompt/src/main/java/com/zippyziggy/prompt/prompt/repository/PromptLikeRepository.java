@@ -17,6 +17,7 @@ public interface PromptLikeRepository extends JpaRepository<PromptLike, Long>, P
     List<PromptLike> findAllByMemberUuidOrderByRegDtDesc(UUID memberUuid, Pageable pageable);
 
     // 좋아요 상태 조회하기
-    Optional<PromptLike> findByPromptAndMemberUuid(Prompt prompt, UUID memberUuid);
+    PromptLike findByPromptAndMemberUuid(Prompt prompt, UUID memberUuid);
 
+    PromptLike findAllByMemberUuid(UUID memberUuid);
 }

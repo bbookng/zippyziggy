@@ -244,7 +244,7 @@ public class PromptService{
      */
 	private PromptLike likePromptExist(UUID promptUuid, String crntMemberUuid) {
 		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
-		PromptLike promptLike = promptLikeRepository.findByPromptAndMemberUuid(prompt, UUID.fromString(crntMemberUuid)).orElseThrow(PromptLikeNotFoundException::new);
+		PromptLike promptLike = promptLikeRepository.findByPromptAndMemberUuid(prompt, UUID.fromString(crntMemberUuid));
 		if (promptLike != null) {
 			return promptLike;
 		} else {
@@ -270,6 +270,13 @@ public class PromptService{
 			System.out.println(pt.getPrompt());
 
 		}
+
+		PromptLike allByMemberUuid = promptLikeRepository.findAllByMemberUuid(memberUuid);
+		System.out.println("memberUUid로 불러오기 allByMemberUuid = " + allByMemberUuid);
+
+		List<Prompt> prompts1 = promptLikeRepository.findAllPromptsByMemberUuid(memberUuid, pageable);
+		System.out.println("쿼리 dsl prompts1 = " + prompts1);
+
 		return null;
 
 	}
