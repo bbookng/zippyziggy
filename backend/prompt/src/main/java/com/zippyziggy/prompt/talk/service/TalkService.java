@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import com.zippyziggy.prompt.talk.repository.MessageRepository;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.stereotype.Service;
@@ -43,6 +44,7 @@ public class TalkService {
 	private final PromptCommentRepository promptCommentRepository;
 	private final PromptBookmarkRepository promptBookmarkRepository;
 	private final PromptLikeRepository promptLikeRepository;
+	private final MessageRepository messageRepository;
 
 	// 은지가 짤거임
 	public List<TalkListResponse> getTalkList() {
@@ -55,7 +57,7 @@ public class TalkService {
 		Talk talk = Talk.from(data, crntMemberUuid);
 		talkRepository.save(talk);
 		List<Message> messageList = data.getMessages().stream().map(message -> Message.from(message, talk)).collect(
-			Collectors.toList());
+				Collectors.toList());
 		talk.setMessages(messageList);
 		return null;
 	}
@@ -65,23 +67,23 @@ public class TalkService {
 		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 		Talk talk = talkRepository.findById(talkId).orElseThrow(TalkNotFoundException::new);
 
-		Long likeCnt = talkLikeRepository.CountAllByTalkId(talkId);
+		Long likeCnt = talkLikeRepository.countAllByTalkId(talkId);
 		boolean isLiked;
 
 		if (crntMemberUuid.equals("defaultValue")) {
 			isLiked = false;
 		} else {
-			isLiked = talkLikeRepository.findByPromptUuidAndMemberUuid(talk.getPrompt().getPromptUuid(), crntMemberUuid) != null ? true : false;
+			isLiked = talkLikeRepository.findByIdAndMemberUuid(talkId, crntMemberUuid) != null ? true : false;
 		}
 
 		MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(talk.getMemberUUid())
-			.orElseThrow(MemberNotFoundException::new));
+				.orElseThrow(MemberNotFoundException::new));
 
 		if (talk.getPrompt() != null) {
 			Prompt originPrompt = talk.getPrompt();
 
 			MemberResponse originMember = circuitBreaker.run(() -> memberClient.getMemberInfo(originPrompt.getMemberUuid())
-				.orElseThrow(MemberNotFoundException::new));
+					.orElseThrow(MemberNotFoundException::new));
 
 			long commentCnt = promptCommentRepository.findAllByPromptPromptUuid(originPrompt.getPromptUuid()).size();
 			long forkCnt = promptRepository.findAllByOriginPromptUuid(originPrompt.getPromptUuid()).size();
@@ -97,16 +99,17 @@ public class TalkService {
 				isOriginLiked = false;
 			} else {
 				isBookmarked = promptBookmarkRepository.findByMemberUuidAndPrompt(crntMemberUuid, originPrompt) != null
-					? true : false;
+						? true : false;
 				isOriginLiked =  promptLikeRepository.countAllByMemberUuidAndPrompt(crntMemberUuid, originPrompt) != null
-					? true : false;
+						? true : false;
 			}
 
 			PromptCardResponse promptCardResponse = PromptCardResponse
-				.from(originMember, originPrompt, commentCnt, forkCnt, talkCnt, isBookmarked, isOriginLiked);
+					.from(originMember, originPrompt, commentCnt, forkCnt, talkCnt, isBookmarked, isOriginLiked);
 
-			// 여기서부터 하면 됨
-			talkRepository.findAllByPromptUuid(originPrompt.getPromptUuid());
+			talkRepository.findAllByPromptPromptUuid(originPrompt.getPromptUuid());
+
+
 		}
 
 
