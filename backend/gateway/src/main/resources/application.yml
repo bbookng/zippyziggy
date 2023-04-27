@@ -104,12 +104,14 @@ spring:
           predicates:
             - Path=/prompts
             - Method=GET
-
-        - id: prompt
-          uri: lb://PROMPT
-          predicates:
-            - Path=/prompts/{promptUuid}/comments
-            - Method=GET
+#
+#        - id: prompt
+#          uri: lb://PROMPT
+#          predicates:
+#            - Path=/api/prompts/{promptUuid}/comments
+#            - Method=GET
+#          filters:
+#            - RewritePath=/api/prompts/(?<segment>.*), /$\{segment}
 
         - id: prompt
           uri: lb://PROMPT
