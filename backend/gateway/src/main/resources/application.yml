@@ -44,10 +44,10 @@ spring:
               - OPTIONS
 
       routes:
-        - id: api_route
-          uri: https://zippyziggy.kr/
-          predicates:
-            - Path=/api/**
+#        - id: api_route
+#          uri: https://zippyziggy.kr/
+#          predicates:
+#            - Path=/api/**
 
         - id: member
           uri: lb://MEMBER
