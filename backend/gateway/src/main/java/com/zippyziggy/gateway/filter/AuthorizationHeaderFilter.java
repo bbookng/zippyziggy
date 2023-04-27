@@ -32,10 +32,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
-import java.util.Base64;
-import java.util.Date;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static com.auth0.jwt.JWT.require;
 
@@ -181,6 +178,8 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
         log.info("userUuid = " + userUuid);
         log.warn("uuid = " + UUID.fromString(userUuid));
         Optional<Member> name = memberRepository.findByName("김보경");
+        List<Member> all = memberRepository.findAll();
+        System.out.println("all = " + all);
         System.out.println("name = " + name);
         Optional<Member> member = memberRepository.findByUserUuid(UUID.fromString(userUuid));
         log.info("member를 찾아라" + member);
