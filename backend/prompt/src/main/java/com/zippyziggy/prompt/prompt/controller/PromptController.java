@@ -1,16 +1,20 @@
 package com.zippyziggy.prompt.prompt.controller;
 
+import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.zippyziggy.prompt.prompt.model.Prompt;
+import com.zippyziggy.prompt.prompt.repository.PromptRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -47,6 +51,7 @@ public class PromptController {
 	private final PromptService promptService;
 	private final ForkPromptService forkPromptService;
 	private final PromptCommentService promptCommentService;
+	private final PromptRepository promptRepository;
 
 	@Bean
 	public OpenAPI customOpenAPI() {
@@ -222,5 +227,32 @@ public class PromptController {
 		return ResponseEntity.ok("댓글 삭제 완료");
 	}
 
+
+	@PostMapping("/{promptUuid}/like")
+	@Operation(summary = "프롬프트 좋아요 하기", description = "프롬프트에 좋아요 처리 진행. prompt의 UUID를 Pathvariable로 제공해야한다.")
+	public ResponseEntity<?> likePrompt(@PathVariable UUID promptUuid,
+										@RequestHeader String crntMemberUuid) {
+
+		promptService.likePrompt(promptUuid, crntMemberUuid);
+
+		return ResponseEntity.ok("좋아요 처리 완료");
+	}
+
+	@GetMapping("/members/{memberUuid}/like")
+	@Operation(summary = "프롬프트 좋아요 조회", description = "프롬프트를 좋아요한 상태이면 true 반환, 좋아요 상태가 아니면 false 반환")
+	public ResponseEntity<?> likePromptByMember(@PathVariable UUID memberUuid, @RequestParam("page") Integer page, @RequestParam("size") Integer size) {
+		PageRequest pageRequest = PageRequest.of(page, size);
+		return ResponseEntity.ok(promptService.likePromptsByMember(memberUuid, pageRequest));
+	}
+
+	@GetMapping("/all")
+	public ResponseEntity<?> promptAll() {
+		List<Prompt> prompts = promptRepository.findAll();
+		for (Prompt pt: prompts) {
+			System.out.println("pt = " + pt);
+			System.out.println("pt = " + pt.getPromptUuid());
+		}
+		return ResponseEntity.ok("좋아");
+	}
 
 }

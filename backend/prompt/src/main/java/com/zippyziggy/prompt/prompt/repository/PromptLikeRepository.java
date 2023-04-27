@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.UUID;
 
 
-public interface PromptLikeRepository extends JpaRepository<PromptLike, Long> {
+public interface PromptLikeRepository extends JpaRepository<PromptLike, Long>, PromptLikeCustomRepository {
     Long countAllByMemberUuidAndPrompt(UUID memberUuid, Prompt prompt);
 
 }
