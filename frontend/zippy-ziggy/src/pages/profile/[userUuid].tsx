@@ -1,9 +1,11 @@
 import Button from '@/components/Button/Button';
 import ProfileImage from '@/components/Image/ProfileImage';
 import Title from '@/components/Typography/Title';
-import { setIsLogin } from '@/core/user/userSlice';
+import { deleteUserAPI, postUserLogoutAPI } from '@/core/user/userAPI';
+import { setIsLogin, setUserReset } from '@/core/user/userSlice';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHook';
 import { httpAuth } from '@/lib/http';
+import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import router from 'next/router';
 import styled from 'styled-components';
@@ -37,34 +39,20 @@ export default function Index() {
 
   // 로그아웃
   const handleLogout = async () => {
-    httpAuth
-      .post(`/members/logout`)
-      .then(() => {
-        dispatch(setIsLogin(false));
-      })
-      .then(() => {
-        localStorage.clear();
-        router.push('/');
-      })
-      .catch(() => {
-        localStorage.clear();
-        router.push('/');
-      });
+    await postUserLogoutAPI();
+    localStorage.clear();
+    dispatch(setUserReset());
+    router.push('/');
   };
 
   // 회원탈퇴
   const handleSignout = async () => {
-    httpAuth
-      .put(`/members`)
-      .then(() => {
-        dispatch(setIsLogin(false));
-      })
-      .then(() => {
-        // localStorage.clear();
-        router.push('/');
-      })
-      .catch(() => {});
+    await deleteUserAPI();
+    localStorage.clear();
+    dispatch(setUserReset());
+    router.push('/');
   };
+
   return (
     <ProfileContainer>
       <ProfileHeaderContainer>

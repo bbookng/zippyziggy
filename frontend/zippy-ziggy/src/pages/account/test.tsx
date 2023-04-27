@@ -1,5 +1,5 @@
 import { decrement, increment } from '@/core/auth/counterSlice';
-import { selectUser, setIsLogin } from '@/core/user/userSlice';
+import { setIsLogin } from '@/core/user/userSlice';
 import { NextPage } from 'next';
 import { wrapper } from '@/core/store';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHook';

@@ -12,7 +12,7 @@ export default function Index() {
 
   return (
     <div>
-      <Title>마이페이지</Title>
+      <Title>회원가입 완료</Title>
       <Link href="/account/modify">
         <Button width="326px">정보변경</Button>
       </Link>

@@ -102,7 +102,7 @@ const Navbar = ({ toggleTheme }) => {
           </NavOption>
         </NavList>
       </div>
-      {userState.isLogin ? (
+      {userState?.isLogin ? (
         <NavUser>
           <FaRegBookmark className="item bookmark" />
           <FaRegBell className="item" />

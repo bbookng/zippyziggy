@@ -5,7 +5,7 @@ import Title from '@/components/Typography/Title';
 import Paragraph from '@/components/Typography/Paragraph';
 import Button from '@/components/Button/Button';
 // Http 요청 모듈을 import
-import { http, httpAuth, httpForm } from '@/lib/http';
+import { http, httpAuth, httpForm, httpAuthForm } from '@/lib/http';
 import { media } from '@/styles/media';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHook';
@@ -61,12 +61,11 @@ export default function Modify() {
   const dispatch = useAppDispatch();
 
   const userState = useAppSelector((state) => state.user); // 유저정보
-  const { name, platform, platformId, profileImg } = router.query;
-  const userName = Array.isArray(name) ? name[0] : name;
 
   // useState를 사용하여 닉네임과 닉네임의 검증 상태를 저장합니다
   const [nickname, setBeforeNickname] = useState('');
   const [statusNickname, setStatusNickname] = useState('default');
+  const [fileUrl, setBeforeFileUrl] = useState('');
   const [file, setFile] = useState<File | null>(null); // 파일 정보를 저장하는 state를 설정합니다
 
   const inputRef = useRef(null); // useRef를 사용하여 input element를 참조합니다
@@ -74,6 +73,8 @@ export default function Modify() {
   // Prompt 상세 요청 API
   const handleGetUserDetail = async () => {
     const res = await httpAuth.get(`/members/profile`);
+    console.log(res);
+    setBeforeFileUrl(res.data.profileImg);
     setBeforeNickname(res.data.nickname);
     return res;
   };
@@ -102,34 +103,28 @@ export default function Modify() {
       });
   };
 
-  // 회원가입 버튼 클릭
+  // 정보변경 버튼 선택
   const handleSignupBtnClick = (event) => {
     event.preventDefault();
     const formData = new FormData();
-    const value = {
-      nickname,
-      name,
-      platform,
-      platformId,
-      profileImg,
-    };
 
     // user 정보 넣기
+    console.log('if', file);
     const fileToAppend = file || new File([new Blob()], 'empty_image.png', { type: 'image/png' });
+    console.log('if2', fileToAppend);
     formData.append('file', fileToAppend);
-    formData.append('user', new Blob([JSON.stringify(value)], { type: 'application/json' }));
+    formData.append('nickname', nickname);
 
     // 정보 수정 요청
-    httpForm({
+    httpAuthForm({
       method: 'put',
-      url: `${process.env.NEXT_PUBLIC_APP_SERVER_URL}/members/profile`,
+      url: `/members/profile`,
       data: formData,
     }).then((res) => {
       const { data } = res;
-      const { user } = data.memberInformResponseDto;
-      dispatch(setProfileImg(user.profileImg));
-      dispatch(setNickname(user.nickname));
-      dispatch(setUserUuid(user.userUuid));
+      dispatch(setProfileImg(data.profileImg));
+      dispatch(setNickname(data.nickname));
+      dispatch(setUserUuid(data.userUuid));
     });
   };
 
@@ -142,13 +137,14 @@ export default function Modify() {
   return (
     <LoginContainer>
       <LoginWarp>
-        <Title margin="0 0 4px 0">{userName}님의 정보변경</Title>
+        <Title margin="0 0 4px 0">{nickname}님의 정보변경</Title>
         <Paragraph margin="0 0 12px 0">닉네임을 설정하고 회원가입을 완료하세요!</Paragraph>
 
         <form onSubmit={(e) => e.preventDefault()}>
           <label htmlFor="image" className="btn">
             <div style={{ flex: '1', display: 'flex', alignItems: 'center', margin: '0 0 12px 0' }}>
-              <ImagePreview file={file} />
+              {fileUrl ? <ImagePreview file={file} /> : <ProfileImage src={fileUrl} alt="image" />}
+
               <Button
                 width="fit-content"
                 padding="0 1rem"
