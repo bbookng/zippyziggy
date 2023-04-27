@@ -109,13 +109,13 @@ spring:
           filters:
             - RewritePath=prompts/(?<segment>.*), /$\{segment}
 
-        - id: prompt
-          uri: lb://PROMPT
-          predicates:
-            - Path=/api/prompts
-            - Method=GET
-          filters:
-            - RewritePath=/api/(?<segment>.*), /$\{segment}
+#        - id: prompt
+#          uri: lb://PROMPT
+#          predicates:
+#            - Path=/api/prompts
+#            - Method=GET
+#          filters:
+#            - RewritePath=/api/(?<segment>.*), /$\{segment}
 #
 #        - id: prompt
 #          uri: lb://PROMPT
