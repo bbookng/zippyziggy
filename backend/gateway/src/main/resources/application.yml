@@ -1,0 +1,176 @@
+server:
+  port: 8000
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://zippyziggy.kr:8761/eureka
+
+spring:
+  application:
+    name: gateway
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    open-in-view: false
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+  cloud:
+    gateway:
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: 'http://zippyziggy.kr:3000, http://k8e205.p.ssafy.io:3000, http://localhost:3000'
+            allow-credentials: true
+            allowedHeaders: '*'
+            allowedMethods:
+              - PUT
+              - GET
+              - POST
+              - DELETE
+              - OPTIONS
+      routes:
+        - id: member
+          uri: lb://MEMBER
+          predicates:
+            - Path=/members/doc/**
+          filters:
+            - RewritePath=/members/(?<segment>.*), /$\{segment}
+
+        - id: member
+          uri: lb://MEMBER
+          predicates:
+            - Path=/members/v3/**
+          filters:
+            - RewritePath=/members/(?<segment>.*), /$\{segment}
+
+        - id: member
+          uri: lb://MEMBER
+          predicates:
+            - Path=/api/members/signup
+            - Method=POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
+
+        - id: member
+          uri: lb://MEMBER
+          predicates:
+            - Path=/api/members/index.html
+          filters:
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
+
+        - id: member
+          uri: lb://MEMBER
+          predicates:
+            - Path=/api/members/auth/kakao/callback
+            - Method=GET
+          filters:
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
+
+        - id: member
+          uri: lb://MEMBER
+          predicates:
+            - Path=/api/members/logout
+            - Method=POST
+          filters:
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
+
+        - id: member
+          uri: lb://MEMBER
+          predicates:
+            - Path=/api/members/**
+          filters:
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
+
+#          filters:
+#            - AuthorizationHeaderFilter
+
+
+        - id: prompt
+          uri: lb://PROMPT
+          predicates:
+            - Path=/prompts/doc/**
+          filters:
+            - RewritePath=prompts/(?<segment>.*), /$\{segment}
+
+        - id: prompt
+          uri: lb://PROMPT
+          predicates:
+            - Path=/prompts/v3/**
+          filters:
+            - RewritePath=prompts/(?<segment>.*), /$\{segment}
+
+        - id: prompt
+          uri: lb://PROMPT
+          predicates:
+            - Path=/api/prompts
+            - Method=GET
+          filters:
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
+
+        - id: prompt
+          uri: lb://PROMPT
+          predicates:
+            - Path=/api/prompts
+            - Method=POST
+          filters:
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
+            - PromptAuthorizationHeaderFilter
+
+        - id: prompt
+          uri: lb://PROMPT
+          predicates:
+            - Path=/api/prompts/{promptUuid}/comments
+            - Method=GET
+          filters:
+            - RewritePath=/api/prompts/(?<segment>.*), /$\{segment}
+
+        - id: prompt
+          uri: lb://PROMPT
+          predicates:
+            - Path=/api/prompts/{promptUuid}/**
+            - Method=GET, POST, PUT, DELETE
+          filters:
+            - PromptAuthorizationHeaderFilter
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
+
+        - id: search
+          uri: lb://SEARCH
+          predicates:
+            - Path=/api/search/**
+          filters:
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
+
+        - id: notice
+          uri: lb://NOTICE
+          predicates:
+            - Path=/api/notice/**
+          filters:
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
+
+        - id: openapi
+          uri: http://zippyziggy.kr:${server.port}
+          predicates:
+            - Path=/v3/api-docs/**
+          filters:
+            - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs
+            - SetRequestHeader=crntMemberUuid, myDefaultValue
+
+springdoc:
+  swagger-ui:
+    urls[0]:
+      name: prompt
+      url: http://zippyziggy.kr:${server.port}/v3/api-docs/prompts
+    urls[1]:
+      name: member
+      url: http://zippyziggy.kr:${server.port}/v3/api-docs/members
+
