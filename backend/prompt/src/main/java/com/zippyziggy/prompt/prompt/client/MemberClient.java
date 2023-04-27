@@ -11,6 +11,6 @@ import java.util.UUID;
 
 @FeignClient(name="member")
 public interface MemberClient {
-    @GetMapping("/members/uuid")
+    @GetMapping("/api/members/uuid")
     Optional<MemberResponse> getMemberInfo(@RequestParam UUID userUuid);
 }
