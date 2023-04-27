@@ -3,6 +3,8 @@ package com.zippyziggy.prompt.prompt.service;
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.servlet.http.Cookie;
@@ -15,10 +17,12 @@ import com.zippyziggy.prompt.prompt.dto.response.MemberResponse;
 import com.zippyziggy.prompt.prompt.exception.AwsUploadException;
 import com.zippyziggy.prompt.prompt.exception.ForbiddenMemberException;
 import com.zippyziggy.prompt.prompt.exception.MemberNotFoundException;
+import com.zippyziggy.prompt.prompt.model.PromptLike;
 import com.zippyziggy.prompt.prompt.repository.PromptBookmarkRepository;
 import com.zippyziggy.prompt.prompt.repository.PromptLikeRepository;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
+import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -193,5 +197,63 @@ public class PromptService{
 		awsS3Uploader.delete("thumbnails/" , prompt.getThumbnail());
 		promptRepository.delete(prompt);
 	}
+
+
+	/*
+    프롬프트 좋아요 처리
+     */
+	public void likePrompt(UUID promptUuid, String crntMemberUuid) {
+
+		// 프롬프트 조회
+		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
+
+
+		PromptLike promptLike = PromptLike.builder()
+				.prompt(prompt)
+				.memberUuid(UUID.fromString(crntMemberUuid))
+				.regDt(LocalDateTime.now()).build();
+
+		// 프롬프트 - 사용자 좋아요 관계 생성
+		promptLikeRepository.save(promptLike);
+
+		boolean promptStatus = likePromptStatus(promptUuid, crntMemberUuid);
+
+		if (promptStatus && prompt.getLikeCnt() != 0) {
+			// 프롬프트 좋아요 개수 1 감소
+			prompt.setLikeCnt(prompt.getLikeCnt() - 1);
+			promptRepository.save(prompt);
+		} else {
+			// 프롬프트 좋아요 개수 1 증가
+			prompt.setLikeCnt(prompt.getLikeCnt() + 1);
+			promptRepository.save(prompt);
+		}
+	}
+
+
+	/*
+    로그인한 유저가 프롬프트를 좋아요 했는지 확인하는 로직
+     */
+	private boolean likePromptStatus(UUID promptUuid, String crntMemberUuid) {
+		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
+		return promptLikeRepository.countAllByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) % 2 == 0;
+
+	}
+
+
+	public List<PromptResponse> likePromptsByMember (UUID memberUuid, Pageable pageable) {
+		Optional<MemberResponse> memberInfo = memberClient.getMemberInfo(memberUuid);
+		System.out.println("memberInfo = " + memberInfo);
+		System.out.println("memberUuid = " + memberUuid);
+		System.out.println("pageable = " + pageable);
+		List<Prompt> prompts = promptLikeRepository.findAllPromptsByMemberUuid(memberUuid, pageable);
+		for (Prompt pt: prompts) {
+			System.out.println("유후");
+			System.out.println("pt = " + pt);
+			System.out.println("pt = " + pt.getMemberUuid());
+		}
+		return null;
+	}
+
+
 
 }
