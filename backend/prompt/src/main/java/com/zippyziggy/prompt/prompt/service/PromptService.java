@@ -253,8 +253,8 @@ public class PromptService{
 	}
 
 	/*
-	로그인한 유저가 좋아요를 누른 프롬프트 조회하기
-	 */
+    로그인한 유저가 좋아요를 누른 프롬프트 조회하기
+     */
 	public List<PromptResponse> likePromptsByMember (UUID memberUuid, Pageable pageable) {
 		System.out.println("memberUuid = " + memberUuid);
 		System.out.println("pageable = " + pageable);
@@ -263,7 +263,8 @@ public class PromptService{
 		for (PromptLike pt: promptLikes) {
 			System.out.println("유후");
 			System.out.println("pt = " + pt);
-			
+			System.out.println(pt.getPrompt());
+
 		}
 		return null;
 
