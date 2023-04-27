@@ -27,7 +27,7 @@ spring:
       globalcors:
         cors-configurations:
           '[/**]':
-            allowedOrigins: 'http://zippyziggy.kr:3000, http://k8e205.p.ssafy.io:3000, http://localhost:3000'
+            allowedOrigins: 'http://zippyziggy.kr:3000, http://k8e205.p.ssafy.io:3000, http://localhost:3000, http://zippyziggy.kr'
             allow-credentials: true
             allowedHeaders: '*'
             allowedMethods:
@@ -113,15 +113,7 @@ spring:
           uri: lb://PROMPT
           predicates:
             - Path=/api/prompts
-            - Method=GET
-          filters:
-            - RewritePath=/api/(?<segment>.*), /$\{segment}
-
-        - id: prompt
-          uri: lb://PROMPT
-          predicates:
-            - Path=/api/prompts
-            - Method=POST
+            - Method=GET, POST
           filters:
             - RewritePath=/api/(?<segment>.*), /$\{segment}
             - PromptAuthorizationHeaderFilter
