@@ -227,8 +227,8 @@ public class PromptController {
 	}
 
 
-	@PostMapping("/{promptUuid}/like")
 	@Operation(summary = "프롬프트 좋아요 하기", description = "프롬프트에 좋아요 처리 진행. prompt의 UUID를 Pathvariable로 제공해야한다.")
+	@PostMapping("/{promptUuid}/like")
 	public ResponseEntity<?> likePrompt(@PathVariable UUID promptUuid,
 										@RequestHeader String crntMemberUuid) {
 
@@ -254,6 +254,12 @@ public class PromptController {
 			System.out.println("pt = " + pt.getPromptUuid());
 		}
 		return ResponseEntity.ok("좋아");
+	}
+
+	@Operation(summary = "프롬프트 활용 톡 목록 조회", description = "해당 프롬프트를 활용하여 대화한 톡 목록을 조회한다.")
+	@GetMapping("{promptUuid}/talks")
+	public ResponseEntity<?> getPromptTalkList(@PathVariable UUID promptUuid) {
+		return null;
 	}
 
 }
