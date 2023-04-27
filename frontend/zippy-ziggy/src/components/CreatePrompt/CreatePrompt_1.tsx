@@ -17,7 +17,13 @@ export default function CreatePart1({ prompt1, prompt2, example, handleChange }:
     <Container>
       <LeftContainer>
         <div className="row row-1">
+          <div className="label">
+            <label className="label" htmlFor="prompt1" style={{ cursor: 'pointer' }}>
+              앞 프롬프트
+            </label>
+          </div>
           <Textarea
+            id="prompt1"
             value={prompt1}
             onChange={(e) => handleChange(e, 'prompt1')}
             placeholder="질문의 앞에 붙을 프롬프트를 작성해주세요."
@@ -40,17 +46,23 @@ export default function CreatePart1({ prompt1, prompt2, example, handleChange }:
           </div>
         </div>
         <div className="row row-2">
+          <div className="label">
+            <label htmlFor="prompt2" style={{ cursor: 'pointer' }}>
+              뒤 프롬프트
+            </label>
+          </div>
           <Textarea
             value={prompt2}
             onChange={(e) => handleChange(e, 'prompt2')}
             placeholder="질문의 뒤에 붙을 프롬프트를 작성해주세요."
+            id="prompt2"
           />
         </div>
       </LeftContainer>
       <RightContainer>
         <SubContainer>
           <div className="row">
-            <div className="label">예시 프롬프트</div>
+            <div className="label">제작된 예시 프롬프트</div>
             <div className="sentenceBox">
               <div className="questionMark">Q:</div>
               <div>

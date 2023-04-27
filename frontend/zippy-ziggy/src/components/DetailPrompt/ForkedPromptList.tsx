@@ -31,10 +31,10 @@ export default function ForkedPromptList({ promptUuid, size }: PropsType) {
 
   useEffect(() => {
     if (!isLoading) {
-      console.log(data);
-      setForkedPromptList((prev) => [...prev, ...data.forkedPromptResponseList]);
-      page.current += 1;
-      setForkedPromptCnt(data.forkCnt);
+      // console.log(data);
+      // setForkedPromptList((prev) => [...prev, ...data.forkedPromptResponseList]);
+      // page.current += 1;
+      // setForkedPromptCnt(data.forkCnt);
     }
   }, [isLoading]);
 

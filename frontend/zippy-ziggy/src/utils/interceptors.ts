@@ -1,4 +1,4 @@
-import { http } from '@/lib/http';
+import { http, serverUrl } from '@/lib/http';
 import axios, {
   AxiosError,
   AxiosHeaders,
@@ -38,9 +38,7 @@ const tokenInterceptor = (instance: AxiosInstance) => {
         const originalRequest = config;
 
         // 토큰 refresh 요청
-        const data = await axios.get(
-          `${process.env.NEXT_PUBLIC_APP_SERVER_URL}/members/refresh/token`
-        );
+        const data = await axios.get(`${serverUrl}/members/refresh/token`);
 
         // 요청 후 새롭게 받은 accToken을 저장
         const {

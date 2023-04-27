@@ -1,14 +1,14 @@
 import axios from 'axios';
 import { setupInterceptorsTo, tokenInterceptor } from '@/utils/interceptors';
 
-const serverUrl =
+export const serverUrl =
   process.env.NEXT_PUBLIC_LOCAL_TYPE === 'local'
-    ? 'http://localhost:3000/api'
-    : process.env.NEXT_PUBLIC_APP_SERVER_URL;
+    ? 'http://localhost:3000'
+    : 'https://zippyziggy.kr';
 
 const httpApi = () => {
   const instance = axios.create({
-    baseURL: `${serverUrl}`,
+    baseURL: `${serverUrl}/api`,
 
     headers: {
       'Content-Type': 'application/json',
@@ -27,7 +27,7 @@ const httpApi = () => {
 
 const httpAuthApi = () => {
   const instance = axios.create({
-    baseURL: `${serverUrl}/`,
+    baseURL: `${serverUrl}/api`,
 
     headers: {
       // 'Content-Type': 'application/json',
@@ -46,7 +46,7 @@ const httpAuthApi = () => {
 
 const httpAuthFormApi = () => {
   const instance = axios.create({
-    baseURL: `${serverUrl}/`,
+    baseURL: `${serverUrl}/api`,
 
     headers: {
       'Content-Type': 'multipart/form-data',
@@ -59,7 +59,7 @@ const httpAuthFormApi = () => {
 
 const httpFormApi = () => {
   const instance = axios.create({
-    baseURL: `${serverUrl}/`,
+    baseURL: `${serverUrl}/api`,
 
     headers: {
       'Content-Type': 'multipart/form-data',

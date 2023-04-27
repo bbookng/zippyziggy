@@ -20,6 +20,8 @@ function KakaoLoginRedirect() {
     platform: string;
     platformId: string;
     profileImg: string;
+    userUuid?: string;
+    nickname?: string;
   }
 
   interface KakaoApiResult {
