@@ -3,6 +3,9 @@ import React from 'react';
 const Pagination = ({ total, limit, page, setPage }: any) => {
   const numPages = Math.ceil(total / limit);
 
+  if (total === 0) {
+    return null;
+  }
   return (
     <nav className="ZP_pagination">
       <button

@@ -38,6 +38,7 @@ const manifest: chrome.runtime.ManifestV3 = {
       css: ['assets/css/contentStyle<KEY>.chunk.css'],
     },
   ],
+  permissions: ['storage'],
   web_accessible_resources: [
     {
       resources: [

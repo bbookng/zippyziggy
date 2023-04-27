@@ -22,6 +22,10 @@ const ZP_TO_TOP_BUTTON_ID = 'ZP_toTopButton';
 // Storage Key
 const LAST_TARGET_LANGUAGE_KEY = 'ZP_lastTargetLanguage';
 
+// Chrome Storage Key
+const CHROME_CATEGORY_KEY = 'ZP_category';
+const CHROME_SORT_KEY = 'ZP_sort';
+
 export {
   DEFAULT_TARGET_LANGUAGE,
   PROMPT_PLACEHOLDER,
@@ -36,4 +40,6 @@ export {
   ZP_HIDE_TOGGLE_BUTTON_ID,
   ZP_TO_TOP_BUTTON_ID,
   LAST_TARGET_LANGUAGE_KEY,
+  CHROME_CATEGORY_KEY,
+  CHROME_SORT_KEY,
 };

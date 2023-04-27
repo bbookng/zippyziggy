@@ -8,4 +8,5 @@ reloadOnUpdate('pages/background');
  */
 reloadOnUpdate('pages/content/style.scss');
 
-console.log('background loaded');
+// 백그라운드 스크립트
+console.log('백그라운드 loaded');
