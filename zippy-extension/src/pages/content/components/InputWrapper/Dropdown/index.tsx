@@ -54,7 +54,7 @@ const Dropdown = ({ children }: DropdownProps) => {
   );
 };
 
-const Trigger = ({ children }: DropdownProps) => {
+const Trigger = ({ children, className }: DropdownProps & { className?: string }) => {
   const dropdown = useContext(DropdownContext);
   if (!dropdown) {
     throw new Error('');
@@ -66,18 +66,26 @@ const Trigger = ({ children }: DropdownProps) => {
   };
 
   return (
-    <button className="ZP_dropdown-trigger" type="button" onClick={handleTrigger}>
+    <button
+      className={`ZP_dropdown-trigger ${className}`}
+      type="button"
+      onClick={handleTrigger}
+      tabIndex={0}
+    >
       {children}
     </button>
   );
 };
 
-const OptionList = ({ children }: DropdownProps) => {
+const OptionList = ({ children, className = '' }: DropdownProps & { className?: string }) => {
   const dropdown = useContext(DropdownContext);
+  const optionsRef = useRef<HTMLUListElement>(null);
+
   if (!dropdown) {
     throw new Error('');
   }
   const { isExpand, setIsExpand } = dropdown;
+
   const handleCloseMenuClick = () => {
     setIsExpand(false);
   };
@@ -90,10 +98,11 @@ const OptionList = ({ children }: DropdownProps) => {
   };
 
   return (
-    <div className="ZP_dropdown-menu-wrapper">
+    <div className={`ZP_dropdown-menu-wrapper ${className}`}>
       {isExpand && (
         <ul
-          className="ZP_dropdown-menu"
+          ref={optionsRef}
+          className={`ZP_dropdown-menu ${className}`}
           onClick={handleCloseMenuClick}
           onKeyDown={handleCloseMenuKeydown}
         >

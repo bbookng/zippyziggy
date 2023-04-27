@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import ActionWritingButton from '@pages/content/components/InputWrapper/ActionWritingButton';
+import LanguageDropbox from '@pages/content/components/InputWrapper/LanguageDropbox';
 import ActionGroup from './ActionGroup';
 import OutputSettingGroup from './OutputSettingGroup';
 
@@ -41,7 +42,7 @@ const InputWrapper = () => {
     <>
       {/* className="ZP_output-setting-group" */}
       <OutputSettingGroup>
-        <div>asd</div>
+        <LanguageDropbox />
       </OutputSettingGroup>
 
       {/* className="ZP_action-group ZP_invisible" */}

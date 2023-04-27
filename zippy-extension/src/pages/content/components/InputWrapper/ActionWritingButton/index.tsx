@@ -26,11 +26,12 @@ const ActionWritingButton = ({
         {taskText}
       </button>
       <Dropdown>
-        <Dropdown.Trigger>
+        <Dropdown.Trigger className="ZP_action-write">
           <i className="ZP_dropdown-arrow" />
         </Dropdown.Trigger>
-        <Dropdown.OptionList>
+        <Dropdown.OptionList className="ZP_action-write">
           {options.map(({ value, text }, index) => (
+            // eslint-disable-next-line jsx-a11y/click-events-have-key-events
             <li key={value} value={value} data-index={index} onClick={handleActionChange}>
               {text}
             </li>
