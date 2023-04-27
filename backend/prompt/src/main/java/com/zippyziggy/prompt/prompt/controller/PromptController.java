@@ -56,7 +56,7 @@ public class PromptController {
 	@Bean
 	public OpenAPI customOpenAPI() {
 		return new OpenAPI().components(new Components().addSecuritySchemes("bearer-key",
-			new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")));
+				new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")));
 	}
 
 	/**
@@ -70,9 +70,9 @@ public class PromptController {
 	@Operation(summary = "프롬프트 생성", description = "프롬프트를 생성한다.")
 	@PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
 	@ApiResponses({
-		@ApiResponse(responseCode = "200", description = "성공"),
-		@ApiResponse(responseCode = "400", description = "잘못된 요청"),
-		@ApiResponse(responseCode = "500", description = "서버 에러")
+			@ApiResponse(responseCode = "200", description = "성공"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+			@ApiResponse(responseCode = "500", description = "서버 에러")
 	})
 	public ResponseEntity<PromptResponse> createPrompt(@RequestPart PromptRequest data,
 													   @RequestPart MultipartFile thumbnail,
@@ -89,16 +89,16 @@ public class PromptController {
 	 */
 	@Operation(summary = "프롬프트 수정", description = "본인이 작성한 프롬프트를 수정한다.")
 	@PutMapping(value = "/{promptUuid}",
-				consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+			consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
 	@ApiResponses({
 			@ApiResponse(responseCode = "200", description = "성공"),
 			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
 			@ApiResponse(responseCode = "500", description = "서버 에러")
 	})
 	public ResponseEntity<PromptResponse> modifyPrompt(@PathVariable String promptUuid,
-		@RequestPart PromptModifyRequest data,
-		@RequestPart MultipartFile thumbnail,
-		@RequestHeader String crntMemberUuid) {
+													   @RequestPart PromptModifyRequest data,
+													   @RequestPart MultipartFile thumbnail,
+													   @RequestHeader String crntMemberUuid) {
 		return ResponseEntity.ok(promptService.modifyPrompt(UUID.fromString(promptUuid), data, UUID.fromString(crntMemberUuid), thumbnail));
 	}
 
@@ -113,7 +113,6 @@ public class PromptController {
 //		PromptResponse prompt = promptService.createPrompt(data, thumbnail);
 //		return ResponseEntity.ok(prompt);
 //	}
-
 	@Operation(summary = "프롬프트 상세 조회", description = "프롬프트 상세 페이지를 조회한다.")
 	@GetMapping("/{promptUuid}")
 	@ApiResponses({
@@ -122,9 +121,9 @@ public class PromptController {
 			@ApiResponse(responseCode = "500", description = "서버 에러")
 	})
 	public ResponseEntity<PromptDetailResponse> getPromptDetail(@PathVariable String promptUuid,
-		@RequestHeader(required = false) String crntMemberUuid,
-		HttpServletRequest request,
-		HttpServletResponse response) {
+																@RequestHeader(required = false) String crntMemberUuid,
+																HttpServletRequest request,
+																HttpServletResponse response) {
 		promptService.updateHit(UUID.fromString(promptUuid), request, response);
 		return ResponseEntity.ok(promptService.getPromptDetail(UUID.fromString(promptUuid), crntMemberUuid));
 	}
@@ -150,9 +149,9 @@ public class PromptController {
 			@ApiResponse(responseCode = "500", description = "서버 에러")
 	})
 	public ResponseEntity<ForkPromptResponse> createForkPrompt(@PathVariable String promptUuid,
-		@RequestPart PromptRequest data,
-		@RequestPart MultipartFile thumbnail,
-	    @RequestHeader String crntMemberUuid) {
+															   @RequestPart PromptRequest data,
+															   @RequestPart MultipartFile thumbnail,
+															   @RequestHeader String crntMemberUuid) {
 		ForkPromptResponse forkPrompt = forkPromptService.createForkPrompt(UUID.fromString(promptUuid), data, thumbnail, UUID.fromString(crntMemberUuid));
 		return ResponseEntity.ok(forkPrompt);
 	}
@@ -165,10 +164,10 @@ public class PromptController {
 			@ApiResponse(responseCode = "500", description = "서버 에러")
 	})
 	public ResponseEntity<ForkedPromptListResponse> getForkedPrompt(@PathVariable String promptUuid,
-		Pageable pageable,
-		@RequestHeader String crntMemberUuid) {
+																	Pageable pageable,
+																	@RequestHeader String crntMemberUuid) {
 		ForkedPromptListResponse forkedPromptList = forkPromptService.getForkedPromptList(UUID.fromString(promptUuid),
-			pageable, crntMemberUuid);
+				pageable, crntMemberUuid);
 		return ResponseEntity.ok(forkedPromptList);
 	}
 
@@ -180,8 +179,8 @@ public class PromptController {
 			@ApiResponse(responseCode = "500", description = "서버 에러")
 	})
 	public ResponseEntity<PromptCommentListResponse> getPromptComments(@PathVariable String promptUuid,
-		@PageableDefault(size = 8, sort = "id",  direction = Sort.Direction.DESC)
-		Pageable pageable) {
+																	   @PageableDefault(size = 8, sort = "id",  direction = Sort.Direction.DESC)
+																	   Pageable pageable) {
 		PromptCommentListResponse promptCommentList = promptCommentService.getPromptCommentList(UUID.fromString(promptUuid), pageable);
 		return ResponseEntity.ok(promptCommentList);
 	}
@@ -233,27 +232,21 @@ public class PromptController {
 	public ResponseEntity<?> likePrompt(@PathVariable UUID promptUuid,
 										@RequestHeader String crntMemberUuid) {
 
+		System.out.println("promptUuid = " + promptUuid);
 		promptService.likePrompt(promptUuid, crntMemberUuid);
 
 		return ResponseEntity.ok("좋아요 처리 완료");
 	}
 
-	@GetMapping("/members/{memberUuid}/like")
+	@GetMapping("/members/like")
 	@Operation(summary = "프롬프트 좋아요 조회", description = "프롬프트를 좋아요한 상태이면 true 반환, 좋아요 상태가 아니면 false 반환")
-	public ResponseEntity<?> likePromptByMember(@PathVariable UUID memberUuid, @RequestParam("page") Integer page, @RequestParam("size") Integer size) {
+	public ResponseEntity<?> likePromptByMember(@RequestHeader String crntMemberUuid,
+												@RequestParam("page") Integer page,
+												@RequestParam("size") Integer size) {
 		PageRequest pageRequest = PageRequest.of(page, size);
-		return ResponseEntity.ok(promptService.likePromptsByMember(memberUuid, pageRequest));
+		return ResponseEntity.ok(promptService.likePromptsByMember(UUID.fromString(crntMemberUuid), pageRequest));
 	}
 
-	@GetMapping("/all")
-	public ResponseEntity<?> promptAll() {
-		List<Prompt> prompts = promptRepository.findAll();
-		for (Prompt pt: prompts) {
-			System.out.println("pt = " + pt);
-			System.out.println("pt = " + pt.getPromptUuid());
-		}
-		return ResponseEntity.ok("좋아");
-	}
 
 	@Operation(summary = "프롬프트 활용 톡 목록 조회", description = "해당 프롬프트를 활용하여 대화한 톡 목록을 조회한다.")
 	@GetMapping("{promptUuid}/talks")
