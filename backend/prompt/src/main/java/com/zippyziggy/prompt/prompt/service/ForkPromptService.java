@@ -72,7 +72,7 @@ public class ForkPromptService {
 
 
 		List<ForkedPromptResponse> promptDtoList = forkedPrompts.stream().map(prompt -> {
-			MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid().toString())
+			MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid())
 				.orElseThrow(MemberNotFoundException::new), throwable -> null);
 
 
@@ -86,7 +86,7 @@ public class ForkPromptService {
 			boolean isBookmarked;
 
 			// 현재 로그인된 사용자가 아니면 기본값 false
-			if (crntMemberUuid == null) {
+			if (crntMemberUuid.equals("defaultValue")) {
 				isBookmarked = false;
 				isLiked = false;
 			} else {
