@@ -40,16 +40,16 @@ spring:
         - id: member
           uri: lb://MEMBER
           predicates:
-            - Path=/api/members/doc/**
+            - Path/=members/doc/**
           filters:
-            - RewritePath=/api/members/(?<segment>.*), /$\{segment}
+            - RewritePath=/members/(?<segment>.*), /$\{segment}
 
         - id: member
           uri: lb://MEMBER
           predicates:
-            - Path=/api/members/v3/**
+            - Path=/members/v3/**
           filters:
-            - RewritePath=/api/members/(?<segment>.*), /$\{segment}
+            - RewritePath=/members/(?<segment>.*), /$\{segment}
 
         - id: member
           uri: lb://MEMBER
@@ -98,16 +98,16 @@ spring:
         - id: prompt
           uri: lb://PROMPT
           predicates:
-            - Path=/api/prompts/doc/**
+            - Path=/prompts/doc/**
           filters:
-            - RewritePath=/api/prompts/(?<segment>.*), /$\{segment}
+            - RewritePath=prompts/(?<segment>.*), /$\{segment}
 
         - id: prompt
           uri: lb://PROMPT
           predicates:
-            - Path=/api/prompts/v3/**
+            - Path=/prompts/v3/**
           filters:
-            - RewritePath=/api/prompts/(?<segment>.*), /$\{segment}
+            - RewritePath=prompts/(?<segment>.*), /$\{segment}
 
         - id: prompt
           uri: lb://PROMPT
