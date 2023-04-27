@@ -1,7 +1,6 @@
 package com.zippyziggy.search.dto.response;
 
 import com.zippyziggy.search.model.EsPrompt;
-import java.time.ZoneId;
 import lombok.Builder;
 import lombok.Data;
 
@@ -9,35 +8,35 @@ import lombok.Data;
 public class SearchPrompt {
 
     public static SearchPrompt of(
-        EsPrompt esPrompt,
-        Prompt prompt,
-        Integer talkCnt,
-        Integer commentCnt,
-        Long likeCnt,
-        Boolean isLiked,
-        Boolean isBookmarked,
-        Writer writer
+            EsPrompt esPrompt,
+            Prompt prompt,
+            Integer talkCnt,
+            Integer commentCnt,
+            Long likeCnt,
+            Boolean isLiked,
+            Boolean isBookmarked,
+            Writer writer
     ) {
 
         return SearchPrompt.builder()
-            .promptUuid(esPrompt.getPromptUuid())
-            .title(esPrompt.getTitle())
-            .description(esPrompt.getDescription())
-            .category(esPrompt.getCategory())
-            .originalPromptUuid(esPrompt.getOriginalPromptUuid())
+                .promptUuid(esPrompt.getPromptUuid())
+                .title(esPrompt.getTitle())
+                .description(esPrompt.getDescription())
+                .category(esPrompt.getCategory())
+                .originalPromptUuid(esPrompt.getOriginalPromptUuid())
 
-            .thumbnail(prompt.getThumbnail())
-            .regDt(prompt.getRegDt())
-            .updDt(prompt.getUpdDt())
+                .thumbnail(prompt.getThumbnail())
+                .regDt(prompt.getRegDt())
+                .updDt(prompt.getUpdDt())
 
-            .talkCnt(talkCnt)
-            .commentCnt(commentCnt)
-            .likeCnt(likeCnt)
-            .isLiked(isLiked)
-            .isBookmarked(isBookmarked)
+                .talkCnt(talkCnt)
+                .commentCnt(commentCnt)
+                .likeCnt(likeCnt)
+                .isLiked(isLiked)
+                .isBookmarked(isBookmarked)
 
-            .writer(writer)
-            .build();
+                .writer(writer)
+                .build();
     }
 
     private final String promptUuid;
@@ -61,24 +60,24 @@ public class SearchPrompt {
 
     @Builder
     public SearchPrompt(
-        String promptUuid,
-        String title,
-        String description,
-        String category,
-        String originalPromptUuid,
+            String promptUuid,
+            String title,
+            String description,
+            String category,
+            String originalPromptUuid,
 
-        String thumbnail,
-        Integer hit,
-        Long regDt,
-        Long updDt,
+            String thumbnail,
+            Integer hit,
+            Long regDt,
+            Long updDt,
 
-        Integer talkCnt,
-        Integer commentCnt,
-        Long likeCnt,
-        Boolean isLiked,
-        Boolean isBookmarked,
+            Integer talkCnt,
+            Integer commentCnt,
+            Long likeCnt,
+            Boolean isLiked,
+            Boolean isBookmarked,
 
-        Writer writer
+            Writer writer
     ) {
         this.promptUuid = promptUuid;
         this.title = title;
