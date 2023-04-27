@@ -73,7 +73,7 @@ spring:
         - id: member
           uri: lb://MEMBER
           predicates:
-            - Path=/api/profile
+            - Path=/api/members/profile
             - Method=PUT
           filters:
             - AuthorizationHeaderFilter
