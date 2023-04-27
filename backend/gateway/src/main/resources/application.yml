@@ -40,9 +40,9 @@ spring:
         - id: member
           uri: lb://MEMBER
           predicates:
-            - Path=/members/doc/**
+            - Path=/api/members/doc/**
           filters:
-            - RewritePath=/members/(?<segment>.*), /$\{segment}
+            - RewritePath=/api/members/(?<segment>.*), /$\{segment}
 
         - id: member
           uri: lb://MEMBER
