@@ -103,6 +103,10 @@ public class EsPromptService {
 
     }
 
+    public void saveDocument(EsPrompt esPrompt) {
+        esPromptRepository.save(esPrompt);
+    }
+
     private Page<EsPrompt> search (
         String keyword,
         String category,

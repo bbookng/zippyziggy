@@ -1,22 +1,22 @@
 package com.zippyziggy.search.controller;
 
+import com.zippyziggy.search.dto.request.InsertEsPrompt;
 import com.zippyziggy.search.dto.response.ExtensionSearchPromptList;
 import com.zippyziggy.search.dto.response.SearchPromptList;
+import com.zippyziggy.search.model.EsPrompt;
 import com.zippyziggy.search.service.EsPromptService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.util.UUID;
+
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -56,5 +56,13 @@ public class EsPromptController {
             Pageable pageable
     ) {
         return ResponseEntity.ok(esPromptService.extensionSearch(keyword, category, pageable));
+    }
+
+    @GetMapping("/insert-test")
+    public ResponseEntity<Void> insertDoc(
+            @RequestBody InsertEsPrompt insertEsPrompt
+    ) {
+        new EsPrompt(insertEsPrompt);
+        esPromptService.saveDocument();
     }
 }
