@@ -22,27 +22,27 @@ public class PromptLikeRepositoryImpl implements PromptLikeCustomRepository {
     @Override
     public List<Prompt> findAllPromptsByMemberUuid(UUID memberUuid, Pageable pageable) {
 
-//        QPrompt qPrompt = QPrompt.prompt;
+        QPrompt qPrompt = QPrompt.prompt;
         QPromptLike qPromptLike = QPromptLike.promptLike;
         System.out.println("offset" + pageable.getOffset());
         System.out.println("limit" + pageable.getPageSize());
         System.out.println("memberUuid = " + memberUuid);
-//        List<Prompt> prompts = queryFactory
-//                .selectFrom(qPrompt)
-//                .leftJoin(qPromptLike)
-//                .on(qPromptLike.prompt.id.eq(qPrompt.id))
-//                .distinct()
-//                .where(qPromptLike.memberUuid.eq(memberUuid))
-//                .offset(pageable.getOffset())
-//                .limit(pageable.getPageSize())
-//                .fetch();
-        List<PromptLike> prompts = queryFactory
-                .selectFrom(qPromptLike)
+        List<Prompt> prompts = queryFactory
+                .selectFrom(qPrompt)
+                .leftJoin(qPromptLike)
+                .on(qPromptLike.prompt.id.eq(qPrompt.id))
+                .distinct()
                 .where(qPromptLike.memberUuid.eq(memberUuid))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+//        List<PromptLike> prompts = queryFactory
+//                .selectFrom(qPromptLike)
+//                .where(qPromptLike.memberUuid.eq(memberUuid))
+//                .offset(pageable.getOffset())
+//                .limit(pageable.getPageSize())
+//                .fetch();
         System.out.println("prompts = " + prompts);
-        return null;
+        return prompts;
     }
 }

@@ -241,20 +241,12 @@ public class PromptController {
 	@GetMapping("/members/like")
 	@Operation(summary = "프롬프트 좋아요 조회", description = "프롬프트를 좋아요한 상태이면 true 반환, 좋아요 상태가 아니면 false 반환")
 	public ResponseEntity<?> likePromptByMember(@RequestHeader String crntMemberUuid,
-												@RequestParam("page") Integer page, @RequestParam("size") Integer size) {
+												@RequestParam("page") Integer page,
+												@RequestParam("size") Integer size) {
 		PageRequest pageRequest = PageRequest.of(page, size);
 		return ResponseEntity.ok(promptService.likePromptsByMember(UUID.fromString(crntMemberUuid), pageRequest));
 	}
 
-	@GetMapping("/all")
-	public ResponseEntity<?> promptAll() {
-		List<Prompt> prompts = promptRepository.findAll();
-		for (Prompt pt: prompts) {
-			System.out.println("pt = " + pt);
-			System.out.println("pt = " + pt.getPromptUuid());
-		}
-		return ResponseEntity.ok("좋아");
-	}
 
 	@Operation(summary = "프롬프트 활용 톡 목록 조회", description = "해당 프롬프트를 활용하여 대화한 톡 목록을 조회한다.")
 	@GetMapping("{promptUuid}/talks")
