@@ -17,7 +17,8 @@ public class WebConfig implements WebMvcConfigurer {
                         "http://zippyziggy.kr",
                         "http://zippyziggy.kr:3000",
                         "http://k8e205.p.ssafy.io:3000",
-                        "http://localhost:3000"
+                        "http://localhost:3000",
+                        "http://k8e205.p.ssafy.io:8000"
                         )
                 .allowedHeaders("*")
                 .exposedHeaders(
