@@ -581,10 +581,13 @@ public class MemberController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
-    public ResponseEntity<?> updateProfile(@RequestPart("file") MultipartFile file,
+    public ResponseEntity<?> updateProfile(@RequestPart(value = "file", required = false) MultipartFile file,
                                            @RequestPart("nickname") String nickname) throws Exception {
+
         // 기존 유저 찾아오기
         Member member = securityUtil.getCurrentMember();
+
+        System.out.println("file = " + file);
 
         // 회원 정보 수정
         Member updateMember = memberService.updateProfile(nickname, file, member);

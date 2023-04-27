@@ -180,8 +180,9 @@ public class MemberService {
      * 회원 수정
      */
     public Member updateProfile(String nickname, MultipartFile file, Member member) throws Exception {
+        System.out.println("file = " + file);
         // 닉네임만 바꿀 경우
-        if (nickname != null && file.isEmpty()) {
+        if (nickname != null && (file.isEmpty()) ) {
             member.setNickname(nickname);
         } else if (nickname == null && !file.isEmpty()) {
             // 프로필 이미지만 바꿀 경우
