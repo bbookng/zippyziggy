@@ -19,7 +19,7 @@ import com.zippyziggy.prompt.prompt.client.MemberClient;
 import com.zippyziggy.prompt.prompt.dto.request.PromptRequest;
 import com.zippyziggy.prompt.prompt.dto.response.ForkPromptResponse;
 import com.zippyziggy.prompt.prompt.dto.response.ForkedPromptListResponse;
-import com.zippyziggy.prompt.prompt.dto.response.ForkedPromptResponse;
+import com.zippyziggy.prompt.prompt.dto.response.PromptCardResponse;
 import com.zippyziggy.prompt.prompt.dto.response.MemberResponse;
 import com.zippyziggy.prompt.prompt.exception.MemberNotFoundException;
 import com.zippyziggy.prompt.prompt.model.Prompt;
@@ -39,11 +39,11 @@ public class ForkPromptService {
 	private final AwsS3Uploader awsS3Uploader;
 	private final PromptRepository promptRepository;
 	private final PromptCommentRepository promptCommentRepository;
+	private final PromptBookmarkRepository promptBookmarkRepository;
+	private final PromptLikeRepository promptLikeRepository;
 	private final TalkRepository talkRepository;
 	private final MemberClient memberClient;
 	private final CircuitBreakerFactory circuitBreakerFactory;
-	private final PromptBookmarkRepository promptBookmarkRepository;
-	private final PromptLikeRepository promptLikeRepository;
 
 	public ForkPromptResponse createForkPrompt(UUID promptUuid, PromptRequest data, MultipartFile thumbnail, UUID crntMemberUuid) {
 
@@ -62,16 +62,16 @@ public class ForkPromptService {
 		Page<Prompt> forkedPrompts = promptRepository.findAllByOriginPromptUuid(promptUuid, pageable);
 
 		// fork 프롬프트들 카드 정보 가져오는 메서드
-		List<ForkedPromptResponse> prompts = getForkedPromptResponses(forkedPrompts, UUID.fromString(crntMemberUuid));
+		List<PromptCardResponse> prompts = getForkedPromptResponses(forkedPrompts, UUID.fromString(crntMemberUuid));
 
 		return new ForkedPromptListResponse(prompts.size(), prompts);
 	}
 
-	private List<ForkedPromptResponse> getForkedPromptResponses(Page<Prompt> forkedPrompts, @Nullable UUID crntMemberUuid) {
+	private List<PromptCardResponse> getForkedPromptResponses(Page<Prompt> forkedPrompts, @Nullable UUID crntMemberUuid) {
 		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 
 
-		List<ForkedPromptResponse> promptDtoList = forkedPrompts.stream().map(prompt -> {
+		List<PromptCardResponse> promptDtoList = forkedPrompts.stream().map(prompt -> {
 			MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid())
 				.orElseThrow(MemberNotFoundException::new), throwable -> null);
 
@@ -90,12 +90,14 @@ public class ForkPromptService {
 				isBookmarked = false;
 				isLiked = false;
 			} else {
-				isBookmarked = (promptBookmarkRepository.countAllByMemberUuidAndPrompt(crntMemberUuid, prompt) % 2 > 0) ? true : false;
-				isLiked =  (promptLikeRepository.countAllByMemberUuidAndPrompt(crntMemberUuid, prompt) % 2 > 0) ? true : false;
+				isBookmarked = promptBookmarkRepository.findByMemberUuidAndPrompt(crntMemberUuid, prompt) != null
+					? true : false;
+				isLiked =  promptLikeRepository.countAllByMemberUuidAndPrompt(crntMemberUuid, prompt) != null
+					? true : false;
 			}
 
 			// DTO 로 변환
-			ForkedPromptResponse promptDto = ForkedPromptResponse
+			PromptCardResponse promptDto = PromptCardResponse
 				.from(writerInfo, prompt, commentCnt, forkCnt, talkCnt, isBookmarked, isLiked);
 
 			return promptDto;

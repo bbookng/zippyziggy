@@ -12,7 +12,7 @@ import lombok.Setter;
 @Data
 @Getter @Setter
 @Builder
-public class ForkedPromptResponse {
+public class PromptCardResponse {
 
 	private String thumbnail;
 	private String title;
@@ -30,14 +30,14 @@ public class ForkedPromptResponse {
 	private Boolean isBookmarked;
 	private Boolean isLiked;
 
-	public static ForkedPromptResponse from(MemberResponse writerInfo, Prompt prompt,
+	public static PromptCardResponse from(MemberResponse writerInfo, Prompt prompt,
 		Long commentCnt, Long forkCnt, Long talkCnt,
 		Boolean isBookmarked, Boolean isLiked) {
 
 		long regDt = prompt.getRegDt().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
 		long updDt = prompt.getRegDt().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
 
-		ForkedPromptResponse response = ForkedPromptResponse.builder()
+		PromptCardResponse response = PromptCardResponse.builder()
 			.thumbnail(prompt.getThumbnail())
 			.title(prompt.getTitle())
 			.description(prompt.getDescription())

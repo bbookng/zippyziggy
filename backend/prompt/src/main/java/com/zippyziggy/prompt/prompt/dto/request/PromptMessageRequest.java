@@ -1,16 +1,16 @@
-package com.zippyziggy.prompt.prompt.dto.response;
+package com.zippyziggy.prompt.prompt.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Data
-@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MessageResponse {
+public class PromptMessageRequest {
+
 	private String prefix;
 	private String example;
 	private String suffix;
+
 }

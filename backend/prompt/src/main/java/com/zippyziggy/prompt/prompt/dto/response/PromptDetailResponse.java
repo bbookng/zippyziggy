@@ -1,8 +1,6 @@
 package com.zippyziggy.prompt.prompt.dto.response;
 
-import java.time.ZoneId;
 import org.springframework.lang.Nullable;
-import com.zippyziggy.prompt.prompt.model.Prompt;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,6 +30,6 @@ public class PromptDetailResponse {
 	private long regDt;
 	private long updDt;
 
-	private MessageResponse messageResponse;
+	private PromptMessageResponse messageResponse;
 
 }

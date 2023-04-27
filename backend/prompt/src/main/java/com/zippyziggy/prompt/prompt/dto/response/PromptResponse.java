@@ -18,10 +18,10 @@ public class PromptResponse {
 	private String description;
 	private String thumbnail;
 	private String category;
-	private MessageResponse message;
+	private PromptMessageResponse message;
 
 	public static PromptResponse from(Prompt prompt) {
-		MessageResponse message = new MessageResponse(prompt.getPrefix(), prompt.getExample(),
+		PromptMessageResponse message = new PromptMessageResponse(prompt.getPrefix(), prompt.getExample(),
 			prompt.getSuffix());
 
 		PromptResponse response = PromptResponse.builder()
