@@ -238,11 +238,12 @@ public class PromptController {
 		return ResponseEntity.ok("좋아요 처리 완료");
 	}
 
-	@GetMapping("/members/{memberUuid}/like")
+	@GetMapping("/members/like")
 	@Operation(summary = "프롬프트 좋아요 조회", description = "프롬프트를 좋아요한 상태이면 true 반환, 좋아요 상태가 아니면 false 반환")
-	public ResponseEntity<?> likePromptByMember(@PathVariable UUID memberUuid, @RequestParam("page") Integer page, @RequestParam("size") Integer size) {
+	public ResponseEntity<?> likePromptByMember(@RequestHeader String crntMemberUuid,
+												@RequestParam("page") Integer page, @RequestParam("size") Integer size) {
 		PageRequest pageRequest = PageRequest.of(page, size);
-		return ResponseEntity.ok(promptService.likePromptsByMember(memberUuid, pageRequest));
+		return ResponseEntity.ok(promptService.likePromptsByMember(UUID.fromString(crntMemberUuid), pageRequest));
 	}
 
 	@GetMapping("/all")

@@ -242,8 +242,6 @@ public class PromptService{
 
 
 	public List<PromptResponse> likePromptsByMember (UUID memberUuid, Pageable pageable) {
-		Optional<MemberResponse> memberInfo = memberClient.getMemberInfo(memberUuid.toString());
-		System.out.println("memberInfo = " + memberInfo);
 		System.out.println("memberUuid = " + memberUuid);
 		System.out.println("pageable = " + pageable);
 		List<Prompt> prompts = promptLikeRepository.findAllPromptsByMemberUuid(memberUuid, pageable);
