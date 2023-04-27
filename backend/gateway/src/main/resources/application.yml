@@ -145,7 +145,7 @@ spring:
           uri: lb://PROMPT
           predicates:
             - Path=/api/prompts
-            - Method=GET, POST
+            - Method=GET, POST, OPTIONS
           filters:
             - RewritePath=/api/(?<segment>.*), /$\{segment}
             - PromptAuthorizationHeaderFilter
@@ -154,7 +154,7 @@ spring:
           uri: lb://PROMPT
           predicates:
             - Path=/api/prompts/{promptUuid}/**
-            - Method=GET, POST, PUT, DELETE
+            - Method=GET, POST, PUT, DELETE, OPTIONS
           filters:
             - PromptAuthorizationHeaderFilter
             - RewritePath=/api/(?<segment>.*), /$\{segment}
