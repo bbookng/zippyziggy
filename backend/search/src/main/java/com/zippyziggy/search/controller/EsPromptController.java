@@ -23,9 +23,8 @@ public class EsPromptController {
     public ResponseEntity<ExtensionSearchPromptList> searchInExtension(
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) String category,
-            @RequestParam(required = false) String sort,
             Pageable pageable
     ) {
-        return ResponseEntity.ok(esPromptService.search(keyword, category, sort, pageable));
+        return ResponseEntity.ok(esPromptService.extensionSearch(keyword, category, pageable));
     }
 }
