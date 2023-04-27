@@ -3,6 +3,7 @@ package com.zippyziggy.prompt.prompt.service;
 import java.lang.reflect.Type;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -204,12 +205,12 @@ public class PromptService{
 		System.out.println("crntMemberUuid = " + crntMemberUuid);
 
 		// 좋아요 상태 추적
-		boolean promptStatus = likePromptStatus(promptUuid, crntMemberUuid);
+		PromptLike promptLikeExist = likePromptExist(promptUuid, crntMemberUuid);
 
 		// 좋아요를 이미 한 상태일 경우
 		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
 
-		if (!promptStatus) {
+		if (promptLikeExist == null) {
 			// 프롬프트 조회
 			System.out.println("prompt = " + prompt);
 
@@ -220,19 +221,18 @@ public class PromptService{
 
 			// 프롬프트 - 사용자 좋아요 관계 생성
 			promptLikeRepository.save(promptLike);
-		} else {
 
-		}
-
-
-
-		if (promptStatus && prompt.getLikeCnt() != 0) {
-			// 프롬프트 좋아요 개수 1 감소
-			prompt.setLikeCnt(prompt.getLikeCnt() - 1);
-			promptRepository.save(prompt);
-		} else {
 			// 프롬프트 좋아요 개수 1 증가
 			prompt.setLikeCnt(prompt.getLikeCnt() + 1);
+			promptRepository.save(prompt);
+
+		} else {
+
+			// 프롬프트 - 사용자 좋아요 취소
+			promptLikeRepository.delete(promptLikeExist);
+
+			// 프롬프트 좋아요 개수 1 감소
+			prompt.setLikeCnt(prompt.getLikeCnt() - 1);
 			promptRepository.save(prompt);
 		}
 	}
@@ -240,27 +240,30 @@ public class PromptService{
 
 	/*
     로그인한 유저가 프롬프트를 좋아요 했는지 확인하는 로직
-    true면 좋아요를 한 상태, false이면 좋아요를 하지 않은 상태
+    null이 아니면 좋아요를 한 상태, null이면 좋아요를 하지 않은 상태
      */
-	private boolean likePromptStatus(UUID promptUuid, String crntMemberUuid) {
+	private PromptLike likePromptExist(UUID promptUuid, String crntMemberUuid) {
 		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
 		PromptLike promptLike = promptLikeRepository.findByPromptAndMemberUuid(prompt, UUID.fromString(crntMemberUuid)).orElseThrow(PromptLikeNotFoundException::new);
 		if (promptLike != null) {
-			return true;
+			return promptLike;
 		} else {
-			return false;
+			return null;
 		}
 	}
 
-
+	/*
+	로그인한 유저가 좋아요를 누른 프롬프트 조회하기
+	 */
 	public List<PromptResponse> likePromptsByMember (UUID memberUuid, Pageable pageable) {
 		System.out.println("memberUuid = " + memberUuid);
 		System.out.println("pageable = " + pageable);
-		List<Prompt> prompts = promptLikeRepository.findAllPromptsByMemberUuid(memberUuid, pageable);
-		for (Prompt pt: prompts) {
+		List<PromptLike> promptLikes = promptLikeRepository.findAllByMemberUuidOrderByRegDtDesc(memberUuid, pageable);
+		List<Prompt> prompts = new ArrayList<>();
+		for (PromptLike pt: promptLikes) {
 			System.out.println("유후");
 			System.out.println("pt = " + pt);
-			System.out.println("pt = " + pt.getMemberUuid());
+			
 		}
 		return null;
 
