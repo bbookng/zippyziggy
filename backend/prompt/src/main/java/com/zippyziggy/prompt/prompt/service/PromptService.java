@@ -203,10 +203,11 @@ public class PromptService{
     프롬프트 좋아요 처리
      */
 	public void likePrompt(UUID promptUuid, String crntMemberUuid) {
-
+		System.out.println("promptUuid = " + promptUuid);
+		System.out.println("crntMemberUuid = " + crntMemberUuid);
 		// 프롬프트 조회
 		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
-
+		System.out.println("prompt = " + prompt);
 
 		PromptLike promptLike = PromptLike.builder()
 				.prompt(prompt)
@@ -241,7 +242,7 @@ public class PromptService{
 
 
 	public List<PromptResponse> likePromptsByMember (UUID memberUuid, Pageable pageable) {
-		Optional<MemberResponse> memberInfo = memberClient.getMemberInfo(memberUuid);
+		Optional<MemberResponse> memberInfo = memberClient.getMemberInfo(memberUuid.toString());
 		System.out.println("memberInfo = " + memberInfo);
 		System.out.println("memberUuid = " + memberUuid);
 		System.out.println("pageable = " + pageable);
