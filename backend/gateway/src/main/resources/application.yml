@@ -27,7 +27,7 @@ spring:
       globalcors:
         cors-configurations:
           '[/**]':
-            allowedOrigins: 'http://zippyziggy.kr:3000, http://k8e205.p.ssafy.io:3000, http://localhost:3000, http://zippyziggy.kr'
+            allowedOrigins: 'http://zippyziggy.kr:3000, http://k8e205.p.ssafy.io:3000, http://localhost:3000, http://zippyziggy.kr, https://zippyziggy.kr'
             allow-credentials: true
             allowedHeaders: '*'
             allowedMethods:
@@ -59,6 +59,26 @@ spring:
           filters:
             - RemoveRequestHeader=Cookie
             - RewritePath=/api/(?<segment>.*), /$\{segment}
+
+
+        - id: member
+          uri: lb://MEMBER
+          predicates:
+            - Path=/api/members
+            - Method=PUT
+          filters:
+            - AuthorizationHeaderFilter
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
+
+        - id: member
+          uri: lb://MEMBER
+          predicates:
+            - Path=/api/profile
+            - Method=PUT
+          filters:
+            - AuthorizationHeaderFilter
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
+
 
         - id: member
           uri: lb://MEMBER
