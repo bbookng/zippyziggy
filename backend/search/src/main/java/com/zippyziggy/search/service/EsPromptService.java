@@ -6,8 +6,12 @@ import com.zippyziggy.search.repository.EsPromptRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,22 +23,53 @@ public class EsPromptService {
 
     private final EsPromptRepository esPromptRepository;
 
-    public ExtensionSearchPromptList search(
-            String keyword
-//            String category,
-//            String sort
+    public ExtensionSearchPromptList extensionSearch(
+        String keyword,
+        String category,
+        Pageable pageable
     ) {
         List<EsPrompt> esPrompts = new ArrayList<>();
-        if (null != keyword) {
-            esPrompts = esPromptRepository.findByTitleContainsOrDescriptionContainsOrPrefixContainsOrSuffixContainsOrExampleContains(
-                    keyword, keyword, keyword, keyword, keyword
-            );
+        long totalPromptsCnt = 0L;
+        int totalPageCnt = 0;
+
+        if (null != keyword & null != category) {
+
+            Page<EsPrompt> pagedEsPrompt = esPromptRepository
+                .findByKeywordAndCategory(keyword, category, pageable);
+
+            esPrompts = pagedEsPrompt.stream().collect(Collectors.toList());
+            totalPromptsCnt = pagedEsPrompt.getTotalElements();
+            totalPageCnt = pagedEsPrompt.getTotalPages();
+
+        } else if (null == keyword & null != category) {
+
+            Page<EsPrompt> pagedEsPrompt = esPromptRepository
+                .findByCategory(category, pageable);
+
+            esPrompts = pagedEsPrompt.stream().collect(Collectors.toList());
+            totalPromptsCnt = pagedEsPrompt.getTotalElements();
+            totalPageCnt = pagedEsPrompt.getTotalPages();
+
+        } else if (null != keyword & null == category) {
+
+            Page<EsPrompt> pagedEsPrompt = esPromptRepository
+                .findByKeywordOnly(keyword, pageable);
+
+            esPrompts = pagedEsPrompt.stream().collect(Collectors.toList());
+            totalPromptsCnt = pagedEsPrompt.getTotalElements();
+            totalPageCnt = pagedEsPrompt.getTotalPages();
+
+        } else if (null == keyword & null == category) {
+            Page<EsPrompt> pagedEsPrompt = esPromptRepository
+                .findAll(pageable);
+
+            esPrompts = pagedEsPrompt.stream().collect(Collectors.toList());
+            totalPromptsCnt = pagedEsPrompt.getTotalElements();
+            totalPageCnt = pagedEsPrompt.getTotalPages();
+
         }
-        else {
-            esPromptRepository.findAll()
-                    .forEach(esPrompts::add);
-        }
-        return ExtensionSearchPromptList.of(esPrompts);
+
+        return ExtensionSearchPromptList.of(totalPromptsCnt, totalPageCnt, esPrompts);
 
     }
 

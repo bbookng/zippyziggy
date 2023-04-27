@@ -4,6 +4,7 @@ import com.zippyziggy.search.dto.response.ExtensionSearchPromptList;
 import com.zippyziggy.search.service.EsPromptService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,10 +21,10 @@ public class EsPromptController {
 
     @GetMapping("/extension")
     public ResponseEntity<ExtensionSearchPromptList> searchInExtension(
-            @RequestParam(required = false) String keyword
-//            @RequestParam(required = false) String category,
-//            @RequestParam(required = false) String sort
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String category,
+            Pageable pageable
     ) {
-        return ResponseEntity.ok(esPromptService.search(keyword));
+        return ResponseEntity.ok(esPromptService.extensionSearch(keyword, category, pageable));
     }
 }
