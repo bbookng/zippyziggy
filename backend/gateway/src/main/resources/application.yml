@@ -74,7 +74,7 @@ spring:
           uri: lb://MEMBER
           predicates:
             - Path=/api/members/profile
-            - Method=PUT
+            - Method= GET, PUT
           filters:
             - AuthorizationHeaderFilter
             - RewritePath=/api/(?<segment>.*), /$\{segment}
