@@ -128,30 +128,30 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
             boolean contentCheck = tokenContentCheck(refreshToken);
             log.info("22222222222222222222222222222222222");
             // DB의 refreshToken과 일치하는지 확인
-            boolean refreshTokenDBCheck = refreshTokenDBCheck(refreshToken);
+//            boolean refreshTokenDBCheck = refreshTokenDBCheck(refreshToken);
             log.info("33333333333333333333333333333333");
-            if (!contentCheck || !refreshTokenDBCheck) {
+            if (!contentCheck) {
                 log.info("4444444444444444444444444444444444");
                 log.info("contentCheck = " + contentCheck);
-                log.info("refreshTokenDBCheck = " + refreshTokenDBCheck);
-                return JwtResponse.REFRESH_TOKEN_MISMATCH;
+//                log.info("refreshTokenDBCheck = " + refreshTokenDBCheck);
+                throw new JWTDecodeException(JwtResponse.REFRESH_TOKEN_MISMATCH.getJwtResponse());
             }
             DecodedJWT verify = require(Algorithm.HMAC512(jwtSecretKey)).build().verify(refreshToken);
             log.info("verify = " + verify);
             // 만료시간이 지난 경우 새로운 refreshToken 생성
             if (verify.getExpiresAt().before(new Date())) {
 
-                return JwtResponse.REFRESH_TOKEN_EXPIRED;
+                throw new TokenExpiredException("만료된 refresh 토큰입니다.", Instant.now());
             }
         } catch (TokenExpiredException e) {
 
             log.info("만료된 토큰입니다." + e);
-            return JwtResponse.REFRESH_TOKEN_EXPIRED;
+            throw new TokenExpiredException("만료된 refresh 토큰입니다.", Instant.now());
 
         } catch (Exception e) {
             log.info("Exception e에서 에러 발생");
             log.info("유효하지 않은 토큰입니다" + e);
-            return JwtResponse.REFRESH_TOKEN_MISMATCH;
+            throw new JWTDecodeException(JwtResponse.REFRESH_TOKEN_MISMATCH.getJwtResponse());
 
         }
         return JwtResponse.REFRESH_TOKEN_SUCCESS;
