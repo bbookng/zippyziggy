@@ -25,6 +25,7 @@ const LAST_TARGET_LANGUAGE_KEY = 'ZP_lastTargetLanguage';
 // Chrome Storage Key
 const CHROME_CATEGORY_KEY = 'ZP_category';
 const CHROME_SORT_KEY = 'ZP_sort';
+const CHROME_SEARCH_KEY = 'ZP_searchTerm';
 
 export {
   DEFAULT_TARGET_LANGUAGE,
@@ -42,4 +43,5 @@ export {
   LAST_TARGET_LANGUAGE_KEY,
   CHROME_CATEGORY_KEY,
   CHROME_SORT_KEY,
+  CHROME_SEARCH_KEY,
 };

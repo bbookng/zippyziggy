@@ -6,7 +6,12 @@ import SortFilter from '@pages/content/components/PromptContainer/SortFilter';
 import { useState } from 'react';
 import { Category, MockPrompt, Sort } from '@pages/content/types';
 import useFetch from '@pages/hooks/@shared/useFetch';
-import { CHROME_CATEGORY_KEY, CHROME_SORT_KEY, ZIPPY_API_URL } from '@pages/constants';
+import {
+  CHROME_CATEGORY_KEY,
+  CHROME_SEARCH_KEY,
+  CHROME_SORT_KEY,
+  ZIPPY_API_URL,
+} from '@pages/constants';
 import useDebounce from '@pages/hooks/@shared/useDebounce';
 import Pagination from '@pages/content/components/PromptContainer/Pagination';
 import useChromeStorage from '@pages/hooks/@shared/useChromeStorage';
@@ -38,7 +43,7 @@ const PromptContainer = () => {
     CHROME_SORT_KEY,
     defaultSort
   );
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useChromeStorage<string>(CHROME_SEARCH_KEY, '');
   const debouncedSearchTerm = useDebounce(searchTerm);
   const {
     data: promptList,
