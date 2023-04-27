@@ -598,6 +598,12 @@ public class MemberController {
         return new ResponseEntity<>(memberInformResponseDto, HttpStatus.OK);
     }
 
+    @GetMapping("/uuid/{uuid}")
+    public ResponseEntity<?> test(@PathVariable UUID uuid) {
+        Optional<Member> byUserUuidEquals = memberRepository.findByUserUuidEquals(uuid);
+        System.out.println("byUserUuidEquals = 움하하" + byUserUuidEquals);
 
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
 }
