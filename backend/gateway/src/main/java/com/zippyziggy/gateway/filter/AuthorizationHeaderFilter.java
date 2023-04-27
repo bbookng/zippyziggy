@@ -32,10 +32,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
-import java.util.Base64;
-import java.util.Date;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static com.auth0.jwt.JWT.require;
 
@@ -77,14 +74,18 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
                         // accessToken인지 refreshToken인지 확인
                         JwtPayLoadResponseDto jwtPayLoadResponseDto = checkToken(token);
                         String tokenType = jwtPayLoadResponseDto.getSub();
+
                         log.info("tokenType =  " + tokenType);
                         log.info("jwtPayLoadResponseDto = " + jwtPayLoadResponseDto);
+
                         // accessToken인 경우
                         JwtResponse jwtResponse = validateRefreshToken(token);
+
                         if (tokenType.equals("accessToken")) {
                             //유효한 access토큰인지 확인
                             log.info("accessTokenJwtResponse = " + jwtResponse);
                         }
+
                         // refreshToken인 경우
                         else {
                             //유효한 refresh토큰인지 확인
@@ -173,6 +174,10 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
         String userUuid = verify.getClaim("userUuid").asString();
         log.info("userUuid = " + userUuid);
         log.warn("uuid = " + UUID.fromString(userUuid));
+        Optional<Member> name = memberRepository.findByName("김보경");
+        List<Member> all = memberRepository.findAll();
+        System.out.println("all = " + all);
+        System.out.println("name = " + name);
         Optional<Member> member = memberRepository.findByUserUuid(UUID.fromString(userUuid));
         log.info("member를 찾아라" + member);
         return member.get();
