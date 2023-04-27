@@ -72,7 +72,7 @@ public class ForkPromptService {
 
 
 		List<ForkedPromptResponse> promptDtoList = forkedPrompts.stream().map(prompt -> {
-			MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid())
+			MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid().toString())
 				.orElseThrow(MemberNotFoundException::new), throwable -> null);
 
 
