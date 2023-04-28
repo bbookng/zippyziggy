@@ -38,7 +38,6 @@ public class PromptComment {
 	@JoinColumn(name = "prompt_uuid", nullable = false)
 	private Prompt prompt;
 
-
 	@Lob
 	@Column(nullable = false)
 	private String content;

@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.zippyziggy.prompt.prompt.repository.PromptRepository;
+import com.zippyziggy.prompt.talk.dto.response.PromptTalkListResponse;
 import com.zippyziggy.prompt.talk.dto.response.TalkListResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -172,7 +173,7 @@ public class PromptController {
 			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
 			@ApiResponse(responseCode = "500", description = "서버 에러")
 	})
-	public ResponseEntity<List<TalkListResponse>> getPromptTalkList(@PathVariable UUID promptUuid, @RequestHeader String crntMemberUuid) {
+	public ResponseEntity<PromptTalkListResponse> getPromptTalkList(@PathVariable UUID promptUuid, @RequestHeader String crntMemberUuid) {
 		return ResponseEntity.ok(promptService.getPromptTalkList(promptUuid, crntMemberUuid));
 	}
 
