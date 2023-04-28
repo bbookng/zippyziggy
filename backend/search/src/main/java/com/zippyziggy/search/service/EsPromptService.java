@@ -1,8 +1,10 @@
 package com.zippyziggy.search.service;
 
-import com.zippyziggy.exception.PromptNotFoundException;
+import com.zippyziggy.search.exception.EsPromptNotFoundException;
+import com.zippyziggy.search.exception.PromptNotFoundException;
 import com.zippyziggy.search.client.MemberClient;
 import com.zippyziggy.search.client.PromptClient;
+import com.zippyziggy.search.dto.request.SyncEsPrompt;
 import com.zippyziggy.search.dto.response.*;
 import com.zippyziggy.search.model.EsPrompt;
 import com.zippyziggy.search.repository.EsPromptRepository;
@@ -103,8 +105,19 @@ public class EsPromptService {
 
     }
 
-    public void saveDocument(EsPrompt esPrompt) {
+    public void insertDocument(SyncEsPrompt syncEsPrompt) {
+        final EsPrompt esPrompt = EsPrompt.of(syncEsPrompt);
         esPromptRepository.save(esPrompt);
+    }
+
+    public void updateDocument(SyncEsPrompt syncEsPrompt) {
+        final EsPrompt oldEsPrompt = esPromptRepository
+            .findEsPromptByPromptId(syncEsPrompt.getPromptId())
+            .orElseThrow(EsPromptNotFoundException::new);
+        esPromptRepository.delete(oldEsPrompt);
+
+        final EsPrompt newEsPrompt = EsPrompt.of(syncEsPrompt);
+        esPromptRepository.save(newEsPrompt);
     }
 
     private Page<EsPrompt> search (

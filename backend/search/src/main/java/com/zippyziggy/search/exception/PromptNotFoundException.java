@@ -1,4 +1,4 @@
-package com.zippyziggy.exception;
+package com.zippyziggy.search.exception;
 
 public class PromptNotFoundException extends RuntimeException {
 

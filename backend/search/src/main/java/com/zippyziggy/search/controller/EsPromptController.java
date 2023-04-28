@@ -1,8 +1,9 @@
 package com.zippyziggy.search.controller;
 
-import com.zippyziggy.search.dto.request.InsertEsPrompt;
+import com.zippyziggy.search.dto.request.SyncEsPrompt;
 import com.zippyziggy.search.dto.response.ExtensionSearchPromptList;
 import com.zippyziggy.search.dto.response.SearchPromptList;
+import com.zippyziggy.search.model.EsPrompt;
 import com.zippyziggy.search.service.EsPromptService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -46,20 +47,18 @@ public class EsPromptController {
     }
 
     @PostMapping("/prompts")
-    public ResponseEntity<Void> insertDoc(
-        @RequestBody InsertEsPrompt insertEsPrompt
+    public ResponseEntity<Void> createDoc(
+        @RequestBody SyncEsPrompt syncEsPrompt
     ) {
-//        new EsPrompt(insertEsPrompt);
-//        esPromptService.saveDocument();
+        esPromptService.insertDocument(syncEsPrompt);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/prompts")
     public ResponseEntity<Void> modifyDoc(
-        @RequestBody InsertEsPrompt insertEsPrompt
+        @RequestBody SyncEsPrompt syncEsPrompt
     ) {
-//        new EsPrompt(insertEsPrompt);
-//        esPromptService.saveDocument();
+        esPromptService.updateDocument(syncEsPrompt);
         return ResponseEntity.ok().build();
     }
 

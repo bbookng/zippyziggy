@@ -1,6 +1,8 @@
 package com.zippyziggy.search.repository;
 
 import com.zippyziggy.search.model.EsPrompt;
+import java.util.Optional;
+import javax.swing.text.html.Option;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.annotations.Query;
@@ -34,5 +36,7 @@ public interface EsPromptRepository extends ElasticsearchRepository<EsPrompt, St
     Page<EsPrompt> findByKeywordOnly(String keyword, Pageable pageable);
 
     Page<EsPrompt> findByCategory(String category, Pageable pageable);
+
+    Optional<EsPrompt> findEsPromptByPromptId(Long promptId);
 
 }
