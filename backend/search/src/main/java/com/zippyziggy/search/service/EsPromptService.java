@@ -81,13 +81,13 @@ public class EsPromptService {
 
             // dto로 변환하기
             searchPrompts.add(SearchPrompt.of(
-                            esPrompt,
+                esPrompt,
                 promptDetailResponse,
-                            talkCnt,
-                            commentCnt,
-                            promptDetailResponse.getLikeCnt(),
-                            isLiked,
-                            isBookmarked,
+                talkCnt,
+                commentCnt,
+                promptDetailResponse.getLikeCnt(),
+                isLiked,
+                isBookmarked,
                 writerResponse));
 
         }
