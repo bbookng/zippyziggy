@@ -209,14 +209,22 @@ public class PromptService{
 	본인이 작성한 프롬프트인지 확인 필요
 	 */
 
-	public void removePrompt(UUID promptUuid, UUID crntMemberUuid) {
-		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
+	public void removePrompt(String strPromptUuid, UUID crntMemberUuid) {
+		final UUID promptUuid = UUID.fromString(strPromptUuid);
+		Prompt prompt = promptRepository.findByPromptUuid(promptUuid)
+			.orElseThrow(PromptNotFoundException::new);
 
 		if (!crntMemberUuid.equals(prompt.getMemberUuid())) {
 			throw new ForbiddenMemberException();
 		}
 
-		awsS3Uploader.delete("thumbnails/" , prompt.getThumbnail());
+		awsS3Uploader.delete("thumbnails/", prompt.getThumbnail());
+
+		// 수정 시 search 서비스에 Elasticsearch DELETE 요청
+		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
+		final EsPromptRequest esPromptRequest = EsPromptRequest.of(prompt);
+		circuitBreaker.run(() -> searchClient.deleteEsPrompt(strPromptUuid));
+
 		promptRepository.delete(prompt);
 	}
 
