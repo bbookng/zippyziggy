@@ -395,7 +395,7 @@ public class PromptService{
 	}
 
 	/*
-	프롬프트 신고 접수
+	프롬프트 신고 접수 한 프롬프트 당 5개까지 작성가능
 	 */
 	public void promptReport(UUID promptUuid, String crntMemberUuid, PromptReportRequest promptReportRequest) throws Exception {
 		Long reportCnt = promptReportRepository.countAllByMemberUuidAndPrompt_PromptUuid(UUID.fromString(crntMemberUuid), promptUuid);
@@ -414,17 +414,6 @@ public class PromptService{
 	public Page<PromptReportResponse> reports(Pageable pageable) {
 		Page<PromptReport> reports = promptReportRepository.findAllByOrderByRegDtDesc(pageable);
 		Page<PromptReportResponse> promptReportResponse = PromptReportResponse.from(reports);
-//		for (PromptReport promptReport : reports) {
-//			PromptReportResponse response = PromptReportResponse.from(promptReport.getMemberUuid(),
-//					promptReport.getPrompt().getPromptUuid(),
-//					promptReport.getPrompt().getTitle(),
-//					promptReport.getPrompt().getCategory().toString(),
-//					promptReport.getPrompt().getLanguages().toString(),
-//					promptReport.getPrompt().getMemberUuid(),
-//					promptReport.getContent(),
-//					promptReport.getRegDt());
-//			promptReportResponse.add(response);
-//		}
 		return promptReportResponse;
 	}
 
