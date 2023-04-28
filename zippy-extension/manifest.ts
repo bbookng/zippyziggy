@@ -14,6 +14,7 @@ const manifest: chrome.runtime.ManifestV3 = {
     service_worker: 'src/pages/background/index.js',
     type: 'module',
   },
+
   action: {
     default_popup: 'src/pages/popup/index.html',
     default_icon: {
@@ -38,7 +39,7 @@ const manifest: chrome.runtime.ManifestV3 = {
       css: ['assets/css/contentStyle<KEY>.chunk.css'],
     },
   ],
-  permissions: ['storage'],
+  permissions: ['storage', 'tabs'],
   web_accessible_resources: [
     {
       resources: [
