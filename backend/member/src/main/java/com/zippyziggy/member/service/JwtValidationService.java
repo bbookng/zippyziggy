@@ -89,7 +89,7 @@ public class JwtValidationService {
      *                                       2. accessToken이 만료된 경우 재로그인
      * SUCCESS: 정상 토큰
      */
-    public JwtResponse validateRefreshToken(String refreshToken) {
+    public JwtResponse validateRefreshToken(String refreshToken) throws Exception {
 
         try {
             // token 내용이 유효한지 확인
@@ -98,24 +98,24 @@ public class JwtValidationService {
             boolean refreshTokenDBCheck = refreshTokenDBCheck(refreshToken);
 
             if (!contentCheck || !refreshTokenDBCheck) {
-                return JwtResponse.REFRESH_TOKEN_MISMATCH;
+                throw new JWTDecodeException(JwtResponse.REFRESH_TOKEN_MISMATCH.getJwtResponse());
             }
             DecodedJWT verify = require(Algorithm.HMAC512(jwtSecretKey)).build().verify(refreshToken);
 
             // 만료시간이 지난 경우 새로운 refreshToken 생성
             if (verify.getExpiresAt().before(new Date())) {
 
-                return JwtResponse.REFRESH_TOKEN_EXPIRED;
+                throw new TokenExpiredException("만료된 토큰입니다.", Instant.now());
             }
         } catch (TokenExpiredException e) {
 
             System.out.println("만료된 토큰입니다." + e);
-            return JwtResponse.REFRESH_TOKEN_EXPIRED;
+            throw new TokenExpiredException("만료된 토큰입니다.", Instant.now());
 
         } catch (Exception e) {
 
             System.out.println("유효하지 않은 토큰입니다" + e);
-            return JwtResponse.REFRESH_TOKEN_MISMATCH;
+            throw new JWTDecodeException(JwtResponse.REFRESH_TOKEN_MISMATCH.getJwtResponse());
 
         }
         return JwtResponse.REFRESH_TOKEN_SUCCESS;

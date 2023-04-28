@@ -1,6 +1,8 @@
 package com.zippyziggy.member.controller;
 
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zippyziggy.member.config.CustomModelMapper;
 import com.zippyziggy.member.dto.request.MemberSignUpRequestDto;
@@ -504,8 +506,8 @@ public class MemberController {
     /**
      * refresh토큰으로 유효성 검사 진행하고 유효하면 accessToken재발급, 검사 실패시 재로그인 필요
      */
-    @PostMapping(value = "/refresh/token", headers = "Authorization")
-    @Operation(summary = "accessToken 재발급(Authorization 필요)", description = "refreshToken을 header에 담아서 요청해야한다. " +
+    @PostMapping(value = "/refresh/token")
+    @Operation(summary = "accessToken 재발급", description = "쿠키에 담긴 refreshToken확인 " +
             "refreshToken의 유효성 검사 후 성공이면 accessToken을 재발급해서 헤더에 담아서 보낸다." +
             "만약 만료시간이 지나거나 잘못된 토큰일 경우에는 401에러와 함께 재로그인 문구가 반환된다.")
     @ApiResponses({
@@ -513,12 +515,31 @@ public class MemberController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
-    public ResponseEntity<?> refreshToken() throws Exception {
+    public ResponseEntity<?> refreshToken(HttpServletRequest request, HttpServletResponse response) {
+
+        try {
+            // 기존 쿠키 확인해서 refreshToken 검증진행
+            Cookie[] myCookies = request.getCookies();
+            if (myCookies != null) {
+                for (Cookie myCookie : myCookies) {
+                    if (myCookie.getName().equals("refreshToken")) {
+                        String value = myCookie.getValue();
+                        System.out.println("value = 여기닷@@@@@@@" + value);
+                        jwtValidationService.validateRefreshToken(value);
+                    }
+                }
+            }
+        } catch (TokenExpiredException e) {
+            return new ResponseEntity<>("Refresh Token이 만료되었습니다", HttpStatus.UNAUTHORIZED);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Refresh Token이 유효하지 않습니다", HttpStatus.UNAUTHORIZED);
+        }
+
 
         // 기존 유저 찾아오기
         Member member = securityUtil.getCurrentMember();
         String accessToken = jwtProviderService.createAccessToken(member.getUserUuid());
-
+        System.out.println("accessToken = 꺄울!!!!!!!" + accessToken);
         HttpHeaders new_headers = new HttpHeaders();
         new_headers.add("Authorization", accessToken);
 
