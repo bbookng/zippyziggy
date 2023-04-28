@@ -1,6 +1,6 @@
 package com.zippyziggy.search.client;
 
-import com.zippyziggy.search.dto.response.Prompt;
+import com.zippyziggy.search.dto.response.PromptDetailResponse;
 import com.zippyziggy.search.dto.response.PromptComment;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 @FeignClient(name = "prompt")
 public interface PromptClient {
     @GetMapping("/prompts/{promptUuid}")
-    Optional<Prompt> getPromptDetail(
+    Optional<PromptDetailResponse> getPromptDetail(
         @PathVariable UUID promptUuid,
         @RequestHeader String crntMemberUuid
     );
@@ -23,7 +23,7 @@ public interface PromptClient {
     List<PromptComment> getPromptComments(@PathVariable UUID promptUuid);
 
     @GetMapping("/prompts/{promptUuid}/talks")
-    List<Prompt> getTalks(
+    List<PromptDetailResponse> getTalks(
         @PathVariable UUID promptUuid,
         @RequestHeader String crntMemberUuid
     );

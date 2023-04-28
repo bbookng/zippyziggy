@@ -11,7 +11,7 @@ public class Member {
     private String nickname;
     private String profileImg;
 
-    public Writer of() throws MemberNotFoundException {
-        return new Writer(this.userUuid, this.profileImg, this.nickname);
+    public WriterResponse of() throws MemberNotFoundException {
+        return new WriterResponse(this.userUuid, this.profileImg, this.nickname);
     }
 }

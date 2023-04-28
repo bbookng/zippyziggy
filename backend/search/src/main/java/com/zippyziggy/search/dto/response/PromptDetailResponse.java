@@ -11,9 +11,9 @@ import org.springframework.lang.Nullable;
 @Getter @Setter
 @AllArgsConstructor
 @Builder
-public class Prompt {
+public class PromptDetailResponse {
 
-	private Writer writerResponse;
+	private WriterResponse writerResponse;
 
 	@Nullable
 	private OriginerResponse originerResponse;
