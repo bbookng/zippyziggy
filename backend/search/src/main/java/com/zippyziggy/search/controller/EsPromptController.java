@@ -10,7 +10,9 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -56,6 +58,14 @@ public class EsPromptController {
         @RequestBody SyncEsPrompt syncEsPrompt
     ) {
         esPromptService.updateDocument(syncEsPrompt);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/prompts/{promptUuid}")
+    public ResponseEntity<Void> deleteDoc(
+        @PathVariable String promptUuid
+    ) {
+        esPromptService.deleteDocument(promptUuid);
         return ResponseEntity.ok().build();
     }
 

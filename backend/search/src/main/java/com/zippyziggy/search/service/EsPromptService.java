@@ -1,17 +1,20 @@
 package com.zippyziggy.search.service;
 
-import com.zippyziggy.search.exception.EsPromptNotFoundException;
-import com.zippyziggy.search.exception.PromptNotFoundException;
 import com.zippyziggy.search.client.MemberClient;
 import com.zippyziggy.search.client.PromptClient;
 import com.zippyziggy.search.dto.request.SyncEsPrompt;
-import com.zippyziggy.search.dto.response.*;
+import com.zippyziggy.search.dto.response.CntResponse;
+import com.zippyziggy.search.dto.response.ExtensionSearchPromptList;
+import com.zippyziggy.search.dto.response.PromptDetailResponse;
+import com.zippyziggy.search.dto.response.SearchPrompt;
+import com.zippyziggy.search.dto.response.SearchPromptList;
+import com.zippyziggy.search.dto.response.WriterResponse;
+import com.zippyziggy.search.exception.EsPromptNotFoundException;
+import com.zippyziggy.search.exception.PromptNotFoundException;
 import com.zippyziggy.search.model.EsPrompt;
 import com.zippyziggy.search.repository.EsPromptRepository;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -53,9 +56,9 @@ public class EsPromptService {
             // promptDetailResponse 조회
             final UUID promptUuid = UUID.fromString(esPrompt.getPromptUuid());
             final PromptDetailResponse promptDetailResponse = circuitBreaker
-                    .run(() -> promptClient
-                            .getPromptDetail(promptUuid, crntMemberUuid)
-                            .orElseThrow(PromptNotFoundException::new));
+                .run(() -> promptClient
+                    .getPromptDetail(promptUuid, crntMemberUuid)
+                    .orElseThrow(PromptNotFoundException::new));
 
             // 사용자 조회
             //TODO server to server api 만든 후 Member application에서 호출하는 방식으로 변경해야함
@@ -66,8 +69,10 @@ public class EsPromptService {
                     .getCnt(promptUuid));
 
             // 로그인 여부에 따른 좋아요/북마크 여부
-            final Boolean isLiked = !crntMemberUuid.equals("defaultValue") && promptDetailResponse.getIsLiked();
-            final Boolean isBookmarked = !(crntMemberUuid.equals("defaultValue")) && promptDetailResponse.getIsBookmarked();
+            final Boolean isLiked =
+                !crntMemberUuid.equals("defaultValue") && promptDetailResponse.getIsLiked();
+            final Boolean isBookmarked =
+                !(crntMemberUuid.equals("defaultValue")) && promptDetailResponse.getIsBookmarked();
 
             // dto로 변환하기
             searchPrompts.add(SearchPrompt.of(
@@ -114,32 +119,39 @@ public class EsPromptService {
         esPromptRepository.save(newEsPrompt);
     }
 
-    private Page<EsPrompt> search (
+    public void deleteDocument(String promptUuid) {
+        final EsPrompt esPrompt = esPromptRepository
+            .findEsPromptByPromptUuid(promptUuid)
+            .orElseThrow(EsPromptNotFoundException::new);
+        esPromptRepository.delete(esPrompt);
+    }
+
+    private Page<EsPrompt> search(
         String keyword,
         String category,
         Pageable pageable
     ) {
-            Page<EsPrompt> pagedEsPrompt = null;
-            keyword = (keyword.equals("")) ? null : keyword;
-            category = (category.equals("ALL")) ? null : category;
+        Page<EsPrompt> pagedEsPrompt = null;
+        keyword = (keyword.equals("")) ? null : keyword;
+        category = (category.equals("ALL")) ? null : category;
 
-            if (null != keyword & null != category) {
-                pagedEsPrompt = esPromptRepository
-                    .findByKeywordAndCategory(keyword, category, pageable);
+        if (null != keyword & null != category) {
+            pagedEsPrompt = esPromptRepository
+                .findByKeywordAndCategory(keyword, category, pageable);
 
-            } else if (null == keyword & null != category) {
-                pagedEsPrompt = esPromptRepository
-                    .findByCategory(category, pageable);
+        } else if (null == keyword & null != category) {
+            pagedEsPrompt = esPromptRepository
+                .findByCategory(category, pageable);
 
-            } else if (null != keyword & null == category) {
-                pagedEsPrompt = esPromptRepository
-                    .findByKeywordOnly(keyword, pageable);
+        } else if (null != keyword & null == category) {
+            pagedEsPrompt = esPromptRepository
+                .findByKeywordOnly(keyword, pageable);
 
-            } else if (null == keyword & null == category) {
-                pagedEsPrompt = esPromptRepository
-                    .findAll(pageable);
-            }
+        } else if (null == keyword & null == category) {
+            pagedEsPrompt = esPromptRepository
+                .findAll(pageable);
+        }
 
-            return pagedEsPrompt;
+        return pagedEsPrompt;
     }
 }
