@@ -49,7 +49,9 @@ const Dropdown = ({ children }: DropdownProps) => {
 
   return (
     <DropdownContext.Provider value={dropdownContextValue}>
-      <div ref={dropdownRef}>{children}</div>
+      <div ref={dropdownRef} style={{ zIndex: 100 }}>
+        {children}
+      </div>
     </DropdownContext.Provider>
   );
 };
@@ -86,14 +88,15 @@ const OptionList = ({ children, className = '' }: DropdownProps & { className?: 
   }
   const { isExpand, setIsExpand } = dropdown;
 
-  const handleCloseMenuClick = () => {
+  const handleCloseMenuClick = (e) => {
+    if (e.target.nodeName === 'INPUT') return;
     setIsExpand(false);
   };
 
   const handleCloseMenuKeydown = (e: React.KeyboardEvent<HTMLUListElement>) => {
     if (e.key === ' ') {
       e.preventDefault();
-      handleCloseMenuClick();
+      handleCloseMenuClick(e);
     }
   };
 

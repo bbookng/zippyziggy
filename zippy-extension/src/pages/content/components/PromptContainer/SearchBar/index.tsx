@@ -3,8 +3,13 @@ import React, { ChangeEvent, Dispatch, SetStateAction } from 'react';
 interface SearchBarProps {
   searchTerm: string;
   setSearchTerm: Dispatch<SetStateAction<string>>;
+  placeholder?: string;
 }
-const SearchBar = ({ searchTerm, setSearchTerm }: SearchBarProps) => {
+const SearchBar = ({
+  searchTerm,
+  setSearchTerm,
+  placeholder = '검색어를 입력해주세요',
+}: SearchBarProps) => {
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
   };
@@ -23,7 +28,7 @@ const SearchBar = ({ searchTerm, setSearchTerm }: SearchBarProps) => {
           fill="current"
         />
       </svg>
-      <input value={searchTerm} placeholder="검색어를 입력해주세요" onChange={handleSearchChange} />
+      <input value={searchTerm} placeholder={placeholder} onChange={handleSearchChange} />
     </div>
   );
 };

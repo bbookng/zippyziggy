@@ -12,9 +12,17 @@
 }
 
 .ZP_dropdown-menu.ZP_dropdown-menu--language {
-  height: 300px;
+  max-height: 300px;
+  height: fit-content;
   width: 140px;
   padding-right: 0;
+  .ZP_prompt-container__search-bar{
+    font-size: var(--fonts-body-sm);
+    border-radius: var(--borders-radius-base);
+    padding-right: 0;
+    margin-bottom: 0.5rem;
+    width: 95%;
+  }
 }
 
 .ZP_language-items {
@@ -22,7 +30,7 @@
 
   li.ZP_language-item-wrapper {
     text-align: center;
-    padding-right: 0;
+    padding: 0;
     width: 100%;
     height: 3rem;
     margin-bottom: 0.075rem;
@@ -32,6 +40,7 @@
     }
 
     button.ZP_language-item {
+      padding: 0.25rem;
       display: flex;
       font-size: var(--fonts-body-sm);
       justify-content: flex-start;
