@@ -19,14 +19,4 @@ public class PromptCommentListResponse {
 	private Long commentCnt;
 	private List<PromptCommentResponse> comments;
 
-	public static PromptCommentListResponse from(Page<PromptComment> comments) {
-
-		List<PromptCommentResponse> commentList = comments.stream()
-			.map(PromptCommentResponse::from)
-			.collect(Collectors.toList());
-
-		long commentCnt = commentList.size();
-
-		return new PromptCommentListResponse(commentCnt, commentList);
-	}
 }

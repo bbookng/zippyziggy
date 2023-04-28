@@ -59,12 +59,14 @@ public class ForkPromptService {
 
 	public ForkedPromptListResponse getForkedPromptList(UUID promptUuid, Pageable pageable, String crntMemberUuid) {
 
+		Long forkPromptCnt = promptRepository.countAllByOriginPromptUuid(promptUuid);
+
 		Page<Prompt> forkedPrompts = promptRepository.findAllByOriginPromptUuid(promptUuid, pageable);
 
 		// fork 프롬프트들 카드 정보 가져오는 메서드
 		List<PromptCardResponse> prompts = getForkedPromptResponses(forkedPrompts, UUID.fromString(crntMemberUuid));
 
-		return new ForkedPromptListResponse(prompts.size(), prompts);
+		return new ForkedPromptListResponse(forkPromptCnt, prompts);
 	}
 
 	private List<PromptCardResponse> getForkedPromptResponses(Page<Prompt> forkedPrompts, @Nullable UUID crntMemberUuid) {
@@ -77,9 +79,9 @@ public class ForkPromptService {
 
 
 			// 댓글, 포크 프롬프트의 포크 수, 대화 수 가져오기
-			long commentCnt = promptCommentRepository.findAllByPromptPromptUuid(prompt.getPromptUuid()).size();
-			long forkCnt = promptRepository.findAllByOriginPromptUuid(prompt.getPromptUuid()).size();
-			long talkCnt = talkRepository.findAllByPromptPromptUuid(prompt.getPromptUuid()).size();
+			long commentCnt = promptCommentRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
+			long forkCnt = promptRepository.countAllByOriginPromptUuid(prompt.getPromptUuid());
+			long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
 
 			// 좋아요, 북마크 여부
 			boolean isLiked;
