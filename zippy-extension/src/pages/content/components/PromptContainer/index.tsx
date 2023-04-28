@@ -8,6 +8,7 @@ import { Category, MockPrompt, Sort } from '@pages/content/types';
 import useFetch from '@pages/hooks/@shared/useFetch';
 import {
   CHROME_CATEGORY_KEY,
+  CHROME_PAGE_KEY,
   CHROME_SEARCH_KEY,
   CHROME_SORT_KEY,
   ZIPPY_API_URL,
@@ -44,6 +45,7 @@ const PromptContainer = () => {
     defaultSort
   );
   const [searchTerm, setSearchTerm] = useChromeStorage<string>(CHROME_SEARCH_KEY, '');
+  const [page, setPage] = useChromeStorage<number>(CHROME_PAGE_KEY, 1);
   const debouncedSearchTerm = useDebounce(searchTerm);
   const {
     data: promptList,
@@ -51,7 +53,6 @@ const PromptContainer = () => {
     error,
   } = useFetch<Array<MockPrompt>>({ url: `${ZIPPY_API_URL}/data` });
   const [limit, setLimit] = useState(1);
-  const [page, setPage] = useState(1);
   const offset = (page - 1) * limit;
 
   const isNewChatPage = !window.location.href.includes('/c/');

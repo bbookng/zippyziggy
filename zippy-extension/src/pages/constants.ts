@@ -28,6 +28,7 @@ const CHROME_CATEGORY_KEY = 'ZP_category';
 const CHROME_SORT_KEY = 'ZP_sort';
 const CHROME_SEARCH_KEY = 'ZP_searchTerm';
 const CHROME_LANGUAGE_KEY = 'ZP_language';
+const CHROME_PAGE_KEY = 'ZP_page';
 
 export {
   DEFAULT_TARGET_LANGUAGE,
@@ -48,4 +49,5 @@ export {
   CHROME_SORT_KEY,
   CHROME_SEARCH_KEY,
   CHROME_LANGUAGE_KEY,
+  CHROME_PAGE_KEY,
 };

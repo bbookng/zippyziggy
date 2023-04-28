@@ -1,5 +1,10 @@
 import reloadOnUpdate from 'virtual:reload-on-update-in-background-script';
-import { CHROME_CATEGORY_KEY, CHROME_SEARCH_KEY, CHROME_SORT_KEY } from '@pages/constants';
+import {
+  CHROME_CATEGORY_KEY,
+  CHROME_PAGE_KEY,
+  CHROME_SEARCH_KEY,
+  CHROME_SORT_KEY,
+} from '@pages/constants';
 
 reloadOnUpdate('pages/background');
 
@@ -16,4 +21,5 @@ chrome.runtime.onStartup.addListener(() => {
   chrome.storage.local.remove(CHROME_CATEGORY_KEY);
   chrome.storage.local.remove(CHROME_SORT_KEY);
   chrome.storage.local.remove(CHROME_SEARCH_KEY);
+  chrome.storage.local.remove(CHROME_PAGE_KEY);
 });
