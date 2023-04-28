@@ -15,6 +15,9 @@ public class Prompt {
 
 	private Writer writerResponse;
 
+	@Nullable
+	private OriginerResponse originerResponse;
+
 	private String title;
 	private String description;
 	private String thumbnail;
