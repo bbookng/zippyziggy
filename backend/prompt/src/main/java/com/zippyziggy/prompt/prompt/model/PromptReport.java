@@ -1,5 +1,6 @@
 package com.zippyziggy.prompt.prompt.model;
 
+import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -36,4 +37,7 @@ public class PromptReport {
 
 	@Column(nullable = false)
 	private String content;
+
+	@Column(nullable = false)
+	private LocalDateTime regDt;
 }
