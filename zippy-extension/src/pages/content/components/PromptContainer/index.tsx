@@ -50,7 +50,7 @@ const PromptContainer = () => {
     loading,
     error,
   } = useFetch<Array<MockPrompt>>({ url: `${ZIPPY_API_URL}/data` });
-  const [limit, setLimit] = useState(12);
+  const [limit, setLimit] = useState(1);
   const [page, setPage] = useState(1);
   const offset = (page - 1) * limit;
 
