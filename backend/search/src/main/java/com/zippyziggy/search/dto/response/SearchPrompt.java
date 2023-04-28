@@ -9,13 +9,13 @@ public class SearchPrompt {
 
     public static SearchPrompt of(
             EsPrompt esPrompt,
-            Prompt prompt,
+            PromptDetailResponse promptDetailResponse,
             Integer talkCnt,
             Integer commentCnt,
             Long likeCnt,
             Boolean isLiked,
             Boolean isBookmarked,
-            Writer writer
+            WriterResponse writerResponse
     ) {
 
         return SearchPrompt.builder()
@@ -25,9 +25,9 @@ public class SearchPrompt {
                 .category(esPrompt.getCategory())
                 .originalPromptUuid(esPrompt.getOriginalPromptUuid())
 
-                .thumbnail(prompt.getThumbnail())
-                .regDt(prompt.getRegDt())
-                .updDt(prompt.getUpdDt())
+                .thumbnail(promptDetailResponse.getThumbnail())
+                .regDt(promptDetailResponse.getRegDt())
+                .updDt(promptDetailResponse.getUpdDt())
 
                 .talkCnt(talkCnt)
                 .commentCnt(commentCnt)
@@ -35,7 +35,7 @@ public class SearchPrompt {
                 .isLiked(isLiked)
                 .isBookmarked(isBookmarked)
 
-                .writer(writer)
+                .writer(writerResponse)
                 .build();
     }
 
@@ -56,7 +56,7 @@ public class SearchPrompt {
     private final Boolean isLiked;
     private final Boolean isBookmarked;
 
-    private final Writer writer;
+    private final WriterResponse writerResponse;
 
     @Builder
     public SearchPrompt(
@@ -77,7 +77,7 @@ public class SearchPrompt {
             Boolean isLiked,
             Boolean isBookmarked,
 
-            Writer writer
+            WriterResponse writerResponse
     ) {
         this.promptUuid = promptUuid;
         this.title = title;
@@ -96,7 +96,7 @@ public class SearchPrompt {
         this.isLiked = isLiked;
         this.isBookmarked = isBookmarked;
 
-        this.writer = writer;
+        this.writerResponse = writerResponse;
     }
 
 }

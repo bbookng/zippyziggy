@@ -50,16 +50,16 @@ public class EsPromptService {
 
         final List<SearchPrompt> searchPrompts = new ArrayList<>();
         for (EsPrompt esPrompt : pagedEsPrompt) {
-            // prompt 조회
+            // promptDetailResponse 조회
             final UUID promptUuid = UUID.fromString(esPrompt.getPromptUuid());
-            final Prompt prompt = circuitBreaker
+            final PromptDetailResponse promptDetailResponse = circuitBreaker
                     .run(() -> promptClient
                             .getPromptDetail(promptUuid, crntMemberUuid)
                             .orElseThrow(PromptNotFoundException::new));
 
             // 사용자 조회
             //TODO server to server api 만든 후 Member application에서 호출하는 방식으로 변경해야함
-            Writer writer = prompt.getWriterResponse();
+            WriterResponse writerResponse = promptDetailResponse.getWriterResponse();
 
             // 톡 목록 조회 후 size
             //TODO server to server api 만든 후 dto에서 바로 호출
@@ -76,19 +76,19 @@ public class EsPromptService {
                             .size());
 
             // 로그인 여부에 따른 좋아요/북마크 여부
-            final Boolean isLiked = !crntMemberUuid.equals("defaultValue") && prompt.getIsLiked();
-            final Boolean isBookmarked = !(crntMemberUuid.equals("defaultValue")) && prompt.getIsBookmarked();
+            final Boolean isLiked = !crntMemberUuid.equals("defaultValue") && promptDetailResponse.getIsLiked();
+            final Boolean isBookmarked = !(crntMemberUuid.equals("defaultValue")) && promptDetailResponse.getIsBookmarked();
 
             // dto로 변환하기
             searchPrompts.add(SearchPrompt.of(
                             esPrompt,
-                            prompt,
+                promptDetailResponse,
                             talkCnt,
                             commentCnt,
-                            prompt.getLikeCnt(),
+                            promptDetailResponse.getLikeCnt(),
                             isLiked,
                             isBookmarked,
-                            writer));
+                writerResponse));
 
         }
         return SearchPromptList.of(totalPromptsCnt, totalPageCnt, searchPrompts);
