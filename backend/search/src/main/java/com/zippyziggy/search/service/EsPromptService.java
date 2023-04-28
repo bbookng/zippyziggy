@@ -76,12 +76,8 @@ public class EsPromptService {
                             .size());
 
             // 로그인 여부에 따른 좋아요/북마크 여부
-            final Boolean isLiked = (crntMemberUuid.equals("defaultValue"))
-                ? false
-                : prompt.getIsLiked();
-            final Boolean isBookmarked = (crntMemberUuid.equals("defaultValue"))
-                ? false
-                : prompt.getIsBookmarked();
+            final Boolean isLiked = !crntMemberUuid.equals("defaultValue") && prompt.getIsLiked();
+            final Boolean isBookmarked = !(crntMemberUuid.equals("defaultValue")) && prompt.getIsBookmarked();
 
             // dto로 변환하기
             searchPrompts.add(SearchPrompt.of(
