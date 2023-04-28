@@ -30,7 +30,7 @@ public class TalkLike {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false)
+	@Column(nullable = false, columnDefinition = "BINARY(16)")
 	private UUID memberUuid;
 
 	@ManyToOne(fetch = FetchType.LAZY)
