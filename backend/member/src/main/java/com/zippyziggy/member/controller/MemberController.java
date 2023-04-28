@@ -520,15 +520,24 @@ public class MemberController {
         try {
             // 기존 쿠키 확인해서 refreshToken 검증진행
             Cookie[] myCookies = request.getCookies();
+            String refreshToken = null;
             if (myCookies != null) {
                 for (Cookie myCookie : myCookies) {
                     if (myCookie.getName().equals("refreshToken")) {
-                        String value = myCookie.getValue();
-                        System.out.println("value = 여기닷@@@@@@@" + value);
-                        jwtValidationService.validateRefreshToken(value);
+                        refreshToken = myCookie.getValue();
+                        System.out.println("value = 여기닷@@@@@@@" + refreshToken);
+                        jwtValidationService.validateRefreshToken(refreshToken);
                     }
                 }
             }
+
+            // 기존 유저 찾아오기
+            Member member = jwtValidationService.findMemberByJWT(refreshToken);
+            String accessToken = jwtProviderService.createAccessToken(member.getUserUuid());
+            System.out.println("accessToken = 꺄울!!!!!!!" + accessToken);
+            HttpHeaders new_headers = new HttpHeaders();
+            new_headers.add("Authorization", accessToken);
+
         } catch (TokenExpiredException e) {
             return new ResponseEntity<>("Refresh Token이 만료되었습니다", HttpStatus.UNAUTHORIZED);
         } catch (Exception e) {
@@ -536,12 +545,7 @@ public class MemberController {
         }
 
 
-        // 기존 유저 찾아오기
-        Member member = securityUtil.getCurrentMember();
-        String accessToken = jwtProviderService.createAccessToken(member.getUserUuid());
-        System.out.println("accessToken = 꺄울!!!!!!!" + accessToken);
-        HttpHeaders new_headers = new HttpHeaders();
-        new_headers.add("Authorization", accessToken);
+
 
         return ResponseEntity.ok()
                 .headers(new_headers)
