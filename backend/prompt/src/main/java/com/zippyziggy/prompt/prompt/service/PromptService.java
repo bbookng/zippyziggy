@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 
 import com.zippyziggy.prompt.prompt.client.MemberClient;
+import com.zippyziggy.prompt.prompt.client.SearchClient;
+import com.zippyziggy.prompt.prompt.dto.request.EsPromptRequest;
 import com.zippyziggy.prompt.prompt.dto.response.MemberResponse;
 import com.zippyziggy.prompt.prompt.exception.*;
 import com.zippyziggy.prompt.prompt.model.PromptLike;
@@ -44,11 +46,13 @@ public class PromptService{
 	private static final String VIEWCOOKIENAME = "alreadyViewCookie";
 	private final AwsS3Uploader awsS3Uploader;
 	private final PromptRepository promptRepository;
-	private final MemberClient memberClient;
-	private final CircuitBreakerFactory circuitBreakerFactory;
 	private final PromptLikeRepository promptLikeRepository;
 	private final PromptBookmarkRepository promptBookmarkRepository;
 	private final TalkService talkService;
+
+	private final CircuitBreakerFactory circuitBreakerFactory;
+	private final MemberClient memberClient;
+	private final SearchClient searchClient;
 
 	// Exception 처리 필요
 	public PromptResponse createPrompt(PromptRequest data, UUID crntMemberUuid, MultipartFile thumbnail) {
@@ -64,6 +68,12 @@ public class PromptService{
 		Prompt prompt = Prompt.from(data, crntMemberUuid, thumbnailUrl);
 
 		promptRepository.save(prompt);
+
+		// 생성 시 search 서비스에 Elasticsearch INSERT 요청
+		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
+		final EsPromptRequest esPromptRequest = EsPromptRequest.of(prompt);
+		circuitBreaker.run(() -> searchClient
+						.insertEsPrompt(esPromptRequest));
 
 		return PromptResponse.from(prompt);
 	}
@@ -93,6 +103,12 @@ public class PromptService{
 		prompt.setTitle(data.getTitle());
 		prompt.setDescription(data.getDescription());
 		prompt.setCategory(data.getCategory());
+
+		// 수정 시 search 서비스에 Elasticsearch UPDATE 요청
+		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
+		final EsPromptRequest esPromptRequest = EsPromptRequest.of(prompt);
+		circuitBreaker.run(() -> searchClient
+				.modifyEsPrompt(esPromptRequest));
 
 		return PromptResponse.from(prompt);
 	}
