@@ -374,7 +374,7 @@ public class PromptService{
 	 */
 	public void ratingPrompt(UUID promptUuid, String crntMemberUuid, PromptRatingRequest promptRatingRequest) throws Exception {
 		System.out.println("000000000000000000000000000");
-		Rating ratingExist = ratingRepository.findByMemberUuidAndPromptPromptUuid(UUID.fromString(crntMemberUuid), promptUuid).orElseThrow(RatingNotFoundException::new);
+		Rating ratingExist = ratingRepository.findByMemberUuidAndPromptPromptUuid(UUID.fromString(crntMemberUuid), promptUuid);
 		System.out.println("ratingExist = " + ratingExist);
 
 		if (ratingExist == null) {
