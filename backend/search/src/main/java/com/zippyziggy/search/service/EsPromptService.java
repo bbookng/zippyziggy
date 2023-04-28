@@ -120,6 +120,8 @@ public class EsPromptService {
         Pageable pageable
     ) {
             Page<EsPrompt> pagedEsPrompt = null;
+            keyword = (keyword.equals("")) ? null : keyword;
+            category = (category.equals("")) ? null : category;
 
             if (null != keyword & null != category) {
                 pagedEsPrompt = esPromptRepository
