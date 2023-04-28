@@ -35,7 +35,7 @@ public class SearchPrompt {
                 .isLiked(isLiked)
                 .isBookmarked(isBookmarked)
 
-                .writer(writerResponse)
+                .writerResponse(writerResponse)
                 .build();
     }
 
