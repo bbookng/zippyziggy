@@ -13,13 +13,10 @@ import javax.transaction.Transactional;
 
 import com.zippyziggy.prompt.prompt.client.MemberClient;
 import com.zippyziggy.prompt.prompt.client.SearchClient;
-import com.zippyziggy.prompt.prompt.dto.request.EsPromptRequest;
-import com.zippyziggy.prompt.prompt.dto.request.PromptRatingRequest;
+import com.zippyziggy.prompt.prompt.dto.request.*;
 import com.zippyziggy.prompt.prompt.dto.response.*;
 import com.zippyziggy.prompt.prompt.exception.*;
-import com.zippyziggy.prompt.prompt.model.PromptBookmark;
-import com.zippyziggy.prompt.prompt.model.PromptLike;
-import com.zippyziggy.prompt.prompt.model.Rating;
+import com.zippyziggy.prompt.prompt.model.*;
 import com.zippyziggy.prompt.prompt.repository.*;
 import com.zippyziggy.prompt.talk.dto.response.PromptTalkListResponse;
 import com.zippyziggy.prompt.talk.dto.response.TalkListResponse;
@@ -35,9 +32,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.zippyziggy.prompt.common.aws.AwsS3Uploader;
-import com.zippyziggy.prompt.prompt.dto.request.PromptModifyRequest;
-import com.zippyziggy.prompt.prompt.dto.request.PromptRequest;
-import com.zippyziggy.prompt.prompt.model.Prompt;
 
 import lombok.RequiredArgsConstructor;
 
@@ -58,6 +52,7 @@ public class PromptService{
 	private final TalkRepository talkRepository;
 	private final SearchClient searchClient;
 	private final RatingRepository ratingRepository;
+	private final PromptReportRepository promptReportRepository;
 
 	// Exception 처리 필요
 	public PromptResponse createPrompt(PromptRequest data, UUID crntMemberUuid, MultipartFile thumbnail) {
@@ -370,15 +365,15 @@ public class PromptService{
 	/*
 	프롬프트 평가
 	 */
-	public void ratingPrompt(UUID promptUuid, String crntMemberUuid, PromptRatingRequest promptRatingRequest) {
-		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
-		MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(UUID.fromString(crntMemberUuid)))
-				.orElseThrow(MemberNotFoundException::new);
-		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
-		Rating rating = ratingRepository.findByMemberUuidAndPrompt_PromptUuid(UUID.fromString(crntMemberUuid), promptUuid).orElseThrow(RatingNotFoundException::new);
+	public void ratingPrompt(UUID promptUuid, String crntMemberUuid, PromptRatingRequest promptRatingRequest) throws Exception {
+		Rating ratingExist = ratingRepository.findByMemberUuidAndPrompt_PromptUuid(UUID.fromString(crntMemberUuid), promptUuid).orElseThrow(RatingNotFoundException::new);
 
-		if (rating == null) {
-
+		if (ratingExist == null) {
+			Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
+			Rating rating = Rating.from(UUID.fromString(crntMemberUuid), prompt, promptRatingRequest.getScore());
+			ratingRepository.save(rating);
+		} else {
+			throw new RatingAlreadyExistException();
 		}
 
 	}
@@ -390,6 +385,22 @@ public class PromptService{
 		long talkCnt = talkRepository.countAllByPromptPromptUuid(promptUuid);
 		long commentCnt = promptCommentRepository.countAllByPromptPromptUuid(promptUuid);
 		return PromptTalkCommentCntResponse.from(talkCnt, commentCnt);
+	}
+
+	/*
+	프롬프트 신고 접수
+	 */
+	public void promptReport(UUID promptUuid, String crntMemberUuid, PromptReportRequest promptReportRequest) throws Exception {
+		PromptReport report = promptReportRepository.findByMemberUuidAndPrompt_PromptUuid(UUID.fromString(crntMemberUuid), promptUuid).orElseThrow(ReportAlreadyExistException::new);
+
+		if (report == null) {
+			Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
+			PromptReport promptReport = PromptReport.from(UUID.fromString(crntMemberUuid), prompt, promptReportRequest.getContent());
+			promptReportRepository.save(promptReport);
+		} else {
+			throw new ReportAlreadyExistException();
+		}
+
 	}
 
 }

@@ -40,4 +40,13 @@ public class PromptReport {
 
 	@Column(nullable = false)
 	private LocalDateTime regDt;
+
+	public static PromptReport from(UUID memberUuid, Prompt prompt, String content) {
+		LocalDateTime regDt = LocalDateTime.now();
+		return PromptReport.builder()
+				.memberUuid(memberUuid)
+				.prompt(prompt)
+				.content(content)
+				.regDt(regDt).build();
+	}
 }
