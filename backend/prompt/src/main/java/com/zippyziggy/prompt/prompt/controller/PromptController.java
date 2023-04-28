@@ -118,7 +118,7 @@ public class PromptController {
 																@RequestHeader(required = false) String crntMemberUuid,
 																HttpServletRequest request,
 																HttpServletResponse response) {
-		promptService.updateHit(UUID.fromString(promptUuid), request, response);
+		// promptService.updateHit(UUID.fromString(promptUuid), request, response);
 		return ResponseEntity.ok(promptService.getPromptDetail(UUID.fromString(promptUuid), crntMemberUuid));
 	}
 
