@@ -132,6 +132,7 @@ spring:
           predicates:
             - Path=/api/search/**
           filters:
+            - PromptAuthorizationHeaderFilter
             - RewritePath=/api/(?<segment>.*), /$\{segment}
 
         - id: notice
