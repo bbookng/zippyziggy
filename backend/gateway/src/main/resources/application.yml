@@ -123,10 +123,6 @@ spring:
           filters:
             - RewritePath=/api/(?<segment>.*), /$\{segment}
 
-#          filters:
-#            - AuthorizationHeaderFilter
-
-
         - id: prompt
           uri: lb://PROMPT
           predicates:
@@ -159,7 +155,7 @@ spring:
           filters:
             - RewritePath=/api/(?<segment>.*), /$\{segment}
             - PromptAuthorizationHeaderFilter
-            -
+
         - id: prompt
           uri: lb://PROMPT
           predicates:
