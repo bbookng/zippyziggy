@@ -208,7 +208,7 @@ public class PromptController {
 	}
 
 	@Operation(summary = "프롬프트 댓글 수정", description = "프롬프트에 작성한 본인의 댓글을 수정한다.")
-	@PutMapping("/{promptUuid}/commments/{commentId}")
+	@PutMapping("/{promptUuid}/comments/{commentId}")
 	@ApiResponses({
 			@ApiResponse(responseCode = "200", description = "성공"),
 			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
