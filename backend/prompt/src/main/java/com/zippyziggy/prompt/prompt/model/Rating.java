@@ -1,5 +1,7 @@
 package com.zippyziggy.prompt.prompt.model;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -26,7 +28,7 @@ public class Rating {
 	private Long id;
 
 	@Column(nullable = false, columnDefinition = "BINARY(16)")
-	private Long memberUuid;
+	private UUID memberUuid;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "prompt_uuid", nullable = false)
@@ -35,4 +37,6 @@ public class Rating {
 	@Column(nullable = false)
 	private Integer score;
 
+	@Column(nullable = false)
+	private LocalDateTime regDt;
 }
