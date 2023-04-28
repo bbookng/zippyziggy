@@ -37,7 +37,7 @@ public class EsPromptService {
     private final MemberClient memberClient;
 
     public SearchPromptList searchPrompts(
-        @Nullable UUID crntMemberUuid,
+        @Nullable String crntMemberUuid,
         String keyword,
         String category,
         Pageable pageable
@@ -75,6 +75,10 @@ public class EsPromptService {
                             .getPromptComments(promptUuid)
                             .size());
 
+            // 로그인 여부에 따른 좋아요/북마크 여부
+            final Boolean isLiked = !crntMemberUuid.equals("defaultValue") && prompt.getIsLiked();
+            final Boolean isBookmarked = !(crntMemberUuid.equals("defaultValue")) && prompt.getIsBookmarked();
+
             // dto로 변환하기
             searchPrompts.add(SearchPrompt.of(
                             esPrompt,
@@ -82,8 +86,8 @@ public class EsPromptService {
                             talkCnt,
                             commentCnt,
                             prompt.getLikeCnt(),
-                            prompt.getIsLiked(),
-                            prompt.getIsBookmarked(),
+                            isLiked,
+                            isBookmarked,
                             writer));
 
         }

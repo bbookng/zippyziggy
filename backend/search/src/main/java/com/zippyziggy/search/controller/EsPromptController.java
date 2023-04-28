@@ -7,11 +7,9 @@ import com.zippyziggy.search.service.EsPromptService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -36,13 +34,13 @@ public class EsPromptController {
     })
     @GetMapping("/prompts")
     public ResponseEntity<SearchPromptList> searchPrompts(
-        @Nullable @RequestHeader String crntMemberUuid,
+        @RequestHeader(required = false) String crntMemberUuid,
         @RequestParam(required = false) String keyword,
         @RequestParam(required = false) String category,
         Pageable pageable
     ) {
         return ResponseEntity.ok(esPromptService.searchPrompts(
-            UUID.fromString(crntMemberUuid), keyword, category, pageable));
+            crntMemberUuid, keyword, category, pageable));
     }
 
     @PostMapping("/prompts")
