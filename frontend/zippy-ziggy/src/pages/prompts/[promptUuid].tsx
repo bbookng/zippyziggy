@@ -15,6 +15,7 @@ import {
   TopBox,
 } from '@/styles/prompt/Detail.style';
 import { isError, useQuery } from '@tanstack/react-query';
+import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { FaArrowAltCircleUp } from 'react-icons/fa';
@@ -74,7 +75,7 @@ export default function DetailPrompt() {
   };
 
   // Prompt 상세 가져오기
-  const { isLoading, data } = useQuery(['prompt'], handleGetPromptDetail, {
+  const { isLoading, data } = useQuery(['prompt', promptUuid], handleGetPromptDetail, {
     enabled: !!promptUuid,
     onError: (err) => {
       console.log(err);
@@ -85,8 +86,8 @@ export default function DetailPrompt() {
   const handleLike = async () => {
     const res = await likePrompt({ promptUuid });
     if (res.result === 'SUCCESS') {
-      setIsLiked(res.data.isLiked);
-      res.data.isLiked ? setLikeCnt((prev) => prev + 1) : setLikeCnt((prev) => prev - 1);
+      setIsLiked((prev) => !prev);
+      isLiked ? setLikeCnt((prev) => prev - 1) : setLikeCnt((prev) => prev + 1);
     }
   };
 
@@ -94,7 +95,7 @@ export default function DetailPrompt() {
   const handleBookmark = async () => {
     const res = await bookmarkPrompt({ promptUuid });
     if (res.result === 'SUCCESS') {
-      setIsBookmarked(res.data.isBookmarked);
+      setIsBookmarked((prev) => !prev);
     }
   };
 
@@ -142,6 +143,14 @@ export default function DetailPrompt() {
                 />
               </TopBox>
               <Tab itemList={itemList} tab={tab} handleIsSelected={handleIsSelectedTab} />
+              <Image
+                priority
+                src={data.data.thumbnail}
+                alt="프롬프트 이미지"
+                width={100}
+                height={100}
+                className="promptImage"
+              />
               <section id="0">
                 <Introduction prompt={data.data} />
               </section>
@@ -157,7 +166,7 @@ export default function DetailPrompt() {
                 />
               </section>
               <section id="3">
-                {/* <ForkedPromptList promptUuid={promptUuid} size={4} /> */}
+                <ForkedPromptList promptUuid={promptUuid} size={4} />
               </section>
             </LeftContainer>
             <RightContainer>

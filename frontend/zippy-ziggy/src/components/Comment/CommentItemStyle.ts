@@ -15,6 +15,7 @@ const UserBox = styled.div`
 
   .image {
     margin-right: 1rem;
+    border-radius: 50%;
   }
 
   .infoBox {

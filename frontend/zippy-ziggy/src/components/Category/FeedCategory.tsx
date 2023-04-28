@@ -66,8 +66,9 @@ export default function FeedCategory({
         return (
           <Item
             key={value}
+            data-value={value}
             onClick={handleCategorySelect}
-            className={category === name ? 'active' : ''}
+            className={category === value ? 'active' : ''}
             padding={props?.padding}
           >
             {name}

@@ -8,13 +8,14 @@ import { Body, Conatiner, Content, Footer, Infos, Title } from './CardStyle';
 interface PromptType {
   promptId: string;
   title: string;
-  member: {
-    memberName: string;
-    memberImg: string;
+  writerResponse: {
+    writerNickname: string;
+    writerImg: string;
+    writerUuid: string;
   };
 
   cateory: string;
-  content: string;
+  description: string;
   likeCnt: number;
   isBookmarked: boolean;
   thumbnail: string;
@@ -30,16 +31,16 @@ interface PromptType {
 interface PropsType {
   image?: string;
   title?: string;
-  content?: string;
+  description?: string;
   url?: string;
   prompt?: PromptType;
 }
 
-export default function PromptCard({ image, title, content, url, prompt }: PropsType) {
+export default function PromptCard({ image, title, description, url, prompt }: PropsType) {
   return (
     <Conatiner>
       {url ? (
-        <Link href={url}>
+        <Link href={`/profile/${url || prompt.writerResponse.writerUuid}`}>
           <Image
             priority
             src={`${image || prompt?.thumbnail || '/images/ChatGPT_logo.png'}`}
@@ -64,7 +65,7 @@ export default function PromptCard({ image, title, content, url, prompt }: Props
           <div className="title">{title || prompt?.title || '제목을 입력해주세요.'}</div>
           {prompt?.forkCnt !== 0 && <div className="caption">{prompt?.forkCnt}</div>}
         </Title>
-        <Content>{content || prompt?.content || '설명을 입력해주세요.'}</Content>
+        <Content>{description || prompt?.description || '설명을 입력해주세요.'}</Content>
         <Infos>
           <div className="caption">
             {prompt?.updDt ? getDate(new Date(prompt?.updDt)) : getDate(new Date())}
@@ -78,7 +79,7 @@ export default function PromptCard({ image, title, content, url, prompt }: Props
       <Footer>
         <div className="user">
           <Image priority src="/images/noProfile.png" alt="프사" width={30} height={30} />
-          <div className="nickname">닉네임</div>
+          <div className="nickname">{prompt?.writerResponse.writerNickname || '닉네임'}</div>
         </div>
         <div className="extraBox">
           <div className="item">

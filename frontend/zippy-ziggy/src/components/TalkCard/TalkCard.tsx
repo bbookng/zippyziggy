@@ -14,6 +14,7 @@ export default function TalkCard({ talk }: PropsType) {
       <div className="footBox">
         <div className="userBox">
           <Image
+            priority
             src={talk.member.memberImg}
             alt="프로필 사진"
             width={20}

@@ -18,6 +18,18 @@ const LeftContainer = styled.div`
   ${media.small`
     width: 100%;
   `}
+
+  .promptImage {
+    margin-top: 0.5rem;
+    width: 100%;
+    height: 300px;
+    object-fit: contain;
+    background-color: ${({ theme }) => theme.colors.grayColor};
+
+    ${media.small`
+      height: 150px;
+    `}
+  }
 `;
 
 const RightContainer = styled.div`

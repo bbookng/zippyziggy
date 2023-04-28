@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { http } from '@/lib/http';
 import { getForkListUsePrompt } from '@/core/prompt/promptAPI';
-import { useQuery } from '@tanstack/react-query';
-import { Container } from './ComponentStyle';
+import { CardList, Container } from './ComponentStyle';
+import PromptCard from '../PromptCard/PromptCard';
 
 type PropsType = {
   promptUuid: string | string[] | number;
@@ -12,35 +11,61 @@ type PropsType = {
 export default function ForkedPromptList({ promptUuid, size }: PropsType) {
   const [forkedPromptList, setForkedPromptList] = useState<Array<any>>([]);
   const [forkedPromptCnt, setForkedPromptCnt] = useState<number>(0);
-  const page = useRef<number>(1);
+  const page = useRef<number>(0);
   const sizeRef = useRef<number>(size);
+  const isStop = useRef<boolean>(false);
 
+  // ForkList 가져오기
   const handleGetForkedPrompt = async () => {
     const requestData = {
       promptUuid,
       page: page.current,
       size: sizeRef.current,
     };
-    const data = await getForkListUsePrompt(requestData);
-    return data;
+    try {
+      const data = await getForkListUsePrompt(requestData);
+      if (data.result === 'SUCCESS') {
+        setForkedPromptList((prev) => [...prev, ...data.data.forkedPromptResponseList]);
+        setForkedPromptCnt(data.data.forkCnt);
+        if (data.data.forkedPromptResponseList.length < sizeRef.current) {
+          isStop.current = true;
+        }
+        page.current += 1;
+      }
+    } catch (err) {
+      isStop.current = true;
+    }
   };
 
-  const { isLoading, data } = useQuery(['forkedPromptList'], handleGetForkedPrompt, {
-    enabled: !!promptUuid,
-  });
-
   useEffect(() => {
-    if (!isLoading) {
-      // console.log(data);
-      // setForkedPromptList((prev) => [...prev, ...data.forkedPromptResponseList]);
-      // page.current += 1;
-      // setForkedPromptCnt(data.forkCnt);
-    }
-  }, [isLoading]);
+    handleGetForkedPrompt();
+    return () => {
+      setForkedPromptList([]);
+      isStop.current = false;
+      page.current = 0;
+    };
+  }, []);
 
   return (
     <Container>
-      {!isLoading && <div className="label">포크한 프롬프트({forkedPromptCnt})</div>}
+      <div className="label">포크한 프롬프트({forkedPromptCnt || 0})</div>
+      <CardList>
+        {forkedPromptList.map((prompt, index) => {
+          return <PromptCard key={index} prompt={prompt} />;
+        })}
+      </CardList>
+      {isStop.current ? (
+        <div className="btnNone">불러올 프롬프트가 없습니다</div>
+      ) : (
+        <div
+          onClick={handleGetForkedPrompt}
+          onKeyDown={handleGetForkedPrompt}
+          role="button"
+          className="btn"
+        >
+          더보기
+        </div>
+      )}
     </Container>
   );
 }
