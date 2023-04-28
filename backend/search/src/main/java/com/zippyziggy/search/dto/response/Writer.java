@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class Writer {
-    private final UUID userUuid;
-    private final String nickname;
-    private final String profileImg;
+    private final UUID writerUuid;
+    private final String writerImg;
+    private final String writerNickname;
 }
