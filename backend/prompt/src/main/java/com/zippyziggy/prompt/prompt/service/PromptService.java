@@ -199,11 +199,11 @@ public class PromptService{
 		return promptDetailResponse;
 	}
 
-	public PromptTalkListResponse getPromptTalkList(UUID promptUuid, String crntMemberUuid) {
+	public PromptTalkListResponse getPromptTalkList(UUID promptUuid, String crntMemberUuid, Pageable pageable) {
 		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
 		List<TalkListResponse> talkListResponses = talkService.getTalkListResponses(circuitBreaker, prompt,
-			crntMemberUuid);
+			crntMemberUuid, pageable);
 		return new PromptTalkListResponse(talkListResponses.size(), talkListResponses);
 	}
 

@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ForkedPromptListResponse {
 
-	private Integer forkCnt;
+	private Long forkCnt;
 	private List<PromptCardResponse> forkedPromptResponseList;
 
 }
