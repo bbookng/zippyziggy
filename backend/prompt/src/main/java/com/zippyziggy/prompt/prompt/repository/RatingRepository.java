@@ -9,6 +9,6 @@ import java.util.UUID;
 
 public interface RatingRepository extends JpaRepository<Rating, Long> {
 
-    Optional<Rating> findByMemberUuidAndPromptPromptUuid(UUID memberUuid, UUID promptUuid);
+    Rating findByMemberUuidAndPromptPromptUuid(UUID memberUuid, UUID promptUuid);
 
 }
