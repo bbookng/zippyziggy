@@ -54,7 +54,7 @@ public class EsPromptService {
             final UUID promptUuid = UUID.fromString(esPrompt.getPromptUuid());
             final Prompt prompt = circuitBreaker
                     .run(() -> promptClient
-                            .getPromptDetail(promptUuid)
+                            .getPromptDetail(promptUuid, crntMemberUuid)
                             .orElseThrow(PromptNotFoundException::new));
 
             // 사용자 조회
@@ -65,7 +65,7 @@ public class EsPromptService {
             //TODO server to server api 만든 후 dto에서 바로 호출
             final Integer talkCnt = circuitBreaker
                     .run(() -> promptClient
-                            .getTalks(promptUuid)
+                            .getTalks(promptUuid, crntMemberUuid)
                             .size());
 
             // 댓글 목록 조회 후 size
