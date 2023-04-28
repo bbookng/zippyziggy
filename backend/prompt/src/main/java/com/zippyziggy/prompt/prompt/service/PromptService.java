@@ -19,6 +19,7 @@ import com.zippyziggy.prompt.prompt.exception.*;
 import com.zippyziggy.prompt.prompt.model.PromptLike;
 import com.zippyziggy.prompt.prompt.repository.PromptBookmarkRepository;
 import com.zippyziggy.prompt.prompt.repository.PromptLikeRepository;
+import com.zippyziggy.prompt.talk.dto.response.PromptTalkListResponse;
 import com.zippyziggy.prompt.talk.dto.response.TalkListResponse;
 import com.zippyziggy.prompt.talk.service.TalkService;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
@@ -198,10 +199,12 @@ public class PromptService{
 		return promptDetailResponse;
 	}
 
-	public List<TalkListResponse> getPromptTalkList(UUID promptUuid, String crntMemberUuid) {
+	public PromptTalkListResponse getPromptTalkList(UUID promptUuid, String crntMemberUuid) {
 		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
-		return talkService.getTalkListResponses(circuitBreaker, prompt, crntMemberUuid);
+		List<TalkListResponse> talkListResponses = talkService.getTalkListResponses(circuitBreaker, prompt,
+			crntMemberUuid);
+		return new PromptTalkListResponse(talkListResponses.size(), talkListResponses);
 	}
 
     /*
