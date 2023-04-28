@@ -1,17 +1,21 @@
 package com.zippyziggy.search.model;
 
-import javax.persistence.Id;
+import com.zippyziggy.search.dto.request.SyncEsPrompt;
+
+import lombok.Builder;
 import lombok.Data;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
 @Data
+@Builder
 @Document(indexName = "test")
 public class EsPrompt {
 
     @Id
-    private String id;        // ES doc create 시 자동 생성되는 id
+    private String Id;        // Elasticsearch doc id
 
     @Field(type = FieldType.Long, name = "prompt_id")
     private Long promptId;    // 내부 로직에서 사용하는 Auto Increment id
@@ -54,4 +58,23 @@ public class EsPrompt {
 
     @Field(type = FieldType.Text, name = "original_prompt_uuid")
     private String originalPromptUuid;
+
+    public static EsPrompt of(SyncEsPrompt esPrompt) {
+        return EsPrompt.builder()
+            .promptId(esPrompt.getPromptId())
+            .userId(esPrompt.getUserId())
+            .title(esPrompt.getTitle())
+            .description(esPrompt.getDescription())
+            .hit(esPrompt.getHit())
+            .likeCnt(esPrompt.getHit())
+            .regDt(esPrompt.getRegDt())
+            .updDt(esPrompt.getUpdDt())
+            .category(esPrompt.getCategory())
+            .prefix(esPrompt.getPrefix())
+            .suffix(esPrompt.getSuffix())
+            .example(esPrompt.getExample())
+            .promptUuid(esPrompt.getPromptUuid())
+            .originalPromptUuid(esPrompt.getOriginalPromptUuid())
+            .build();
+    }
 }

@@ -1,6 +1,6 @@
 package com.zippyziggy.search.dto.response;
 
-import com.zippyziggy.exception.MemberNotFoundException;
+import com.zippyziggy.search.exception.MemberNotFoundException;
 import java.util.UUID;
 import lombok.Data;
 
