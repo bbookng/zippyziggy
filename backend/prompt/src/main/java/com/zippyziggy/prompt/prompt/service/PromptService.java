@@ -82,7 +82,7 @@ public class PromptService{
 	public PromptResponse modifyPrompt(UUID promptUuid, PromptModifyRequest data, UUID crntMemberUuid, MultipartFile thumbnail) {
 		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
 
-		if (crntMemberUuid != prompt.getMemberUuid()) {
+		if (!crntMemberUuid.equals(prompt.getMemberUuid())) {
 			throw new ForbiddenMemberException();
 		}
 
@@ -214,7 +214,7 @@ public class PromptService{
 	public void removePrompt(UUID promptUuid, UUID crntMemberUuid) {
 		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
 
-		if (crntMemberUuid != prompt.getMemberUuid()) {
+		if (!crntMemberUuid.equals(prompt.getMemberUuid())) {
 			throw new ForbiddenMemberException();
 		}
 
