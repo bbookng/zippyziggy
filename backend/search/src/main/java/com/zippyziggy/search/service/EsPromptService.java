@@ -9,6 +9,7 @@ import com.zippyziggy.search.dto.response.*;
 import com.zippyziggy.search.model.EsPrompt;
 import com.zippyziggy.search.repository.EsPromptRepository;
 
+import java.sql.Struct;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -112,6 +113,13 @@ public class EsPromptService {
 
         final EsPrompt newEsPrompt = EsPrompt.of(syncEsPrompt);
         esPromptRepository.save(newEsPrompt);
+    }
+
+    public void deleteDocument(String promptUuid) {
+        final EsPrompt esPrompt = esPromptRepository
+            .findEsPromptByPromptUuid(promptUuid)
+            .orElseThrow(EsPromptNotFoundException::new);
+        esPromptRepository.delete(esPrompt);
     }
 
     private Page<EsPrompt> search (

@@ -39,4 +39,6 @@ public interface EsPromptRepository extends ElasticsearchRepository<EsPrompt, St
 
     Optional<EsPrompt> findEsPromptByPromptId(Long promptId);
 
+    Optional<EsPrompt> findEsPromptByPromptUuid(String promptUuid);
+
 }
