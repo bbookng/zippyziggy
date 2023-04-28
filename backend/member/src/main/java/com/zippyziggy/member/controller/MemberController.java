@@ -281,14 +281,22 @@ public class MemberController {
         }
 
         // 쿠키 설정
-        Cookie cookie = new Cookie("refreshToken", jwtToken.getRefreshToken());
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        cookie.setMaxAge(60 * 60 * 24 * 14);
+//        Cookie cookie = new Cookie("refreshToken", jwtToken.getRefreshToken());
+//        cookie.setHttpOnly(true);
+//        cookie.setSecure(true);
+//        cookie.setMaxAge(60 * 60 * 24 * 14);
+
+        ResponseCookie cookie = ResponseCookie.from("refreshToken", jwtToken.getRefreshToken())
+                .path("/")
+                .sameSite("None")
+                .httpOnly(true)
+                .secure(true)
+                .maxAge(60 * 60 * 24 * 14)
+                .build();
 
         response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
         response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.addCookie(cookie);
+        response.addHeader("Set-Cookie", cookie.toString());
 
         // 로그인 시 최소한의 유저 정보 전달
         MemberInformResponseDto memberInformResponseDto = MemberInformResponseDto.builder()
