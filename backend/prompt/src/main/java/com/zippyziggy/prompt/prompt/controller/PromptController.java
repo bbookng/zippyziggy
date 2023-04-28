@@ -126,7 +126,7 @@ public class PromptController {
 	})
 	public ResponseEntity<?> removePrompt(@PathVariable String promptUuid,
 										  @RequestHeader String crntMemberUuid) {
-		promptService.removePrompt(UUID.fromString(promptUuid), UUID.fromString(crntMemberUuid));
+		promptService.removePrompt(promptUuid, UUID.fromString(crntMemberUuid));
 		return ResponseEntity.ok("삭제 완료");
 	}
 
@@ -258,7 +258,7 @@ public class PromptController {
 	}
 
 	@Operation(summary = "프롬프트 북마크 조회하기(Authorization 필요)", description = "프롬프트 북마크 조회, page 및 size를 쿼리스트링으로 입력 필요")
-	@GetMapping("/members/bookmakr")
+	@GetMapping("/members/bookmark")
 	public ResponseEntity<List<PromptCardResponse>> bookmarkPromptByMember(@RequestHeader String crntMemberUuid,
 													@RequestParam("page") Integer page,
 													@RequestParam("size") Integer size) {
