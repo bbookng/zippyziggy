@@ -287,7 +287,7 @@ public class PromptController {
 		try {
 			promptService.promptReport(promptUuid, crntMemberUuid, promptReportRequest);
 		} catch (Exception e) {
-			return new ResponseEntity<>("이미 신고 접수 되었습니다", HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>("신고 접수는 5개까지 가능합니다.", HttpStatus.BAD_REQUEST);
 		}
 		return ResponseEntity.ok("프롬프트 신고 접수 완료");
 	}

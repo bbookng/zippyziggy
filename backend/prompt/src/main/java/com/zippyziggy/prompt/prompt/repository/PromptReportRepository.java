@@ -9,7 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface PromptReportRepository extends JpaRepository<PromptReport, Long> {
-    Optional<PromptReport> findByMemberUuidAndPrompt_PromptUuid(UUID memberUuid, UUID promptUuid);
+    Long countAllByMemberUuidAndPrompt_PromptUuid(UUID memberUuid, UUID promptUuid);
 
     Page<PromptReport> findAllByOrderByRegDtDesc(Pageable pageable);
 }

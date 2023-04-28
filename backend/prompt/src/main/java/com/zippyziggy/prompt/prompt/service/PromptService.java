@@ -373,20 +373,13 @@ public class PromptService{
 	프롬프트 평가
 	 */
 	public void ratingPrompt(UUID promptUuid, String crntMemberUuid, PromptRatingRequest promptRatingRequest) throws Exception {
-		System.out.println("000000000000000000000000000");
 		Rating ratingExist = ratingRepository.findByMemberUuidAndPromptPromptUuid(UUID.fromString(crntMemberUuid), promptUuid);
-		System.out.println("ratingExist = " + ratingExist);
 
 		if (ratingExist == null) {
-			System.out.println("1111111111111111111111111111111111111");
 			Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
-			System.out.println("22222222222222222222222222222222");
-			System.out.println(prompt);
 			Rating rating = Rating.from(UUID.fromString(crntMemberUuid), prompt, promptRatingRequest.getScore());
-			System.out.println("rating = " + rating);
 			ratingRepository.save(rating);
 		} else {
-			System.out.println("에러인가?");
 			throw new RatingAlreadyExistException();
 		}
 
@@ -405,19 +398,12 @@ public class PromptService{
 	프롬프트 신고 접수
 	 */
 	public void promptReport(UUID promptUuid, String crntMemberUuid, PromptReportRequest promptReportRequest) throws Exception {
-		System.out.println("0000000000000000000000000000000");
-		PromptReport report = promptReportRepository.findByMemberUuidAndPrompt_PromptUuid(UUID.fromString(crntMemberUuid), promptUuid).orElseThrow(ReportAlreadyExistException::new);
-		System.out.println("report = " + report);
-		if (report == null) {
-			System.out.println("1111111111111111111111111111111111111");
+		Long reportCnt = promptReportRepository.countAllByMemberUuidAndPrompt_PromptUuid(UUID.fromString(crntMemberUuid), promptUuid);
+		if (reportCnt <= 5 ) {
 			Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
-			System.out.println("22222222");
-			System.out.println("prompt = " + prompt);
 			PromptReport promptReport = PromptReport.from(UUID.fromString(crntMemberUuid), prompt, promptReportRequest.getContent());
-			System.out.println("promptReport = " + promptReport);
 			promptReportRepository.save(promptReport);
 		} else {
-			System.out.println("여기도?");
 			throw new ReportAlreadyExistException();
 		}
 	}
@@ -426,7 +412,6 @@ public class PromptService{
 	프롬프트 신고 내용 확인
 	 */
 	public Page<PromptReport> reports(Pageable pageable) {
-		System.out.println("다 찾아보잡");
 		return promptReportRepository.findAllByOrderByRegDtDesc(pageable);
 	}
 
