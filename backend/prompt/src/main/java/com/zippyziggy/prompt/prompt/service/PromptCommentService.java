@@ -74,7 +74,7 @@ public class PromptCommentService {
 		PromptComment comment = promptCommentRepository.findById(commentId)
 			.orElseThrow(PromptCommentNotFoundException::new);
 
-		if (crntMemberUuid != comment.getMemberUuid()) {
+		if (!crntMemberUuid.equals(comment.getMemberUuid())) {
 			throw new ForbiddenMemberException();
 		}
 
@@ -90,7 +90,7 @@ public class PromptCommentService {
 		PromptComment comment = promptCommentRepository.findById(commentId)
 			.orElseThrow(PromptCommentNotFoundException::new);
 
-		if (crntMemberUuid != comment.getMemberUuid()) {
+		if (!crntMemberUuid.equals(comment.getMemberUuid())) {
 			throw new ForbiddenMemberException();
 		}
 
