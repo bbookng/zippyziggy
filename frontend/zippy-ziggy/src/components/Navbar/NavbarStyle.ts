@@ -6,7 +6,7 @@ const NavWrapper = styled.div`
   width: 100vw;
   display: flex;
   align-items: center;
-  min-height: 5rem;
+  min-height: 4rem;
   margin: 0 auto 0 auto;
   padding: 0 1.5rem;
   justify-content: space-between;
@@ -37,6 +37,7 @@ const NavList = styled.ul<NavListProps>`
   display: flex;
   align-items: center;
 
+  margin-left: 2rem;
   ${media.small`
     display: ${(props) => (props.isOpen ? 'flex' : 'hide')};
     flex-direction: column;
@@ -83,13 +84,15 @@ const Logo = styled.div`
   .LogoImage {
     width: 120px;
     height: 40px;
-    margin-right: 2rem;
     object-fit: contain;
     cursor: pointer;
     ${media.small`
+      position:absolute;
+      top:50%;
+      left:50%;
+      transform:translate(-50%,-50%);
       width: 100px;
       height: 48px;
-      margin-right: 0;
     `}
   }
 `;
