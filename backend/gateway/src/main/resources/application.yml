@@ -150,6 +150,28 @@ spring:
             - RewritePath=/api/(?<segment>.*), /$\{segment}
             - PromptAuthorizationHeaderFilter
 
+
+#        지워야해요오..테스트
+        - id: prompt
+          uri: lb://PROMPT
+          predicates:
+            - Path=/api/members/**
+            - Method=GET, OPTIONS
+          filters:
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
+            - PromptAuthorizationHeaderFilter
+            -
+        - id: prompt
+          uri: lb://PROMPT
+          predicates:
+            - Path=/api/reports/**
+            - Method=GET, OPTIONS
+          filters:
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
+            - PromptAuthorizationHeaderFilter
+#         여기까지 지우셔요
+
+
         - id: prompt
           uri: lb://PROMPT
           predicates:
