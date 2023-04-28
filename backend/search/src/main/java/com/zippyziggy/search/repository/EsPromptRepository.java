@@ -2,7 +2,6 @@ package com.zippyziggy.search.repository;
 
 import com.zippyziggy.search.model.EsPrompt;
 import java.util.Optional;
-import javax.swing.text.html.Option;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.annotations.Query;
@@ -13,22 +12,23 @@ import org.springframework.stereotype.Repository;
 public interface EsPromptRepository extends ElasticsearchRepository<EsPrompt, String> {
 
     @Query("{" +
-            "    \"bool\": {" +
-            "        \"must\": [" +
-            "            {" +
-            "                \"multi_match\": {" +
-            "                    \"query\": \"?0\"," +
-            "                    \"fields\": [\"title\", \"description\", \"prefix\", \"suffix\", \"example\"]" +
-            "                }" +
-            "            }," +
-            "            {" +
-            "                \"match\": {" +
-            "                    \"category\": \"?1\"" +
-            "                }" +
-            "            }" +
-            "        ]" +
-            "    }" +
-            "}")
+        "    \"bool\": {" +
+        "        \"must\": [" +
+        "            {" +
+        "                \"multi_match\": {" +
+        "                    \"query\": \"?0\"," +
+        "                    \"fields\": [\"title\", \"description\", \"prefix\", \"suffix\", \"example\"]"
+        +
+        "                }" +
+        "            }," +
+        "            {" +
+        "                \"match\": {" +
+        "                    \"category\": \"?1\"" +
+        "                }" +
+        "            }" +
+        "        ]" +
+        "    }" +
+        "}")
     Page<EsPrompt> findByKeywordAndCategory(String keyword, String category, Pageable pageable);
 
 

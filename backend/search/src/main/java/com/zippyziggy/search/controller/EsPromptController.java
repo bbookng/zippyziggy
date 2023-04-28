@@ -3,7 +3,6 @@ package com.zippyziggy.search.controller;
 import com.zippyziggy.search.dto.request.SyncEsPrompt;
 import com.zippyziggy.search.dto.response.ExtensionSearchPromptList;
 import com.zippyziggy.search.dto.response.SearchPromptList;
-import com.zippyziggy.search.model.EsPrompt;
 import com.zippyziggy.search.service.EsPromptService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
