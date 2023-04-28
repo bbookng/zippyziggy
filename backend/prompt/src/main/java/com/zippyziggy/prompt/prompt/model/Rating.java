@@ -1,5 +1,7 @@
 package com.zippyziggy.prompt.prompt.model;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -37,11 +39,17 @@ public class Rating {
 	@Column(nullable = false)
 	private Integer score;
 
+	@Column(nullable = false)
+	private LocalDateTime regDt;
+
 	public static Rating from(UUID memberUuid, Prompt prompt, Integer score) {
+		LocalDateTime regDt = LocalDateTime.now();
 		return Rating.builder()
 				.memberUuid(memberUuid)
 				.prompt(prompt)
-				.score(score).build();
+				.score(score)
+				.regDt(regDt).build();
 	}
+
 
 }

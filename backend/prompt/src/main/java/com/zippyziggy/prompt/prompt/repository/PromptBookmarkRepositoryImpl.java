@@ -28,6 +28,9 @@ public class PromptBookmarkRepositoryImpl implements PromptBookmarkCustomReposit
                 .selectFrom(qPrompt)
                 .leftJoin(qPromptBookmark)
                 .on(qPromptBookmark.prompt.id.eq(qPrompt.id))
+                .orderBy(
+                        qPromptBookmark.regDt.desc()
+                )
                 .distinct()
                 .where(qPromptBookmark.memberUuid.eq(memberUuid))
                 .offset(pageable.getOffset())

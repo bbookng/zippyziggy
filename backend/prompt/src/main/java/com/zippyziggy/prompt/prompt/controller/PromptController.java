@@ -292,9 +292,14 @@ public class PromptController {
 		return ResponseEntity.ok("프롬프트 신고 접수 완료");
 	}
 
-	/*
-	톡이랑 댓글 갯수 조회
-	 */
+	@Operation(summary = "프롬프트 신고 조회하기", description = "프롬프트 신고 내용을 확인합니다. ADMIN 권한만 가능")
+	@GetMapping("/reports")
+	public ResponseEntity<?> reports(@RequestParam("page") Integer page,
+									 @RequestParam("size") Integer size) {
+		PageRequest pageRequest = PageRequest.of(page, size);
+		return ResponseEntity.ok(promptService.reports(pageRequest));
+	}
+
 	@Operation(summary = "프롬프트의 톡과 댓글 갯수", description = "promptUuid를 pathvariable로 전달 필요")
 	@GetMapping("/{promptUuid}/cnt")
 	public ResponseEntity<PromptTalkCommentCntResponse> cntPrompt(@PathVariable UUID promptUuid) {

@@ -22,7 +22,6 @@ import com.zippyziggy.prompt.talk.dto.response.PromptTalkListResponse;
 import com.zippyziggy.prompt.talk.dto.response.TalkListResponse;
 import com.zippyziggy.prompt.talk.repository.TalkRepository;
 import com.zippyziggy.prompt.talk.service.TalkService;
-import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.data.domain.Page;
@@ -400,7 +399,13 @@ public class PromptService{
 		} else {
 			throw new ReportAlreadyExistException();
 		}
+	}
 
+	/*
+	프롬프트 신고 내용 확인
+	 */
+	public Page<PromptReport> reports(Pageable pageable) {
+		return promptReportRepository.findAllByOrderByRegDtDesc(pageable);
 	}
 
 }
