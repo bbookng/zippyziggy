@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { setupInterceptorsTo, tokenInterceptor } from '@/utils/interceptors';
+import axios, { AxiosRequestConfig } from 'axios';
+import { setupInterceptorsTo, tokenFormInterceptor, tokenInterceptor } from '@/utils/interceptors';
 
 export const serverUrl =
   process.env.NEXT_PUBLIC_LOCAL_TYPE === 'local'
@@ -25,7 +25,7 @@ const httpApi = () => {
   return setupInterceptorsTo(instance);
 };
 
-const httpAuthApi = () => {
+const httpAuthApi = (options: AxiosRequestConfig = {}) => {
   const instance = axios.create({
     baseURL: `${serverUrl}/api`,
 
@@ -38,7 +38,7 @@ const httpAuthApi = () => {
       // 'Access-Control-Allow-Headers': '*',
       // 'Access-Control-Expose-Headers': '*',
     },
-
+    ...options,
     withCredentials: true,
   });
   return tokenInterceptor(instance);
@@ -54,7 +54,7 @@ const httpAuthFormApi = () => {
 
     withCredentials: true,
   });
-  return tokenInterceptor(instance);
+  return tokenFormInterceptor(instance);
 };
 
 const httpFormApi = () => {
@@ -70,7 +70,26 @@ const httpFormApi = () => {
   return setupInterceptorsTo(instance);
 };
 
+const httpTokenApi = (options: AxiosRequestConfig = {}) => {
+  const instance = axios.create({
+    baseURL: `${serverUrl}/api`,
+
+    headers: {
+      'Content-Type': 'application/json',
+      // 'Access-Control-Allow-Origin': '*',
+      // 'Access-Control-Allow-Credentials': true,
+      // 'Access-Control-Allow-Methods': 'GET,OPTIONS,PATCH,DELETE,POST,PUT',
+      // 'Access-Control-Allow-Headers': '*',
+      // 'Access-Control-Expose-Headers': '*',
+    },
+    ...options,
+    withCredentials: true,
+  });
+  return setupInterceptorsTo(instance);
+};
+
 export const http = httpApi();
 export const httpAuth = httpAuthApi();
 export const httpAuthForm = httpAuthFormApi();
 export const httpForm = httpFormApi();
+export const httpToken = httpTokenApi();

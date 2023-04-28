@@ -1,4 +1,4 @@
-import { http, serverUrl } from '@/lib/http';
+import { http, serverUrl, httpToken, httpForm, httpAuthForm } from '@/lib/http';
 import axios, {
   AxiosError,
   AxiosHeaders,
@@ -28,28 +28,53 @@ const tokenInterceptor = (instance: AxiosInstance) => {
     },
 
     async (error) => {
-      const {
-        config,
-        response: { status },
-      } = error;
+      const { config } = error;
+      console.log(error);
+      const originalRequest = config;
+      if (error.response.status === 401) {
+        console.log('토큰 재발급 요청');
+        const res = await httpToken.post(`${serverUrl}/api/members/refresh/token`);
+        if (res.status) {
+          localStorage.setItem('accessToken', res?.headers?.authorization);
+          originalRequest.headers.Authorization = `Bearer ${res?.headers?.authorization}`;
+          return http(originalRequest);
+        }
+      }
+      return Promise.reject(error);
+    }
+  );
+  return instance;
+};
 
-      console.log(status);
-      if (status === 401) {
-        const originalRequest = config;
+const tokenFormInterceptor = (instance: AxiosInstance) => {
+  instance.interceptors.request.use(
+    (config) => {
+      const axiosConfig = config;
+      // 토큰을 얻어오는 함수
+      const token = localStorage.getItem('accessToken');
+      axiosConfig.headers.Authorization = `Bearer ${token}`;
+      return axiosConfig;
+    },
+    (error: AxiosError) => Promise.reject(error.response)
+  );
 
-        // 토큰 refresh 요청
-        const data = await axios.get(`${serverUrl}/members/refresh/token`);
+  instance.interceptors.response.use(
+    (response) => {
+      return response;
+    },
 
-        // 요청 후 새롭게 받은 accToken을 저장
-        const {
-          data: {
-            data: { accessToken },
-          },
-        } = data;
-
-        localStorage.setItem('accessToken', accessToken);
-        originalRequest.headers.Authorization = accessToken;
-        return http(originalRequest);
+    async (error) => {
+      const { config } = error;
+      console.log(error);
+      const originalRequest = config;
+      if (error.response.status === 401) {
+        console.log('토큰 재발급 요청');
+        const res = await httpToken.post(`${serverUrl}/api/members/refresh/token`);
+        if (res.status) {
+          localStorage.setItem('accessToken', res?.headers?.authorization);
+          originalRequest.headers.Authorization = `Bearer ${res?.headers?.authorization}`;
+          return httpForm(originalRequest);
+        }
       }
       return Promise.reject(error);
     }
@@ -103,4 +128,4 @@ const setupInterceptorsTo = (axiosInstance: AxiosInstance): AxiosInstance => {
   return axiosInstance;
 };
 
-export { setupInterceptorsTo, tokenInterceptor };
+export { setupInterceptorsTo, tokenInterceptor, tokenFormInterceptor };

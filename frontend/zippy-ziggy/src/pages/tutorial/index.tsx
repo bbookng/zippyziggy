@@ -120,6 +120,18 @@ const Wrap = styled.div`
 export default function Tutorial() {
   const [nickname, setBeforeNickname] = useState('');
 
+  const conversation = {
+    L1: '안녕~ \n 저희 사이트가 뭐하는 곳인지 궁금해요?',
+    R1: '질문에 대답해주세요',
+    R1B1: '네 궁금해요! 알려주세요!',
+    A: '지피지기는 프롬프트 엔지니어링을 ',
+    L2: ' 프롬프트는 GPT에게 원하는 대답을 이끌어내는 방법입니다',
+    L3: '만약 자세히 알고싶으면 이 링크에 들어가세요',
+    L3LINK: 'https://modulabs.co.kr/blog/chatgpt-with-promptengineering/',
+    R2: 'GPT에게 물어보세요',
+    R2PLACEHOLDER: '질문을 입력하세요',
+  };
+
   return (
     <Container>
       <Wrap>
@@ -127,12 +139,12 @@ export default function Tutorial() {
         <Paragraph>튜토리얼이 뭔지 알아보자</Paragraph>
         <div className="chat">
           <div className="yours messages">
-            <div className="message last">{'안녕~ \n 우리 사이트가 뭐하는 곳인지 궁금해?'}</div>
+            <div className="message last">{conversation.L1}</div>
           </div>
 
           <div className="mine messages">
             <div className="message last">
-              <p>{'질문에 대답해주세요'}</p>
+              <p>{conversation.R1}</p>
 
               <div>
                 <Button
@@ -143,27 +155,25 @@ export default function Tutorial() {
                   padding="4px 16px"
                   margin="4px 0px"
                 >
-                  네 궁금해 미칠지경이에요 알려주세
+                  {conversation.R1B1}
                 </Button>
               </div>
             </div>
           </div>
 
           <div className="yours messages">
-            <div className="message last">
-              {'프롬프트는 GPT에게 질문을 잘할 수 있도록 도와줄 수 있는 방법이야'}
-            </div>
+            <div className="message last">{conversation.R1}</div>
           </div>
 
           <div className="mine messages">
             <div className="message last">
-              <p>{'GPT에게 물어보세요'}</p>
+              <p>{conversation.R1}</p>
               <div>
                 <form onSubmit={(e) => e.preventDefault()}>
                   <textarea
                     className="nickNameInput"
                     id="nickname"
-                    placeholder="질문을 입력하세요"
+                    placeholder={conversation.R1}
                     value={nickname}
                     onChange={(e) => setBeforeNickname(e.target.value)}
                     required

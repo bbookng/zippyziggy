@@ -63,7 +63,8 @@ export default function Modify() {
   const userState = useAppSelector((state) => state.user); // 유저정보
 
   // useState를 사용하여 닉네임과 닉네임의 검증 상태를 저장합니다
-  const [nickname, setBeforeNickname] = useState('');
+  const [beforeNickname, setBeforeNickname] = useState('');
+  const [nickname, setFormNickname] = useState('');
   const [statusNickname, setStatusNickname] = useState('default');
   const [fileUrl, setBeforeFileUrl] = useState('');
   const [file, setFile] = useState<File | null>(null); // 파일 정보를 저장하는 state를 설정합니다
@@ -96,9 +97,7 @@ export default function Modify() {
     const formData = new FormData();
 
     // user 정보 넣기
-    console.log('if', file);
     const fileToAppend = file || new File([new Blob()], 'empty_image.png', { type: 'image/png' });
-    console.log('if2', fileToAppend);
     formData.append('file', fileToAppend);
     formData.append('nickname', nickname);
 
@@ -109,26 +108,30 @@ export default function Modify() {
       data: formData,
     })
       .then((res) => {
-        const { data } = res;
-        dispatch(setProfileImg(data.profileImg));
-        dispatch(setNickname(data.nickname));
-        dispatch(setUserUuid(data.userUuid));
+        console.log('성공이니');
+        dispatch(setNickname(res.data.nickname));
+        console.log('성공이니');
+        dispatch(setProfileImg(res.data.profileImg));
+        console.log('성공이니');
+        dispatch(setUserUuid(res.data.userUuid));
+        setStatusNickname('success');
       })
       .catch(() => {
         setStatusNickname('error');
+        console.log('실패니');
       });
   };
 
   const statusMessages = {
     default: { color: 'transparent', text: '\u00A0' },
     error: { color: 'dangerColor', text: '검증에 실패했어요!' },
-    success: { color: 'successColor', text: '검증에 성공했어요!' },
+    success: { color: 'successColor', text: '변경에 성공했어요!' },
   };
 
   return (
     <LoginContainer>
       <LoginWarp>
-        <Title margin="0 0 4px 0">{nickname}님의 정보변경</Title>
+        <Title margin="0 0 4px 0">{beforeNickname}님의 정보변경</Title>
         <Paragraph margin="0 0 12px 0">닉네임을 설정하고 회원가입을 완료하세요!</Paragraph>
 
         <form onSubmit={(e) => e.preventDefault()}>
@@ -161,7 +164,7 @@ export default function Modify() {
             id="nickname"
             placeholder="닉네임을 입력해주세요"
             value={nickname}
-            onChange={(e) => setBeforeNickname(e.target.value)}
+            onChange={(e) => setFormNickname(e.target.value)}
             required
           />
           <Paragraph color={statusMessages[statusNickname].color}>
@@ -169,9 +172,8 @@ export default function Modify() {
           </Paragraph>
           <Button
             onClick={handleSignupBtnClick}
-            color={statusNickname === 'success' ? 'primaryColor' : 'blackColor05'}
-            fontColor={statusNickname === 'success' ? 'whiteColor' : 'blackColor50'}
-            disabled={statusNickname !== 'success'}
+            // color={statusNickname === 'success' ? 'primaryColor' : 'blackColor05'}
+            // fontColor={statusNickname === 'success' ? 'whiteColor' : 'blackColor50'}
           >
             정보변경
           </Button>
