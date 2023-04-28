@@ -32,7 +32,7 @@ public class PromptLike {
 	private UUID memberUuid;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "prompt_id", nullable = false)
+	@JoinColumn(name = "prompt_uuid", nullable = false)
 	private Prompt prompt;
 
 	@Column(nullable = false)
