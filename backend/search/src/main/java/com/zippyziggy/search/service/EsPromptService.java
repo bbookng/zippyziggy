@@ -121,7 +121,7 @@ public class EsPromptService {
     ) {
             Page<EsPrompt> pagedEsPrompt = null;
             keyword = (keyword.equals("")) ? null : keyword;
-            category = (category.equals("")) ? null : category;
+            category = (category.equals("ALL")) ? null : category;
 
             if (null != keyword & null != category) {
                 pagedEsPrompt = esPromptRepository
