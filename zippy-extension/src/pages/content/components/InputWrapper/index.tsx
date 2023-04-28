@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import ActionWritingButton from '@pages/content/components/InputWrapper/ActionWritingButton';
-import LanguageDropbox from '@pages/content/components/InputWrapper/LanguageDropbox';
+import LanguageDropbox from '@pages/content/components/InputWrapper/LanguageDropdown';
 import ActionGroup from './ActionGroup';
 import OutputSettingGroup from './OutputSettingGroup';
 

@@ -7,6 +7,7 @@ const PROMPT_PLACEHOLDER = '[PROMPT]';
 const TARGET_LANGUAGE_PLACEHOLDER = '[TARGET_LANGUAGE]';
 
 // URL
+const FLAGKIT_CDN_URL = 'https://cdn.jsdelivr.net/gh/madebybowtie/FlagKit@2.2/Assets/SVG';
 const ZIPPY_SITE_URL = 'https://www.naver.com/';
 const ZIPPY_API_URL = 'http://localhost:3003';
 const CHAT_GPT_URL = 'https://chat.openai.com/';
@@ -26,6 +27,7 @@ const LAST_TARGET_LANGUAGE_KEY = 'ZP_lastTargetLanguage';
 const CHROME_CATEGORY_KEY = 'ZP_category';
 const CHROME_SORT_KEY = 'ZP_sort';
 const CHROME_SEARCH_KEY = 'ZP_searchTerm';
+const CHROME_LANGUAGE_KEY = 'ZP_language';
 
 export {
   DEFAULT_TARGET_LANGUAGE,
@@ -34,6 +36,7 @@ export {
   CHAT_GPT_URL,
   ZIPPY_API_URL,
   ZIPPY_SITE_URL,
+  FLAGKIT_CDN_URL,
   ZP_ROOT_ID,
   ZP_PROMPT_CONTAINER_ID,
   ZP_INPUT_WRAPPER_ID,
@@ -44,4 +47,5 @@ export {
   CHROME_CATEGORY_KEY,
   CHROME_SORT_KEY,
   CHROME_SEARCH_KEY,
+  CHROME_LANGUAGE_KEY,
 };

@@ -54,7 +54,7 @@ const Dropdown = ({ children }: DropdownProps) => {
   );
 };
 
-const Trigger = ({ children, className }: DropdownProps & { className?: string }) => {
+const Trigger = ({ children, className = '' }: DropdownProps & { className?: string }) => {
   const dropdown = useContext(DropdownContext);
   if (!dropdown) {
     throw new Error('');

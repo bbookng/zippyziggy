@@ -1,4 +1,5 @@
 import reloadOnUpdate from 'virtual:reload-on-update-in-background-script';
+import { CHROME_CATEGORY_KEY, CHROME_SEARCH_KEY, CHROME_SORT_KEY } from '@pages/constants';
 
 reloadOnUpdate('pages/background');
 
@@ -11,6 +12,8 @@ reloadOnUpdate('pages/content/style.scss');
 // 백그라운드 스크립트
 console.log('백그라운드 loaded');
 
-chrome.runtime.onStartup.addListener(function () {
-  chrome.storage.local.clear();
+chrome.runtime.onStartup.addListener(() => {
+  chrome.storage.local.remove(CHROME_CATEGORY_KEY);
+  chrome.storage.local.remove(CHROME_SORT_KEY);
+  chrome.storage.local.remove(CHROME_SEARCH_KEY);
 });

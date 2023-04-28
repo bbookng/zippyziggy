@@ -94,7 +94,7 @@ window.addEventListener("message", function(event) {
   const { data } = event;
   switch (data.type) {
     case "test":
-      ZIPPY.targetLanguage = event.data.selected.targetLanguage;
+      ZIPPY.targetLanguage = event.data.targetLanguage;
       console.log(ZIPPY.targetLanguage);
       break;
     case "selectAction":
