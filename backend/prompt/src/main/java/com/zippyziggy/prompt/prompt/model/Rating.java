@@ -17,6 +17,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
@@ -39,4 +41,15 @@ public class Rating {
 
 	@Column(nullable = false)
 	private LocalDateTime regDt;
+
+	public static Rating from(UUID memberUuid, Prompt prompt, Integer score) {
+		LocalDateTime regDt = LocalDateTime.now();
+		return Rating.builder()
+				.memberUuid(memberUuid)
+				.prompt(prompt)
+				.score(score)
+				.regDt(regDt).build();
+	}
+
+
 }

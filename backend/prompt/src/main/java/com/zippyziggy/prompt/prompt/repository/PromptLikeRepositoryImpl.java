@@ -29,6 +29,9 @@ public class PromptLikeRepositoryImpl implements PromptLikeCustomRepository {
                 .leftJoin(qPromptLike)
                 .on(qPromptLike.prompt.id.eq(qPrompt.id))
                 .distinct()
+                .orderBy(
+                        qPromptLike.regDt.desc()
+                )
                 .where(qPromptLike.memberUuid.eq(memberUuid))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())

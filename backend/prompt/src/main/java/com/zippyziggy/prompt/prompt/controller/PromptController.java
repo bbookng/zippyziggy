@@ -6,7 +6,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.zippyziggy.prompt.prompt.dto.request.PromptRatingRequest;
+import com.zippyziggy.prompt.prompt.dto.request.*;
 import com.zippyziggy.prompt.prompt.dto.response.*;
 import com.zippyziggy.prompt.prompt.repository.PromptRepository;
 import com.zippyziggy.prompt.talk.dto.response.PromptTalkListResponse;
@@ -21,14 +21,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.zippyziggy.prompt.prompt.dto.request.PromptCommentRequest;
-import com.zippyziggy.prompt.prompt.dto.request.PromptModifyRequest;
-import com.zippyziggy.prompt.prompt.dto.request.PromptRequest;
 import com.zippyziggy.prompt.prompt.service.ForkPromptService;
 import com.zippyziggy.prompt.prompt.service.PromptCommentService;
 import com.zippyziggy.prompt.prompt.service.PromptService;
@@ -273,14 +271,35 @@ public class PromptController {
 	public ResponseEntity<?> ratingPrompt(@PathVariable UUID promptUuid,
 											@RequestBody PromptRatingRequest promptRatingRequest,
 											@RequestHeader String crntMemberUuid) {
-		promptService.ratingPrompt(promptUuid, crntMemberUuid, promptRatingRequest);
+		try {
+			promptService.ratingPrompt(promptUuid, crntMemberUuid, promptRatingRequest);
+		} catch (Exception e) {
+			return new ResponseEntity<>("평가 내역이 이미 존재합니다.", HttpStatus.BAD_REQUEST);
+		}
 		return ResponseEntity.ok("프롬프트 북마크 평가 완료");
 	}
 
+	@Operation(summary = "프롬프트 신고", description = "프롬프트 내용을 입력하면 신고가 접수됩니다.")
+	@PostMapping("/{promptUuid}/report")
+	public ResponseEntity<?> reportPrompt(@RequestBody PromptReportRequest promptReportRequest,
+										  @PathVariable UUID promptUuid,
+										  @RequestHeader String crntMemberUuid) {
+		try {
+			promptService.promptReport(promptUuid, crntMemberUuid, promptReportRequest);
+		} catch (Exception e) {
+			return new ResponseEntity<>("이미 신고 접수 되었습니다", HttpStatus.BAD_REQUEST);
+		}
+		return ResponseEntity.ok("프롬프트 신고 접수 완료");
+	}
 
-	/*
-	톡이랑 댓글 갯수 조회
-	 */
+	@Operation(summary = "프롬프트 신고 조회하기", description = "프롬프트 신고 내용을 확인합니다. ADMIN 권한만 가능")
+	@GetMapping("/reports")
+	public ResponseEntity<?> reports(@RequestParam("page") Integer page,
+									 @RequestParam("size") Integer size) {
+		PageRequest pageRequest = PageRequest.of(page, size);
+		return ResponseEntity.ok(promptService.reports(pageRequest));
+	}
+
 	@Operation(summary = "프롬프트의 톡과 댓글 갯수", description = "promptUuid를 pathvariable로 전달 필요")
 	@GetMapping("/{promptUuid}/cnt")
 	public ResponseEntity<PromptTalkCommentCntResponse> cntPrompt(@PathVariable UUID promptUuid) {

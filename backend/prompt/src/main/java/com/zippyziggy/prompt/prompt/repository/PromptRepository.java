@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import com.zippyziggy.prompt.prompt.model.PromptReport;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -25,5 +26,6 @@ public interface PromptRepository extends JpaRepository<Prompt, Long> {
 	List<Prompt> findAllByOriginPromptUuid(UUID promptUuid);
 
 	Long countAllByOriginPromptUuid(UUID promptUuid);
+
 
 }
