@@ -61,19 +61,9 @@ public class EsPromptService {
             //TODO server to server api 만든 후 Member application에서 호출하는 방식으로 변경해야함
             WriterResponse writerResponse = promptDetailResponse.getWriterResponse();
 
-            // 톡 목록 조회 후 size
-            //TODO server to server api 만든 후 dto에서 바로 호출
-            final Integer talkCnt = circuitBreaker
-                    .run(() -> promptClient
-                            .getTalks(promptUuid, crntMemberUuid)
-                            .size());
-
-            // 댓글 목록 조회 후 size
-            //TODO server to server api 만든 후 dto에서 바로 호출
-            final Integer commentCnt = circuitBreaker
-                    .run(() -> promptClient
-                            .getPromptComments(promptUuid)
-                            .size());
+            final CntResponse cntResponse = circuitBreaker
+                .run(() -> promptClient
+                    .getCnt(promptUuid));
 
             // 로그인 여부에 따른 좋아요/북마크 여부
             final Boolean isLiked = !crntMemberUuid.equals("defaultValue") && promptDetailResponse.getIsLiked();
@@ -83,8 +73,8 @@ public class EsPromptService {
             searchPrompts.add(SearchPrompt.of(
                 esPrompt,
                 promptDetailResponse,
-                talkCnt,
-                commentCnt,
+                cntResponse.getTalkCnt(),
+                cntResponse.getCommentCnt(),
                 promptDetailResponse.getLikeCnt(),
                 isLiked,
                 isBookmarked,

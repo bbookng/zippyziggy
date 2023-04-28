@@ -1,5 +1,6 @@
 package com.zippyziggy.search.client;
 
+import com.zippyziggy.search.dto.response.CntResponse;
 import com.zippyziggy.search.dto.response.PromptDetailResponse;
 import com.zippyziggy.search.dto.response.PromptComment;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -26,5 +27,10 @@ public interface PromptClient {
     List<PromptDetailResponse> getTalks(
         @PathVariable UUID promptUuid,
         @RequestHeader String crntMemberUuid
+    );
+
+    @GetMapping("/prompts/{promptUuid}/cnt")
+    CntResponse getCnt(
+        @PathVariable UUID promptUuid
     );
 }
