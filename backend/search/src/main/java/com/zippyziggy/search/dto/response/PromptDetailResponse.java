@@ -29,4 +29,6 @@ public class PromptDetailResponse {
 	private long regDt;
 	private long updDt;
 
+	private PromptMessageResponse messageResponse;
+
 }
