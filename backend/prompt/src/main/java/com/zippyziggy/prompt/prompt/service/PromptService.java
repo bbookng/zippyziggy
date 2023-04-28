@@ -411,8 +411,21 @@ public class PromptService{
 	/*
 	프롬프트 신고 내용 확인
 	 */
-	public Page<PromptReport> reports(Pageable pageable) {
-		return promptReportRepository.findAllByOrderByRegDtDesc(pageable);
+	public Page<PromptReportResponse> reports(Pageable pageable) {
+		Page<PromptReport> reports = promptReportRepository.findAllByOrderByRegDtDesc(pageable);
+		Page<PromptReportResponse> promptReportResponse = PromptReportResponse.from(reports);
+//		for (PromptReport promptReport : reports) {
+//			PromptReportResponse response = PromptReportResponse.from(promptReport.getMemberUuid(),
+//					promptReport.getPrompt().getPromptUuid(),
+//					promptReport.getPrompt().getTitle(),
+//					promptReport.getPrompt().getCategory().toString(),
+//					promptReport.getPrompt().getLanguages().toString(),
+//					promptReport.getPrompt().getMemberUuid(),
+//					promptReport.getContent(),
+//					promptReport.getRegDt());
+//			promptReportResponse.add(response);
+//		}
+		return promptReportResponse;
 	}
 
 }
