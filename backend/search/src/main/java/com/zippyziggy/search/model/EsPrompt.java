@@ -20,8 +20,8 @@ public class EsPrompt {
     @Field(type = FieldType.Long, name = "prompt_id")
     private Long promptId;    // 내부 로직에서 사용하는 Auto Increment id
 
-    @Field(type = FieldType.Long, name = "user_id")
-    private Long userId;
+    @Field(type = FieldType.Text, name = "user_id")
+    private String userId;
 
     @Field(type = FieldType.Text, name = "title")
     private String title;
@@ -62,7 +62,7 @@ public class EsPrompt {
     public static EsPrompt of(SyncEsPrompt esPrompt) {
         return EsPrompt.builder()
             .promptId(esPrompt.getPromptId())
-            .userId(esPrompt.getUserId())
+            .userId(String.valueOf(esPrompt.getUserId()))
             .title(esPrompt.getTitle())
             .description(esPrompt.getDescription())
             .hit(esPrompt.getHit())
@@ -73,8 +73,8 @@ public class EsPrompt {
             .prefix(esPrompt.getPrefix())
             .suffix(esPrompt.getSuffix())
             .example(esPrompt.getExample())
-            .promptUuid(esPrompt.getPromptUuid())
-            .originalPromptUuid(esPrompt.getOriginalPromptUuid())
+            .promptUuid(String.valueOf(esPrompt.getPromptUuid()))
+            .originalPromptUuid(String.valueOf(esPrompt.getOriginalPromptUuid()))
             .build();
     }
 }
