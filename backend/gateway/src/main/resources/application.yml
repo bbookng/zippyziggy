@@ -151,7 +151,6 @@ spring:
             - PromptAuthorizationHeaderFilter
 
 
-#        지워야해요오..테스트
         - id: prompt
           uri: lb://PROMPT
           predicates:
@@ -169,7 +168,6 @@ spring:
           filters:
             - RewritePath=/api/(?<segment>.*), /$\{segment}
             - PromptAuthorizationHeaderFilter
-#         여기까지 지우셔요
 
 
         - id: prompt
