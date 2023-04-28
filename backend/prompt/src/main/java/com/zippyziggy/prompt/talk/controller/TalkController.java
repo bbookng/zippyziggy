@@ -6,6 +6,8 @@ import java.util.UUID;
 import com.zippyziggy.prompt.talk.dto.response.TalkResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,15 +58,15 @@ public class TalkController {
 		return ResponseEntity.ok(talkService.createTalk(data, UUID.fromString(crntMemberUuid)));
 	}
 
-	@Operation(summary = "톡 상세 조회", description = "톡 상세페이지를 조회한다.")
+	@Operation(summary = "톡 상세 조회", description = "톡 상세페이지를 조회한다. 프롬프트 활용 프롬프트면 Pagable 관련 없음 ! 안써도 됨")
 	@GetMapping("/{talkId}")
 	@ApiResponses({
 			@ApiResponse(responseCode = "200", description = "성공"),
 			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
 			@ApiResponse(responseCode = "500", description = "서버 에러")
 	})
-	public ResponseEntity<?> getTalkDetail(@PathVariable Long talkId, @RequestHeader String crntMemberUuid) {
-		return ResponseEntity.ok(talkService.getTalkDetail(talkId, crntMemberUuid));
+	public ResponseEntity<?> getTalkDetail(@PathVariable Long talkId, @RequestHeader String crntMemberUuid, Pageable pageable) {
+		return ResponseEntity.ok(talkService.getTalkDetail(talkId, crntMemberUuid, pageable));
 	}
 
 	@Operation(summary = "톡 댓글 조회", description = "톡 상세페이지에서 댓글을 조회한다.")

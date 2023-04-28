@@ -13,6 +13,7 @@ import com.zippyziggy.prompt.talk.repository.MessageRepository;
 import com.zippyziggy.prompt.talk.repository.TalkCommentRepository;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.zippyziggy.prompt.prompt.client.MemberClient;
@@ -71,7 +72,7 @@ public class TalkService {
 		return talk.toTalkResponse();
 	}
 
-	public TalkDetailResponse getTalkDetail(Long talkId, String crntMemberUuid) {
+	public TalkDetailResponse getTalkDetail(Long talkId, String crntMemberUuid, Pageable pageable) {
 
 		Talk talk = talkRepository.findById(talkId).orElseThrow(TalkNotFoundException::new);
 
@@ -101,7 +102,7 @@ public class TalkService {
 
 			PromptCardResponse promptCardResponse = getPromptCardResponse(crntMemberUuid, originPrompt, originMember);
 
-			List<TalkListResponse> talkListResponses = getTalkListResponses(circuitBreaker, originPrompt, crntMemberUuid);
+			List<TalkListResponse> talkListResponses = getTalkListResponses(circuitBreaker, originPrompt, crntMemberUuid, pageable);
 
 			response.setOriginMember(originMember);
 			response.setOriginPrompt(promptCardResponse);
@@ -112,9 +113,9 @@ public class TalkService {
 	}
 
 	private PromptCardResponse getPromptCardResponse(String crntMemberUuid, Prompt originPrompt, MemberResponse originMember) {
-		long commentCnt = promptCommentRepository.findAllByPromptPromptUuid(originPrompt.getPromptUuid()).size();
-		long forkCnt = promptRepository.findAllByOriginPromptUuid(originPrompt.getPromptUuid()).size();
-		long talkCnt = talkRepository.findAllByPromptPromptUuid(originPrompt.getPromptUuid()).size();
+		long commentCnt = promptCommentRepository.countAllByPromptPromptUuid(originPrompt.getPromptUuid());
+		long forkCnt = promptRepository.countAllByOriginPromptUuid(originPrompt.getPromptUuid());
+		long talkCnt = talkRepository.countAllByPromptPromptUuid(originPrompt.getPromptUuid());
 
 		// 좋아요, 북마크 여부
 		boolean isOriginLiked;
@@ -138,9 +139,9 @@ public class TalkService {
 		return promptCardResponse;
 	}
 
-	public List<TalkListResponse> getTalkListResponses(CircuitBreaker circuitBreaker, Prompt originPrompt, String crntMemberUuid) {
+	public List<TalkListResponse> getTalkListResponses(CircuitBreaker circuitBreaker, Prompt originPrompt, String crntMemberUuid, Pageable pageable) {
 
-		List<Talk> talks = talkRepository.findAllByPromptPromptUuid(originPrompt.getPromptUuid());
+		List<Talk> talks = talkRepository.findAllByPromptPromptUuid(originPrompt.getPromptUuid(), pageable).toList();
 
 		List<TalkListResponse> talkListResponses = getTalks(circuitBreaker, talks, crntMemberUuid);
 

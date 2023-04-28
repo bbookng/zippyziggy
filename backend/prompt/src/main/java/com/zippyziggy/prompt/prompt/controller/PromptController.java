@@ -173,8 +173,10 @@ public class PromptController {
 			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
 			@ApiResponse(responseCode = "500", description = "서버 에러")
 	})
-	public ResponseEntity<PromptTalkListResponse> getPromptTalkList(@PathVariable UUID promptUuid, @RequestHeader String crntMemberUuid) {
-		return ResponseEntity.ok(promptService.getPromptTalkList(promptUuid, crntMemberUuid));
+	public ResponseEntity<PromptTalkListResponse> getPromptTalkList(@PathVariable UUID promptUuid,
+		@RequestHeader String crntMemberUuid,
+		Pageable pageable) {
+		return ResponseEntity.ok(promptService.getPromptTalkList(promptUuid, crntMemberUuid, pageable));
 	}
 
 	@Operation(summary = "프롬프트 댓글 조회", description = "프롬프트 상세 페이지에서 해당 프롬프트의 댓글 목록을 조회한다.")
