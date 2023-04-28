@@ -100,12 +100,10 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
                                 .header("crntMemberUuid", userUuid)
                                 .build();
 
-                    } catch (JWTDecodeException e) {
-                        onError(exchange, "Can not decode token", HttpStatus.UNAUTHORIZED);
                     } catch (TokenExpiredException e) {
-                        onError(exchange, "Token is expired", HttpStatus.UNAUTHORIZED);
+                        return onError(exchange, "토큰이 만료되었습니다.", HttpStatus.UNAUTHORIZED);
                     } catch (Exception e) {
-                        onError(exchange, "어떤어떤익셉션", HttpStatus.UNAUTHORIZED);
+                        return onError(exchange, "토큰이 유효하지 않습니다.", HttpStatus.UNAUTHORIZED);
                     }
                 }
             }
@@ -219,7 +217,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
     private Mono<Void> onError(ServerWebExchange exchange, String err, HttpStatus httpStatus) {
         ServerHttpResponse response = exchange.getResponse();
         response.setStatusCode(httpStatus);
-
+        log.error(err);
         return response.setComplete();
     }
 
