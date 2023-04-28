@@ -3,11 +3,19 @@ import { setIsLogin } from '@/core/user/userSlice';
 import { NextPage } from 'next';
 import { wrapper } from '@/core/store';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHook';
+import { httpToken, serverUrl } from '@/lib/http';
 
 const Home = () => {
   const { value: count } = useAppSelector((state) => state.counter);
   const dispatch = useAppDispatch();
   const userState = useAppSelector((state) => state.user);
+
+  const handleRefreshToken = async () => {
+    const res = await httpToken.post(`${serverUrl}/api/members/refresh/token`);
+    console.log(res);
+    console.log(res.status);
+    console.log(res?.headers?.authorization);
+  };
 
   return (
     <div>
@@ -29,6 +37,10 @@ const Home = () => {
       <span>{count}</span>
       <button type="button" onClick={() => dispatch(decrement())}>
         decrement
+      </button>
+
+      <button type="button" onClick={handleRefreshToken}>
+        리프레시 토큰
       </button>
     </div>
   );

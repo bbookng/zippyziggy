@@ -66,7 +66,8 @@ function App({ Component, pageProps }: AppProps) {
 
   return (
     <Provider store={store}>
-      <PersistGate loading={<div>a</div>} persistor={persistor}>
+      <PersistGate persistor={persistor}>
+        {/* loading={<div></div>}  */}
         <QueryClientProvider client={queryClient}>
           <ThemeProvider theme={colorTheme === 'dark' ? darkTheme : lightTheme}>
             <GlobalStyle />
