@@ -3,7 +3,7 @@ package com.zippyziggy.prompt.prompt.repository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.zippyziggy.prompt.prompt.model.Prompt;
 import com.zippyziggy.prompt.prompt.model.QPrompt;
-import com.zippyziggy.prompt.prompt.model.QPromptLike;
+import com.zippyziggy.prompt.prompt.model.QPromptBookmark;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
-public class PromptLikeRepositoryImpl implements PromptLikeCustomRepository {
+public class PromptBookmarkRepositoryImpl implements PromptBookmarkCustomRepository {
 
     private final JPAQueryFactory queryFactory;
 
@@ -22,18 +22,16 @@ public class PromptLikeRepositoryImpl implements PromptLikeCustomRepository {
     public List<Prompt> findAllPromptsByMemberUuid(UUID memberUuid, Pageable pageable) {
 
         QPrompt qPrompt = QPrompt.prompt;
-        QPromptLike qPromptLike = QPromptLike.promptLike;
+        QPromptBookmark qPromptBookmark = QPromptBookmark.promptBookmark;
 
-        List<Prompt> prompts = queryFactory
+        return queryFactory
                 .selectFrom(qPrompt)
-                .leftJoin(qPromptLike)
-                .on(qPromptLike.prompt.id.eq(qPrompt.id))
+                .leftJoin(qPromptBookmark)
+                .on(qPromptBookmark.prompt.id.eq(qPrompt.id))
                 .distinct()
-                .where(qPromptLike.memberUuid.eq(memberUuid))
+                .where(qPromptBookmark.memberUuid.eq(memberUuid))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-
-        return prompts;
     }
 }

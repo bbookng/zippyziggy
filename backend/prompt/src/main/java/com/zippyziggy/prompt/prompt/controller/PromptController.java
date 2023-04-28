@@ -232,25 +232,42 @@ public class PromptController {
 	}
 
 
-	@Operation(summary = "프롬프트 좋아요 하기", description = "프롬프트에 좋아요 처리 진행. prompt의 UUID를 Pathvariable로 제공해야한다.")
+	@Operation(summary = "프롬프트 좋아요 하기(Authorization 필요)", description = "프롬프트에 좋아요 처리 진행. prompt의 UUID를 Pathvariable로 제공해야한다.")
 	@PostMapping("/{promptUuid}/like")
 	public ResponseEntity<?> likePrompt(@PathVariable UUID promptUuid,
 										@RequestHeader String crntMemberUuid) {
 
-		System.out.println("promptUuid = " + promptUuid);
 		promptService.likePrompt(promptUuid, crntMemberUuid);
 
 		return ResponseEntity.ok("좋아요 처리 완료");
 	}
 
+	@Operation(summary = "프롬프트 좋아요 조회(Authorization 필요)", description = "page와 size도 함께 적어주어야 조회가 된다. Authorizatioin 입력 필요")
 	@GetMapping("/members/like")
-	@Operation(summary = "프롬프트 좋아요 조회", description = "프롬프트를 좋아요한 상태이면 true 반환, 좋아요 상태가 아니면 false 반환")
 	public ResponseEntity<?> likePromptByMember(@RequestHeader String crntMemberUuid,
 												@RequestParam("page") Integer page,
 												@RequestParam("size") Integer size) {
+
 		PageRequest pageRequest = PageRequest.of(page, size);
-		return ResponseEntity.ok(promptService.likePromptsByMember(UUID.fromString(crntMemberUuid), pageRequest));
+		return ResponseEntity.ok(promptService.likePromptsByMember(crntMemberUuid, pageRequest));
 	}
 
+	@Operation(summary = "프롬프트 북마크 하기(Authorization 필요)", description = "프롬프트 북마크 처리 진행. prompt의 UUID를 Pathvariable로 제공해야한다.")
+	@PostMapping("/{promptUuid}/bookmark")
+	public ResponseEntity<?> bookmarkPrompt(@PathVariable UUID promptUuid,
+													@RequestHeader String crntMemberUuid) {
+		promptService.bookmarkPromptByMember(promptUuid, crntMemberUuid);
+		return ResponseEntity.ok("프롬프트 북마크 진행 완료");
+	}
+
+	@Operation(summary = "프롬프트 북마크 조회하기(Authorization 필요)", description = "프롬프트 북마크 조회, page 및 size를 쿼리스트링으로 입력 필요")
+	@GetMapping("/members/bookmakr")
+	public ResponseEntity<?> bookmarkPromptByMember(@RequestHeader String crntMemberUuid,
+													@RequestParam("page") Integer page,
+													@RequestParam("size") Integer size) {
+		PageRequest pageRequest = PageRequest.of(page, size);
+		promptService.bookmarkPromptByMember(crntMemberUuid, pageRequest)
+		return ResponseEntity.ok();
+	}
 
 }

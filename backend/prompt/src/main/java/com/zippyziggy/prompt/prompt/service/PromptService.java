@@ -13,14 +13,19 @@ import javax.transaction.Transactional;
 
 import com.zippyziggy.prompt.prompt.client.MemberClient;
 import com.zippyziggy.prompt.prompt.dto.response.MemberResponse;
+import com.zippyziggy.prompt.prompt.dto.response.PromptCardResponse;
 import com.zippyziggy.prompt.prompt.exception.*;
+import com.zippyziggy.prompt.prompt.model.PromptBookmark;
 import com.zippyziggy.prompt.prompt.model.PromptLike;
 import com.zippyziggy.prompt.prompt.repository.PromptBookmarkRepository;
+import com.zippyziggy.prompt.prompt.repository.PromptCommentRepository;
 import com.zippyziggy.prompt.prompt.repository.PromptLikeRepository;
 import com.zippyziggy.prompt.talk.dto.response.TalkListResponse;
+import com.zippyziggy.prompt.talk.repository.TalkRepository;
 import com.zippyziggy.prompt.talk.service.TalkService;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -43,12 +48,14 @@ public class PromptService{
 
 	private static final String VIEWCOOKIENAME = "alreadyViewCookie";
 	private final AwsS3Uploader awsS3Uploader;
-	private final PromptRepository promptRepository;
 	private final MemberClient memberClient;
 	private final CircuitBreakerFactory circuitBreakerFactory;
+	private final PromptRepository promptRepository;
 	private final PromptLikeRepository promptLikeRepository;
 	private final PromptBookmarkRepository promptBookmarkRepository;
+	private final PromptCommentRepository promptCommentRepository;
 	private final TalkService talkService;
+	private final TalkRepository talkRepository;
 
 	// Exception 처리 필요
 	public PromptResponse createPrompt(PromptRequest data, UUID crntMemberUuid, MultipartFile thumbnail) {
@@ -208,8 +215,6 @@ public class PromptService{
      */
 
 	public void likePrompt(UUID promptUuid, String crntMemberUuid) {
-		System.out.println("promptUuid = " + promptUuid);
-		System.out.println("crntMemberUuid = " + crntMemberUuid);
 
 		// 좋아요 상태 추적
 		PromptLike promptLikeExist = likePromptExist(promptUuid, crntMemberUuid);
@@ -258,33 +263,93 @@ public class PromptService{
 			return null;
 		}
 	}
+
     /*
-    로그인한 유저가 좋아요를 누른 프롬프트 조회하기
+    로그인한 유저가 좋아요를 누른 프롬프트 조회하기, PromptCard 타입의 리스트 형식으로 응답
      */
-
-	public List<PromptResponse> likePromptsByMember (UUID memberUuid, Pageable pageable) {
-		System.out.println("memberUuid = " + memberUuid);
+	public List<PromptCardResponse> likePromptsByMember (String crntMemberUuid, Pageable pageable) {
+		System.out.println("memberUuid = " + crntMemberUuid);
 		System.out.println("pageable = " + pageable);
+		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 
-		List<PromptLike> all = promptLikeRepository.findAll();
-		System.out.println("all = " + all);
+		MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(UUID.fromString(crntMemberUuid)))
+				.orElseThrow(MemberNotFoundException::new);
 
-		List<PromptLike> promptLikes = promptLikeRepository.findAllByMemberUuidOrderByRegDtDesc(memberUuid, pageable);
-		List<Prompt> prompts = new ArrayList<>();
-		for (PromptLike pt: promptLikes) {
-			System.out.println("유후");
-			System.out.println("pt = " + pt);
-			System.out.println(pt.getPrompt());
+		List<Prompt> prompts = promptLikeRepository.findAllPromptsByMemberUuid(UUID.fromString(crntMemberUuid), pageable);
+		List<PromptCardResponse> promptCardResponses = new ArrayList<>();
+
+		for (Prompt prompt: prompts) {
+			long commentCnt = promptCommentRepository.findAllByPromptPromptUuid(prompt.getPromptUuid()).size();
+			long forkCnt = promptRepository.findAllByOriginPromptUuid(prompt.getPromptUuid()).size();
+			long talkCnt = talkRepository.findAllByPromptPromptUuid(prompt.getPromptUuid()).size();
+
+			// 좋아요, 북마크 여부
+			Boolean isBookmarked;
+			Boolean isOriginLiked;
+
+			if (crntMemberUuid.equals("defaultValue")) {
+				isBookmarked = false;
+				isOriginLiked = false;
+			} else {
+				isBookmarked = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid),prompt) != null
+						? true : false;
+				isOriginLiked = promptLikeRepository.findByPromptAndMemberUuid(prompt, UUID.fromString(crntMemberUuid)) != null
+						? true : false;
+			}
+
+			PromptCardResponse promptCardResponse = PromptCardResponse.from(writerInfo, prompt, commentCnt, forkCnt, talkCnt, isBookmarked, isOriginLiked);
+			promptCardResponses.add(promptCardResponse);
+		}
+
+		return promptCardResponses;
+	}
+
+
+	/*
+	북마크 등록 및 삭제
+	 */
+	public void bookmarkPrompt(UUID promptUuid, String crntMemberUuid) {
+
+		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
+		PromptBookmark promptBookmark = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt);
+		if (promptBookmark == null) {
+			promptBookmarkRepository.save(PromptBookmark.from(prompt, UUID.fromString(crntMemberUuid)));
+		} else {
+			promptBookmarkRepository.delete(promptBookmark);
+		}
+	}
+
+
+	/*
+	북마크 조회하기
+	 */
+	public List<?> bookmarkPromptByMember(String crntMemberUuid, Pageable pageable) {
+
+		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
+		MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(UUID.fromString(crntMemberUuid)))
+				.orElseThrow(MemberNotFoundException::new);
+
+		List<Prompt> prompts = promptBookmarkRepository.findAllPromptsByMemberUuid(UUID.fromString(crntMemberUuid), pageable);
+		List<PromptCardResponse> promptCardResponses = new ArrayList<>();
+
+		for (Prompt prompt : prompts) {
+			long commentCnt = promptCommentRepository.findAllByPromptPromptUuid(prompt.getPromptUuid()).size();
+			long forkCnt = promptRepository.findAllByOriginPromptUuid(prompt.getPromptUuid()).size();
+			long talkCnt = talkRepository.findAllByPromptPromptUuid(prompt.getPromptUuid()).size();
+
+			boolean isBookmarded;
+			boolean isLiked;
+
+			if (c)
+
+			promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt);
+			promptLikeRepository.findByPromptAndMemberUuid(prompt, UUID.fromString(crntMemberUuid))
 
 		}
 
-		PromptLike allByMemberUuid = promptLikeRepository.findAllByMemberUuid(memberUuid);
-		System.out.println("memberUUid로 불러오기 allByMemberUuid = " + allByMemberUuid);
-
-		List<Prompt> prompts1 = promptLikeRepository.findAllPromptsByMemberUuid(memberUuid, pageable);
-		System.out.println("쿼리 dsl prompts1 = " + prompts1);
-
-		return null;
 
 	}
+
+
+
 }
