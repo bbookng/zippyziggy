@@ -28,6 +28,10 @@ const Container = styled.div`
       color: ${({ theme }) => theme.colors.primaryColor80};
     }
   }
+
+  .btnNone {
+    margin: 1rem auto;
+  }
 `;
 
 const SubContainer = styled.div`
@@ -65,4 +69,15 @@ const SubContainer = styled.div`
   }
 `;
 
-export { Container, SubContainer };
+const CardList = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 2fr);
+  grid-gap: 1rem;
+  margin-top: 0.5rem;
+
+  ${media.small`
+    grid-template-columns: repeat(1, 1fr);
+  `}
+`;
+
+export { Container, SubContainer, CardList };

@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { getDateTime } from '@/lib/utils';
 import { FaEllipsisH, FaPencilAlt, FaTrash } from 'react-icons/fa';
 import { useForm } from 'react-hook-form';
+import { deletePromptComment, updatePromptComment } from '@/core/prompt/promptAPI';
 import {
   Container,
   ContentBox,
@@ -17,10 +18,11 @@ import Button from '../Button/Button';
 type PropsType = {
   comment: any;
   type: string;
+  id: string | string[] | number;
   handleDeleteComment: any;
 };
 
-export default function CommentItem({ comment, type, handleDeleteComment }: PropsType) {
+export default function CommentItem({ comment, type, id, handleDeleteComment }: PropsType) {
   const [isUpdated, setIsUpdated] = useState<boolean>(false);
   const realContent = useRef<string>(comment.content);
   const [isEditPopUp, setIsEditPopUp] = useState<boolean>(false);
@@ -48,13 +50,14 @@ export default function CommentItem({ comment, type, handleDeleteComment }: Prop
   }
 
   // 댓글 삭제
-  // const handleDeleteComment = async () => {
-  // 	const requestData = { id: Number(id), commentId: Number(comment.commentId) };
-  // 	const data = await deleteComment(requestData);
-  // 	if (data.payload.result === 'SUCCESS') {
-  // 		deleteCommentList();
-  // 	}
-  // };
+  const requestDeleteComment = async () => {
+    const requestData = { id, commentId: Number(comment.commentId) };
+    const data = await deletePromptComment(requestData);
+    if (data.result === 'SUCCESS') {
+      handleDeleteComment();
+      setIsOpenCommentDeleteModal(false);
+    }
+  };
 
   // 댓글 수정 토글
   const handleUpdateCommentToggle = (e: any) => {
@@ -62,6 +65,22 @@ export default function CommentItem({ comment, type, handleDeleteComment }: Prop
     setIsEditPopUp(false);
     setIsUpdated((prev) => !prev);
     setValue('content', realContent.current);
+  };
+
+  // 댓글 수정
+  const handleUpdateComment = async (e: any) => {
+    e.preventDefault();
+    const requestData = {
+      id,
+      commentId: Number(comment.commentId),
+      content,
+    };
+    const data = await updatePromptComment(requestData);
+    if (data.result === 'SUCCESS') {
+      realContent.current = content;
+      setIsEditPopUp(false);
+      setIsUpdated((prev) => !prev);
+    }
   };
 
   // textarea 높이 변경
@@ -87,13 +106,14 @@ export default function CommentItem({ comment, type, handleDeleteComment }: Prop
           title="댓글 삭제"
           content="댓글을 삭제하시겠습니까?"
           handleModalClose={() => setIsOpenCommentDeleteModal(false)}
-          handleModalConfirm={handleDeleteComment}
+          handleModalConfirm={requestDeleteComment}
         />
       )}
       <Container>
         <UserBox>
           <Image
-            src={comment.member.memberImg}
+            priority
+            src={comment.member.profileImg}
             alt="프로필 사진"
             width={42}
             height={42}
@@ -101,7 +121,7 @@ export default function CommentItem({ comment, type, handleDeleteComment }: Prop
           />
           <div className="infoBox">
             <div className="nameBox">
-              <div className="name">{comment.member.memberNickname}</div>
+              <div className="name">{comment.member.nickname}</div>
               <FaEllipsisH className="icon" onClick={() => setIsEditPopUp(true)} />
               {isEditPopUp ? (
                 <EditPopUp ref={popUpRef}>
@@ -125,14 +145,16 @@ export default function CommentItem({ comment, type, handleDeleteComment }: Prop
           <TextareaBox>
             <Textarea value={content} onChange={(e) => handleChange(e, 'content')} />
             <div className="btnBox">
-              <Button className="btn">수정</Button>
+              <Button className="btn" onClick={handleUpdateComment}>
+                수정
+              </Button>
               <Button className="btn" onClick={handleUpdateCommentToggle}>
                 취소
               </Button>
             </div>
           </TextareaBox>
         ) : (
-          <ContentBox>{comment.content}</ContentBox>
+          <ContentBox>{content}</ContentBox>
         )}
       </Container>
     </>

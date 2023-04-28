@@ -5,34 +5,35 @@ import Search from '@/components/Search/Search';
 import { CardList, Container, SearchBox, SortBox, TitleBox } from '@/styles/prompt/List.style';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
-import { http } from '@/lib/http';
 import Paging from '@/components/Paging/Paging';
 import useDebounce from '@/hooks/useDebounce';
+import { getPromptList } from '@/core/prompt/promptAPI';
 
 export default function Prompt() {
-  const [category, setCategory] = useState<string>('전체');
-  const [sort, setSort] = useState<string>('조회수');
+  const [category, setCategory] = useState<string>('ALL');
+  const [sort, setSort] = useState<string>('likeCnt,desc');
   const [keyword, setKeyword] = useState<string>('');
   const [cardList, setCardList] = useState<Array<unknown>>([]);
+  const [totalPromptsCnt, setTotalPromptsCnt] = useState<number>(0);
   const router = useRouter();
-  const page = useRef<number>(1);
+  const page = useRef<number>(0);
   const debouncedKeyword = useDebounce(keyword);
 
   // 검색 요청
-  const handleSearch = () => {
+  const handleSearch = async () => {
     // keyword, category로 검색 요청하기
-    http
-      .get(`/prompts`, {
-        params: {
-          page: page.current,
-          keyword: debouncedKeyword,
-          size: 6,
-          sort,
-        },
-      })
-      .then((res) => {
-        setCardList(res.data.prompts);
-      });
+    const requestData = {
+      page: page.current,
+      keyword: debouncedKeyword,
+      size: 6,
+      category,
+      sort,
+    };
+    const data = await getPromptList(requestData);
+    if (data.result === 'SUCCESS') {
+      setCardList(data.data.searchPromptList);
+      setTotalPromptsCnt(data.data.totalPromptsCnt);
+    }
   };
 
   // 검색어 입력시 요청 보냄
@@ -48,7 +49,7 @@ export default function Prompt() {
 
   // 카테코리 목록들
   const categories: Category[] = [
-    { name: '전체', value: null },
+    { name: '전체', value: 'ALL' },
     { name: '학업', value: 'STUDY' },
     { name: '오락', value: 'FUN' },
     { name: '비즈니스', value: 'BUSINESS' },
@@ -59,23 +60,23 @@ export default function Prompt() {
   // 선택된 카테고리 옵션 표시
   const handleCategorySelect = (e) => {
     e.preventDefault();
-    if (e.target.innerText !== category) {
-      setCategory(e.target.innerText);
+    if (e.target.dataset.value !== category) {
+      setCategory(e.target.dataset.value);
     }
   };
 
   // 정렬 목록들
   const sortList: Category[] = [
-    { name: '조회수', value: 0 },
-    { name: '좋아요', value: 1 },
-    { name: '최신순', value: 2 },
+    { name: '좋아요', value: 'likeCnt,desc' },
+    { name: '조회수', value: 'hit,desc' },
+    { name: '최신순', value: 'regDt,desc' },
   ];
 
   // 선택된 정렬 옵션 표시
   const handleSortSelect = (e) => {
     e.preventDefault();
-    if (e.target.innerText !== sort) {
-      setSort(e.target.innerText);
+    if (e.target.dataset.value !== sort) {
+      setSort(e.target.dataset.value);
     }
   };
 
@@ -87,12 +88,12 @@ export default function Prompt() {
 
   // 페이지 이동
   const handlePage = (number: number) => {
-    page.current = number;
+    page.current = number - 1;
     handleSearch();
   };
 
   useEffect(() => {
-    page.current = 1;
+    page.current = 0;
     handleSearch();
   }, [category, sort, debouncedKeyword]);
 
@@ -132,7 +133,7 @@ export default function Prompt() {
           />
         ))}
       </CardList>
-      <Paging page={page.current} size={6} totalCnt={100} setPage={handlePage} />
+      <Paging page={page.current} size={6} totalCnt={totalPromptsCnt} setPage={handlePage} />
     </Container>
   );
 }

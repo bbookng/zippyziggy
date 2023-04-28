@@ -11,16 +11,24 @@ import {
   GetForkListUsePromptType,
   GetPromptCommentListType,
   GetPromptDetailType,
+  GetPromptListType,
   GetTalkListUsePromptType,
   LikePromptType,
+  UpdatePromptCommentType,
 } from './promptType';
+
+// 프롬프트 목록 조회
+export const getPromptList = async (requestData: GetPromptListType) => {
+  try {
+    const { data } = await httpAuth.get(`/search/prompts`, { params: requestData });
+    return { result: 'SUCCESS', data };
+  } catch (err) {
+    return { result: 'FAIL', data: err };
+  }
+};
 
 // 프롬프트 생성
 export const createPrompt = async (requestData: CreatePromptType) => {
-  // const payload = {
-  //   data: reqeustData.data,
-  //   thumbnail: reqeustData.thumbnail,
-  // };
   const payload = requestData.data;
   try {
     const { data } = await httpAuthForm.post(`/prompts`, payload);
@@ -135,7 +143,9 @@ export const getForkListUsePrompt = async (requestData: GetForkListUsePromptType
 export const createPromptComment = async (requestData: CreatePromptCommentType) => {
   try {
     const { content } = requestData;
-    const { data } = await httpAuth.post(`/prompts/${requestData.id}/comments`, content);
+    const { data } = await httpAuth.post(`/prompts/${requestData.id}/comments`, {
+      content: `${content}`,
+    });
     Toastify({
       text: message.WriteCommentSuccess,
       duration: 1000,
@@ -159,9 +169,23 @@ export const createPromptComment = async (requestData: CreatePromptCommentType) 
 // 댓글 목록 조회
 export const getPromptCommentList = async (requestData: GetPromptCommentListType) => {
   try {
-    const { data } = await httpAuth.get(`/prompts/${requestData.id}/comments`, {
+    const { data } = await http.get(`/prompts/${requestData.id}/comments`, {
       params: { page: requestData.page, size: requestData.size },
     });
+    return { result: 'SUCCESS', data };
+  } catch (err) {
+    return { result: 'FAIL', data: err };
+  }
+};
+
+// 댓글 수정
+export const updatePromptComment = async (requestData: UpdatePromptCommentType) => {
+  const payload = { content: requestData.content };
+  try {
+    const { data } = await httpAuth.put(
+      `/prompts/${requestData.id}/comments/${requestData.commentId}`,
+      payload
+    );
     return { result: 'SUCCESS', data };
   } catch (err) {
     return { result: 'FAIL', data: err };
@@ -172,7 +196,7 @@ export const getPromptCommentList = async (requestData: GetPromptCommentListType
 export const deletePromptComment = async (reqeustData: DeletePromptCommentType) => {
   try {
     const { data } = await httpAuth.delete(
-      `/prompts/${reqeustData.promptUuid}/comments/${reqeustData.commentId}`
+      `/prompts/${reqeustData.id}/comments/${reqeustData.commentId}`
     );
     Toastify({
       text: message.DeleteCommentSuccess,

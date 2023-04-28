@@ -13,7 +13,7 @@ export default function Paging({ page, size, totalCnt, setPage }: PropsType) {
   return (
     <Container>
       <Pagination
-        activePage={page}
+        activePage={page + 1}
         itemsCountPerPage={size}
         totalItemsCount={totalCnt}
         pageRangeDisplayed={5}

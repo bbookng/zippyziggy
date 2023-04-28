@@ -22,7 +22,7 @@ export default function CommentList({ id, type, nickname, size }: PropsType) {
   // GET 요청 변수
   const isStop = useRef<boolean>(false);
   const sizeRef = useRef<number>(size);
-  const page = useRef<number>(1);
+  const page = useRef<number>(0);
 
   // react-hook-form 설정
   type StateType = {
@@ -84,7 +84,7 @@ export default function CommentList({ id, type, nickname, size }: PropsType) {
     if (data.result === 'SUCCESS') {
       isStop.current = false;
       setValue('content', '');
-      page.current = 1;
+      page.current = 0;
       setCommentList([]);
       handleGetCommentList();
     }
@@ -92,9 +92,10 @@ export default function CommentList({ id, type, nickname, size }: PropsType) {
 
   // 댓글 삭제
   const handleDeleteComment = () => {
+    setCommentList([]);
     isStop.current = false;
     setValue('content', '');
-    page.current = 1;
+    page.current = 0;
     handleGetCommentList();
   };
 
@@ -104,7 +105,7 @@ export default function CommentList({ id, type, nickname, size }: PropsType) {
     return () => {
       setCommentList([]);
       isStop.current = false;
-      page.current = 1;
+      page.current = 0;
     };
   }, []);
 
@@ -129,6 +130,7 @@ export default function CommentList({ id, type, nickname, size }: PropsType) {
             key={index}
             comment={comment}
             type={type}
+            id={id}
             handleDeleteComment={handleDeleteComment}
           />
         );

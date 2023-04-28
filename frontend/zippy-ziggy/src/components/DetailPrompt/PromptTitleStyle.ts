@@ -93,6 +93,7 @@ const UserBox = styled.div`
 
   .image {
     width: 3rem;
+    border-radius: 50%;
   }
 
   .user {

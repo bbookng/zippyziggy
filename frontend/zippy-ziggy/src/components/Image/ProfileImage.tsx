@@ -23,6 +23,7 @@ function ProfileImage({ src, alt = '이미지', size = 64 }) {
       }}
     >
       <Image
+        priority
         src={src}
         alt={alt}
         style={{

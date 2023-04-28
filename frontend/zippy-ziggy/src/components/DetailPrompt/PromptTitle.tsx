@@ -11,6 +11,7 @@ import {
   FaTrash,
 } from 'react-icons/fa';
 import { getDateTime } from '@/lib/utils';
+import { useRouter } from 'next/router';
 import { ActionBox, Container, PopUp, TitleBox, UserBox } from './PromptTitleStyle';
 
 interface PropsType {
@@ -34,6 +35,8 @@ export default function PromptTitle({
 }: PropsType) {
   const [isPopUp, setIsPopUp] = useState<boolean>(false);
   const popUpRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+
   const Category = {
     STUDY: '학업',
     FUN: '오락',
@@ -42,6 +45,12 @@ export default function PromptTitle({
     ETC: '기타',
   };
 
+  // 수정 페이지로 보내기
+  const handleUpdatePrompt = () => {
+    router.push('/prompt');
+  };
+
+  // 삭제 모달 밖에 클릭 시 모달 닫기
   function handlePopUpOutsideClick(e) {
     if (popUpRef.current && !popUpRef.current.contains(e.target)) setIsPopUp(false);
   }
@@ -85,7 +94,7 @@ export default function PromptTitle({
             {isPopUp ? (
               <PopUp ref={popUpRef}>
                 <div className="popUp">
-                  <div>
+                  <div onClick={handleUpdatePrompt}>
                     <FaPencilAlt className="icon" />
                     수정
                   </div>
@@ -106,6 +115,7 @@ export default function PromptTitle({
       </div>
       <UserBox>
         <Image
+          priority
           src={prompt?.writerResponse?.writerImg || '/images/noProfile.png'}
           width={50}
           height={50}
@@ -120,6 +130,7 @@ export default function PromptTitle({
           <>
             <FaArrowLeft className="icon" />
             <Image
+              priority
               src={prompt?.originerResponse?.originerImg || '/images/noProfile.png'}
               width={50}
               height={50}

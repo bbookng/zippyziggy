@@ -1,18 +1,15 @@
 import { NextRouter } from 'next/router';
 
+export type GetPromptListType = {
+  page: number;
+  size: number;
+  category: string;
+  sort: string;
+  keyword: string;
+};
+
 export type CreatePromptType = {
   data: FormData;
-  // data: {
-  //   title: string;
-  //   description: string;
-  //   category: string;
-  //   message: {
-  //     prefix: string;
-  //     example: string;
-  //     suffix: string;
-  //   };
-  // };
-  // thumbnail: FormData;
   router: NextRouter;
 };
 
@@ -56,7 +53,13 @@ export type GetPromptCommentListType = {
   size: number;
 };
 
+export type UpdatePromptCommentType = {
+  id: string | string[] | number;
+  commentId: number;
+  content: string;
+};
+
 export type DeletePromptCommentType = {
   commentId: string | string[] | number;
-  promptUuid: string | string[] | number;
+  id: string | string[] | number;
 };
