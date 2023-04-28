@@ -34,4 +34,5 @@ public class Rating {
 
 	@Column(nullable = false)
 	private Integer score;
+
 }

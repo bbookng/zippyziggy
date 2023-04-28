@@ -1,6 +1,7 @@
 package com.zippyziggy.prompt.prompt.model;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -38,4 +39,13 @@ public class PromptBookmark {
 
 	@Column(nullable = false)
 	private LocalDateTime regDt;
+
+	public static PromptBookmark from(Prompt prompt, UUID memberUuid) {
+		return PromptBookmark.builder()
+				.memberUuid(memberUuid)
+				.prompt(prompt)
+				.regDt(LocalDateTime.now()).build();
+	}
+
+
 }

@@ -78,6 +78,7 @@ dependencies {
 	//querydsl 추가
 	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
 	annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
+	implementation 'com.google.code.findbugs:jsr305:3.0.2'
 
 }
 

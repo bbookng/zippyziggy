@@ -6,6 +6,8 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.zippyziggy.prompt.prompt.dto.request.PromptRatingRequest;
+import com.zippyziggy.prompt.prompt.dto.response.*;
 import com.zippyziggy.prompt.prompt.repository.PromptRepository;
 import com.zippyziggy.prompt.talk.dto.response.PromptTalkListResponse;
 import com.zippyziggy.prompt.talk.dto.response.TalkListResponse;
@@ -27,12 +29,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.zippyziggy.prompt.prompt.dto.request.PromptCommentRequest;
 import com.zippyziggy.prompt.prompt.dto.request.PromptModifyRequest;
 import com.zippyziggy.prompt.prompt.dto.request.PromptRequest;
-import com.zippyziggy.prompt.prompt.dto.response.ForkPromptResponse;
-import com.zippyziggy.prompt.prompt.dto.response.ForkedPromptListResponse;
-import com.zippyziggy.prompt.prompt.dto.response.PromptCommentListResponse;
-import com.zippyziggy.prompt.prompt.dto.response.PromptCommentResponse;
-import com.zippyziggy.prompt.prompt.dto.response.PromptDetailResponse;
-import com.zippyziggy.prompt.prompt.dto.response.PromptResponse;
 import com.zippyziggy.prompt.prompt.service.ForkPromptService;
 import com.zippyziggy.prompt.prompt.service.PromptCommentService;
 import com.zippyziggy.prompt.prompt.service.PromptService;
@@ -235,25 +231,59 @@ public class PromptController {
 	}
 
 
-	@Operation(summary = "프롬프트 좋아요 하기", description = "프롬프트에 좋아요 처리 진행. prompt의 UUID를 Pathvariable로 제공해야한다.")
+	@Operation(summary = "프롬프트 좋아요 하기(Authorization 필요)", description = "프롬프트에 좋아요 처리 진행. prompt의 UUID를 Pathvariable로 제공해야한다.")
 	@PostMapping("/{promptUuid}/like")
 	public ResponseEntity<?> likePrompt(@PathVariable UUID promptUuid,
 										@RequestHeader String crntMemberUuid) {
 
-		System.out.println("promptUuid = " + promptUuid);
 		promptService.likePrompt(promptUuid, crntMemberUuid);
 
 		return ResponseEntity.ok("좋아요 처리 완료");
 	}
 
+	@Operation(summary = "프롬프트 좋아요 조회(Authorization 필요)", description = "page와 size도 함께 적어주어야 조회가 된다. Authorizatioin 입력 필요")
 	@GetMapping("/members/like")
-	@Operation(summary = "프롬프트 좋아요 조회", description = "프롬프트를 좋아요한 상태이면 true 반환, 좋아요 상태가 아니면 false 반환")
-	public ResponseEntity<?> likePromptByMember(@RequestHeader String crntMemberUuid,
+	public ResponseEntity<?> likePromptByMember(@RequestHeader(required = false) String crntMemberUuid,
 												@RequestParam("page") Integer page,
 												@RequestParam("size") Integer size) {
+
 		PageRequest pageRequest = PageRequest.of(page, size);
-		return ResponseEntity.ok(promptService.likePromptsByMember(UUID.fromString(crntMemberUuid), pageRequest));
+		return ResponseEntity.ok(promptService.likePromptsByMember(crntMemberUuid, pageRequest));
+	}
+
+	@Operation(summary = "프롬프트 북마크 하기(Authorization 필요)", description = "프롬프트 북마크 처리 진행. prompt의 UUID를 Pathvariable로 제공해야한다.")
+	@PostMapping("/{promptUuid}/bookmark")
+	public ResponseEntity<?> bookmarkPrompt(@PathVariable UUID promptUuid,
+													@RequestHeader String crntMemberUuid) {
+		promptService.bookmarkPrompt(promptUuid, crntMemberUuid);
+		return ResponseEntity.ok("프롬프트 북마크 진행 완료");
+	}
+
+	@Operation(summary = "프롬프트 북마크 조회하기(Authorization 필요)", description = "프롬프트 북마크 조회, page 및 size를 쿼리스트링으로 입력 필요")
+	@GetMapping("/members/bookmakr")
+	public ResponseEntity<List<PromptCardResponse>> bookmarkPromptByMember(@RequestHeader String crntMemberUuid,
+													@RequestParam("page") Integer page,
+													@RequestParam("size") Integer size) {
+		PageRequest pageRequest = PageRequest.of(page, size);
+		return ResponseEntity.ok(promptService.bookmarkPromptByMember(crntMemberUuid, pageRequest));
+	}
+
+	@Operation(summary = "프롬프트 평가", description = "헤더에는 accessToken을 담고, promptUuid를 pathVariable로 전달 필요")
+	@PostMapping("/{promptUuid}/rating")
+	public ResponseEntity<?> ratingPrompt(@PathVariable UUID promptUuid,
+											@RequestBody PromptRatingRequest promptRatingRequest,
+											@RequestHeader String crntMemberUuid) {
+		promptService.ratingPrompt(promptUuid, crntMemberUuid, promptRatingRequest);
+		return ResponseEntity.ok("프롬프트 북마크 평가 완료");
 	}
 
 
+	/*
+	톡이랑 댓글 갯수 조회
+	 */
+	@Operation(summary = "프롬프트의 톡과 댓글 갯수", description = "promptUuid를 pathvariable로 전달 필요")
+	@GetMapping("/{promptUuid}/cnt")
+	public ResponseEntity<PromptTalkCommentCntResponse> cntPrompt(@PathVariable UUID promptUuid) {
+		return ResponseEntity.ok(promptService.cntPrompt(promptUuid));
+	}
 }
