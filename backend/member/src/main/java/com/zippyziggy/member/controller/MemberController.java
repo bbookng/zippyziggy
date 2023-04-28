@@ -155,6 +155,7 @@ public class MemberController {
         Cookie[] myCookies = request.getCookies();
         if (myCookies != null) {
             for (Cookie myCookie : myCookies) {
+                System.out.println("myCookie 쿠키!!!!!!= " + myCookie);
                 if (myCookie.getName().equals("refreshToken") || myCookie.getName().equals("accessToken")) {
                     myCookie.setMaxAge(0);
                     response.addCookie(myCookie);
