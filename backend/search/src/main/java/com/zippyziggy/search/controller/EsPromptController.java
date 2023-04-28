@@ -36,13 +36,13 @@ public class EsPromptController {
     })
     @GetMapping("/prompts")
     public ResponseEntity<SearchPromptList> searchPrompts(
-        @Nullable @RequestHeader String crntMemberUuid,
+        @RequestHeader(required = false) String crntMemberUuid,
         @RequestParam(required = false) String keyword,
         @RequestParam(required = false) String category,
         Pageable pageable
     ) {
         return ResponseEntity.ok(esPromptService.searchPrompts(
-            UUID.fromString(crntMemberUuid), keyword, category, pageable));
+            crntMemberUuid, keyword, category, pageable));
     }
 
     @PostMapping("/prompts")
