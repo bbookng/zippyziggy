@@ -537,19 +537,15 @@ public class MemberController {
             System.out.println("accessToken = 꺄울!!!!!!!" + accessToken);
             HttpHeaders new_headers = new HttpHeaders();
             new_headers.add("Authorization", accessToken);
+            return ResponseEntity.ok()
+                    .headers(new_headers)
+                    .body("accessToken이 새로 발급되었습니다.");
 
         } catch (TokenExpiredException e) {
             return new ResponseEntity<>("Refresh Token이 만료되었습니다", HttpStatus.UNAUTHORIZED);
         } catch (Exception e) {
             return new ResponseEntity<>("Refresh Token이 유효하지 않습니다", HttpStatus.UNAUTHORIZED);
         }
-
-
-
-
-        return ResponseEntity.ok()
-                .headers(new_headers)
-                .body("accessToken이 새로 발급되었습니다.");
     }
 
 
