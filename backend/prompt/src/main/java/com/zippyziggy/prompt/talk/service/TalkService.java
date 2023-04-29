@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import com.zippyziggy.prompt.prompt.dto.request.EsPromptRequest;
+import com.zippyziggy.prompt.prompt.exception.ForbiddenMemberException;
 import com.zippyziggy.prompt.prompt.exception.PromptNotFoundException;
 import com.zippyziggy.prompt.talk.dto.response.TalkResponse;
 import com.zippyziggy.prompt.talk.model.Role;
@@ -160,7 +162,7 @@ public class TalkService {
 						.findByIdAndMemberUuid(t.getId(), UUID.fromString(crntMemberUuid)) != null ? true : false;
 			}
 			Long talkLikeCnt = talkLikeRepository.countAllByTalkId(t.getId());
-			Long talkCommentCnt = talkCommentRepository.countAllByTalkId(t.getId());
+			Long talkCommentCnt = talkCommentRepository.countAllByTalk_Id(t.getId());
 			String question = messageRepository.findFirstByTalkIdAndRole(t.getId(), Role.USER).getContent().toString();
 			String answer = messageRepository.findFirstByTalkIdAndRole(t.getId(), Role.ASSISTANT).getContent().toString();
 			MemberResponse talkMemberInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(t.getMemberUUid())
@@ -173,5 +175,18 @@ public class TalkService {
 
 		}).collect(Collectors.toList());
 		return talkListResponses;
+	}
+
+	public void removeTalk(String crntMemberUuid, Long talkId) {
+		final Talk talk = talkRepository.findById(talkId)
+				.orElseThrow(TalkNotFoundException::new);
+
+		if (!crntMemberUuid.equals(talk.getMemberUUid())) {
+			throw new ForbiddenMemberException();
+		}
+
+		//TODO 삭제 시 search 서비스에 Elasticsearch DELETE 요청
+
+		talkRepository.delete(talk);
 	}
 }

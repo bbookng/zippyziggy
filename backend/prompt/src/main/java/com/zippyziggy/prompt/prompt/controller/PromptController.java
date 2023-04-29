@@ -1,22 +1,17 @@
 package com.zippyziggy.prompt.prompt.controller;
 
-import java.util.List;
-import java.util.UUID;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import com.zippyziggy.prompt.prompt.dto.request.*;
 import com.zippyziggy.prompt.prompt.dto.response.*;
 import com.zippyziggy.prompt.prompt.repository.PromptRepository;
+import com.zippyziggy.prompt.prompt.service.ForkPromptService;
+import com.zippyziggy.prompt.prompt.service.PromptCommentService;
+import com.zippyziggy.prompt.prompt.service.PromptService;
 import com.zippyziggy.prompt.talk.dto.response.PromptTalkListResponse;
-import com.zippyziggy.prompt.talk.dto.response.TalkListResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-
-import org.springframework.context.annotation.Bean;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -27,14 +22,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.zippyziggy.prompt.prompt.service.ForkPromptService;
-import com.zippyziggy.prompt.prompt.service.PromptCommentService;
-import com.zippyziggy.prompt.prompt.service.PromptService;
-
-import io.swagger.v3.oas.models.Components;
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.security.SecurityScheme;
-import lombok.RequiredArgsConstructor;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/prompts")
