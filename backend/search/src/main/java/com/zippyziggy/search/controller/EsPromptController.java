@@ -1,6 +1,6 @@
 package com.zippyziggy.search.controller;
 
-import com.zippyziggy.search.dto.request.SyncEsPrompt;
+import com.zippyziggy.search.dto.request.server.SyncEsPrompt;
 import com.zippyziggy.search.dto.response.ExtensionSearchPromptList;
 import com.zippyziggy.search.dto.response.SearchPromptList;
 import com.zippyziggy.search.service.EsPromptService;
@@ -43,30 +43,6 @@ public class EsPromptController {
     ) {
         return ResponseEntity.ok(esPromptService.searchPrompts(
             crntMemberUuid, keyword, category, pageable));
-    }
-
-    @PostMapping("/prompts")
-    public ResponseEntity<Void> createDoc(
-        @RequestBody SyncEsPrompt syncEsPrompt
-    ) {
-        esPromptService.insertDocument(syncEsPrompt);
-        return ResponseEntity.ok().build();
-    }
-
-    @PutMapping("/prompts")
-    public ResponseEntity<Void> modifyDoc(
-        @RequestBody SyncEsPrompt syncEsPrompt
-    ) {
-        esPromptService.updateDocument(syncEsPrompt);
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/prompts/{promptUuid}")
-    public ResponseEntity<Void> deleteDoc(
-        @PathVariable String promptUuid
-    ) {
-        esPromptService.deleteDocument(promptUuid);
-        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "[확장] 프롬프트 검색", description = "확장 프로그램에서 프롬프트를 검색한다.")

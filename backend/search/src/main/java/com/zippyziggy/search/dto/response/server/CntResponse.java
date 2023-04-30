@@ -1,4 +1,4 @@
-package com.zippyziggy.search.dto.response;
+package com.zippyziggy.search.dto.response.server;
 
 import lombok.Data;
 

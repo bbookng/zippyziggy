@@ -1,6 +1,6 @@
 package com.zippyziggy.search.model;
 
-import com.zippyziggy.search.dto.request.SyncEsPrompt;
+import com.zippyziggy.search.dto.request.server.SyncEsPrompt;
 
 import lombok.Builder;
 import lombok.Data;
@@ -11,14 +11,14 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 
 @Data
 @Builder
-@Document(indexName = "test")
+@Document(indexName = "prompt")
 public class EsPrompt {
 
     @Id
     private String Id;        // Elasticsearch doc id
 
     @Field(type = FieldType.Long, name = "prompt_id")
-    private Long promptId;    // 내부 로직에서 사용하는 Auto Increment id
+    private Long promptId;    // Auto Increment id
 
     @Field(type = FieldType.Text, name = "user_id")
     private String userId;
