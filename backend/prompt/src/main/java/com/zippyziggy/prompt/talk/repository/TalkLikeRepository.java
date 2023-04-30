@@ -8,7 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.zippyziggy.prompt.talk.model.TalkLike;
 
 public interface TalkLikeRepository extends JpaRepository<TalkLike, Long> {
-	Optional<TalkLike> findByIdAndMemberUuid(Long talkId, UUID crntMemberUuid);
+	Optional<TalkLike> findByTalk_IdAndMemberUuid(Long talkId, UUID crntMemberUuid);
+
+	Boolean existsByTalk_IdAndMemberUuid(Long talkId, UUID crntMemberUuid);
 
 	Long countAllByTalkId(Long talkId);
 }
