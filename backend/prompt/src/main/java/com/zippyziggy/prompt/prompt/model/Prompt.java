@@ -54,6 +54,7 @@ public class Prompt {
 	private String suffix;
 
 	@Lob
+	@Column(nullable = false)
 	private String example;
 
 	@GeneratedValue(generator = "uuid2")
