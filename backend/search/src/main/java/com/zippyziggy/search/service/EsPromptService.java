@@ -2,8 +2,8 @@ package com.zippyziggy.search.service;
 
 import com.zippyziggy.search.client.MemberClient;
 import com.zippyziggy.search.client.PromptClient;
-import com.zippyziggy.search.dto.request.SyncEsPrompt;
-import com.zippyziggy.search.dto.response.CntResponse;
+import com.zippyziggy.search.dto.request.server.SyncEsPrompt;
+import com.zippyziggy.search.dto.response.server.CntResponse;
 import com.zippyziggy.search.dto.response.ExtensionSearchPromptList;
 import com.zippyziggy.search.dto.response.PromptDetailResponse;
 import com.zippyziggy.search.dto.response.SearchPrompt;
@@ -40,7 +40,7 @@ public class EsPromptService {
     private final MemberClient memberClient;
 
     public SearchPromptList searchPrompts(
-        @Nullable String crntMemberUuid,
+        String crntMemberUuid,
         String keyword,
         String category,
         Pageable pageable

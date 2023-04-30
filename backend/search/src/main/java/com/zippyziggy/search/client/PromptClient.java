@@ -1,6 +1,6 @@
 package com.zippyziggy.search.client;
 
-import com.zippyziggy.search.dto.response.CntResponse;
+import com.zippyziggy.search.dto.response.server.CntResponse;
 import com.zippyziggy.search.dto.response.PromptDetailResponse;
 import com.zippyziggy.search.dto.response.PromptComment;
 import org.springframework.cloud.openfeign.FeignClient;

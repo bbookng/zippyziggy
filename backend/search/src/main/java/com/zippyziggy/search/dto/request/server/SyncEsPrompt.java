@@ -1,4 +1,4 @@
-package com.zippyziggy.search.dto.request;
+package com.zippyziggy.search.dto.request.server;
 
 import java.util.UUID;
 import lombok.Data;
