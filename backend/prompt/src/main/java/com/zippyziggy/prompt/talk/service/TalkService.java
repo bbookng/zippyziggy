@@ -193,7 +193,7 @@ public class TalkService {
 		final TalkLike talkLike = TalkLike.from(talk, crntMemberUuid);
 
 		talkLikeRepository.findByTalk_IdAndMemberUuid(talkId, crntMemberUuid)
-				.orElse(talkLikeRepository.save(talkLike));
+				.orElseGet(() -> talkLikeRepository.save(talkLike));
 
 	}
 
