@@ -15,10 +15,12 @@ import com.zippyziggy.prompt.talk.dto.request.TalkRequest;
 import com.zippyziggy.prompt.talk.dto.response.TalkDetailResponse;
 import com.zippyziggy.prompt.talk.dto.response.TalkListResponse;
 import com.zippyziggy.prompt.talk.dto.response.TalkResponse;
+import com.zippyziggy.prompt.talk.exception.DuplicatedTalkLikeException;
 import com.zippyziggy.prompt.talk.exception.TalkNotFoundException;
 import com.zippyziggy.prompt.talk.model.Message;
 import com.zippyziggy.prompt.talk.model.Role;
 import com.zippyziggy.prompt.talk.model.Talk;
+import com.zippyziggy.prompt.talk.model.TalkLike;
 import com.zippyziggy.prompt.talk.repository.MessageRepository;
 import com.zippyziggy.prompt.talk.repository.TalkCommentRepository;
 import com.zippyziggy.prompt.talk.repository.TalkLikeRepository;
@@ -184,5 +186,24 @@ public class TalkService {
 		//TODO 삭제 시 search 서비스에 Elasticsearch DELETE 요청
 
 		talkRepository.delete(talk);
+	}
+
+	public void likeTalk(Long talkId, UUID crntMemberUuid) {
+		final Talk talk = talkRepository.findById(talkId)
+				.orElseThrow(TalkNotFoundException::new);
+		final TalkLike talkLike = TalkLike.from(talk, crntMemberUuid);
+
+		final TalkLike oldTalkLike = talkLikeRepository.findByIdAndMemberUuid(talkId, crntMemberUuid)
+				.orElse(talkLikeRepository.save(talkLike));
+
+		if (oldTalkLike != null) throw new DuplicatedTalkLikeException();
+
+	}
+
+	public void unlikeTalk(Long talkId, UUID crntMemberUuid) {
+		final TalkLike oldTalkLike = talkLikeRepository.findByIdAndMemberUuid(talkId, crntMemberUuid)
+				.orElseThrow(DuplicatedTalkLikeException::new);
+
+		talkLikeRepository.delete(oldTalkLike);
 	}
 }
