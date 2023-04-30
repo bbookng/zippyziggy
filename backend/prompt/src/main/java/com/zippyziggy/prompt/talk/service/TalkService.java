@@ -15,7 +15,7 @@ import com.zippyziggy.prompt.talk.dto.request.TalkRequest;
 import com.zippyziggy.prompt.talk.dto.response.TalkDetailResponse;
 import com.zippyziggy.prompt.talk.dto.response.TalkListResponse;
 import com.zippyziggy.prompt.talk.dto.response.TalkResponse;
-import com.zippyziggy.prompt.talk.exception.DuplicatedTalkLikeException;
+import com.zippyziggy.prompt.talk.exception.TalkLikeNotFoundException;
 import com.zippyziggy.prompt.talk.exception.TalkNotFoundException;
 import com.zippyziggy.prompt.talk.model.Message;
 import com.zippyziggy.prompt.talk.model.Role;
@@ -193,16 +193,14 @@ public class TalkService {
 				.orElseThrow(TalkNotFoundException::new);
 		final TalkLike talkLike = TalkLike.from(talk, crntMemberUuid);
 
-		final TalkLike oldTalkLike = talkLikeRepository.findByIdAndMemberUuid(talkId, crntMemberUuid)
+		talkLikeRepository.findByIdAndMemberUuid(talkId, crntMemberUuid)
 				.orElse(talkLikeRepository.save(talkLike));
-
-		if (oldTalkLike != null) throw new DuplicatedTalkLikeException();
 
 	}
 
 	public void unlikeTalk(Long talkId, UUID crntMemberUuid) {
 		final TalkLike oldTalkLike = talkLikeRepository.findByIdAndMemberUuid(talkId, crntMemberUuid)
-				.orElseThrow(DuplicatedTalkLikeException::new);
+				.orElseThrow(TalkLikeNotFoundException::new);
 
 		talkLikeRepository.delete(oldTalkLike);
 	}
