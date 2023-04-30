@@ -28,4 +28,5 @@ public interface PromptRepository extends JpaRepository<Prompt, Long> {
 	Long countAllByOriginPromptUuid(UUID promptUuid);
 
 
+	List<Prompt> findAllByMemberUuid(UUID memberUuid);
 }
