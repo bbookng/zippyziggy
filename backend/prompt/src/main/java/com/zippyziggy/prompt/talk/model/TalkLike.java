@@ -39,4 +39,12 @@ public class TalkLike {
 
 	@Column(nullable = false)
 	private LocalDateTime regDt;
+
+	public static TalkLike from(Talk talk, UUID memberUuid) {
+		return TalkLike.builder()
+				.memberUuid(memberUuid)
+				.talk(talk)
+				.regDt(LocalDateTime.now())
+				.build();
+	}
 }
