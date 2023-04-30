@@ -177,7 +177,7 @@ public class TalkService {
 		return talkListResponses;
 	}
 
-	public void removeTalk(String crntMemberUuid, Long talkId) {
+	public void removeTalk(UUID crntMemberUuid, Long talkId) {
 		final Talk talk = talkRepository.findById(talkId)
 				.orElseThrow(TalkNotFoundException::new);
 

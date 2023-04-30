@@ -74,7 +74,7 @@ public class TalkController {
 			@RequestHeader String crntMemberUuid,
 			@PathVariable Long talkId
 	) {
-		talkService.removeTalk(crntMemberUuid, talkId);
+		talkService.removeTalk(UUID.fromString(crntMemberUuid), talkId);
 		return ResponseEntity.noContent().build();
 	}
 
