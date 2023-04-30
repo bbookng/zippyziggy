@@ -40,7 +40,7 @@ public class EsPromptService {
     private final MemberClient memberClient;
 
     public SearchPromptList searchPrompts(
-        @Nullable String crntMemberUuid,
+        String crntMemberUuid,
         String keyword,
         String category,
         Pageable pageable
