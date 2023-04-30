@@ -28,10 +28,21 @@ export const getTokenAPI = async () => {
 
 // 회원 정보 수정(Authorization 필요)
 // TODO : Form으로 수정
-export const putUserAPI = async () => {
+export const putUserAPI = async (formData: FormData) => {
   try {
-    const res = await httpAuthForm.put(`/members/profile`);
-    return res;
+    const res = await httpAuthForm({
+      method: 'put',
+      url: `/members/profile`,
+      data: formData,
+    });
+    if (res.status === 200) {
+      const result = {
+        ...res.data,
+        result: 'SUCCESS',
+      };
+      return result;
+    }
+    return { result: 'FAIL' };
   } catch (err) {
     return err;
   }
@@ -68,10 +79,17 @@ export const postUserLogoutAPI = async () => {
 };
 
 // 회원조회
-export const getUserAPI = async () => {
+export const getUserAPI = async (uuid: string) => {
+  const queryParams = new URLSearchParams({
+    userUuid: uuid,
+  }).toString();
   try {
-    const { data } = await httpAuth.post(`/members/uuid`);
-    return data;
+    const res = await http.get(`/members/uuid?${queryParams}`);
+    const result = {
+      ...res.data,
+      result: 'SUCCESS',
+    };
+    return result;
   } catch (err) {
     return err;
   }

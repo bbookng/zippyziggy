@@ -12,6 +12,7 @@ import { useAppDispatch, useAppSelector } from '@/hooks/reduxHook';
 import { setIsLogin, setNickname, setProfileImg, setUserUuid } from '@/core/user/userSlice';
 import ProfileImage from '@/components/Image/ProfileImage';
 import { useQuery } from '@tanstack/react-query';
+import { putUserAPI } from '@/core/user/userAPI';
 
 const LoginContainer = styled.div`
   width: 100%;
@@ -92,7 +93,7 @@ export default function Modify() {
   };
 
   // 정보변경 버튼 선택
-  const handleSignupBtnClick = (event) => {
+  const handleSignupBtnClick = async (event) => {
     event.preventDefault();
     const formData = new FormData();
 
@@ -102,24 +103,18 @@ export default function Modify() {
     formData.append('nickname', nickname);
 
     // 정보 수정 요청
-    httpAuthForm({
-      method: 'put',
-      url: `/members/profile`,
-      data: formData,
-    })
-      .then((res) => {
-        console.log('성공이니');
-        dispatch(setNickname(res.data.nickname));
-        console.log('성공이니');
-        dispatch(setProfileImg(res.data.profileImg));
-        console.log('성공이니');
-        dispatch(setUserUuid(res.data.userUuid));
-        setStatusNickname('success');
-      })
-      .catch(() => {
-        setStatusNickname('error');
-        console.log('실패니');
-      });
+    const result = await putUserAPI(formData);
+    console.log(result);
+    if (result.result === 'SUCCESS') {
+      dispatch(setNickname(result.nickname));
+      dispatch(setProfileImg(result.profileImg));
+      dispatch(setUserUuid(result.userUuid));
+      setBeforeNickname(result.nickname);
+      setBeforeFileUrl(result.profileImg);
+      setStatusNickname('success');
+    } else {
+      setStatusNickname('error');
+    }
   };
 
   const statusMessages = {
@@ -137,7 +132,7 @@ export default function Modify() {
         <form onSubmit={(e) => e.preventDefault()}>
           <label htmlFor="image" className="btn">
             <div style={{ flex: '1', display: 'flex', alignItems: 'center', margin: '0 0 12px 0' }}>
-              {fileUrl ? <ImagePreview file={file} /> : <ProfileImage src={fileUrl} alt="image" />}
+              {file ? <ImagePreview file={file} /> : <ProfileImage src={fileUrl} alt="image" />}
 
               <Button
                 width="fit-content"
