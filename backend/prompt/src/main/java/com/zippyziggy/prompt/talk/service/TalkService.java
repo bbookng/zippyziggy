@@ -82,8 +82,7 @@ public class TalkService {
 		if (crntMemberUuid.equals("defaultValue")) {
 			isLiked = false;
 		} else {
-			isLiked = talkLikeRepository
-					.findByIdAndMemberUuid(talkId, UUID.fromString(crntMemberUuid)) != null ? true : false;
+			isLiked = talkLikeRepository.existsByTalk_IdAndMemberUuid(talkId, UUID.fromString(crntMemberUuid));
 		}
 
 		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
@@ -157,7 +156,7 @@ public class TalkService {
 				isTalkLiked = false;
 			} else {
 				isTalkLiked = talkLikeRepository
-						.findByIdAndMemberUuid(t.getId(), UUID.fromString(crntMemberUuid)) != null ? true : false;
+						.findByTalk_IdAndMemberUuid(t.getId(), UUID.fromString(crntMemberUuid)) != null ? true : false;
 			}
 			Long talkLikeCnt = talkLikeRepository.countAllByTalkId(t.getId());
 			Long talkCommentCnt = talkCommentRepository.countAllByTalk_Id(t.getId());
@@ -193,13 +192,13 @@ public class TalkService {
 				.orElseThrow(TalkNotFoundException::new);
 		final TalkLike talkLike = TalkLike.from(talk, crntMemberUuid);
 
-		talkLikeRepository.findByIdAndMemberUuid(talkId, crntMemberUuid)
+		talkLikeRepository.findByTalk_IdAndMemberUuid(talkId, crntMemberUuid)
 				.orElse(talkLikeRepository.save(talkLike));
 
 	}
 
 	public void unlikeTalk(Long talkId, UUID crntMemberUuid) {
-		final TalkLike oldTalkLike = talkLikeRepository.findByIdAndMemberUuid(talkId, crntMemberUuid)
+		final TalkLike oldTalkLike = talkLikeRepository.findByTalk_IdAndMemberUuid(talkId, crntMemberUuid)
 				.orElseThrow(TalkLikeNotFoundException::new);
 
 		talkLikeRepository.delete(oldTalkLike);
