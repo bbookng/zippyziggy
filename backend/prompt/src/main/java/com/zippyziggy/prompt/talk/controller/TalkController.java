@@ -114,11 +114,11 @@ public class TalkController {
 			@ApiResponse(responseCode = "500", description = "서버 에러")
 	})
 	public ResponseEntity<TalkCommentResponse> modifyTalkComment(
-			@PathVariable Long talkId,
+			@PathVariable Long commentId,
 			@RequestBody TalkCommentRequest data,
 			@RequestHeader String crntMemberUuid
 	) {
-		final TalkCommentResponse comment = talkCommentService.modifyTalkComment(talkId, data, UUID.fromString(crntMemberUuid));
+		final TalkCommentResponse comment = talkCommentService.modifyTalkComment(commentId, data, UUID.fromString(crntMemberUuid));
 		return ResponseEntity.ok(comment);
 	}
 
