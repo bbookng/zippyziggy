@@ -21,7 +21,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -37,18 +36,15 @@ public class TalkCommentService {
 	private final MemberClient memberClient;
 
 	public TalkCommentListResponse getTalkCommentList(Long talkId, Pageable pageable) {
-		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
-		Page<TalkComment> commentList = talkCommentRepository.findAllByTalk_Id(talkId, pageable);
+		final CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
+		final Page<TalkComment> commentList = talkCommentRepository.findAllByTalk_Id(talkId, pageable);
 
-		List<TalkCommentResponse> talkCommentResponseList = commentList.stream().map(comment -> {
+		final List<TalkCommentResponse> talkCommentResponseList = commentList.stream().map(comment -> {
 			MemberResponse writerInfo = circuitBreaker
 					.run(() -> memberClient
 							.getMemberInfo(comment.getMemberUUid())
 							.orElseThrow(MemberNotFoundException::new));
-			TalkCommentResponse talkCommentResponse = TalkCommentResponse.from(comment);
-			talkCommentResponse.setMember(writerInfo);
-
-			return talkCommentResponse;
+			return TalkCommentResponse.from(comment, writerInfo);
 		}).collect(Collectors.toList());
 
 		Long commentCnt = talkCommentRepository.countAllByTalk_Id(talkId);
@@ -63,22 +59,32 @@ public class TalkCommentService {
 		final TalkComment talkComment = TalkComment.from(data, crntMemberUuid, talk);
 		talkCommentRepository.save(talkComment);
 
-		return TalkCommentResponse.from(talkComment);
+		final CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
+		final MemberResponse talkCommentMember = circuitBreaker
+				.run(() -> memberClient.getMemberInfo(talkComment.getMemberUUid())
+				.orElseThrow(MemberNotFoundException::new));
+
+		return TalkCommentResponse.from(talkComment, talkCommentMember);
 	}
 
 	/*
 	본인 댓글인지 확인하고 수정
 	 */
 	public TalkCommentResponse modifyTalkComment(Long commentId, TalkCommentRequest data, UUID crntMemberUuid) {
-		TalkComment comment = talkCommentRepository.findById(commentId)
+		final TalkComment comment = talkCommentRepository.findById(commentId)
 			.orElseThrow(TalkCommentNotFoundException::new);
 
 		if (!crntMemberUuid.equals(comment.getMemberUUid())) {
 			throw new ForbiddenMemberException();
 		}
 
+		final CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
+		final MemberResponse talkCommentMember = circuitBreaker
+				.run(() -> memberClient.getMemberInfo(comment.getMemberUUid())
+						.orElseThrow(MemberNotFoundException::new));
+
 		comment.setContent(data.getContent());
-		return TalkCommentResponse.from(comment);
+		return TalkCommentResponse.from(comment, talkCommentMember);
 	}
 
 	/*

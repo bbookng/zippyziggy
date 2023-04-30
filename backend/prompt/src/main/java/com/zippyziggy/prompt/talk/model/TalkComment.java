@@ -32,8 +32,14 @@ public class TalkComment {
 	@Column(nullable = false)
 	private LocalDateTime regDt;
 
+	private LocalDateTime updDt;
+
 	public void setContent(String content) {
 		this.content = content;
+	}
+
+	public void setUpdDt(LocalDateTime updDt) {
+		this.updDt = updDt;
 	}
 
 	public static TalkComment from(TalkCommentRequest data, UUID crntMemberUuid, Talk talk) {
@@ -41,6 +47,7 @@ public class TalkComment {
 				.memberUUid(crntMemberUuid)
 				.talk(talk)
 				.regDt(LocalDateTime.now())
+				.updDt(LocalDateTime.now())
 				.content(data.getContent())
 				.build();
 	}
