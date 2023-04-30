@@ -44,9 +44,7 @@ public class TalkCommentService {
 					.run(() -> memberClient
 							.getMemberInfo(comment.getMemberUUid())
 							.orElseThrow(MemberNotFoundException::new));
-			TalkCommentResponse talkCommentResponse = TalkCommentResponse.from(comment, writerInfo);
-
-			return talkCommentResponse;
+			return TalkCommentResponse.from(comment, writerInfo);
 		}).collect(Collectors.toList());
 
 		Long commentCnt = talkCommentRepository.countAllByTalk_Id(talkId);

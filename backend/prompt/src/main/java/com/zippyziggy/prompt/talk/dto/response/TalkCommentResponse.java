@@ -24,15 +24,13 @@ public class TalkCommentResponse {
         long regDt = comment.getRegDt().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
         long updDt = comment.getRegDt().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
 
-        TalkCommentResponse response = TalkCommentResponse.builder()
+        return TalkCommentResponse.builder()
                 .commentId(comment.getId())
                 .member(member)
                 .regDt(regDt)
                 .updDt(updDt)
                 .content(comment.getContent())
                 .build();
-
-        return response;
     }
 
 }
