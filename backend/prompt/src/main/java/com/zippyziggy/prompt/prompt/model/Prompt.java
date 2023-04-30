@@ -102,7 +102,7 @@ public class Prompt {
 		long regDt = this.getRegDt().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
 		long updDt = this.getRegDt().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
 
-		PromptDetailResponse response = PromptDetailResponse.builder()
+		return PromptDetailResponse.builder()
 				.messageResponse(message)
 				.title(this.getTitle())
 				.description(this.getDescription())
@@ -115,11 +115,9 @@ public class Prompt {
 				.regDt(regDt)
 				.updDt(updDt)
 				.build();
-
-		return response;
 	}
 
 	public boolean isForked() {
-		return this.originPromptUuid == null ? false : true;
+		return (this.originPromptUuid != null);
 	}
 }
