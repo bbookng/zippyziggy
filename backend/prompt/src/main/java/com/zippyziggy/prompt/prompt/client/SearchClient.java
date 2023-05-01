@@ -13,8 +13,8 @@ public interface SearchClient {
     @PostMapping("/sync/prompts")
     Void insertEsPrompt(@RequestBody EsPromptRequest esPromptRequest);
 
-    @PutMapping("/sync/prompts")
-    Void modifyEsPrompt(@RequestBody EsPromptRequest esPromptRequest);
+    @PutMapping("/sync/prompts/{promptsUuid}")
+    Void modifyEsPrompt(@PathVariable String promptsUuid, @RequestBody EsPromptRequest esPromptRequest);
 
     @DeleteMapping("/sync/prompts/{promptsUuid}")
     Void deleteEsPrompt(@PathVariable String promptsUuid);
