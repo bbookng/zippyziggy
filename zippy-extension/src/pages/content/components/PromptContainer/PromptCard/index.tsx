@@ -23,7 +23,7 @@ const PromptCard = ({ prompt }: PromptCardProps) => {
     category,
   } = prompt;
 
-  const a = () => {
+  const handlePromptClick = () => {
     const message = {
       type: 'selectPrompt',
       data: {
@@ -33,32 +33,39 @@ const PromptCard = ({ prompt }: PromptCardProps) => {
       },
     };
 
+    const textarea = document.querySelector(`form textarea`) as HTMLTextAreaElement;
+    textarea.placeholder = example;
+
     window.postMessage(message, CHAT_GPT_URL);
   };
 
   return (
-    <li className={`ZP_prompt-container__prompt-card ${classList.join(' ')}`}>
-      <button type="button" onClick={a}>
-        <article>
-          <div>
-            <div>
-              <h3>{prompt.title}</h3>
-              <div>포크</div>
+    <li className={`ZP_prompt-container__prompt-item ${classList.join(' ')}`}>
+      <button
+        className="ZP_prompt-container__prompt-button"
+        type="button"
+        onClick={handlePromptClick}
+      >
+        <article className="ZP_prompt-container__prompt-article">
+          <div className="ZP_prompt-container__content-wrapper">
+            <div className="ZP_prompt-container__title-wrapper">
+              <h3 className="ZP_prompt-container__title">{prompt.title}</h3>
+              <div className="ZP_prompt-container__forks">포크</div>
             </div>
-            <div>
-              <p>{prompt.description}</p>
+            <div className="ZP_prompt-container__description-wrapper">
+              <p className="ZP_prompt-container__description">{prompt.description}</p>
             </div>
-            <div>
-              <p>2023년 04월 24일</p>
-              <p>19개의 댓글</p>
-              <p>10개의 Talk</p>
+            <div className="ZP_prompt-container__info-wrapper">
+              <p className="ZP_prompt-container__date">2023년 04월 24일</p>
+              <p className="ZP_prompt-container__comments-count">19개의 댓글</p>
+              <p className="ZP_prompt-container__talks-count">10개의 Talk</p>
             </div>
           </div>
-          <div>
-            <div>프로필</div>
-            <div>
-              <div>좋아요</div>
-              <div>북마크</div>
+          <div className="ZP_prompt-container__profile-wrapper">
+            <div className="ZP_prompt-container__profile">프로필</div>
+            <div className="ZP_prompt-container__actions-wrapper">
+              <div className="ZP_prompt-container__like">좋아요</div>
+              <div className="ZP_prompt-container__bookmark">북마크</div>
             </div>
           </div>
         </article>

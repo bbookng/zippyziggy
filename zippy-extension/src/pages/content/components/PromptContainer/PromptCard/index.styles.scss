@@ -1,9 +1,8 @@
 // 프롬프트 카드
-.ZP_prompt-container__prompt-card {
+.ZP_prompt-container__prompt-item {
   background-color: var(--background-color);
   cursor: pointer;
-
-  button {
+  .ZP_prompt-container__prompt-button {
     width: 100%;
     height: 100%;
     padding: 0.75rem;
@@ -11,5 +10,9 @@
 
   &:hover {
     background-color: var(--background-color-hover);
+  }
+
+  .ZP_prompt-container__prompt-article {
+    text-align: left;
   }
 }
