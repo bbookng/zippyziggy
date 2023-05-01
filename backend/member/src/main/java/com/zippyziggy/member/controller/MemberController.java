@@ -4,6 +4,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zippyziggy.member.client.PromptClient;
 import com.zippyziggy.member.config.CustomModelMapper;
 import com.zippyziggy.member.dto.request.MemberSignUpRequestDto;
 import com.zippyziggy.member.dto.response.*;
@@ -26,7 +27,10 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.*;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.security.core.GrantedAuthority;
@@ -63,20 +67,29 @@ public class MemberController {
     private final JwtValidationService jwtValidationService;
     private final SecurityUtil securityUtil;
 
+    private final CircuitBreakerFactory circuitBreakerFactory;
+    private final PromptClient promptClient;
+
+
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI().components(new Components().addSecuritySchemes("bearer-key",
             new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")));
     }
 
-//    /**
-//     * SecurityContext 테스트
-//     */
-//    @GetMapping("/test/userUtil")
-//    @Operation(hidden = true)
-//    public void testUserUtil() throws Exception {
-//        Member member = securityUtil.getCurrentMember();
-//    }
+    /**
+     * SecurityContext 테스트
+     */
+    @GetMapping("/test/userUtil/{crntMemberUuid}")
+    @Operation(hidden = true)
+    public ResponseEntity<?> testUserUtil(@PathVariable String crntMemberUuid,
+                             @RequestParam("page") Integer page,
+                             @RequestParam("size") Integer size, HttpServletRequest request) throws Exception {
+//        CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
+        List<PromptCardResponse> promptsLike = promptClient.getPromptsLike(crntMemberUuid, page, size);
+//        List<PromptCardResponse> run = circuitBreaker.run(() -> );
+        return ResponseEntity.ok(promptsLike);
+    }
 //
 //    /**
 //     * 유저 자동 저장
