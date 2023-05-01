@@ -1,21 +1,22 @@
 import '../../style.scss';
 import CategoryFilter from '@pages/content/components/PromptContainer/CategoryFilter';
 import SearchBar from '@pages/content/components/PromptContainer/SearchBar';
-import PromptCard from '@pages/content/components/PromptContainer/PromptCard';
 import SortFilter from '@pages/content/components/PromptContainer/SortFilter';
-import { useState } from 'react';
-import { Category, MockPrompt, Sort } from '@pages/content/types';
+import { useMemo, useState } from 'react';
+import { Category, SearchResult, Sort } from '@pages/content/types';
 import useFetch from '@pages/hooks/@shared/useFetch';
 import {
   CHROME_CATEGORY_KEY,
   CHROME_PAGE_KEY,
   CHROME_SEARCH_KEY,
   CHROME_SORT_KEY,
+  LIMIT,
   ZIPPY_API_URL,
 } from '@pages/constants';
 import useDebounce from '@pages/hooks/@shared/useDebounce';
 import Pagination from '@pages/content/components/PromptContainer/Pagination';
 import useChromeStorage from '@pages/hooks/@shared/useChromeStorage';
+import PromptCard from '@pages/content/components/PromptContainer/PromptCard';
 
 const category: Array<Category> = [
   { id: 'all', text: '전체', value: 'ALL' },
@@ -45,15 +46,29 @@ const PromptContainer = () => {
     defaultSort
   );
   const [searchTerm, setSearchTerm] = useChromeStorage<string>(CHROME_SEARCH_KEY, '');
-  const [page, setPage] = useChromeStorage<number>(CHROME_PAGE_KEY, 1);
   const debouncedSearchTerm = useDebounce(searchTerm);
+
+  const [page, setPage] = useChromeStorage<number>(CHROME_PAGE_KEY, 1);
+  const [limit, setLimit] = useState(LIMIT);
+  const offset = (page - 1) * limit;
+
+  const memoizedParams = useMemo(() => {
+    const params = {
+      category: selectedCategory,
+      keyword: debouncedSearchTerm,
+    };
+
+    return params;
+  }, [debouncedSearchTerm, selectedCategory]);
+
   const {
-    data: promptList,
+    data: searchResult,
     loading,
     error,
-  } = useFetch<Array<MockPrompt>>({ url: `${ZIPPY_API_URL}/data` });
-  const [limit, setLimit] = useState(1);
-  const offset = (page - 1) * limit;
+  } = useFetch<SearchResult>({
+    url: `${ZIPPY_API_URL}/search/extension`,
+    params: memoizedParams,
+  });
 
   const isNewChatPage = !window.location.href.includes('/c/');
 
@@ -70,13 +85,13 @@ const PromptContainer = () => {
           />
           {/* <UserInfo /> */}
         </section>
-        <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+        <SearchBar searchTerm={debouncedSearchTerm} setSearchTerm={setSearchTerm} />
 
         <section className="ZP_prompt-container__main">
           <div className="ZP_prompt-container__category-wrapper">
             <h2 className="ZP_prompt-container__search-info">
               {`${category.find((item) => item.value === selectedCategory)?.text} ${
-                searchTerm.trim().length > 0 ? `/ ${searchTerm}` : ''
+                debouncedSearchTerm.trim().length > 0 ? `/ ${debouncedSearchTerm}` : ''
               }`}
             </h2>
             <SortFilter sort={sort} selectedSort={selectedSort} setSelectedSort={setSelectedSort} />
@@ -90,29 +105,27 @@ const PromptContainer = () => {
               if (error) {
                 return <div>에러가 발생했습니다.</div>;
               }
-              if (!promptList || promptList.length === 0) {
+              if (searchResult?.totalPromptsCnt === 0) {
                 return <div>결과가 없습니다.</div>;
               }
-              return (
-                promptList
-                  .slice(offset, offset + limit)
-                  // .filter((prompt) => {
-                  //   if (selectedCategory === 'ALL') {
-                  //     return prompt;
-                  //   }
-                  //   return prompt.category === selectedCategory;
-                  // })
-                  // .filter((prompt) => {
-                  //   return prompt.title.includes(debouncedSearchTerm);
-                  // })
-                  .map((prompt) => <PromptCard key={prompt.id} prompt={prompt} />)
-              );
+              return searchResult?.extensionSearchPromptList
+                .slice(offset, offset + limit)
+                .filter((prompt) => {
+                  if (selectedCategory === 'ALL') {
+                    return prompt;
+                  }
+                  return prompt.category === selectedCategory;
+                })
+                .filter((prompt) => {
+                  return prompt.title.includes(debouncedSearchTerm);
+                })
+                .map((prompt) => <PromptCard key={prompt.promptUuid} prompt={prompt} />);
             })()}
           </ul>
         </section>
         {loading || (
           <Pagination
-            total={(promptList ?? [])?.length}
+            total={searchResult?.totalPromptsCnt}
             limit={limit}
             page={page}
             setPage={setPage}

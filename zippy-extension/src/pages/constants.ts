@@ -2,17 +2,17 @@
 
 const DEFAULT_TARGET_LANGUAGE = 'Korean';
 
-// Placeholder
+/* Placeholder */
 const PROMPT_PLACEHOLDER = '[PROMPT]';
 const TARGET_LANGUAGE_PLACEHOLDER = '[TARGET_LANGUAGE]';
 
-// URL
+/* URL */
 const FLAGKIT_CDN_URL = 'https://cdn.jsdelivr.net/gh/madebybowtie/FlagKit@2.2/Assets/SVG';
-const ZIPPY_SITE_URL = 'https://www.naver.com/';
-const ZIPPY_API_URL = 'http://localhost:3003';
+const ZIPPY_SITE_URL = 'https://zippyziggy.kr';
+const ZIPPY_API_URL = 'https://zippyziggy.kr/api';
 const CHAT_GPT_URL = 'https://chat.openai.com/';
 
-// HTML ID
+/* HTML ID */
 const ZP_ROOT_ID = 'zp-root';
 const ZP_PROMPT_CONTAINER_ID = 'ZP_promptContainerPortals';
 const ZP_INPUT_WRAPPER_ID = 'ZP_inputWrapperPortals';
@@ -20,15 +20,18 @@ const ZP_INPUT_SECTION_ID = 'ZP_inputSection';
 const ZP_HIDE_TOGGLE_BUTTON_ID = 'ZP_hideToggleButton';
 const ZP_TO_TOP_BUTTON_ID = 'ZP_toTopButton';
 
-// Storage Key
+/* Storage Key */
 const LAST_TARGET_LANGUAGE_KEY = 'ZP_lastTargetLanguage';
 
-// Chrome Storage Key
+/* Chrome Storage Key */
 const CHROME_CATEGORY_KEY = 'ZP_category';
 const CHROME_SORT_KEY = 'ZP_sort';
 const CHROME_SEARCH_KEY = 'ZP_searchTerm';
 const CHROME_LANGUAGE_KEY = 'ZP_language';
 const CHROME_PAGE_KEY = 'ZP_page';
+
+/* Pagination */
+const LIMIT = 12; // 페이지 당 갯수
 
 export {
   DEFAULT_TARGET_LANGUAGE,
@@ -50,4 +53,5 @@ export {
   CHROME_SEARCH_KEY,
   CHROME_LANGUAGE_KEY,
   CHROME_PAGE_KEY,
+  LIMIT,
 };

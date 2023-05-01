@@ -10,15 +10,23 @@ export interface Sort {
   value: 'LIKE' | 'VIEW' | 'LATEST';
 }
 
-export type Message = {
-  prefix: string;
-  example: string;
-  suffix: string;
-};
-export interface MockPrompt {
-  id: number;
-  title: string;
-  description: string;
+export interface Prompt {
   category: Category['value'];
-  message: Message;
+  description: string;
+  example: string;
+  hit: number;
+  likeCnt: number;
+  originalPromptUuid: string | null;
+  prefix: string | null;
+  promptUuid: string;
+  regDt: number;
+  suffix: string | null;
+  title: string;
+  updDt: number;
+}
+
+export interface SearchResult {
+  extensionSearchPromptList: Array<Prompt>;
+  totalPageCnt: number;
+  totalPromptsCnt: number;
 }

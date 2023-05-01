@@ -7,6 +7,7 @@ import axios, {
   CancelTokenSource,
 } from 'axios';
 import { api, authApi } from '@pages/content/utils/axios-instance';
+import logOnDev from '@pages/content/utils/logging';
 
 type HttpMethod = 'get' | 'post' | 'put' | 'patch' | 'delete';
 
@@ -14,6 +15,8 @@ interface FetchParams {
   url: string;
   method?: HttpMethod;
   auth?: boolean;
+  params?: Record<string, any>;
+  body?: Record<string, any>;
 }
 interface FetchResult<T> {
   data: T | null;
@@ -32,6 +35,8 @@ interface FetchResult<T> {
  * @param {string} FetchParams.url 요청할 URL
  * @param {HttpMethod} [FetchParams.method='get'] HTTP 메서드 (기본값: 'get')
  * @param {boolean} [FetchParams.auth=false] 인증이 필요한 요청인지 여부 (기본값: false)
+ * @param {Object} [FetchParams.params] URL 파라미터 (선택 사항)
+ * @param {Object} [FetchParams.body] 요청 본문 (선택 사항)
  * @returns {FetchResult<T>} 요청 결과를 관리하는 객체
  * @returns {T | null} data 요청 결과 데이터
  * @returns {boolean} loading 요청 진행 여부
@@ -63,7 +68,13 @@ interface FetchResult<T> {
  * ```
  */
 
-const useFetch = <T>({ url, method = 'get', auth = false }: FetchParams): FetchResult<T> => {
+const useFetch = <T>({
+  url,
+  method = 'get',
+  auth = false,
+  params,
+  body,
+}: FetchParams): FetchResult<T> => {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<AxiosError | null>(null);
@@ -82,13 +93,15 @@ const useFetch = <T>({ url, method = 'get', auth = false }: FetchParams): FetchR
           url,
           method,
           cancelToken: cancelToken.current?.token,
+          params: config?.params || params,
+          data: config?.data || body,
           ...config,
         });
         setData(response.data);
         return response;
       } catch (err) {
         if (axios.isCancel(err)) {
-          console.log('요청 취소:', err.message);
+          logOnDev.error('요청 취소:', err.message);
         } else {
           setError(err);
         }
@@ -98,7 +111,7 @@ const useFetch = <T>({ url, method = 'get', auth = false }: FetchParams): FetchR
         setLoading(false);
       }
     },
-    [instance, url, method]
+    [instance, url, method, params, body]
   );
 
   // 컴포넌트가 언마운트될 때 취소 토큰을 이용해 요청을 취소

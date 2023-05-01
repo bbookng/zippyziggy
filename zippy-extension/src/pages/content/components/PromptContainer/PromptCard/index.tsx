@@ -1,19 +1,26 @@
 import React from 'react';
-import { MockPrompt } from '@pages/content/types';
+import { Prompt } from '@pages/content/types';
 
 interface PromptCardProps {
-  prompt: MockPrompt;
+  prompt: Prompt;
 }
 
 const classList = ['w-full', 'p-3', 'rounded-md'];
 const PromptCard = ({ prompt }: PromptCardProps) => {
-  // const {
-  //   message: { prefix, suffix, example },
-  //   title,
-  //   category,
-  //   id,
-  //   description,
-  // } = prompt;
+  const {
+    promptUuid,
+    originalPromptUuid,
+    hit,
+    example,
+    likeCnt,
+    title,
+    prefix,
+    regDt,
+    suffix,
+    updDt,
+    description,
+    category,
+  } = prompt;
 
   return (
     <li className={`ZP_prompt-container__prompt-card ${classList.join(' ')}`}>
@@ -24,7 +31,7 @@ const PromptCard = ({ prompt }: PromptCardProps) => {
             <div>포크</div>
           </div>
           <div>
-            <p>설명</p>
+            <p>{prompt.description}</p>
           </div>
           <div>
             <p>2023년 04월 24일</p>

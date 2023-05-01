@@ -5,12 +5,13 @@ import {
   PROMPT_PLACEHOLDER,
   TARGET_LANGUAGE_PLACEHOLDER,
 } from "@pages/constants";
+import logOnDev from "@pages/content/utils/logging";
 
 const ENDPOINT_CONVERSATION = "https://chat.openai.com/backend-api/conversation";
 
 const ZIPPY = (window.ZIPPYZIGGY = {
   init() {
-    console.log("ZP init");
+    logOnDev.log("ZP init");
     this.replaceFetch();
   },
   selectedPrompt: null,
@@ -41,7 +42,7 @@ const ZIPPY = (window.ZIPPYZIGGY = {
   // },
   
   replaceFetch() {
-    console.log("replace 실행");
+    logOnDev.log("replace 실행");
     window.fetch = async (...t: Parameters<typeof fetch>) => {
       const [requestInfo, requestInit] = t;
       
@@ -95,10 +96,10 @@ window.addEventListener("message", function(event) {
   switch (data.type) {
     case "test":
       ZIPPY.targetLanguage = event.data.targetLanguage;
-      console.log(ZIPPY.targetLanguage);
+      logOnDev.log(ZIPPY.targetLanguage);
       break;
     case "selectAction":
-      console.log(data);
+      logOnDev.log(data);
       break;
     default:
       break;
