@@ -36,8 +36,8 @@ type NavListProps = {
 const NavList = styled.ul<NavListProps>`
   display: flex;
   align-items: center;
-
   margin-left: 2rem;
+
   ${media.small`
     display: ${(props) => (props.isOpen ? 'flex' : 'hide')};
     flex-direction: column;
@@ -49,6 +49,7 @@ const NavList = styled.ul<NavListProps>`
     width: 40%;
     height: 100vh;
     z-index: 999;
+    margin-left: 0rem;
     padding: 2rem 0;
     transition: transform 0.3s ease-in-out;
     transform: ${(props) => (props.isOpen ? 'translateX(120%)' : 'translateX(0)')};

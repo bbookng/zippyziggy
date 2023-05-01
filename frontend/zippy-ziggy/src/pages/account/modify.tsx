@@ -9,10 +9,17 @@ import { http, httpAuth, httpForm, httpAuthForm } from '@/lib/http';
 import { media } from '@/styles/media';
 import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHook';
-import { setIsLogin, setNickname, setProfileImg, setUserUuid } from '@/core/user/userSlice';
+import {
+  setIsLogin,
+  setNickname,
+  setProfileImg,
+  setUserReset,
+  setUserUuid,
+} from '@/core/user/userSlice';
+import Hr from '@/components/Hr/Hr';
 import ProfileImage from '@/components/Image/ProfileImage';
 import { useQuery } from '@tanstack/react-query';
-import { putUserAPI } from '@/core/user/userAPI';
+import { deleteUserAPI, putUserAPI } from '@/core/user/userAPI';
 
 const LoginContainer = styled.div`
   width: 100%;
@@ -100,11 +107,15 @@ export default function Modify() {
     // user 정보 넣기
     const fileToAppend = file || new File([new Blob()], 'empty_image.png', { type: 'image/png' });
     formData.append('file', fileToAppend);
-    formData.append('nickname', nickname);
+    if (nickname) {
+      formData.append('nickname', nickname);
+    }
+    if (nickname === '') {
+      formData.append('nickname', beforeNickname);
+    }
 
     // 정보 수정 요청
     const result = await putUserAPI(formData);
-    console.log(result);
     if (result.result === 'SUCCESS') {
       dispatch(setNickname(result.nickname));
       dispatch(setProfileImg(result.profileImg));
@@ -121,6 +132,14 @@ export default function Modify() {
     default: { color: 'transparent', text: '\u00A0' },
     error: { color: 'dangerColor', text: '검증에 실패했어요!' },
     success: { color: 'successColor', text: '변경에 성공했어요!' },
+  };
+
+  // 회원탈퇴
+  const handleSignout = async () => {
+    await deleteUserAPI();
+    localStorage.clear();
+    dispatch(setUserReset());
+    router.push('/');
   };
 
   return (
@@ -157,7 +176,7 @@ export default function Modify() {
             className="nickNameInput"
             type="text"
             id="nickname"
-            placeholder="닉네임을 입력해주세요"
+            placeholder={beforeNickname}
             value={nickname}
             onChange={(e) => setFormNickname(e.target.value)}
             required
@@ -171,6 +190,10 @@ export default function Modify() {
             // fontColor={statusNickname === 'success' ? 'whiteColor' : 'blackColor50'}
           >
             정보변경
+          </Button>
+          <Hr color="blackColor10" margin="12px auto" width="90%" />
+          <Button color="dangerColor" margin="0 0 0 0" onClick={handleSignout}>
+            회원탈퇴
           </Button>
         </form>
       </LoginWarp>

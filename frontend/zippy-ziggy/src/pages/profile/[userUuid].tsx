@@ -65,29 +65,24 @@ export default function Index() {
     router.push('/');
   };
 
-  // 회원탈퇴
-  const handleSignout = async () => {
-    await deleteUserAPI();
-    localStorage.clear();
-    dispatch(setUserReset());
-    router.push('/');
-  };
-
   return (
     <ProfileContainer>
       <ProfileHeaderContainer>
         <ProfileImage src={profileImg} alt="프로필이미지" size={128} />
-        <Title sizeType="2xl">{nickname}님의 프로필</Title>
+        <Title sizeType="2xl">{nickname}</Title>
         {userState.userUuid === userUuid ? (
           <div>
-            <Button margin="4px 0 0 0" width="326px" onClick={handleLogout}>
+            <Button
+              display="inline-block"
+              padding="4px 16px"
+              margin="4px 0 0 0"
+              onClick={handleLogout}
+            >
               로그아웃
             </Button>
-            <Button margin="4px 0 0 0" width="326px" onClick={handleSignout}>
-              회원탈퇴
-            </Button>
+
             <Link href="/account/modify">
-              <Button margin="4px 0 0 0" width="326px">
+              <Button display="inline-block" margin="4px 0 0 0">
                 정보변경
               </Button>
             </Link>
