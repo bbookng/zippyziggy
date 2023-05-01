@@ -1,13 +1,14 @@
 import Button from '@/components/Button/Button';
 import ProfileImage from '@/components/Image/ProfileImage';
 import Title from '@/components/Typography/Title';
-import { deleteUserAPI, postUserLogoutAPI } from '@/core/user/userAPI';
+import { deleteUserAPI, getUserAPI, postUserLogoutAPI } from '@/core/user/userAPI';
 import { setIsLogin, setUserReset } from '@/core/user/userSlice';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHook';
 import { httpAuth } from '@/lib/http';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
-import router from 'next/router';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 const ProfileContainer = styled.div`
@@ -36,6 +37,25 @@ const ProfilePromptContainer = styled.div`
 export default function Index() {
   const userState = useAppSelector((state) => state.user); // 유저정보
   const dispatch = useAppDispatch();
+  const [nickname, setNickname] = useState('');
+  const [profileImg, setProfileImg] = useState('');
+  const router = useRouter();
+  const { userUuid } = router.query;
+  const paramUserUuid = typeof userUuid === 'string' ? userUuid : '';
+
+  const handleUserAPI = async (uuid: string) => {
+    const result = await getUserAPI(uuid);
+    if (result?.result === 'SUCCESS') {
+      setNickname(result?.nickname);
+      setProfileImg(result?.profileImg);
+    }
+  };
+
+  useEffect(() => {
+    if (userUuid) {
+      handleUserAPI(paramUserUuid);
+    }
+  }, [userUuid]);
 
   // 로그아웃
   const handleLogout = async () => {
@@ -56,17 +76,23 @@ export default function Index() {
   return (
     <ProfileContainer>
       <ProfileHeaderContainer>
-        <ProfileImage src={userState.profileImg} alt="프로필이미지" size={128} />
-        <Title sizeType="2xl">{userState.nickname}님의 프로필</Title>
-        <Button width="326px" onClick={handleLogout}>
-          로그아웃
-        </Button>
-        <Button width="326px" onClick={handleSignout}>
-          회원탈퇴
-        </Button>
-        <Link href="/account/modify">
-          <Button width="326px">정보변경</Button>
-        </Link>
+        <ProfileImage src={profileImg} alt="프로필이미지" size={128} />
+        <Title sizeType="2xl">{nickname}님의 프로필</Title>
+        {userState.userUuid === userUuid ? (
+          <div>
+            <Button margin="4px 0 0 0" width="326px" onClick={handleLogout}>
+              로그아웃
+            </Button>
+            <Button margin="4px 0 0 0" width="326px" onClick={handleSignout}>
+              회원탈퇴
+            </Button>
+            <Link href="/account/modify">
+              <Button margin="4px 0 0 0" width="326px">
+                정보변경
+              </Button>
+            </Link>
+          </div>
+        ) : null}
       </ProfileHeaderContainer>
       <ProfilePromptContainer>
         <Title>프롬프트</Title>
