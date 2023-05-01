@@ -21,15 +21,8 @@ public class KafkaProducer {
 	}
 
 	public UUID send(String topic, UUID memberUuid) {
-		ObjectMapper mapper = new ObjectMapper();
-		String jsonInString = "";
-		try {
-			jsonInString = mapper.writeValueAsString(memberUuid);
-		} catch (JsonProcessingException e) {
-			throw new RuntimeException(e);
-		}
 
-		kafkaTemplate.send(topic, jsonInString);
+		kafkaTemplate.send(topic, memberUuid.toString());
 		log.info("Kafka Producer sent data from the Order microservice: " + memberUuid);
 
 		return memberUuid;
