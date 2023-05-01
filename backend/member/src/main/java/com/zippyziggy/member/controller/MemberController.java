@@ -88,7 +88,7 @@ public class MemberController {
         try {
 
             List<PromptCardResponse> promptsLike = promptClient.getPromptsLike(crntMemberUuid, page, size);
-            if (promptsLike == null) {
+            if (promptsLike.size() == 0) {
                 return ResponseEntity.ok("좋아요를 누른 프롬프트가 존재하지 않습니다.");
             }
             return ResponseEntity.ok(promptsLike);
@@ -107,7 +107,7 @@ public class MemberController {
                                           @RequestParam("size") Integer size, HttpServletRequest request) throws Exception {
         try {
             List<PromptCardResponse> promptsBookmark = promptClient.getPromptsBookmark(crntMemberUuid, page, size);
-            if (promptsBookmark == null) {
+            if (promptsBookmark.size() == 0) {
                 return ResponseEntity.ok("좋아요를 누른 프롬프트가 존재하지 않습니다.");
             }
             return ResponseEntity.ok(promptsBookmark);
