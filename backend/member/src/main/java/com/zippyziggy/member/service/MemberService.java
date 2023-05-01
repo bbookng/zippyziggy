@@ -1,5 +1,6 @@
 package com.zippyziggy.member.service;
 
+import com.zippyziggy.member.config.kafka.KafkaProducer;
 import com.zippyziggy.member.dto.request.MemberSignUpRequestDto;
 import com.zippyziggy.member.model.JwtToken;
 import com.zippyziggy.member.model.Member;
@@ -30,6 +31,7 @@ public class MemberService {
     private final JwtValidationService jwtValidationService;
     private final S3Service s3Service;
     private final SecurityUtil securityUtil;
+    private final KafkaProducer kafkaProducer;
 //    private final RedisUtils redisUtils;
 
     /**
@@ -154,6 +156,7 @@ public class MemberService {
     public void memberSignOut() throws Exception {
 
         Member member = securityUtil.getCurrentMember();
+        kafkaProducer.send("delete-member-topic", member.getUserUuid());
         memberRepository.delete(member);
 //        member.setActivate(false);
 //        member.setNickname("");
