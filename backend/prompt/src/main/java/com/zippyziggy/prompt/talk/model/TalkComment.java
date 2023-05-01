@@ -19,7 +19,7 @@ public class TalkComment {
 	private Long id;
 
 	@Column(nullable = false, columnDefinition = "BINARY(16)")
-	private UUID memberUUid;
+	private UUID memberUuid;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "talk_id", nullable = false)
@@ -44,7 +44,7 @@ public class TalkComment {
 
 	public static TalkComment from(TalkCommentRequest data, UUID crntMemberUuid, Talk talk) {
 		return TalkComment.builder()
-				.memberUUid(crntMemberUuid)
+				.memberUuid(crntMemberUuid)
 				.talk(talk)
 				.regDt(LocalDateTime.now())
 				.updDt(LocalDateTime.now())

@@ -1,5 +1,6 @@
 package com.zippyziggy.prompt.talk.repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -13,4 +14,6 @@ public interface TalkLikeRepository extends JpaRepository<TalkLike, Long> {
 	Boolean existsByTalk_IdAndMemberUuid(Long talkId, UUID crntMemberUuid);
 
 	Long countAllByTalkId(Long talkId);
+
+	List<TalkLike> findAllByMemberUuid(UUID memberUuid);
 }

@@ -19,5 +19,5 @@ public interface PromptLikeRepository extends JpaRepository<PromptLike, Long>, P
     // 좋아요 상태 조회하기
     PromptLike findByPromptAndMemberUuid(Prompt prompt, UUID memberUuid);
 
-    PromptLike findAllByMemberUuid(UUID memberUuid);
+    List<PromptLike> findAllByMemberUuid(UUID memberUuid);
 }

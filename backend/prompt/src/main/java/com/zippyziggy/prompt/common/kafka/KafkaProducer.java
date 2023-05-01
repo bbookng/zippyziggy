@@ -3,6 +3,7 @@ package com.zippyziggy.prompt.common.kafka;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.JacksonYAMLParseException;
+import com.zippyziggy.prompt.prompt.dto.request.EsPromptRequest;
 import com.zippyziggy.prompt.prompt.dto.response.PromptResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class KafkaProducer {
         this.kafkaTemplate = kafkaTemplate;
     }
 
-    public PromptResponse send(String topic, PromptResponse promptCreateDto) {
+    public EsPromptRequest send(String topic, EsPromptRequest promptCreateDto) {
         ObjectMapper mapper = new ObjectMapper();
         String jsonInString = "";
         try {
@@ -33,5 +34,13 @@ public class KafkaProducer {
         log.info("Kafka Producer sent data from the Order microservice: " + promptCreateDto);
 
         return promptCreateDto;
+    }
+
+    public String sendDeleteMessage(String topic, String promptUuid) {
+
+        kafkaTemplate.send(topic, promptUuid);
+        log.info("Kafka Producer sent data from the Order microservice: " + promptUuid);
+
+        return promptUuid;
     }
 }

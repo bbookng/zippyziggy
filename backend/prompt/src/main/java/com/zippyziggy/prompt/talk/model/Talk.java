@@ -47,7 +47,7 @@ public class Talk {
 	private Prompt prompt;
 
 	@Column(nullable = false, columnDefinition = "BINARY(16)")
-	private UUID memberUUid;
+	private UUID memberUuid;
 
 	@Column(nullable = false, length = 255)
 	private String title;
@@ -70,7 +70,7 @@ public class Talk {
 
 	public static Talk from(TalkRequest data, UUID crntMemberUuid) {
 		return Talk.builder()
-			.memberUUid(crntMemberUuid)
+			.memberUuid(crntMemberUuid)
 			.title(data.getTitle())
 			.regDt(LocalDateTime.now())
 			.likeCnt(0L)
@@ -83,7 +83,7 @@ public class Talk {
 		return TalkResponse.builder()
 				.title(this.title)
 				.regDt(this.regDt)
-				.memberUuid(this.memberUUid)
+				.memberUuid(this.memberUuid)
 				.messages(messageResponses)
 				.build();
 	}

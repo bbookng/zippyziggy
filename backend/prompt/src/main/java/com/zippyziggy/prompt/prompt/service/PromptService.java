@@ -70,13 +70,9 @@ public class PromptService{
 		Prompt prompt = Prompt.from(data, crntMemberUuid, thumbnailUrl);
 
 		promptRepository.save(prompt);
-		prompt.setOriginPromptUuid(prompt.getPromptUuid());
 
 		// 생성 시 search 서비스에 Elasticsearch INSERT 요청
-		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
-		final EsPromptRequest esPromptRequest = EsPromptRequest.of(prompt);
-		circuitBreaker.run(() -> searchClient
-						.insertEsPrompt(esPromptRequest));
+		kafkaProducer.send("create-prompt-topic", prompt.toEsPromptRequest());
 
 		return PromptResponse.from(prompt);
 	}
@@ -108,10 +104,7 @@ public class PromptService{
 		prompt.setCategory(data.getCategory());
 
 		// 수정 시 search 서비스에 Elasticsearch UPDATE 요청
-		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
-		final EsPromptRequest esPromptRequest = EsPromptRequest.of(prompt);
-		circuitBreaker.run(() -> searchClient
-				.modifyEsPrompt(promptUuid.toString(), esPromptRequest));
+		kafkaProducer.send("update-prompt-topic", prompt.toEsPromptRequest());
 
 		return PromptResponse.from(prompt);
 	}
@@ -216,9 +209,8 @@ public class PromptService{
 	본인이 작성한 프롬프트인지 확인 필요
 	 */
 
-	public void removePrompt(String strPromptUuid, UUID crntMemberUuid) {
-		final UUID promptUuid = UUID.fromString(strPromptUuid);
-		Prompt prompt = promptRepository.findByPromptUuid(promptUuid)
+	public void removePrompt(String promptUuid, UUID crntMemberUuid) {
+		Prompt prompt = promptRepository.findByPromptUuid(UUID.fromString(promptUuid))
 			.orElseThrow(PromptNotFoundException::new);
 
 		if (!crntMemberUuid.equals(prompt.getMemberUuid())) {
@@ -228,9 +220,7 @@ public class PromptService{
 		awsS3Uploader.delete("thumbnails/", prompt.getThumbnail());
 
 		// 수정 시 search 서비스에 Elasticsearch DELETE 요청
-		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
-		final EsPromptRequest esPromptRequest = EsPromptRequest.of(prompt);
-		circuitBreaker.run(() -> searchClient.deleteEsPrompt(strPromptUuid));
+		kafkaProducer.sendDeleteMessage("delete-prompt-topic", promptUuid);
 
 		promptRepository.delete(prompt);
 	}
