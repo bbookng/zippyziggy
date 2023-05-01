@@ -1,9 +1,11 @@
 package com.zippyziggy.search.config;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zippyziggy.search.dto.request.server.SyncEsPrompt;
+import com.zippyziggy.search.exception.EsPromptNotFoundException;
 import com.zippyziggy.search.repository.EsPromptRepository;
+import com.zippyziggy.search.service.EsPromptService;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import java.util.Map;
 @Slf4j
 public class KafkaConsumer {
 	EsPromptRepository esPromptRepository;
+	EsPromptService esPromptService;
 
 	@Autowired
 	public KafkaConsumer(EsPromptRepository esPromptRepository) {
@@ -30,22 +33,39 @@ public class KafkaConsumer {
 	    Map<Object, Object> map = new HashMap<>();
 	    ObjectMapper mapper = new ObjectMapper();
 
-	    try {
-	        map = mapper.readValue(kafkaMessage, new TypeReference<Map<Object, Object>>() {
-	        });
-	    } catch (JsonProcessingException ex) {
-	        ex.printStackTrace();
-	    }
+		try {
+			SyncEsPrompt syncEsPrompt = mapper.readValue(kafkaMessage, SyncEsPrompt.class);
+			String promptUuid = String.valueOf(syncEsPrompt.getPromptUuid());
+			esPromptService.insertDocument(syncEsPrompt);
+		} catch (JsonProcessingException ex) {
+			ex.printStackTrace();
+		}
+	}
 
+	@KafkaListener(topics = "update-prompt-topic")
+	public void modifyPrompt(String kafkaMessage) {
+		log.info("Kafka Message: ->" + kafkaMessage);
 
-		//
-	    // List<Prompt> prompts = promptRepository.findAllByMemberUuid((UUID) map.get("memberUuid"));
-	    // if (prompts != null) {
-	    //     prompts.stream().map(prompt -> {promptRepository.delete(prompt);
-	    //         return null;
-	    //     });
-	    // }
+		Map<Object, Object> map = new HashMap<>();
+		ObjectMapper mapper = new ObjectMapper();
 
+		try {
+			SyncEsPrompt syncEsPrompt = mapper.readValue(kafkaMessage, SyncEsPrompt.class);
+			String promptUuid = String.valueOf(syncEsPrompt.getPromptUuid());
+			esPromptService.updateDocument(promptUuid, syncEsPrompt);
+		} catch (JsonProcessingException ex) {
+			ex.printStackTrace();
+		}
+	}
+
+	@KafkaListener(topics = "delete-prompt-topic")
+	public void removePrompt(String kafkaMessage) {
+		log.info("Kafka Message: ->" + kafkaMessage);
+		try {
+			esPromptService.deleteDocument(kafkaMessage);
+		} catch (EsPromptNotFoundException ex) {
+			ex.printStackTrace();
+		}
 	}
 }
 

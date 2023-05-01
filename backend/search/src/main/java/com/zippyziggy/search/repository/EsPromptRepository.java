@@ -1,7 +1,9 @@
 package com.zippyziggy.search.repository;
 
-import com.zippyziggy.search.model.EsPrompt;
 import java.util.Optional;
+
+import com.zippyziggy.search.model.EsPrompt;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.annotations.Query;
