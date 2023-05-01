@@ -24,7 +24,7 @@ public class CorsConfig {
         config.addAllowedOrigin("http://zippyziggy.kr:3000");
         config.addAllowedOrigin("http://zippyziggy.kr");
         config.addAllowedOrigin("https://zippyziggy.kr");
-//        config.addAllowedOrigin("http://k8e205.p.ssafy.io");
+        config.addAllowedOrigin("https://chat.openai.com");
         config.addAllowedOrigin("http://localhost:3000");
         config.addAllowedOrigin("http://localhost:8080"); // 모든 ip에 응답을 허용하겠다.
         config.addAllowedHeader("*"); // 모든 header에 응답을 허용하겠다.
