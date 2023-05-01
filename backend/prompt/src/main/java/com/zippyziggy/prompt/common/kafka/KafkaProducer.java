@@ -10,29 +10,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-@Service
+import javax.transaction.Transactional;
+
 @Slf4j
+@Service
+@Transactional
 public class KafkaProducer {
 
     private KafkaTemplate<String, String> kafkaTemplate;
-
+    private ObjectMapper mapper = new ObjectMapper();
     @Autowired
     public KafkaProducer(KafkaTemplate<String, String> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 
     public EsPromptRequest send(String topic, EsPromptRequest promptCreateDto) {
-        ObjectMapper mapper = new ObjectMapper();
-        String jsonInString = "";
+
         try {
-            jsonInString = mapper.writeValueAsString(promptCreateDto);
+            String jsonInString = mapper.writeValueAsString(promptCreateDto);
+            log.info("Kafka Producer sent data from the Order microservice: " + promptCreateDto);
+            kafkaTemplate.send(topic, jsonInString);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-
-        kafkaTemplate.send(topic, jsonInString);
-        log.info("Kafka Producer sent data from the Order microservice: " + promptCreateDto);
-
         return promptCreateDto;
     }
 
