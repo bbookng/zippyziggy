@@ -31,6 +31,7 @@
     "redux-persist": "^6.0.0",
     "styled-components": "^5.3.9",
     "styled-normalize": "^8.0.7",
+    "typeit": "^8.7.1",
     "typescript": "5.0.4"
   },
   "devDependencies": {
