@@ -1,11 +1,12 @@
 import React from 'react';
 import { Prompt } from '@pages/content/types';
+import { CHAT_GPT_URL, PROMPT_PLACEHOLDER, TARGET_LANGUAGE_PLACEHOLDER } from '@pages/constants';
 
 interface PromptCardProps {
   prompt: Prompt;
 }
 
-const classList = ['w-full', 'p-3', 'rounded-md'];
+const classList = ['w-full', 'rounded-md'];
 const PromptCard = ({ prompt }: PromptCardProps) => {
   const {
     promptUuid,
@@ -22,31 +23,46 @@ const PromptCard = ({ prompt }: PromptCardProps) => {
     category,
   } = prompt;
 
+  const a = () => {
+    const message = {
+      type: 'selectPrompt',
+      data: {
+        prompt: `${prefix || ''} ${PROMPT_PLACEHOLDER} ${
+          suffix || ''
+        } ${TARGET_LANGUAGE_PLACEHOLDER}`.trim(),
+      },
+    };
+
+    window.postMessage(message, CHAT_GPT_URL);
+  };
+
   return (
     <li className={`ZP_prompt-container__prompt-card ${classList.join(' ')}`}>
-      <article>
-        <div>
+      <button type="button" onClick={a}>
+        <article>
           <div>
-            <h3>{prompt.title}</h3>
-            <div>포크</div>
+            <div>
+              <h3>{prompt.title}</h3>
+              <div>포크</div>
+            </div>
+            <div>
+              <p>{prompt.description}</p>
+            </div>
+            <div>
+              <p>2023년 04월 24일</p>
+              <p>19개의 댓글</p>
+              <p>10개의 Talk</p>
+            </div>
           </div>
           <div>
-            <p>{prompt.description}</p>
+            <div>프로필</div>
+            <div>
+              <div>좋아요</div>
+              <div>북마크</div>
+            </div>
           </div>
-          <div>
-            <p>2023년 04월 24일</p>
-            <p>19개의 댓글</p>
-            <p>10개의 Talk</p>
-          </div>
-        </div>
-        <div>
-          <div>프로필</div>
-          <div>
-            <div>좋아요</div>
-            <div>북마크</div>
-          </div>
-        </div>
-      </article>
+        </article>
+      </button>
     </li>
   );
 };

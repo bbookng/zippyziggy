@@ -11,6 +11,7 @@ const FLAGKIT_CDN_URL = 'https://cdn.jsdelivr.net/gh/madebybowtie/FlagKit@2.2/As
 const ZIPPY_SITE_URL = 'https://zippyziggy.kr';
 const ZIPPY_API_URL = 'https://zippyziggy.kr/api';
 const CHAT_GPT_URL = 'https://chat.openai.com/';
+const ENDPOINT_CONVERSATION_URL = 'https://chat.openai.com/backend-api/conversation';
 
 /* HTML ID */
 const ZP_ROOT_ID = 'zp-root';
@@ -41,6 +42,7 @@ export {
   ZIPPY_API_URL,
   ZIPPY_SITE_URL,
   FLAGKIT_CDN_URL,
+  ENDPOINT_CONVERSATION_URL,
   ZP_ROOT_ID,
   ZP_PROMPT_CONTAINER_ID,
   ZP_INPUT_WRAPPER_ID,

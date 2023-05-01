@@ -29,8 +29,9 @@ const LanguageDropbox = () => {
       selectedLanguage > -1
         ? countryData[selectedLanguage].englishName
         : countryData.find((item) => item.navigatorLanguage === navigator.language).englishName;
+
     const message = {
-      type: 'test',
+      type: 'changeLanguage',
       targetLanguage,
     };
 
