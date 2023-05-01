@@ -1,27 +1,11 @@
 package com.zippyziggy.prompt.talk.model;
 
+import com.zippyziggy.prompt.talk.dto.request.TalkCommentRequest;
+import lombok.*;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-
-import org.hibernate.annotations.ColumnDefault;
-
-import com.zippyziggy.prompt.prompt.model.Prompt;
-
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -48,4 +32,23 @@ public class TalkComment {
 	@Column(nullable = false)
 	private LocalDateTime regDt;
 
+	private LocalDateTime updDt;
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public void setUpdDt(LocalDateTime updDt) {
+		this.updDt = updDt;
+	}
+
+	public static TalkComment from(TalkCommentRequest data, UUID crntMemberUuid, Talk talk) {
+		return TalkComment.builder()
+				.memberUUid(crntMemberUuid)
+				.talk(talk)
+				.regDt(LocalDateTime.now())
+				.updDt(LocalDateTime.now())
+				.content(data.getContent())
+				.build();
+	}
 }

@@ -1,25 +1,11 @@
 package com.zippyziggy.prompt.talk.service;
 
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import javax.transaction.Transactional;
-
-import com.zippyziggy.prompt.prompt.exception.PromptNotFoundException;
-import com.zippyziggy.prompt.talk.dto.response.TalkResponse;
-import com.zippyziggy.prompt.talk.model.Role;
-import com.zippyziggy.prompt.talk.repository.MessageRepository;
-import com.zippyziggy.prompt.talk.repository.TalkCommentRepository;
-import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
-import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
 import com.zippyziggy.prompt.prompt.client.MemberClient;
 import com.zippyziggy.prompt.prompt.dto.response.MemberResponse;
 import com.zippyziggy.prompt.prompt.dto.response.PromptCardResponse;
+import com.zippyziggy.prompt.prompt.exception.ForbiddenMemberException;
 import com.zippyziggy.prompt.prompt.exception.MemberNotFoundException;
+import com.zippyziggy.prompt.prompt.exception.PromptNotFoundException;
 import com.zippyziggy.prompt.prompt.model.Prompt;
 import com.zippyziggy.prompt.prompt.repository.PromptBookmarkRepository;
 import com.zippyziggy.prompt.prompt.repository.PromptCommentRepository;
@@ -28,13 +14,25 @@ import com.zippyziggy.prompt.prompt.repository.PromptRepository;
 import com.zippyziggy.prompt.talk.dto.request.TalkRequest;
 import com.zippyziggy.prompt.talk.dto.response.TalkDetailResponse;
 import com.zippyziggy.prompt.talk.dto.response.TalkListResponse;
+import com.zippyziggy.prompt.talk.dto.response.TalkResponse;
 import com.zippyziggy.prompt.talk.exception.TalkNotFoundException;
 import com.zippyziggy.prompt.talk.model.Message;
+import com.zippyziggy.prompt.talk.model.Role;
 import com.zippyziggy.prompt.talk.model.Talk;
+import com.zippyziggy.prompt.talk.repository.MessageRepository;
+import com.zippyziggy.prompt.talk.repository.TalkCommentRepository;
 import com.zippyziggy.prompt.talk.repository.TalkLikeRepository;
 import com.zippyziggy.prompt.talk.repository.TalkRepository;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -160,7 +158,7 @@ public class TalkService {
 						.findByIdAndMemberUuid(t.getId(), UUID.fromString(crntMemberUuid)) != null ? true : false;
 			}
 			Long talkLikeCnt = talkLikeRepository.countAllByTalkId(t.getId());
-			Long talkCommentCnt = talkCommentRepository.countAllByTalkId(t.getId());
+			Long talkCommentCnt = talkCommentRepository.countAllByTalk_Id(t.getId());
 			String question = messageRepository.findFirstByTalkIdAndRole(t.getId(), Role.USER).getContent().toString();
 			String answer = messageRepository.findFirstByTalkIdAndRole(t.getId(), Role.ASSISTANT).getContent().toString();
 			MemberResponse talkMemberInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(t.getMemberUUid())
@@ -173,5 +171,18 @@ public class TalkService {
 
 		}).collect(Collectors.toList());
 		return talkListResponses;
+	}
+
+	public void removeTalk(UUID crntMemberUuid, Long talkId) {
+		final Talk talk = talkRepository.findById(talkId)
+				.orElseThrow(TalkNotFoundException::new);
+
+		if (!crntMemberUuid.equals(talk.getMemberUUid())) {
+			throw new ForbiddenMemberException();
+		}
+
+		//TODO 삭제 시 search 서비스에 Elasticsearch DELETE 요청
+
+		talkRepository.delete(talk);
 	}
 }

@@ -6,8 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;
 
-public interface PromptBookmarkRepository extends JpaRepository<PromptBookmark, Long> {
+public interface PromptBookmarkRepository extends JpaRepository<PromptBookmark, Long>, PromptBookmarkCustomRepository {
     Long countAllByMemberUuidAndPrompt(UUID crntMemberUuid, Prompt prompt);
 
 	PromptBookmark findByMemberUuidAndPrompt(UUID crntMemberUuid, Prompt originPrompt);
+
 }
