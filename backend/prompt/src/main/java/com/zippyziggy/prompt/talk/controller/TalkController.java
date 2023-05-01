@@ -4,6 +4,7 @@ import com.zippyziggy.prompt.talk.dto.request.TalkCommentRequest;
 import com.zippyziggy.prompt.talk.dto.request.TalkRequest;
 import com.zippyziggy.prompt.talk.dto.response.TalkCommentListResponse;
 import com.zippyziggy.prompt.talk.dto.response.TalkCommentResponse;
+import com.zippyziggy.prompt.talk.dto.response.TalkDetailResponse;
 import com.zippyziggy.prompt.talk.dto.response.TalkListResponse;
 import com.zippyziggy.prompt.talk.dto.response.TalkResponse;
 import com.zippyziggy.prompt.talk.service.TalkCommentService;
@@ -75,7 +76,7 @@ public class TalkController {
 			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
 			@ApiResponse(responseCode = "500", description = "서버 에러")
 	})
-	public ResponseEntity<?> getTalkDetail(@PathVariable Long talkId, @RequestHeader String crntMemberUuid, Pageable pageable) {
+	public ResponseEntity<TalkDetailResponse> getTalkDetail(@PathVariable Long talkId, @RequestHeader String crntMemberUuid, Pageable pageable) {
 		return ResponseEntity.ok(talkService.getTalkDetail(talkId, crntMemberUuid, pageable));
 	}
 

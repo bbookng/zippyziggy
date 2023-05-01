@@ -50,7 +50,7 @@ public class Message {
 	}
 
 	public MessageResponse toMessageResponse() {
-		return new MessageResponse(this.getRole().toString(), this.getContent());
+		return new MessageResponse(this.getRole().getDescription().toUpperCase(), this.getContent());
 	}
 
 }

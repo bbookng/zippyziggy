@@ -1,5 +1,6 @@
 package com.zippyziggy.prompt.prompt.controller;
 
+import com.zippyziggy.prompt.common.kafka.KafkaProducer;
 import com.zippyziggy.prompt.prompt.dto.request.*;
 import com.zippyziggy.prompt.prompt.dto.response.*;
 import com.zippyziggy.prompt.prompt.repository.PromptRepository;
@@ -36,8 +37,6 @@ public class PromptController {
 	private final PromptService promptService;
 	private final ForkPromptService forkPromptService;
 	private final PromptCommentService promptCommentService;
-	private final PromptRepository promptRepository;
-
 
 	/**
 	 *
