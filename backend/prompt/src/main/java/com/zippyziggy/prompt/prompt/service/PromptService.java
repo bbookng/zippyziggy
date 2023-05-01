@@ -198,11 +198,15 @@ public class PromptService{
 			promptDetailResponse.setOriginerResponse(originalMemberInfo.toOriginerResponse());
 		}
 
-		// 프롬프트 조회 시 최근 조회 테이블에 추가
-		promptClickRepository.save(PromptClick.from(prompt, UUID.fromString(crntMemberUuid)));
+		if (!crntMemberUuid.equals("defaultValue")) {
+			// 프롬프트 조회 시 최근 조회 테이블에 추가
+			final PromptClick promptClick = PromptClick.from(prompt, UUID.fromString(crntMemberUuid));
+			promptClickRepository.save(promptClick);
+		}
 
 		return promptDetailResponse;
 	}
+
 
 	public PromptTalkListResponse getPromptTalkList(UUID promptUuid, String crntMemberUuid, Pageable pageable) {
 		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
