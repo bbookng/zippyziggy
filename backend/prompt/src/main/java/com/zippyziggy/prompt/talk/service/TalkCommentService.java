@@ -42,7 +42,7 @@ public class TalkCommentService {
 		final List<TalkCommentResponse> talkCommentResponseList = commentList.stream().map(comment -> {
 			MemberResponse writerInfo = circuitBreaker
 					.run(() -> memberClient
-							.getMemberInfo(comment.getMemberUUid())
+							.getMemberInfo(comment.getMemberUuid())
 							.orElseThrow(MemberNotFoundException::new));
 			return TalkCommentResponse.from(comment, writerInfo);
 		}).collect(Collectors.toList());
@@ -61,7 +61,7 @@ public class TalkCommentService {
 
 		final CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 		final MemberResponse talkCommentMember = circuitBreaker
-				.run(() -> memberClient.getMemberInfo(talkComment.getMemberUUid())
+				.run(() -> memberClient.getMemberInfo(talkComment.getMemberUuid())
 				.orElseThrow(MemberNotFoundException::new));
 
 		return TalkCommentResponse.from(talkComment, talkCommentMember);
@@ -74,13 +74,13 @@ public class TalkCommentService {
 		final TalkComment comment = talkCommentRepository.findById(commentId)
 			.orElseThrow(TalkCommentNotFoundException::new);
 
-		if (!crntMemberUuid.equals(comment.getMemberUUid())) {
+		if (!crntMemberUuid.equals(comment.getMemberUuid())) {
 			throw new ForbiddenMemberException();
 		}
 
 		final CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 		final MemberResponse talkCommentMember = circuitBreaker
-				.run(() -> memberClient.getMemberInfo(comment.getMemberUUid())
+				.run(() -> memberClient.getMemberInfo(comment.getMemberUuid())
 						.orElseThrow(MemberNotFoundException::new));
 
 		comment.setContent(data.getContent());
@@ -94,7 +94,7 @@ public class TalkCommentService {
 		TalkComment comment = talkCommentRepository.findById(commentId)
 			.orElseThrow(TalkCommentNotFoundException::new);
 
-		if (!crntMemberUuid.equals(comment.getMemberUUid())) {
+		if (!crntMemberUuid.equals(comment.getMemberUuid())) {
 			throw new ForbiddenMemberException();
 		}
 

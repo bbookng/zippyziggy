@@ -1,5 +1,6 @@
 package com.zippyziggy.prompt.talk.repository;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -12,4 +13,6 @@ public interface TalkRepository extends JpaRepository<Talk, Long> {
 	Page<Talk> findAllByPromptPromptUuid(UUID promptUuid, Pageable pageable);
 
 	long countAllByPromptPromptUuid(UUID promptUuid);
+
+	List<Talk> findAllByMemberUuid(UUID memberUuid);
 }

@@ -87,7 +87,7 @@ public class TalkService {
 
 		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 
-		MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(talk.getMemberUUid())
+		MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(talk.getMemberUuid())
 				.orElseThrow(MemberNotFoundException::new));
 
 		TalkDetailResponse response = talk.toDetailResponse(isLiked, likeCnt, writerInfo);
@@ -162,7 +162,7 @@ public class TalkService {
 			Long talkCommentCnt = talkCommentRepository.countAllByTalk_Id(t.getId());
 			String question = messageRepository.findFirstByTalkIdAndRole(t.getId(), Role.USER).getContent().toString();
 			String answer = messageRepository.findFirstByTalkIdAndRole(t.getId(), Role.ASSISTANT).getContent().toString();
-			MemberResponse talkMemberInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(t.getMemberUUid())
+			MemberResponse talkMemberInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(t.getMemberUuid())
 					.orElseThrow(MemberNotFoundException::new));
 
 			return TalkListResponse.from(question, answer,
@@ -178,7 +178,7 @@ public class TalkService {
 		final Talk talk = talkRepository.findById(talkId)
 				.orElseThrow(TalkNotFoundException::new);
 
-		if (!crntMemberUuid.equals(talk.getMemberUUid())) {
+		if (!crntMemberUuid.equals(talk.getMemberUuid())) {
 			throw new ForbiddenMemberException();
 		}
 

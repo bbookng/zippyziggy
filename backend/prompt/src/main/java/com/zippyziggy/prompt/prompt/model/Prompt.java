@@ -1,5 +1,6 @@
 package com.zippyziggy.prompt.prompt.model;
 
+import com.zippyziggy.prompt.prompt.dto.request.EsPromptRequest;
 import com.zippyziggy.prompt.prompt.dto.request.PromptRequest;
 import com.zippyziggy.prompt.prompt.dto.response.PromptMessageResponse;
 import com.zippyziggy.prompt.prompt.dto.response.PromptDetailResponse;
@@ -117,7 +118,27 @@ public class Prompt {
 				.build();
 	}
 
+	public EsPromptRequest toEsPromptRequest() {
+		return EsPromptRequest.builder()
+			.promptId(this.id)
+			.userId(this.memberUuid)
+			.title(this.title)
+			.description(this.description)
+			.hit(this.hit)
+			.likeCnt(this.likeCnt.intValue())
+			.regDt(this.regDt.atZone(ZoneId.systemDefault()).toEpochSecond())
+			.updDt(this.updDt.atZone(ZoneId.systemDefault()).toEpochSecond())
+			.category(this.category.getDescription().toUpperCase())
+			.prefix(this.prefix)
+			.suffix(this.suffix)
+			.example(this.example)
+			.promptUuid(this.promptUuid)
+			.originalPromptUuid(this.originPromptUuid)
+			.build();
+	}
+
 	public boolean isForked() {
 		return (this.originPromptUuid != null);
 	}
+
 }

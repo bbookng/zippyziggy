@@ -15,4 +15,6 @@ public interface PromptCommentRepository extends JpaRepository<PromptComment, Lo
 	List<PromptComment> findAllByPromptPromptUuid(UUID promptUuid);
 
 	Long countAllByPromptPromptUuid(UUID promptUuid);
+
+	List<PromptComment> findAllByMemberUuid(UUID memberUuid);
 }
