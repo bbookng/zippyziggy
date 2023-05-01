@@ -230,8 +230,8 @@ public class PromptController {
 	}
 
 	@Operation(summary = "프롬프트 좋아요 조회(Authorization 필요)", description = "page와 size도 함께 적어주어야 조회가 된다. Authorizatioin 입력 필요")
-	@GetMapping("/members/like")
-	public ResponseEntity<?> likePromptByMember(@RequestHeader(required = false) String crntMemberUuid,
+	@GetMapping("/members/like/{crntMemberUuid}")
+	public ResponseEntity<?> likePromptByMember(@PathVariable String crntMemberUuid,
 												@RequestParam("page") Integer page,
 												@RequestParam("size") Integer size) {
 
@@ -248,8 +248,8 @@ public class PromptController {
 	}
 
 	@Operation(summary = "프롬프트 북마크 조회하기(Authorization 필요)", description = "프롬프트 북마크 조회, page 및 size를 쿼리스트링으로 입력 필요")
-	@GetMapping("/members/bookmark")
-	public ResponseEntity<List<PromptCardResponse>> bookmarkPromptByMember(@RequestHeader String crntMemberUuid,
+	@GetMapping("/members/bookmark/{crntMemberUuid}")
+	public ResponseEntity<List<PromptCardResponse>> bookmarkPromptByMember(@PathVariable String crntMemberUuid,
 													@RequestParam("page") Integer page,
 													@RequestParam("size") Integer size) {
 		PageRequest pageRequest = PageRequest.of(page, size);
