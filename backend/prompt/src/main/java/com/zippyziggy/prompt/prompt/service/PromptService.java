@@ -437,7 +437,7 @@ public class PromptService{
 			MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(UUID.fromString(crntMemberUuid)))
 					.orElseThrow(MemberNotFoundException::new);
 
-			List<PromptClick> promptClicks = promptClickRepository.findTop5ByMemberUuidOrderByRegDtDesc(UUID.fromString(crntMemberUuid));
+			List<PromptClick> promptClicks = promptClickRepository.findTop5DistinctByMemberUuidOrderByRegDtDesc(UUID.fromString(crntMemberUuid));
 
 			List<Prompt> prompts = new ArrayList<>();
 			for (PromptClick promptClick: promptClicks) {

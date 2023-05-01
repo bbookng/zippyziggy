@@ -7,5 +7,5 @@ import java.util.List;
 import java.util.UUID;
 
 public interface PromptClickRepository extends JpaRepository<PromptClick, Long> {
-    List<PromptClick> findTop5ByMemberUuidOrderByRegDtDesc(UUID memberUuid);
+    List<PromptClick> findTop5DistinctByMemberUuidOrderByRegDtDesc(UUID memberUuid);
 }
