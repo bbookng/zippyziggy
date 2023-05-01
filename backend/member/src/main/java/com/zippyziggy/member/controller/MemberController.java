@@ -78,17 +78,35 @@ public class MemberController {
     }
 
     /**
-     * SecurityContext 테스트
+     * 멤버가 좋아요를 누름 프롬프트 조회
      */
-    @GetMapping("/test/userUtil/{crntMemberUuid}")
+    @GetMapping("/prompts/like/{crntMemberUuid}")
     @Operation(hidden = true)
-    public ResponseEntity<?> testUserUtil(@PathVariable String crntMemberUuid,
+    public ResponseEntity<?> findPromptsLike(@PathVariable String crntMemberUuid,
                              @RequestParam("page") Integer page,
                              @RequestParam("size") Integer size, HttpServletRequest request) throws Exception {
-//        CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
-        List<PromptCardResponse> promptsLike = promptClient.getPromptsLike(crntMemberUuid, page, size);
-//        List<PromptCardResponse> run = circuitBreaker.run(() -> );
-        return ResponseEntity.ok(promptsLike);
+        try {
+            List<PromptCardResponse> promptsLike = promptClient.getPromptsLike(crntMemberUuid, page, size);
+            return ResponseEntity.ok(promptsLike);
+        } catch (Exception e) {
+            return ResponseEntity.ok("좋아요를 누른 프롬프트가 존재하지 않습니다.");
+        }
+    }
+
+    /**
+     * 멤버가 북마크를 누름 프롬프트 조회
+     */
+    @GetMapping("/prompts/bookmark/{crntMemberUuid}")
+    @Operation(hidden = true)
+    public ResponseEntity<?> findPromptsBookmark(@PathVariable String crntMemberUuid,
+                                          @RequestParam("page") Integer page,
+                                          @RequestParam("size") Integer size, HttpServletRequest request) throws Exception {
+        try {
+            List<PromptCardResponse> promptsBookmark = promptClient.getPromptsBookmark(crntMemberUuid, page, size);
+            return ResponseEntity.ok(promptsBookmark);
+        } catch (Exception e) {
+            return ResponseEntity.ok("좋아요를 누른 프롬프트가 존재하지 않습니다.");
+        }
     }
 //
 //    /**
