@@ -25,26 +25,26 @@ public class KafkaConsumer {
         this.promptRepository = promptRepository;
     }
 
-    @KafkaListener(topics = "delete-member-topic")
-    public void deleteMember(String kafkaMessage) {
-        log.info("Kafka Message: ->" + kafkaMessage);
-
-        Map<Object, Object> map = new HashMap<>();
-        ObjectMapper mapper = new ObjectMapper();
-
-        try {
-            map = mapper.readValue(kafkaMessage, new TypeReference<Map<Object, Object>>() {
-            });
-        } catch (JsonProcessingException ex) {
-            ex.printStackTrace();
-        }
-
-        List<Prompt> prompts = promptRepository.findAllByMemberUuid((UUID) map.get("memberUuid"));
-        if (prompts != null) {
-            prompts.stream().map(prompt -> {promptRepository.delete(prompt);
-                return null;
-            });
-        }
-
-    }
+    // @KafkaListener(topics = "delete-member-topic")
+    // public void deleteMember(String kafkaMessage) {
+    //     log.info("Kafka Message: ->" + kafkaMessage);
+    //
+    //     Map<Object, Object> map = new HashMap<>();
+    //     ObjectMapper mapper = new ObjectMapper();
+    //
+    //     try {
+    //         map = mapper.readValue(kafkaMessage, new TypeReference<Map<Object, Object>>() {
+    //         });
+    //     } catch (JsonProcessingException ex) {
+    //         ex.printStackTrace();
+    //     }
+    //
+    //     List<Prompt> prompts = promptRepository.findAllByMemberUuid((UUID) map.get("memberUuid"));
+    //     if (prompts != null) {
+    //         prompts.stream().map(prompt -> {promptRepository.delete(prompt);
+    //             return null;
+    //         });
+    //     }
+    //
+    // }
 }
