@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(name="search")
 public interface SearchClient {
-    @PostMapping("/search/prompts")
+    @PostMapping("/sync/prompts")
     Void insertEsPrompt(@RequestBody EsPromptRequest esPromptRequest);
 
-    @PutMapping("/search/prompts")
-    Void modifyEsPrompt(@RequestBody EsPromptRequest esPromptRequest);
+    @PutMapping("/sync/prompts/{promptsUuid}")
+    Void modifyEsPrompt(@PathVariable String promptsUuid, @RequestBody EsPromptRequest esPromptRequest);
 
-    @DeleteMapping("/search/prompts/{promptsUuid}")
+    @DeleteMapping("/sync/prompts/{promptsUuid}")
     Void deleteEsPrompt(@PathVariable String promptsUuid);
 }

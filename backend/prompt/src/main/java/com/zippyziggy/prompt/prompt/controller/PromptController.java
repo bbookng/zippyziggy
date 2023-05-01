@@ -221,11 +221,11 @@ public class PromptController {
 
 	@Operation(summary = "프롬프트 좋아요 하기(Authorization 필요)", description = "프롬프트에 좋아요 처리 진행. prompt의 UUID를 Pathvariable로 제공해야한다.")
 	@PostMapping("/{promptUuid}/like")
-	public ResponseEntity<?> likePrompt(@PathVariable UUID promptUuid,
-										@RequestHeader String crntMemberUuid) {
-
+	public ResponseEntity<?> likePrompt(
+		@PathVariable UUID promptUuid,
+		@RequestHeader String crntMemberUuid
+	) {
 		promptService.likePrompt(promptUuid, crntMemberUuid);
-
 		return ResponseEntity.ok("좋아요 처리 완료");
 	}
 
@@ -294,5 +294,11 @@ public class PromptController {
 	@GetMapping("/{promptUuid}/cnt")
 	public ResponseEntity<PromptTalkCommentCntResponse> cntPrompt(@PathVariable UUID promptUuid) {
 		return ResponseEntity.ok(promptService.cntPrompt(promptUuid));
+	}
+
+	@Operation(summary = "최근 조회한 프롬프트 조회", description = "최근 조회한 5개의 프롬프트를 반환한다")
+	@GetMapping("/members/recent/prompts")
+	public ResponseEntity<?> recentPrompts(@RequestHeader String crntMemberUuid) {
+		return ResponseEntity.ok(promptService.recentPrompts(crntMemberUuid));
 	}
 }
