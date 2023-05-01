@@ -73,8 +73,8 @@ public class EsPrompt {
             .prefix(esPrompt.getPrefix())
             .suffix(esPrompt.getSuffix())
             .example(esPrompt.getExample())
-            .promptUuid(String.valueOf(esPrompt.getPromptUuid()))
-            .originalPromptUuid(String.valueOf(esPrompt.getOriginalPromptUuid()))
+            .promptUuid(esPrompt.getPromptUuid().toString())
+            .originalPromptUuid(esPrompt.getOriginalPromptUuid().toString())
             .build();
     }
 }
