@@ -41,18 +41,21 @@ export default function Index() {
   const [profileImg, setProfileImg] = useState('');
   const router = useRouter();
   const { userUuid } = router.query;
-  const paramUserUui = typeof userUuid === 'string' ? userUuid : '';
-  const { isLoading, error, data } = useQuery(['userData'], () => getUserAPI(paramUserUui));
+  const paramUserUuid = typeof userUuid === 'string' ? userUuid : '';
 
-  useEffect(() => {}, [userUuid]);
+  const handleUserAPI = async (uuid: string) => {
+    const result = await getUserAPI(uuid);
+    if (result?.result === 'SUCCESS') {
+      setNickname(result?.nickname);
+      setProfileImg(result?.profileImg);
+    }
+  };
 
   useEffect(() => {
-    if (!isLoading && data.result === 'SUCCESS') {
-      setNickname(data.nickname);
-      setProfileImg(data.profileImg);
+    if (userUuid) {
+      handleUserAPI(paramUserUuid);
     }
-    return () => {};
-  }, [isLoading]);
+  }, [userUuid]);
 
   // 로그아웃
   const handleLogout = async () => {
