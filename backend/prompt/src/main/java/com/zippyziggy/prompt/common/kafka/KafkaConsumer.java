@@ -52,17 +52,17 @@ public class KafkaConsumer {
     @KafkaListener(topics = "delete-member-topic")
     public void deleteMember(String kafkaMessage) {
         log.info("Kafka Message: ->" + kafkaMessage);
-
-        Map<Object, Object> map = new HashMap<>();
-        ObjectMapper mapper = new ObjectMapper();
-
-        try {
-            map = mapper.readValue(kafkaMessage, new TypeReference<Map<Object, Object>>() {
-            });
-        } catch (JsonProcessingException ex) {
-            ex.printStackTrace();
-        }
-        UUID memberUuid = (UUID)map.get("memberUuid");
+        //
+        // Map<Object, Object> map = new HashMap<>();
+        // ObjectMapper mapper = new ObjectMapper();
+        //
+        // try {
+        //     map = mapper.readValue(kafkaMessage, new TypeReference<Map<Object, Object>>() {
+        //     });
+        // } catch (JsonProcessingException ex) {
+        //     ex.printStackTrace();
+        // }
+        UUID memberUuid = UUID.fromString(kafkaMessage);
 
         List<PromptLike> promptLikes = promptLikeRepository.findAllByMemberUuid(memberUuid);
         List<PromptComment> promptComments = promptCommentRepository.findAllByMemberUuid(memberUuid);
