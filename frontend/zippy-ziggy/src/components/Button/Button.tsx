@@ -1,7 +1,7 @@
 import { StyledButton, ButtonProps } from './ButtonStyle';
 
 /**
- * 타이틀을 사용한다.
+ * 버튼을 사용한다.
  * @param {ButtonType} buttonType 버튼 종류 default: 'fill'
  * @param {DefaultTheme.colors} color 색 default: 'blackColor90'
  * @param {boolean} isRound 라운드 여부
