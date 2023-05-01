@@ -67,6 +67,7 @@ public class PromptService{
 		Prompt prompt = Prompt.from(data, crntMemberUuid, thumbnailUrl);
 
 		promptRepository.save(prompt);
+		prompt.setOriginPromptUuid(prompt.getPromptUuid());
 
 		// 생성 시 search 서비스에 Elasticsearch INSERT 요청
 		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
