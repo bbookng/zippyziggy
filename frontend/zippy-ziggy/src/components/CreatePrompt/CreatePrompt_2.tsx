@@ -16,7 +16,7 @@ interface PropsTypes {
   content: string | null;
   handleChange: (e: unknown, string: string) => void;
   // image: FileList;
-  setImage: (file: FileList) => void;
+  setImage: (e) => void;
   preview: string | null;
   setPreview: (url: string) => void;
   handleSetCategory: (e) => void;
@@ -43,7 +43,7 @@ export default function CreatePart2({
   // 이미지 등록
   const registerImage = (e) => {
     if (e.target.files.length) {
-      setImage(e.target.files);
+      setImage(e);
       handlePreview(e);
     }
   };
@@ -106,7 +106,7 @@ export default function CreatePart2({
       </LeftContainer>
       <RightContainer>
         <div className="cardBox">
-          <PromptCard image={preview} title={title} content={content} />
+          <PromptCard image={preview} title={title} description={content} />
         </div>
       </RightContainer>
     </Container>

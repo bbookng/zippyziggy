@@ -6,11 +6,12 @@ import Button from '../Button/Button';
 
 interface PropsType {
   isNext: boolean;
+  isNew?: boolean;
   handleNext: () => void;
-  handleCreatePrompt: () => void;
+  handlePrompt: () => void;
 }
 
-export default function CreateFooter({ isNext, handleNext, handleCreatePrompt }: PropsType) {
+export default function CreateFooter({ isNext, isNew, handleNext, handlePrompt }: PropsType) {
   const router = useRouter();
 
   const handleGoBack = () => {
@@ -23,9 +24,15 @@ export default function CreateFooter({ isNext, handleNext, handleCreatePrompt }:
           <Button width="6rem" className="prev testBtn" onClick={handleNext}>
             이전
           </Button>
-          <Button width="7rem" className="testBtn" onClick={handleCreatePrompt}>
-            게시글 작성
-          </Button>
+          {isNew ? (
+            <Button width="7rem" className="testBtn" onClick={handlePrompt}>
+              게시글 작성
+            </Button>
+          ) : (
+            <Button width="7rem" className="testBtn" onClick={handlePrompt}>
+              게시글 수정
+            </Button>
+          )}
         </>
       ) : (
         <>

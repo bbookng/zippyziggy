@@ -99,6 +99,11 @@ export default function DetailPrompt() {
     }
   };
 
+  // 프롬프트 수정 페이지로 이동
+  const handleMoveToUpdatePromptPage = () => {
+    router.push(`/prompt/${promptUuid}`);
+  };
+
   // 프롬프트 삭제
   const handleDeletePrompt = async () => {
     deletePrompt({ promptUuid, router });
@@ -140,6 +145,7 @@ export default function DetailPrompt() {
                   handleLike={handleLike}
                   handleBookmark={handleBookmark}
                   handleOpenDeleteModal={() => setIsOpenPromptDeleteModal(true)}
+                  handleMoveToUpdatePromptPage={handleMoveToUpdatePromptPage}
                 />
               </TopBox>
               <Tab itemList={itemList} tab={tab} handleIsSelected={handleIsSelectedTab} />
@@ -177,6 +183,7 @@ export default function DetailPrompt() {
                 handleLike={handleLike}
                 handleBookmark={handleBookmark}
                 handleOpenDeleteModal={() => setIsOpenPromptDeleteModal(true)}
+                handleMoveToUpdatePromptPage={handleMoveToUpdatePromptPage}
               />
             </RightContainer>
             {tab > 0 && (

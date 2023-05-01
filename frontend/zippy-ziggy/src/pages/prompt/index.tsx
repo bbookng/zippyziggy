@@ -29,7 +29,7 @@ export default function PromptCreate() {
   // isForked 인지 확인하면 로직 짜기!!!!!!!
   const isForked = false;
   const [isNext, setIsNext] = useState<boolean>(false);
-  const [image, setImage] = useState<FileList | null>(null);
+  // const [image, setImage] = useState<FileList | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const router = useRouter();
 
@@ -38,13 +38,14 @@ export default function PromptCreate() {
     defaultValues: initialState,
     mode: 'onChange',
   });
-  const [prompt1, prompt2, example, title, content, category] = getValues([
+  const [prompt1, prompt2, example, title, content, category, image] = getValues([
     'prompt1',
     'prompt2',
     'example',
     'title',
     'content',
     'category',
+    'image',
   ]);
   useEffect(() => {
     watch();
@@ -60,6 +61,11 @@ export default function PromptCreate() {
   // category 설정
   const handleSetCategory = (e) => {
     setValue('category', e.target.dataset.value);
+  };
+
+  // 이미지 설정
+  const handleSetImage = (e) => {
+    setValue('image', e.target.files);
   };
 
   // 페이지내 요소 바꿈(page1, page2)
@@ -136,7 +142,7 @@ export default function PromptCreate() {
           content={content}
           handleChange={handleChange}
           // image={image}
-          setImage={setImage}
+          setImage={handleSetImage}
           preview={preview}
           setPreview={setPreview}
           handleSetCategory={handleSetCategory}
@@ -152,8 +158,9 @@ export default function PromptCreate() {
       <FooterBox />
       <CreateFooter
         isNext={isNext}
+        isNew
         handleNext={handleNext}
-        handleCreatePrompt={handleCreatePrompt}
+        handlePrompt={handleCreatePrompt}
       />
     </>
   );
