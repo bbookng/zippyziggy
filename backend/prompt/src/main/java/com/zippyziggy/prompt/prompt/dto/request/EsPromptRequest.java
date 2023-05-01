@@ -20,7 +20,7 @@ public class EsPromptRequest {
                 .likeCnt(prompt.getHit())
                 .regDt(prompt.getRegDt().atZone(ZoneId.systemDefault()).toEpochSecond())
                 .updDt(prompt.getUpdDt().atZone(ZoneId.systemDefault()).toEpochSecond())
-                .category(prompt.getCategory().toString())
+                .category(prompt.getCategory().getDescription().toUpperCase())
                 .prefix(prompt.getPrefix())
                 .suffix(prompt.getSuffix())
                 .example(prompt.getExample())
