@@ -295,4 +295,10 @@ public class PromptController {
 	public ResponseEntity<PromptTalkCommentCntResponse> cntPrompt(@PathVariable UUID promptUuid) {
 		return ResponseEntity.ok(promptService.cntPrompt(promptUuid));
 	}
+
+	@Operation(summary = "최근 조회한 프롬프트 조회", description = "최근 조회한 5개의 프롬프트를 반환한다")
+	@GetMapping("/members/recent/prompts")
+	public ResponseEntity<?> recentPrompts(@RequestHeader String crntMemberUuid) {
+		return ResponseEntity.ok(promptService.recentPrompts(crntMemberUuid));
+	}
 }
