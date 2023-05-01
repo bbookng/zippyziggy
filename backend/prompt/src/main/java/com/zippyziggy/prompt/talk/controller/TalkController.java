@@ -139,9 +139,32 @@ public class TalkController {
 	}
 
 	@Operation(summary = "톡 좋아요", description = "현재 로그인된 유저가 톡 게시물을 좋아요 한다.")
-	@PostMapping("/{talkId}")
-	public ResponseEntity<?> likeTalk() {
-		return null;
+	@PostMapping("/{talkId}/like")
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", description = "좋아요 완료"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+			@ApiResponse(responseCode = "500", description = "서버 에러")
+	})
+	public ResponseEntity<Void> likeTalk(
+			@PathVariable Long talkId,
+			@RequestHeader String crntMemberUuid
+	) {
+		talkService.likeTalk(talkId, UUID.fromString(crntMemberUuid));
+		return ResponseEntity.ok().build();
 	}
 
+	@Operation(summary = "톡 좋아요 취소", description = "현재 로그인된 유저가 톡 게시물을 좋아요 취소한다.")
+	@DeleteMapping("/{talkId}/like")
+	@ApiResponses({
+			@ApiResponse(responseCode = "204", description = "좋아요 취소 완료"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+			@ApiResponse(responseCode = "500", description = "서버 에러")
+	})
+	public ResponseEntity<Void> unlikeTalk(
+			@PathVariable Long talkId,
+			@RequestHeader String crntMemberUuid
+	) {
+		talkService.unlikeTalk(talkId, UUID.fromString(crntMemberUuid));
+		return ResponseEntity.noContent().build();
+	}
 }

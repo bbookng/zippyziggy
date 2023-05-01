@@ -15,10 +15,12 @@ import com.zippyziggy.prompt.talk.dto.request.TalkRequest;
 import com.zippyziggy.prompt.talk.dto.response.TalkDetailResponse;
 import com.zippyziggy.prompt.talk.dto.response.TalkListResponse;
 import com.zippyziggy.prompt.talk.dto.response.TalkResponse;
+import com.zippyziggy.prompt.talk.exception.TalkLikeNotFoundException;
 import com.zippyziggy.prompt.talk.exception.TalkNotFoundException;
 import com.zippyziggy.prompt.talk.model.Message;
 import com.zippyziggy.prompt.talk.model.Role;
 import com.zippyziggy.prompt.talk.model.Talk;
+import com.zippyziggy.prompt.talk.model.TalkLike;
 import com.zippyziggy.prompt.talk.repository.MessageRepository;
 import com.zippyziggy.prompt.talk.repository.TalkCommentRepository;
 import com.zippyziggy.prompt.talk.repository.TalkLikeRepository;
@@ -80,8 +82,7 @@ public class TalkService {
 		if (crntMemberUuid.equals("defaultValue")) {
 			isLiked = false;
 		} else {
-			isLiked = talkLikeRepository
-					.findByIdAndMemberUuid(talkId, UUID.fromString(crntMemberUuid)) != null ? true : false;
+			isLiked = talkLikeRepository.existsByTalk_IdAndMemberUuid(talkId, UUID.fromString(crntMemberUuid));
 		}
 
 		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
@@ -155,7 +156,7 @@ public class TalkService {
 				isTalkLiked = false;
 			} else {
 				isTalkLiked = talkLikeRepository
-						.findByIdAndMemberUuid(t.getId(), UUID.fromString(crntMemberUuid)) != null ? true : false;
+						.findByTalk_IdAndMemberUuid(t.getId(), UUID.fromString(crntMemberUuid)) != null ? true : false;
 			}
 			Long talkLikeCnt = talkLikeRepository.countAllByTalkId(t.getId());
 			Long talkCommentCnt = talkCommentRepository.countAllByTalk_Id(t.getId());
@@ -184,5 +185,22 @@ public class TalkService {
 		//TODO 삭제 시 search 서비스에 Elasticsearch DELETE 요청
 
 		talkRepository.delete(talk);
+	}
+
+	public void likeTalk(Long talkId, UUID crntMemberUuid) {
+		final Talk talk = talkRepository.findById(talkId)
+				.orElseThrow(TalkNotFoundException::new);
+		final TalkLike talkLike = TalkLike.from(talk, crntMemberUuid);
+
+		talkLikeRepository.findByTalk_IdAndMemberUuid(talkId, crntMemberUuid)
+				.orElseGet(() -> talkLikeRepository.save(talkLike));
+
+	}
+
+	public void unlikeTalk(Long talkId, UUID crntMemberUuid) {
+		final TalkLike oldTalkLike = talkLikeRepository.findByTalk_IdAndMemberUuid(talkId, crntMemberUuid)
+				.orElseThrow(TalkLikeNotFoundException::new);
+
+		talkLikeRepository.delete(oldTalkLike);
 	}
 }

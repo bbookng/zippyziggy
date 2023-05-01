@@ -69,7 +69,7 @@ public class PromptService{
 		Prompt prompt = Prompt.from(data, crntMemberUuid, thumbnailUrl);
 
 		promptRepository.save(prompt);
-		kafkaProducer.send("create-prompt-topic", PromptResponse.from(prompt));
+		prompt.setOriginPromptUuid(prompt.getPromptUuid());
 
 		// 생성 시 search 서비스에 Elasticsearch INSERT 요청
 		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
@@ -110,7 +110,7 @@ public class PromptService{
 		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 		final EsPromptRequest esPromptRequest = EsPromptRequest.of(prompt);
 		circuitBreaker.run(() -> searchClient
-				.modifyEsPrompt(esPromptRequest));
+				.modifyEsPrompt(promptUuid.toString(), esPromptRequest));
 
 		return PromptResponse.from(prompt);
 	}
