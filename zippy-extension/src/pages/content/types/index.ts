@@ -7,7 +7,7 @@ export interface Category {
 export interface Sort {
   id: string;
   text: '좋아요' | '조회수' | '최신순';
-  value: 'LIKE' | 'VIEW' | 'LATEST';
+  value: 'likeCnt' | 'hit' | 'regDt';
 }
 
 export interface Prompt {

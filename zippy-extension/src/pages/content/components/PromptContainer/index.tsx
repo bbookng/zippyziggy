@@ -28,9 +28,9 @@ const category: Array<Category> = [
 ];
 
 const sort: Array<Sort> = [
-  { id: 'like', text: '좋아요', value: 'LIKE' },
-  { id: 'view', text: '조회수', value: 'VIEW' },
-  { id: 'latest', text: '최신순', value: 'LATEST' },
+  { id: 'like', text: '좋아요', value: 'likeCnt' },
+  { id: 'view', text: '조회수', value: 'hit' },
+  { id: 'latest', text: '최신순', value: 'regDt' },
 ];
 
 const defaultCategory = category[0].value;
@@ -56,10 +56,11 @@ const PromptContainer = () => {
     const params = {
       category: selectedCategory,
       keyword: debouncedSearchTerm,
+      sort: selectedSort,
     };
 
     return params;
-  }, [debouncedSearchTerm, selectedCategory]);
+  }, [debouncedSearchTerm, selectedCategory, selectedSort]);
 
   const {
     data: searchResult,
