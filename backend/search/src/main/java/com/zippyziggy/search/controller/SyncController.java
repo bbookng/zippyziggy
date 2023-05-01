@@ -2,6 +2,7 @@ package com.zippyziggy.search.controller;
 
 import com.zippyziggy.search.dto.request.server.SyncEsPrompt;
 import com.zippyziggy.search.service.EsPromptService;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,11 +30,12 @@ public class SyncController {
      * @param syncEsPrompt
      * @return
      */
-    @PutMapping("/prompts")
+    @PutMapping("/prompts/{promptUuid}")
     public ResponseEntity<Void> modifyDoc(
+        @PathVariable String promptUuid,
         @RequestBody SyncEsPrompt syncEsPrompt
     ) {
-        esPromptService.updateDocument(syncEsPrompt);
+        esPromptService.updateDocument(promptUuid, syncEsPrompt);
         return ResponseEntity.ok().build();
     }
 

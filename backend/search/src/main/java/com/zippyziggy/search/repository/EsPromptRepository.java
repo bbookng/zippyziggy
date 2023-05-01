@@ -37,8 +37,6 @@ public interface EsPromptRepository extends ElasticsearchRepository<EsPrompt, St
 
     Page<EsPrompt> findByCategory(String category, Pageable pageable);
 
-    Optional<EsPrompt> findEsPromptByPromptId(Long promptId);
-
     Optional<EsPrompt> findEsPromptByPromptUuid(String promptUuid);
 
 }

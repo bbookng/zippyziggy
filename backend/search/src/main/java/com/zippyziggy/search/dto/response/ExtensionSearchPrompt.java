@@ -4,6 +4,7 @@ import com.zippyziggy.search.model.EsPrompt;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.Locale;
 import lombok.Builder;
 import lombok.Data;
 

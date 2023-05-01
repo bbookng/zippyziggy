@@ -109,12 +109,11 @@ public class EsPromptService {
         esPromptRepository.save(esPrompt);
     }
 
-    public void updateDocument(SyncEsPrompt syncEsPrompt) {
+    public void updateDocument(String promptUuid, SyncEsPrompt syncEsPrompt) {
         final EsPrompt oldEsPrompt = esPromptRepository
-            .findEsPromptByPromptId(syncEsPrompt.getPromptId())
+            .findEsPromptByPromptUuid(promptUuid)
             .orElseThrow(EsPromptNotFoundException::new);
         esPromptRepository.delete(oldEsPrompt);
-
         final EsPrompt newEsPrompt = EsPrompt.of(syncEsPrompt);
         esPromptRepository.save(newEsPrompt);
     }
