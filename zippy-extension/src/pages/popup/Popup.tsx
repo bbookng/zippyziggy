@@ -2,7 +2,6 @@ import React from 'react';
 import Logo from '@assets/img/logo_white.svg';
 import Google from '@pages/popup/components/Button/Google';
 import Kakao from '@pages/popup/components/Button/Kakao';
-import logOnDev from '@pages/content/utils/logging';
 import { CHAT_GPT_URL, ZIPPY_SITE_URL } from '@pages/constants';
 import styles from './Popup.module.scss';
 import packageJson from '../../../package.json';
@@ -26,8 +25,8 @@ const Popup = () => {
         </a>
       </div>
       <div className={styles['button-wrapper']}>
-        <Google onClick={() => logOnDev.log('구글 로그인')} />
-        <Kakao onClick={() => logOnDev.log('카카오 로그인')} />
+        <Google onClick={() => console.log('구글 로그인')} />
+        <Kakao onClick={() => console.log('카카오 로그인')} />
       </div>
       <span>{`버전 v${packageJson.version}`}</span>
     </div>

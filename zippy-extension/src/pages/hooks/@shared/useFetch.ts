@@ -7,7 +7,6 @@ import axios, {
   CancelTokenSource,
 } from 'axios';
 import { api, authApi } from '@pages/content/utils/axios-instance';
-import logOnDev from '@pages/content/utils/logging';
 
 type HttpMethod = 'get' | 'post' | 'put' | 'patch' | 'delete';
 
@@ -101,7 +100,7 @@ const useFetch = <T>({
         return response;
       } catch (err) {
         if (axios.isCancel(err)) {
-          logOnDev.error('요청 취소:', err.message);
+          console.error('요청 취소:', err.message);
         } else {
           setError(err);
         }
@@ -116,12 +115,30 @@ const useFetch = <T>({
 
   // 컴포넌트가 언마운트될 때 취소 토큰을 이용해 요청을 취소
   useEffect(() => {
-    if (method === 'get') {
-      request();
-    }
+    let isMounted = true;
+
+    const fetchData = async () => {
+      if (method === 'get') {
+        try {
+          await request();
+        } catch (err) {
+          if (axios.isCancel(err)) {
+            if (isMounted) {
+              // console.error('요청 취소:', err.message);
+            }
+          } else {
+            setError(err);
+          }
+        }
+      }
+    };
+
+    fetchData();
+
     return () => {
+      isMounted = false;
       if (cancelToken.current) {
-        cancelToken.current.cancel('컴포넌트 언마운트로 인한 요청 취소');
+        cancelToken.current.cancel();
       }
     };
   }, [method, request]);

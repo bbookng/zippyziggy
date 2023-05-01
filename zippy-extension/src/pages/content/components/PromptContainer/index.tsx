@@ -4,7 +4,6 @@ import SearchBar from '@pages/content/components/PromptContainer/SearchBar';
 import SortFilter from '@pages/content/components/PromptContainer/SortFilter';
 import { useMemo, useState } from 'react';
 import { Category, SearchResult, Sort } from '@pages/content/types';
-import useFetch from '@pages/hooks/@shared/useFetch';
 import {
   CHROME_CATEGORY_KEY,
   CHROME_PAGE_KEY,
@@ -14,9 +13,10 @@ import {
   ZIPPY_API_URL,
 } from '@pages/constants';
 import useDebounce from '@pages/hooks/@shared/useDebounce';
-import Pagination from '@pages/content/components/PromptContainer/Pagination';
 import useChromeStorage from '@pages/hooks/@shared/useChromeStorage';
+import Pagination from '@pages/content/components/PromptContainer/Pagination';
 import PromptCard from '@pages/content/components/PromptContainer/PromptCard';
+import useFetch from '@pages/hooks/@shared/useFetch';
 
 const category: Array<Category> = [
   { id: 'all', text: '전체', value: 'ALL' },
@@ -85,7 +85,7 @@ const PromptContainer = () => {
           />
           {/* <UserInfo /> */}
         </section>
-        <SearchBar searchTerm={debouncedSearchTerm} setSearchTerm={setSearchTerm} />
+        <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 
         <section className="ZP_prompt-container__main">
           <div className="ZP_prompt-container__category-wrapper">
@@ -110,15 +110,6 @@ const PromptContainer = () => {
               }
               return searchResult?.extensionSearchPromptList
                 .slice(offset, offset + limit)
-                .filter((prompt) => {
-                  if (selectedCategory === 'ALL') {
-                    return prompt;
-                  }
-                  return prompt.category === selectedCategory;
-                })
-                .filter((prompt) => {
-                  return prompt.title.includes(debouncedSearchTerm);
-                })
                 .map((prompt) => <PromptCard key={prompt.promptUuid} prompt={prompt} />);
             })()}
           </ul>

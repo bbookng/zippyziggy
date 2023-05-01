@@ -8,7 +8,6 @@ import useBrowserName from '@pages/hooks/@shared/useBrowserName';
 import BrowserIcon from '@pages/content/components/InputWrapper/BrowserIcon';
 import SearchBar from '@pages/content/components/PromptContainer/SearchBar';
 import splitKorean from '@pages/content/utils/split-korean';
-import logOnDev from '@pages/content/utils/logging';
 
 const LanguageDropbox = () => {
   const { setIsExpand, isExpand } = useContext(DropdownContext);
@@ -23,7 +22,6 @@ const LanguageDropbox = () => {
   const handleLanguageClick = (index: number) => {
     setSelectedLanguage(index);
     setIsExpand(false);
-    logOnDev.log(isExpand);
   };
 
   useEffect(() => {

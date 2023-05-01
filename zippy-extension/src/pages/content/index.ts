@@ -1,6 +1,4 @@
-import logOnDev from '@pages/content/utils/logging';
-
-logOnDev.log('content loaded');
+console.log('content loaded');
 
 /**
  * @description

@@ -11,7 +11,7 @@ const ENDPOINT_CONVERSATION = "https://chat.openai.com/backend-api/conversation"
 
 const ZIPPY = (window.ZIPPYZIGGY = {
   init() {
-    logOnDev.log("ZP init");
+    console.log("ZP init");
     this.replaceFetch();
   },
   selectedPrompt: null,
@@ -96,10 +96,9 @@ window.addEventListener("message", function(event) {
   switch (data.type) {
     case "test":
       ZIPPY.targetLanguage = event.data.targetLanguage;
-      logOnDev.log(ZIPPY.targetLanguage);
       break;
     case "selectAction":
-      logOnDev.log(data);
+      console.log(data);
       break;
     default:
       break;
