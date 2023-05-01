@@ -1,5 +1,6 @@
 package com.zippyziggy.member.service;
 
+import com.zippyziggy.member.client.PromptClient;
 import com.zippyziggy.member.config.kafka.KafkaProducer;
 import com.zippyziggy.member.dto.request.MemberSignUpRequestDto;
 import com.zippyziggy.member.model.JwtToken;
@@ -11,6 +12,7 @@ import com.zippyziggy.member.repository.MemberRepository;
 import com.zippyziggy.member.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,6 +35,7 @@ public class MemberService {
     private final SecurityUtil securityUtil;
     private final KafkaProducer kafkaProducer;
 //    private final RedisUtils redisUtils;
+
 
     /**
      * 기존 회원인지 검증 서비스
