@@ -40,7 +40,7 @@ export default function PromptCard({ image, title, description, url, prompt }: P
   return (
     <Conatiner>
       {url ? (
-        <Link href={`/profile/${url || prompt.writerResponse.writerUuid}`}>
+        <Link href={`${url || prompt.writerResponse.writerUuid}`}>
           <Image
             priority
             src={`${image || prompt?.thumbnail || '/images/ChatGPT_logo.png'}`}
@@ -79,7 +79,7 @@ export default function PromptCard({ image, title, description, url, prompt }: P
       <Footer>
         <div className="user">
           <Image priority src="/images/noProfile.png" alt="프사" width={30} height={30} />
-          <div className="nickname">{prompt?.writerResponse.writerNickname || '닉네임'}</div>
+          <div className="nickname">{prompt?.writerResponse?.writerNickname || '닉네임'}</div>
         </div>
         <div className="extraBox">
           <div className="item">

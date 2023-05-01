@@ -5,6 +5,7 @@ import { createPrompt } from '@/core/prompt/promptAPI';
 import { checkInputFormToast } from '@/lib/utils';
 import { ContainerTitle, TitleInfoWrapper, TitleWrapper } from '@/styles/prompt/Create.style';
 import { useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -16,25 +17,54 @@ const FooterBox = styled.div`
   height: 4.25rem;
 `;
 
+type DataType = {
+  data: {
+    category: string;
+    description: string;
+    isBookmarked: boolean;
+    isForked: boolean;
+    isLiked: boolean;
+    likeCnt: number;
+    messageResponse: {
+      example: string;
+      prefix: string;
+      suffix: string;
+    };
+    originerResponse: {
+      originerImg: string;
+      originerNickname: string;
+      originerUuid: string;
+    } | null;
+    regDt: number;
+    thumbnail: string;
+    title: string;
+    updDt: SVGNumber;
+    writerResponse: {
+      writerImg: string;
+      writerNickname: string;
+      writerUuid: string;
+    };
+  };
+  result: string;
+};
+
 export default function PromptCreate() {
   // isForked 인지 확인하면 로직 짜기!!!!!!!
   const isForked = false;
   const [isNext, setIsNext] = useState<boolean>(false);
-  const [image, setImage] = useState<FileList | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const router = useRouter();
   const { promptUuid } = router.query;
   const queryClient = useQueryClient();
-  const prompt = queryClient.getQueryData(['prompt', promptUuid]);
 
   const initialState = {
-    prompt1: prompt ? prompt?.messageResponse.prefix : '',
-    prompt2: prompt ? prompt?.messageResponse.suffix : '',
-    example: prompt ? prompt?.messageResponse.example : '',
-    title: prompt ? prompt?.title : '',
-    content: prompt ? prompt?.description : '',
-    image: prompt ? prompt?.thumbnail : null,
-    category: prompt ? prompt?.category : '',
+    prompt1: '',
+    prompt2: '',
+    example: '',
+    title: '',
+    content: '',
+    image: null,
+    category: '',
   };
 
   // react-hook-form 설정
@@ -42,17 +72,51 @@ export default function PromptCreate() {
     defaultValues: initialState,
     mode: 'onChange',
   });
-  const [prompt1, prompt2, example, title, content, category] = getValues([
+  const [prompt1, prompt2, example, title, content, category, image] = getValues([
     'prompt1',
     'prompt2',
     'example',
     'title',
     'content',
     'category',
+    'image',
   ]);
+
+  async function getFile(url) {
+    const {
+      data: { type, arrayBuffer },
+    } = await axios.get('/api/file', { params: { url } });
+
+    const blob = await new Blob([Uint8Array.from(arrayBuffer)], { type });
+    const arr = url.split('/');
+    const FileList = [
+      new File([blob], arr[arr.length - 1], {
+        type: `image/${arr[arr.length - 1].split('.')[1]}`,
+      }),
+    ];
+    setValue('image', FileList);
+    // <a> 태그의 href 속성값으로 들어갈 다운로드 URL
+    const downloadUrl = window.URL.createObjectURL(blob);
+    return downloadUrl;
+  }
+
   useEffect(() => {
     watch();
-  }, []);
+    const data: DataType = queryClient.getQueryData(['prompt', promptUuid]);
+    if (data) {
+      console.log('가져왔다!!', data);
+      setValue('prompt1', data.data.messageResponse.prefix || '');
+      setValue('prompt2', data.data.messageResponse.suffix || '');
+      setValue('example', data.data.messageResponse.example || '');
+      setValue('title', data.data.title);
+      setValue('content', data.data.description);
+      setValue('category', data.data.category);
+      setPreview(data.data.thumbnail);
+      getFile(data.data.thumbnail);
+    } else {
+      console.log('못가져옴ㅠㅠ', data);
+    }
+  }, [promptUuid]);
 
   // textarea 높이 변경
   const handleChange = (e, value) => {
@@ -64,6 +128,11 @@ export default function PromptCreate() {
   // category 설정
   const handleSetCategory = (e) => {
     setValue('category', e.target.dataset.value);
+  };
+
+  // 이미지 변경
+  const handleSetImage = (e) => {
+    setValue('image', e.target.files);
   };
 
   // 페이지내 요소 바꿈(page1, page2)
@@ -84,8 +153,8 @@ export default function PromptCreate() {
     return true;
   };
 
-  // 생성 요청
-  const handleCreatePrompt = async () => {
+  // 수정 요청
+  const handleUpdatePrompt = async () => {
     handleCheck();
     try {
       const data = {
@@ -99,7 +168,7 @@ export default function PromptCreate() {
         },
       };
       const formData = new FormData();
-      formData.append('thumbnail', image[0]);
+      formData.append('thumbnail', image ? image[0] : null);
       formData.append('data', new Blob([JSON.stringify(data)], { type: 'application/json' }));
       const requestData = {
         data: formData,
@@ -115,7 +184,7 @@ export default function PromptCreate() {
     <>
       <ContainerTitle>
         <TitleWrapper isNext={isNext}>
-          <div className="title">프롬프트 작성</div>
+          <div className="title">프롬프트 수정</div>
           <div className="help">
             <AiFillQuestionCircle className="icon" />
             <div>작성이 처음이신가요?</div>
@@ -140,7 +209,7 @@ export default function PromptCreate() {
           content={content}
           handleChange={handleChange}
           // image={image}
-          setImage={setImage}
+          setImage={handleSetImage}
           preview={preview}
           setPreview={setPreview}
           handleSetCategory={handleSetCategory}
@@ -154,11 +223,7 @@ export default function PromptCreate() {
         />
       )}
       <FooterBox />
-      <CreateFooter
-        isNext={isNext}
-        handleNext={handleNext}
-        handleCreatePrompt={handleCreatePrompt}
-      />
+      <CreateFooter isNext={isNext} handleNext={handleNext} handlePrompt={handleUpdatePrompt} />
     </>
   );
 }

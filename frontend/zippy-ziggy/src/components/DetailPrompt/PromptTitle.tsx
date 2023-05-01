@@ -11,7 +11,6 @@ import {
   FaTrash,
 } from 'react-icons/fa';
 import { getDateTime } from '@/lib/utils';
-import { useRouter } from 'next/router';
 import { ActionBox, Container, PopUp, TitleBox, UserBox } from './PromptTitleStyle';
 
 interface PropsType {
@@ -22,6 +21,7 @@ interface PropsType {
   handleLike?: () => void;
   handleBookmark?: () => void;
   handleOpenDeleteModal?: () => void;
+  handleMoveToUpdatePromptPage: () => void;
 }
 
 export default function PromptTitle({
@@ -32,10 +32,10 @@ export default function PromptTitle({
   handleLike,
   handleBookmark,
   handleOpenDeleteModal,
+  handleMoveToUpdatePromptPage,
 }: PropsType) {
   const [isPopUp, setIsPopUp] = useState<boolean>(false);
   const popUpRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
 
   const Category = {
     STUDY: '학업',
@@ -43,11 +43,6 @@ export default function PromptTitle({
     BUSINESS: '비즈니스',
     PROGRAMMING: '프로그래밍',
     ETC: '기타',
-  };
-
-  // 수정 페이지로 보내기
-  const handleUpdatePrompt = () => {
-    router.push('/prompt');
   };
 
   // 삭제 모달 밖에 클릭 시 모달 닫기
@@ -94,7 +89,7 @@ export default function PromptTitle({
             {isPopUp ? (
               <PopUp ref={popUpRef}>
                 <div className="popUp">
-                  <div onClick={handleUpdatePrompt}>
+                  <div onClick={handleMoveToUpdatePromptPage}>
                     <FaPencilAlt className="icon" />
                     수정
                   </div>

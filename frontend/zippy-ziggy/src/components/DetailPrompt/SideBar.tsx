@@ -8,6 +8,7 @@ import {
   FaRegHeart,
   FaTrash,
 } from 'react-icons/fa';
+import { useRouter } from 'next/router';
 import Button from '../Button/Button';
 import { ActionBox, ButtonBox, Container, EditBox } from './SideBarStyle';
 
@@ -18,6 +19,7 @@ interface PropsType {
   handleLike?: () => void;
   handleBookmark?: () => void;
   handleOpenDeleteModal?: () => void;
+  handleMoveToUpdatePromptPage?: () => void;
 }
 
 export default function SideBar({
@@ -27,6 +29,7 @@ export default function SideBar({
   handleLike,
   handleBookmark,
   handleOpenDeleteModal,
+  handleMoveToUpdatePromptPage,
 }: PropsType) {
   return (
     <Container className="sidebar">
@@ -62,7 +65,7 @@ export default function SideBar({
         </Button>
       </ButtonBox>
       <EditBox>
-        <div className="editBtnBox">
+        <div className="editBtnBox" onClick={handleMoveToUpdatePromptPage}>
           <FaPencilAlt className="icon" />
           수정
         </div>
