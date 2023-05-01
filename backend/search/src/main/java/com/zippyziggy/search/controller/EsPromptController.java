@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +20,7 @@ public class EsPromptController {
 
     private final EsPromptService esPromptService;
 
-    @Operation(summary = "프롬프트 검색", description = "프롬프트를 검색한다. params를 비우면 전체 목록 조회가 가능하다.")
+    @Operation(summary = "프롬프트 검색", description = "프롬프트를 검색한다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청"),
@@ -29,7 +31,7 @@ public class EsPromptController {
         @RequestHeader(required = false) String crntMemberUuid,
         @RequestParam(required = false) String keyword,
         @RequestParam(required = false) String category,
-        Pageable pageable
+        @PageableDefault(sort = "likeCnt",  direction = Sort.Direction.DESC) Pageable pageable
     ) {
         return ResponseEntity.ok(esPromptService.searchPrompts(
             crntMemberUuid, keyword, category, pageable));
@@ -45,7 +47,7 @@ public class EsPromptController {
     public ResponseEntity<ExtensionSearchPromptList> searchInExtension(
         @RequestParam(required = false) String keyword,
         @RequestParam(required = false) String category,
-        Pageable pageable
+        @PageableDefault(sort = "likeCnt",  direction = Sort.Direction.DESC) Pageable pageable
     ) {
         return ResponseEntity.ok(esPromptService.extensionSearch(keyword, category, pageable));
     }
