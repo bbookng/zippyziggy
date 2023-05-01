@@ -108,7 +108,7 @@ public class PromptService{
 		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 		final EsPromptRequest esPromptRequest = EsPromptRequest.of(prompt);
 		circuitBreaker.run(() -> searchClient
-				.modifyEsPrompt(esPromptRequest));
+				.modifyEsPrompt(promptUuid.toString(), esPromptRequest));
 
 		return PromptResponse.from(prompt);
 	}
