@@ -48,13 +48,8 @@ const PromptCard = ({ prompt }: PromptCardProps) => {
       >
         <article className="ZP_prompt-container__prompt-article">
           <div className="ZP_prompt-container__content-wrapper">
-            <div className="ZP_prompt-container__title-wrapper">
-              <h3 className="ZP_prompt-container__title">{prompt.title}</h3>
-              <div className="ZP_prompt-container__forks">포크</div>
-            </div>
-            <div className="ZP_prompt-container__description-wrapper">
-              <p className="ZP_prompt-container__description">{prompt.description}</p>
-            </div>
+            <h3 className="ZP_prompt-container__title">{prompt.title}</h3>
+            <p className="ZP_prompt-container__description">{prompt.description}</p>
             <div className="ZP_prompt-container__info-wrapper">
               <p className="ZP_prompt-container__date">2023년 04월 24일</p>
               <p className="ZP_prompt-container__comments-count">19개의 댓글</p>
