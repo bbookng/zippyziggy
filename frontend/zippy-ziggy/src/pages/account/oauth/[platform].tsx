@@ -4,8 +4,8 @@ import { http, httpAuth } from '@/lib/http';
 import { createSlice } from '@reduxjs/toolkit';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHook';
 import { setIsLogin, setNickname, setProfileImg, setUserUuid } from '@/core/user/userSlice';
-import { getKakaoAPI } from '@/core/user/userAPI';
-import HomeAnimation from '@/components/LottieFiles/LoadingA';
+import { getGoogleAPI, getKakaoAPI } from '@/core/user/userAPI';
+import LottieAnimation from '@/components/LottieFiles/LoadingA';
 
 function KakaoLoginRedirect() {
   const userState = useAppSelector((state) => state.user); // 유저정보
@@ -56,16 +56,42 @@ function KakaoLoginRedirect() {
     }
   };
 
-  useEffect(() => {
-    if (token !== undefined) {
-      HandleGetKakaoAPI();
+  const HandleGetGoogleAPI = async () => {
+    const result: KakaoApiResult = await getGoogleAPI(token);
+    if (result?.result === 'SUCCESS_SIGNUP') {
+      const { name, platform, platformId, profileImg } = result?.socialSignUpDataResponseDto ?? {};
+      router.push({
+        pathname: '/account/signup',
+        query: { name, platform, platformId, profileImg },
+      });
     }
-  }, [token]);
+    if (result?.result === 'SUCCESS_LOGIN') {
+      const { nickname, profileImg, userUuid } = result;
+      dispatch(setIsLogin(true));
+      dispatch(setNickname(nickname));
+      dispatch(setProfileImg(profileImg));
+      dispatch(setUserUuid(userUuid));
+      router.push({
+        pathname: '/',
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (token !== undefined && platform !== undefined) {
+      if (platform === 'kakao') {
+        HandleGetKakaoAPI();
+      }
+      if (platform === 'google') {
+        HandleGetGoogleAPI();
+      }
+    }
+  }, [token, platform]);
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
       <div style={{ width: '200px' }}>
-        <HomeAnimation />
+        <LottieAnimation />
       </div>
     </div>
   );

@@ -9,11 +9,11 @@ import { HTMLAttributes } from 'react';
  */
 interface ProfileProps extends HTMLAttributes<HTMLDivElement> {
   src: string;
-  alt: string;
-  size: number;
+  alt?: string;
+  size?: number;
 }
 
-function ProfileImage({ src, alt = '이미지', size = 64, ...rest }: ProfileProps) {
+function ProfileImage({ src, alt = 'image', size = 64, ...rest }: ProfileProps) {
   const handleImgError = (e) => {
     e.target.src = '/images/noProfile.png';
   };

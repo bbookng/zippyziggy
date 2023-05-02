@@ -2,7 +2,18 @@ import { http, httpAuth } from '@/lib/http';
 import Toastify from 'toastify-js';
 import message from '@/assets/message.json';
 import toastifyCSS from '@/assets/toastify.json';
-import { PostTalkType } from './talkType';
+import { PostTalkType, GetTalkCommentListType } from './talkType';
+
+export const getTalkCommentList = async (requestData: GetTalkCommentListType) => {
+  try {
+    const { data } = await http.get(`/talk/${requestData.id}/comments`, {
+      params: { page: requestData.page, size: requestData.size },
+    });
+    return data;
+  } catch (err) {
+    return err;
+  }
+};
 
 /**
  * 톡 댓글 수정

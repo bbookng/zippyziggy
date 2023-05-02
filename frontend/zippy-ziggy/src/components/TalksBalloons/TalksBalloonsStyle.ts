@@ -1,4 +1,3 @@
-import { message } from '@/assets/message.json';
 import { HTMLAttributes, HTMLProps } from 'react';
 import styled, { css, DefaultTheme } from 'styled-components';
 

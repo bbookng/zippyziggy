@@ -5,7 +5,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHook';
 import { setIsLogin, setNickname, setProfileImg, setUserUuid } from '@/core/user/userSlice';
 import { getKakaoAPI } from '@/core/user/userAPI';
-import HomeAnimation from '@/components/LottieFiles/LoadingA';
+import LottieAnimation from '@/components/LottieFiles/LoadingA';
 
 function KakaoLoginRedirect() {
   const userState = useAppSelector((state) => state.user); // 유저정보
@@ -63,7 +63,7 @@ function KakaoLoginRedirect() {
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
       <div style={{ width: '200px' }}>
-        <HomeAnimation />
+        <LottieAnimation />
       </div>
     </div>
   );
