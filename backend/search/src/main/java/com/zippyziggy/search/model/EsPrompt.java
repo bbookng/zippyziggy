@@ -58,6 +58,8 @@ public class EsPrompt {
 
     @Field(type = FieldType.Text, name = "original_prompt_uuid")
     private String originalPromptUuid;
+    public void setHit(Integer hit) { this.hit = hit; }
+    public void setLikeCnt(Integer likeCnt) { this.likeCnt = likeCnt; }
 
     public static EsPrompt of(SyncEsPrompt esPrompt) {
 

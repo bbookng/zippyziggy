@@ -1,5 +1,7 @@
 package com.zippyziggy.search.service;
 
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch.core.UpdateRequest;
 import com.zippyziggy.search.client.MemberClient;
 import com.zippyziggy.search.client.PromptClient;
 import com.zippyziggy.search.dto.request.server.SyncEsPrompt;
@@ -19,6 +21,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.data.domain.Page;
@@ -38,6 +41,7 @@ public class EsPromptService {
     private final CircuitBreakerFactory circuitBreakerFactory;
     private final PromptClient promptClient;
     private final MemberClient memberClient;
+    private final ElasticsearchClient elasticsearchClient;
 
     public SearchPromptList searchPrompts(
         String crntMemberUuid,
@@ -123,6 +127,22 @@ public class EsPromptService {
             .findEsPromptByPromptUuid(promptUuid)
             .orElseThrow(EsPromptNotFoundException::new);
         esPromptRepository.delete(esPrompt);
+    }
+
+    public void updateHit(String promptUuid, Integer hit) {
+        final EsPrompt esPrompt = esPromptRepository
+            .findEsPromptByPromptUuid(promptUuid)
+            .orElseThrow(EsPromptNotFoundException::new);
+        esPrompt.setHit(hit);
+        esPromptRepository.save(esPrompt);
+    }
+
+    public void updateLikeCnt(String promptUuid, Integer likeCnt) {
+        final EsPrompt esPrompt = esPromptRepository
+            .findEsPromptByPromptUuid(promptUuid)
+            .orElseThrow(EsPromptNotFoundException::new);
+        esPrompt.setLikeCnt(likeCnt);
+        esPromptRepository.save(esPrompt);
     }
 
     private Page<EsPrompt> search(
