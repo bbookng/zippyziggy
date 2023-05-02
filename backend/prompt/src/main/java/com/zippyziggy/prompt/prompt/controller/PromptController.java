@@ -1,9 +1,7 @@
 package com.zippyziggy.prompt.prompt.controller;
 
-import com.zippyziggy.prompt.common.kafka.KafkaProducer;
 import com.zippyziggy.prompt.prompt.dto.request.*;
 import com.zippyziggy.prompt.prompt.dto.response.*;
-import com.zippyziggy.prompt.prompt.repository.PromptRepository;
 import com.zippyziggy.prompt.prompt.service.ForkPromptService;
 import com.zippyziggy.prompt.prompt.service.PromptCommentService;
 import com.zippyziggy.prompt.prompt.service.PromptService;
