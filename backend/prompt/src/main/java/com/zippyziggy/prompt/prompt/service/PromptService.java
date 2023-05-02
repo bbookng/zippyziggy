@@ -1,28 +1,52 @@
 package com.zippyziggy.prompt.prompt.service;
 
+import com.zippyziggy.prompt.common.aws.AwsS3Uploader;
+import com.zippyziggy.prompt.common.kafka.KafkaProducer;
+import com.zippyziggy.prompt.prompt.client.MemberClient;
+import com.zippyziggy.prompt.prompt.dto.request.PromptCntRequest;
+import com.zippyziggy.prompt.prompt.dto.request.PromptModifyRequest;
+import com.zippyziggy.prompt.prompt.dto.request.PromptRatingRequest;
+import com.zippyziggy.prompt.prompt.dto.request.PromptReportRequest;
+import com.zippyziggy.prompt.prompt.dto.request.PromptRequest;
+import com.zippyziggy.prompt.prompt.dto.response.MemberResponse;
+import com.zippyziggy.prompt.prompt.dto.response.PromptCardResponse;
+import com.zippyziggy.prompt.prompt.dto.response.PromptDetailResponse;
+import com.zippyziggy.prompt.prompt.dto.response.PromptReportResponse;
+import com.zippyziggy.prompt.prompt.dto.response.PromptResponse;
+import com.zippyziggy.prompt.prompt.dto.response.PromptTalkCommentCntResponse;
+import com.zippyziggy.prompt.prompt.exception.AwsUploadException;
+import com.zippyziggy.prompt.prompt.exception.ForbiddenMemberException;
+import com.zippyziggy.prompt.prompt.exception.MemberNotFoundException;
+import com.zippyziggy.prompt.prompt.exception.PromptNotFoundException;
+import com.zippyziggy.prompt.prompt.exception.RatingAlreadyExistException;
+import com.zippyziggy.prompt.prompt.exception.ReportAlreadyExistException;
+import com.zippyziggy.prompt.prompt.model.Prompt;
+import com.zippyziggy.prompt.prompt.model.PromptBookmark;
+import com.zippyziggy.prompt.prompt.model.PromptClick;
+import com.zippyziggy.prompt.prompt.model.PromptLike;
+import com.zippyziggy.prompt.prompt.model.PromptReport;
+import com.zippyziggy.prompt.prompt.model.Rating;
+import com.zippyziggy.prompt.prompt.repository.PromptBookmarkRepository;
+import com.zippyziggy.prompt.prompt.repository.PromptClickRepository;
+import com.zippyziggy.prompt.prompt.repository.PromptCommentRepository;
+import com.zippyziggy.prompt.prompt.repository.PromptLikeRepository;
+import com.zippyziggy.prompt.prompt.repository.PromptReportRepository;
+import com.zippyziggy.prompt.prompt.repository.PromptRepository;
+import com.zippyziggy.prompt.prompt.repository.RatingRepository;
+import com.zippyziggy.prompt.talk.dto.response.PromptTalkListResponse;
+import com.zippyziggy.prompt.talk.dto.response.TalkListResponse;
+import com.zippyziggy.prompt.talk.repository.TalkRepository;
+import com.zippyziggy.prompt.talk.service.TalkService;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
-
-import com.zippyziggy.prompt.common.kafka.KafkaProducer;
-import com.zippyziggy.prompt.prompt.client.MemberClient;
-import com.zippyziggy.prompt.prompt.client.SearchClient;
-import com.zippyziggy.prompt.prompt.dto.request.*;
-import com.zippyziggy.prompt.prompt.dto.response.*;
-import com.zippyziggy.prompt.prompt.exception.*;
-import com.zippyziggy.prompt.prompt.model.*;
-import com.zippyziggy.prompt.prompt.repository.*;
-import com.zippyziggy.prompt.talk.dto.response.PromptTalkListResponse;
-import com.zippyziggy.prompt.talk.dto.response.TalkListResponse;
-import com.zippyziggy.prompt.talk.repository.TalkRepository;
-import com.zippyziggy.prompt.talk.service.TalkService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.data.domain.Page;
@@ -30,10 +54,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.zippyziggy.prompt.common.aws.AwsS3Uploader;
-
-import lombok.RequiredArgsConstructor;
 
 @Service
 @Transactional
@@ -50,7 +70,6 @@ public class PromptService{
 	private final PromptCommentRepository promptCommentRepository;
 	private final TalkService talkService;
 	private final TalkRepository talkRepository;
-	private final SearchClient searchClient;
 	private final RatingRepository ratingRepository;
 	private final PromptReportRepository promptReportRepository;
 	private final KafkaProducer kafkaProducer;
@@ -111,7 +130,9 @@ public class PromptService{
 
 	public int updateHit(UUID promptUuid, HttpServletRequest request, HttpServletResponse response) {
 
-		Long promptId = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new).getId();
+		final Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
+		final Long promptId = prompt.getId();
+
 		Cookie[] cookies = request.getCookies();
 		boolean checkCookie = false;
 		int result = 0;
@@ -131,6 +152,11 @@ public class PromptService{
 			response.addCookie(newCookie);
 			result = promptRepository.updateHit(promptId);
 		}
+
+		// Elasticsearch에 조회수 반영
+		final PromptCntRequest promptCntRequest = new PromptCntRequest(promptUuid.toString(), prompt.getHit().longValue());
+		kafkaProducer.sendPromptCnt("sync-prompt-hit", promptCntRequest);
+
 		return result;
 	}
 
@@ -266,6 +292,10 @@ public class PromptService{
 			prompt.setLikeCnt(prompt.getLikeCnt() - 1);
 			promptRepository.save(prompt);
 		}
+
+		// Elasticsearch에 좋아요 수 반영
+		final PromptCntRequest promptCntRequest = new PromptCntRequest(promptUuid.toString(), prompt.getLikeCnt());
+		kafkaProducer.sendPromptCnt("sync-prompt-like-cnt", promptCntRequest);
 	}
 
     /*

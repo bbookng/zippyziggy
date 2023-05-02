@@ -57,6 +57,8 @@ public class Talk {
 
 	private Long likeCnt;
 
+	private Long hit;
+
 	@OneToMany(mappedBy = "talk", cascade = CascadeType.ALL)
 	private List<Message> messages;
 
