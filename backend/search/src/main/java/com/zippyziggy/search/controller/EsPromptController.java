@@ -45,11 +45,12 @@ public class EsPromptController {
     })
     @GetMapping("/extension")
     public ResponseEntity<ExtensionSearchPromptList> searchInExtension(
+        @RequestHeader(required = false) String crntMemberUuid,
         @RequestParam(required = false) String keyword,
         @RequestParam(required = false) String category,
         @PageableDefault(sort = "likeCnt",  direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        return ResponseEntity.ok(esPromptService.extensionSearch(keyword, category, pageable));
+        return ResponseEntity.ok(esPromptService.extensionSearch(crntMemberUuid, keyword, category, pageable));
     }
 
 }

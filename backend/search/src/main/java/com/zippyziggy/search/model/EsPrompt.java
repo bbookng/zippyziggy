@@ -1,16 +1,20 @@
 package com.zippyziggy.search.model;
 
 import com.zippyziggy.search.dto.request.server.SyncEsPrompt;
-
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
-@Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 @Document(indexName = "prompt")
 public class EsPrompt {
 
@@ -58,10 +62,12 @@ public class EsPrompt {
 
     @Field(type = FieldType.Text, name = "original_prompt_uuid")
     private String originalPromptUuid;
+
     public void setHit(Integer hit) { this.hit = hit; }
+
     public void setLikeCnt(Integer likeCnt) { this.likeCnt = likeCnt; }
 
-    public static EsPrompt of(SyncEsPrompt esPrompt) {
+    public static EsPrompt of (SyncEsPrompt esPrompt) {
 
         final String originalPromptUuid = (null != esPrompt.getOriginalPromptUuid())
             ? esPrompt.getOriginalPromptUuid().toString()

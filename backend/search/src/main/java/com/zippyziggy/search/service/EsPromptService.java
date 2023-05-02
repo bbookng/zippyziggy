@@ -1,16 +1,15 @@
 package com.zippyziggy.search.service;
 
-import co.elastic.clients.elasticsearch.ElasticsearchClient;
-import co.elastic.clients.elasticsearch.core.UpdateRequest;
 import com.zippyziggy.search.client.MemberClient;
 import com.zippyziggy.search.client.PromptClient;
 import com.zippyziggy.search.dto.request.server.SyncEsPrompt;
-import com.zippyziggy.search.dto.response.server.CntResponse;
 import com.zippyziggy.search.dto.response.ExtensionSearchPromptList;
 import com.zippyziggy.search.dto.response.PromptDetailResponse;
 import com.zippyziggy.search.dto.response.SearchPrompt;
 import com.zippyziggy.search.dto.response.SearchPromptList;
 import com.zippyziggy.search.dto.response.WriterResponse;
+import com.zippyziggy.search.dto.response.server.CntResponse;
+import com.zippyziggy.search.dto.response.server.ExtensionSearchPrompt;
 import com.zippyziggy.search.exception.EsPromptNotFoundException;
 import com.zippyziggy.search.exception.PromptNotFoundException;
 import com.zippyziggy.search.model.EsPrompt;
@@ -21,12 +20,10 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.client.RestHighLevelClient;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,7 +38,6 @@ public class EsPromptService {
     private final CircuitBreakerFactory circuitBreakerFactory;
     private final PromptClient promptClient;
     private final MemberClient memberClient;
-    private final ElasticsearchClient elasticsearchClient;
 
     public SearchPromptList searchPrompts(
         String crntMemberUuid,
@@ -94,18 +90,53 @@ public class EsPromptService {
     }
 
     public ExtensionSearchPromptList extensionSearch(
+        String crntMemberUuid,
         String keyword,
         String category,
         Pageable pageable
     ) {
-        final Page<EsPrompt> pagedEsPrompt = search(keyword, category, pageable);
+        CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 
-        final List<EsPrompt> esPrompts = pagedEsPrompt.stream().collect(Collectors.toList());
+        final Page<EsPrompt> pagedEsPrompt = search(keyword, category, pageable);
         final long totalPromptsCnt = pagedEsPrompt.getTotalElements();
         final int totalPageCnt = pagedEsPrompt.getTotalPages();
 
-        return ExtensionSearchPromptList.of(totalPromptsCnt, totalPageCnt, esPrompts);
+        final List<ExtensionSearchPrompt> searchPrompts = new ArrayList<>();
+        for (EsPrompt esPrompt : pagedEsPrompt) {
+            // promptDetailResponse 조회
+            final UUID promptUuid = UUID.fromString(esPrompt.getPromptUuid());
+            final PromptDetailResponse promptDetailResponse = circuitBreaker
+                .run(() -> promptClient
+                    .getPromptDetail(promptUuid, crntMemberUuid)
+                    .orElseThrow(PromptNotFoundException::new));
 
+            // 사용자 조회
+            //TODO server to server api 만든 후 Member application에서 호출하는 방식으로 변경해야함
+            WriterResponse writerResponse = promptDetailResponse.getWriterResponse();
+
+            final CntResponse cntResponse = circuitBreaker
+                .run(() -> promptClient
+                    .getCnt(promptUuid));
+
+            // 로그인 여부에 따른 좋아요/북마크 여부
+            final Boolean isLiked =
+                !crntMemberUuid.equals("defaultValue") && promptDetailResponse.getIsLiked();
+            final Boolean isBookmarked =
+                !(crntMemberUuid.equals("defaultValue")) && promptDetailResponse.getIsBookmarked();
+
+            // dto로 변환하기
+            searchPrompts.add(ExtensionSearchPrompt.of(
+                esPrompt,
+                promptDetailResponse,
+                cntResponse.getTalkCnt(),
+                cntResponse.getCommentCnt(),
+                promptDetailResponse.getLikeCnt(),
+                isLiked,
+                isBookmarked,
+                writerResponse));
+
+        }
+        return ExtensionSearchPromptList.of(totalPromptsCnt, totalPageCnt, searchPrompts);
     }
 
     public void insertDocument(SyncEsPrompt syncEsPrompt) {
