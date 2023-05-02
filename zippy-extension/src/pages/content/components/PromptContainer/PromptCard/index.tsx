@@ -59,6 +59,7 @@ const PromptCard = ({ prompt }: PromptCardProps) => {
             style={{ position: 'absolute', top: 0, right: 0 }}
           >
             <button
+              type="button"
               onClick={(e) => {
                 e.stopPropagation();
                 console.log(1);
@@ -67,6 +68,7 @@ const PromptCard = ({ prompt }: PromptCardProps) => {
               1
             </button>
             <button
+              type="button"
               onClick={(e) => {
                 e.stopPropagation();
                 console.log(2);
@@ -75,6 +77,7 @@ const PromptCard = ({ prompt }: PromptCardProps) => {
               2
             </button>
             <button
+              type="button"
               onClick={(e) => {
                 e.stopPropagation();
                 console.log(3);
@@ -85,16 +88,21 @@ const PromptCard = ({ prompt }: PromptCardProps) => {
           </div>
           <div className="ZP_prompt-container__content-wrapper">
             <h3 className="ZP_prompt-container__title">{title}</h3>
-            <p>{category.find((item) => item.value === promptCategory).text ?? ''}</p>
-            <p className="ZP_prompt-container__description">{description}</p>
+            <p className="ZP_prompt-container__category caption">
+              {category.find((item) => item.value === promptCategory).text ?? ''}
+            </p>
+            <p className="ZP_prompt-container__description caption">{description}</p>
             <div className="ZP_prompt-container__info-wrapper">
-              <p className="ZP_prompt-container__date">{formatDateTime(regDt)}</p>
-              <p className="ZP_prompt-container__comments-count">{}개의 댓글</p>
-              <p className="ZP_prompt-container__talks-count">10개의 Talk</p>
+              <p className="ZP_prompt-container__date caption">{formatDateTime(regDt)}</p>
+              <p className="ZP_prompt-container__comments-count caption">{commentCnt}개의 댓글</p>
+              <p className="ZP_prompt-container__talks-count caption">{talkCnt}개의 Talk</p>
             </div>
           </div>
           <div className="ZP_prompt-container__profile-wrapper">
-            <div className="ZP_prompt-container__profile">프로필</div>
+            <div className="ZP_prompt-container__profile caption">
+              <img src={writerResponse.writerImg} alt={writerResponse.writerNickname} />
+              {writerResponse.writerNickname}
+            </div>
             <div className="ZP_prompt-container__actions-wrapper">
               <div className="ZP_prompt-container__like">{likeCnt}좋아요</div>
               <div className="ZP_prompt-container__bookmark">북마크</div>

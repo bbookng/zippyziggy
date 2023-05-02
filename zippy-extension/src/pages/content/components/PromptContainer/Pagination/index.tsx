@@ -57,7 +57,7 @@ const Pagination = ({ total, limit, page, setPage }: PaginationProps) => {
         className="ZP_pagination__button-next"
         type="button"
         onClick={() => setPage(page + 1)}
-        disabled={page === numPages}
+        disabled={page === numPages || total === undefined}
       >
         <ArrowIcon name="right" size="14px" />
       </button>
@@ -65,7 +65,7 @@ const Pagination = ({ total, limit, page, setPage }: PaginationProps) => {
         className="ZP_pagination__button-nextGroup"
         type="button"
         onClick={() => setPage(endPage + 1)}
-        disabled={currentPageGroup === Math.ceil(numPages / PAGE_PER_GROUP)}
+        disabled={currentPageGroup === Math.ceil(numPages / PAGE_PER_GROUP) || total === undefined}
       >
         <ArrowIcon name="rightDouble" size="20px" />
       </button>

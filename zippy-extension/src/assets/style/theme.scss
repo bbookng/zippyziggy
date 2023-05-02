@@ -2,6 +2,8 @@
   box-sizing: content-box;
 }
 
+
+
 :root {
   /* Colors */
   // #ffffff
@@ -12,6 +14,7 @@
   --black-color-100: rgba(0, 0, 0, 1);
   --black-color-90: rgba(0, 0, 0, 0.9);
   --black-color-50: rgba(0, 0, 0, 0.5);
+  --black-color-30: rgba(0, 0, 0, 0.3);
 
   // #303030
   --dark-color-100: rgba(48, 48, 48, 1);
@@ -72,8 +75,9 @@
 
   // #000000(라이트) -> #ffffff(다크)
   --black-color-100: rgba(255, 255, 255, 1);
-  --black-color-50: rgba(255, 255, 255, 0.5);
   --black-color-90: rgba(255, 255, 255, 0.9);
+  --black-color-50: rgba(255, 255, 255, 0.5);
+  --black-color-30: rgba(255, 255, 255, 0.3);
 
   /* Shadows */
   --shadows-sm: 0px 10px 15px -3px rgba(16, 198, 0, 0.1),
@@ -87,6 +91,21 @@
 
   /* Border Color */
   --border-color: rgba(255, 255, 255, 0.5);
+}
+
+// 멀티라인 말줄임 표시
+// $line-cnt : 라인 수
+// $line-height : line-height값
+// 사용법 : @include ellipsis(3, 1.6em);
+@mixin ellipsis($line-cnt, $line-height) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: $line-cnt; /* 라인수 */
+  -webkit-box-orient: vertical;
+  word-wrap:break-word;
+  line-height: $line-height;
+  height: $line-height * $line-cnt; /* line-height 가 1.2em 이고 3라인을 자르기 때문에 height는 1.2em * 3 = 3.6em */
 }
 
 

@@ -14,8 +14,8 @@ interface FetchParams {
   url: string;
   method?: HttpMethod;
   auth?: boolean;
-  params?: Record<string, any>;
-  body?: Record<string, any>;
+  params?: Record<string, string | number>;
+  body?: Record<string, string | number>;
 }
 interface FetchResult<T> {
   data: T | null;
@@ -73,7 +73,8 @@ const useFetch = <T>({
   auth = false,
   params,
   body,
-}: FetchParams): FetchResult<T> => {
+}: // cacheKey,
+FetchParams): FetchResult<T> => {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<AxiosError | null>(null);
@@ -97,6 +98,7 @@ const useFetch = <T>({
           ...config,
         });
         setData(response.data);
+
         return response;
       } catch (err) {
         if (axios.isCancel(err)) {
@@ -110,7 +112,8 @@ const useFetch = <T>({
         setLoading(false);
       }
     },
-    [instance, url, method, params, body]
+
+    [instance, url, method, body, params]
   );
 
   // 컴포넌트가 언마운트될 때 취소 토큰을 이용해 요청을 취소

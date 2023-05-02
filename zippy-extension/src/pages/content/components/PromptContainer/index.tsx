@@ -9,8 +9,8 @@ import {
   CHROME_PAGE_KEY,
   CHROME_SEARCH_KEY,
   CHROME_SORT_KEY,
-  JSON_SERVER_URL,
   LIMIT,
+  ZIPPY_API_URL,
 } from '@pages/constants';
 import useDebounce from '@pages/hooks/@shared/useDebounce';
 import useChromeStorage from '@pages/hooks/@shared/useChromeStorage';
@@ -50,7 +50,6 @@ const PromptContainer = () => {
 
   const [page, setPage] = useChromeStorage<number>(CHROME_PAGE_KEY, 1);
   const [limit, setLimit] = useState(LIMIT);
-  const offset = (page - 1) * limit;
 
   const memoizedParams = useMemo(() => {
     const params = {
@@ -68,9 +67,9 @@ const PromptContainer = () => {
     loading,
     error,
   } = useFetch<SearchResult>({
-    // url: `${ZIPPY_API_URL}/search/extension`,
+    url: `${ZIPPY_API_URL}/search/extension`,
+    // url: `${JSON_SERVER_URL}`,
     params: memoizedParams,
-    url: `${JSON_SERVER_URL}`,
   });
 
   const isNewChatPage = !window.location.href.includes('/c/');

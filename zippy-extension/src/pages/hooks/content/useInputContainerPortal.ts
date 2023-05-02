@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react';
 import { ZP_INPUT_WRAPPER_ID, ZP_PROMPT_CONTAINER_ID } from '@pages/constants';
 import {
   addToggleButton,
-  addToTopButton,
   adjustToBottomButtonPosition,
   createPortalContainer,
   removeFormParentClasses,
@@ -30,8 +29,6 @@ const useInputContainerPortal = () => {
 
     // 토글 버튼을 생성 후 주입
     addToggleButton($formParent);
-    // 맨 위로 가는 버튼을 생성 후 주입
-    addToTopButton($formParent);
     // 입력창 focus 시 border 스타일 지정
     setInputWrapperStyle($inputWrapperPortal.parentElement);
 
