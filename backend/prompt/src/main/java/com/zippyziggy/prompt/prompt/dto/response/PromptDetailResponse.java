@@ -29,6 +29,7 @@ public class PromptDetailResponse {
 	private String category;
 	private long regDt;
 	private long updDt;
+	private long hit;
 
 	private PromptMessageResponse messageResponse;
 

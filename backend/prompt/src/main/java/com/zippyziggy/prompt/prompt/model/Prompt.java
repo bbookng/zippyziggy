@@ -115,6 +115,7 @@ public class Prompt {
 				.likeCnt(this.getLikeCnt())
 				.regDt(regDt)
 				.updDt(updDt)
+				.hit(this.getHit())
 				.build();
 	}
 

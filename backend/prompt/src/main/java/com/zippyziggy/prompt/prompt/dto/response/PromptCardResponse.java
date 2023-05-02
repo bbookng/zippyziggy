@@ -23,6 +23,7 @@ public class PromptCardResponse {
 	private Long commentCnt;
 	private Long forkCnt;
 	private Long talkCnt;
+	private long hit;
 
 	private long regDt;
 	private long updDt;
@@ -50,6 +51,7 @@ public class PromptCardResponse {
 			.updDt(updDt)
 			.isBookmarked(isBookmarked)
 			.isLiked(isLiked)
+			.hit(prompt.getHit())
 			.build();
 
 		return response;
