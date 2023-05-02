@@ -30,8 +30,9 @@ public interface PromptClient {
     );
 
     @GetMapping("/prompts/{promptUuid}/cnt")
-    CntResponse getCntOfPrompt(
-        @PathVariable UUID promptUuid
-    );
+    CntResponse getCntOfPrompt( @PathVariable UUID promptUuid );
+
+    @GetMapping("/talks/{talkId}/commentCnt")
+    Long getTalkCommentCnt( @PathVariable Long talkId );
 
 }

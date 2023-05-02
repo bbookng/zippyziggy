@@ -14,6 +14,6 @@ public interface EsTalkRepository extends ElasticsearchRepository<EsTalk, String
     @Query("{\"bool\": {\"must\": [{\"multi_match\": {\"query\": \"?0\", \"fields\": [\"title\", \"es_messages.content\"]}}]}}")
     Page<EsTalk> findByKeywordOnly(String keyword, Pageable pageable);
 
-    Optional<EsTalk> findEsPromptByPromptUuid(String promptUuid);
+    Optional<EsTalk> findEsTalkByTalkId(Long talkId);
 
 }

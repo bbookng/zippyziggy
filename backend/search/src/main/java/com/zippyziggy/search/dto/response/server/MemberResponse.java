@@ -1,18 +1,23 @@
 package com.zippyziggy.search.dto.response.server;
 
+import com.zippyziggy.search.dto.response.OriginerResponse;
 import com.zippyziggy.search.dto.response.WriterResponse;
 import com.zippyziggy.search.exception.MemberNotFoundException;
 import java.util.UUID;
 import lombok.Data;
 
 @Data
-public class Member {
+public class MemberResponse {
 
     private UUID userUuid;
     private String nickname;
     private String profileImg;
 
-    public WriterResponse of() throws MemberNotFoundException {
+    public OriginerResponse toOriginerResponse() throws MemberNotFoundException {
+        return new OriginerResponse(this.userUuid, this.profileImg, this.nickname);
+    }
+
+    public WriterResponse toWriterResponse() throws MemberNotFoundException {
         return new WriterResponse(this.userUuid, this.profileImg, this.nickname);
     }
 }

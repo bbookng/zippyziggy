@@ -3,6 +3,8 @@ package com.zippyziggy.search.model;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.Id;
+
+import com.zippyziggy.search.dto.response.server.SyncEsTalk;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,31 +31,33 @@ public class EsTalk {
 	private String promptUuid;
 
 	@Field(type = FieldType.Text, name = "member_uuid")
-	private String memberUUid;
+	private String memberUuid;
 
 	@Field(type = FieldType.Text, name = "title")
 	private String title;
 
 	@Field(type = FieldType.Long, name = "reg_dt")
-	private LocalDateTime regDt;
+	private Long regDt;
 
 	@Field(type = FieldType.Long, name = "like_cnt")
 	private Long likeCnt;
 
+	@Field(type = FieldType.Long, name = "hit")
+	private Long hit;
+
 	private List<EsMessage> esMessages;
 
-//	public static EsTalk of (TalkRequest data, UUID crntMemberUuid) {
-//		return EsTalk.builder()
-//			.memberUUid(crntMemberUuid)
-//			.title(data.getTitle())
-//			.regDt(LocalDateTime.now())
-//			.likeCnt(0L)
-//			.build();
-//	}
-
-	private static class EsMessage {
-		private String role;
-		private String content;
+	public static EsTalk of (SyncEsTalk syncEsTalk) {
+		return EsTalk.builder()
+				.talkId(syncEsTalk.getTalkId())
+				.promptUuid(syncEsTalk.getPromptUuid().toString())
+				.memberUuid(syncEsTalk.getMemberUuid())
+				.title(syncEsTalk.getTitle())
+				.regDt(syncEsTalk.getRegDt())
+				.likeCnt(syncEsTalk.getLikeCnt())
+				.hit(syncEsTalk.getHit())
+				.esMessages(syncEsTalk.getEsMessages())
+				.build();
 	}
 
 }

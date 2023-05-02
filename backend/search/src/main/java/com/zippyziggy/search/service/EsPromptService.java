@@ -5,7 +5,7 @@ import co.elastic.clients.elasticsearch.core.UpdateRequest;
 import co.elastic.clients.elasticsearch.core.UpdateResponse;
 import com.zippyziggy.search.client.MemberClient;
 import com.zippyziggy.search.client.PromptClient;
-import com.zippyziggy.search.dto.request.server.SyncEsPrompt;
+import com.zippyziggy.search.dto.response.server.SyncEsPrompt;
 import com.zippyziggy.search.dto.response.ExtensionSearchPromptList;
 import com.zippyziggy.search.dto.response.server.PromptDetailResponse;
 import com.zippyziggy.search.dto.response.SearchPrompt;
