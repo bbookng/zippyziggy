@@ -81,6 +81,11 @@ const Footer = styled.div`
     display: flex;
     align-items: center;
 
+    .profileImg {
+      border-radius: 50%;
+      aspect-ratio: calc(1);
+    }
+
     .nickname {
       display: flex;
       align-items: center;

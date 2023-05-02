@@ -28,7 +28,6 @@ const initialState = {
 
 export default function PromptCreate() {
   // isForked 인지 확인하면 로직 짜기!!!!!!!
-  const isForked = false;
   const [isNext, setIsNext] = useState<boolean>(false);
   const [preview, setPreview] = useState<string | null>(null);
   const router = useRouter();
@@ -144,6 +143,7 @@ export default function PromptCreate() {
           prompt1={prompt1}
           prompt2={prompt2}
           example={example}
+          possible
           handleChange={handleChange}
         />
       )}

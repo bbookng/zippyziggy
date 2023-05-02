@@ -1,12 +1,7 @@
 import CreateFooter from '@/components/CreatePrompt/CreateFooter';
 import CreatePart1 from '@/components/CreatePrompt/CreatePrompt_1';
 import CreatePart2 from '@/components/CreatePrompt/CreatePrompt_2';
-import {
-  createPrompt,
-  createPromptFork,
-  getPromptDetail,
-  updatePrompt,
-} from '@/core/prompt/promptAPI';
+import { createPromptFork, getPromptDetail } from '@/core/prompt/promptAPI';
 import { useAppSelector } from '@/hooks/reduxHook';
 import { checkInputFormToast } from '@/lib/utils';
 import { ContainerTitle, TitleInfoWrapper, TitleWrapper } from '@/styles/prompt/Create.style';
@@ -23,43 +18,44 @@ const FooterBox = styled.div`
   height: 4.25rem;
 `;
 
-type DataType = {
-  data: {
-    category: string;
-    description: string;
-    isBookmarked: boolean;
-    isForked: boolean;
-    isLiked: boolean;
-    likeCnt: number;
-    messageResponse: {
-      example: string;
-      prefix: string;
-      suffix: string;
-    };
-    originerResponse: {
-      originerImg: string;
-      originerNickname: string;
-      originerUuid: string;
-    } | null;
-    regDt: number;
-    thumbnail: string;
-    title: string;
-    updDt: SVGNumber;
-    writerResponse: {
-      writerImg: string;
-      writerNickname: string;
-      writerUuid: string;
-    };
-  };
-  result: string;
-};
+// type DataType = {
+//   data: {
+//     category: string;
+//     description: string;
+//     isBookmarked: boolean;
+//     isForked: boolean;
+//     isLiked: boolean;
+//     likeCnt: number;
+//     messageResponse: {
+//       example: string;
+//       prefix: string;
+//       suffix: string;
+//     };
+//     originerResponse: {
+//       originerImg: string;
+//       originerNickname: string;
+//       originerUuid: string;
+//     } | null;
+//     regDt: number;
+//     thumbnail: string;
+//     title: string;
+//     updDt: SVGNumber;
+//     writerResponse: {
+//       writerImg: string;
+//       writerNickname: string;
+//       writerUuid: string;
+//     };
+//   };
+//   result: string;
+// };
 
 export default function PromptUpdate() {
   const [isNext, setIsNext] = useState<boolean>(false);
   const [preview, setPreview] = useState<string | null>(null);
   const { nickname } = useAppSelector((state) => state.user);
   const router = useRouter();
-  const { promptUuid, fork } = router.query;
+  const { promptUuid } = router.query;
+  const fork = true;
 
   const initialState = {
     prompt1: '',
@@ -111,25 +107,25 @@ export default function PromptUpdate() {
     return res;
   };
 
-  const { data } = useQuery(['prompt', promptUuid], handleGetPromptDetail, {
+  const { data, isLoading } = useQuery(['prompt', promptUuid], handleGetPromptDetail, {
     enabled: !!promptUuid,
-    onSuccess(res) {
-      setValue('prompt1', res?.data?.messageResponse?.prefix || '');
-      setValue('prompt2', res?.data?.messageResponse?.suffix || '');
-      setValue('example', res?.data?.messageResponse?.example || '');
-      setValue('title', res?.data?.title);
-      setValue('content', res?.data?.description);
-      setValue('category', res?.data?.category);
-      if (!fork) {
-        setPreview(res?.data?.thumbnail);
-        getFile(res?.data?.thumbnail);
-      }
-    },
   });
 
   useEffect(() => {
     watch();
-  }, [promptUuid]);
+    if (!isLoading) {
+      setValue('prompt1', data?.data?.messageResponse?.prefix || '');
+      setValue('prompt2', data?.data?.messageResponse?.suffix || '');
+      setValue('example', data?.data?.messageResponse?.example || '');
+      setValue('title', data?.data?.title);
+      setValue('content', data?.data?.description);
+      setValue('category', data?.data?.category);
+      if (!fork) {
+        setPreview(data?.data?.thumbnail);
+        getFile(data?.data?.thumbnail);
+      }
+    }
+  }, [isLoading]);
 
   // textarea 높이 변경
   const handleChange = (e, value) => {
@@ -166,8 +162,8 @@ export default function PromptUpdate() {
     return true;
   };
 
-  // 수정 요청
-  const handleUpdatePrompt = async () => {
+  // 포크 생성 요청
+  const handleCreatePromptFork = async () => {
     handleCheck();
     try {
       const tmpData = {
@@ -188,11 +184,8 @@ export default function PromptUpdate() {
         data: formData,
         router,
       };
-      if (fork) {
-        createPromptFork(requestData);
-      } else {
-        updatePrompt(requestData);
-      }
+      console.log(tmpData);
+      createPromptFork(requestData);
     } catch (err) {
       console.log(err);
     }
@@ -202,10 +195,10 @@ export default function PromptUpdate() {
     <>
       <ContainerTitle>
         <TitleWrapper isNext={isNext}>
-          <div className="title">{`${fork ? '프롬프트 포크' : '프롬프트 수정'}`}</div>
+          <div className="title">프롬프트 포크</div>
           <div className="help">
             <AiFillQuestionCircle className="icon" />
-            <div>{fork ? '포크가 처음이신가요?' : '수정이 처음이신가요?'}</div>
+            <div>포크가 처음이신가요?</div>
           </div>
         </TitleWrapper>
         {/* prompt.forkCnt > 0 으로 확인하도록 바꾸기!! */}
@@ -213,7 +206,7 @@ export default function PromptUpdate() {
           <TitleInfoWrapper>
             <div className="fork">포크</div>
             <div className="forkName">{data?.data?.title}</div>
-            <div className="userName">{data?.data?.writerNickname}</div>
+            <div className="userName">{data?.data?.writerResponse?.writerNickname}</div>
           </TitleInfoWrapper>
         ) : (
           <TitleInfoWrapper>
@@ -234,7 +227,7 @@ export default function PromptUpdate() {
         />
       ) : (
         <CreatePart1
-          fork
+          possible
           prompt1={prompt1}
           prompt2={prompt2}
           example={example}
@@ -246,7 +239,7 @@ export default function PromptUpdate() {
         isNext={isNext}
         fork
         handleNext={handleNext}
-        handlePrompt={handleUpdatePrompt}
+        handlePrompt={handleCreatePromptFork}
       />
     </>
   );

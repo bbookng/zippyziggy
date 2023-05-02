@@ -8,12 +8,25 @@ interface PropTypes {
   prompt1: string | null;
   prompt2: string | null;
   example: string | null;
-  fork?: boolean | string | string[] | null;
+  possible?: boolean;
 
   handleChange: (e: unknown, string: string) => void;
 }
 
-export default function CreatePart1({ prompt1, prompt2, example, fork, handleChange }: PropTypes) {
+export default function CreatePart1({
+  prompt1,
+  prompt2,
+  example,
+  possible,
+  handleChange,
+}: PropTypes) {
+  const handleTest = () => {
+    const requestData = {
+      prefix: prompt1,
+      example,
+      suffix: prompt2,
+    };
+  };
   return (
     <Container>
       <LeftContainer>
@@ -28,7 +41,7 @@ export default function CreatePart1({ prompt1, prompt2, example, fork, handleCha
             value={prompt1}
             onChange={(e) => handleChange(e, 'prompt1')}
             placeholder="질문의 앞에 붙을 프롬프트를 작성해주세요."
-            disabled={!fork}
+            disabled={!possible}
           />
         </div>
         <div className="question">
@@ -44,7 +57,7 @@ export default function CreatePart1({ prompt1, prompt2, example, fork, handleCha
               placeholder="예시를 작성해주세요"
               onChange={(e) => handleChange(e, 'example')}
               id="example"
-              disabled={!fork}
+              disabled={!possible}
             />
           </div>
         </div>
@@ -59,7 +72,7 @@ export default function CreatePart1({ prompt1, prompt2, example, fork, handleCha
             onChange={(e) => handleChange(e, 'prompt2')}
             placeholder="질문의 뒤에 붙을 프롬프트를 작성해주세요."
             id="prompt2"
-            disabled={!fork}
+            disabled={!possible}
           />
         </div>
       </LeftContainer>
@@ -77,7 +90,7 @@ export default function CreatePart1({ prompt1, prompt2, example, fork, handleCha
             </div>
           </div>
           <div className="row">
-            <Button className="testBtn">
+            <Button className="testBtn" onClick={handleTest}>
               <FaPlayCircle />
               <div className="text">테스트</div>
             </Button>

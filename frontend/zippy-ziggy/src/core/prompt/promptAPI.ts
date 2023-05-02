@@ -14,6 +14,7 @@ import {
   GetPromptListType,
   GetTalkListUsePromptType,
   LikePromptType,
+  TestPromptType,
   UpdatePromptCommentType,
 } from './promptType';
 
@@ -39,7 +40,7 @@ export const createPrompt = async (requestData: CreatePromptType) => {
       stopOnFocus: true,
       style: toastifyCSS.success,
     }).showToast();
-    requestData.router.push(`/prompts/${data.promptUuid}`);
+    requestData.router.replace(`/prompts/${data.promptUuid}`);
     return { result: 'SUCCESS', data };
   } catch (err) {
     Toastify({
@@ -65,7 +66,7 @@ export const updatePrompt = async (requestData: CreatePromptType) => {
       stopOnFocus: true,
       style: toastifyCSS.success,
     }).showToast();
-    requestData.router.push(`/prompts/${data.promptUuid}`);
+    requestData.router.replace(`/prompts/${data.promptUuid}`);
     return { result: 'SUCCESS', data };
   } catch (err) {
     Toastify({
@@ -91,7 +92,7 @@ export const createPromptFork = async (requestData: CreatePromptType) => {
       stopOnFocus: true,
       style: toastifyCSS.success,
     }).showToast();
-    requestData.router.push(`/prompts/${data.promptUuid}`);
+    requestData.router.replace(`/prompts/${data.promptUuid}`);
     return { result: 'SUCCESS', data };
   } catch (err) {
     Toastify({
@@ -282,4 +283,11 @@ export const deletePromptComment = async (reqeustData: DeletePromptCommentType) 
     }).showToast();
     return { result: 'FAIL', data: err };
   }
+};
+
+// ChatGPT 테스트 API 요청
+export const testPrompt = async (requestData: TestPromptType) => {
+  // try {
+  //   const {data} = await httpAuth
+  // }
 };

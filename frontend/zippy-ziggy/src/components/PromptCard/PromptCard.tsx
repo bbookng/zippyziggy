@@ -1,14 +1,15 @@
 import React from 'react';
 import Image from 'next/image';
-import { getDate } from '@/lib/utils';
+import { getDate, getDateTime } from '@/lib/utils';
 import { FaHeart, FaBookmark, FaPlayCircle } from 'react-icons/fa';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { Body, Conatiner, Content, Footer, Infos, Title } from './CardStyle';
 
 interface PromptType {
-  promptId: string;
+  promptUuid: string;
   title: string;
-  writerResponse: {
+  writer: {
     writerNickname: string;
     writerImg: string;
     writerUuid: string;
@@ -37,10 +38,17 @@ interface PropsType {
 }
 
 export default function PromptCard({ image, title, description, url, prompt }: PropsType) {
+  const router = useRouter();
+  const handleMoveToUser = () => {
+    if (prompt) {
+      router.push(`/profile/${prompt?.writer?.writerUuid}`);
+    }
+  };
+
   return (
     <Conatiner>
       {url ? (
-        <Link href={`${url || prompt.writerResponse.writerUuid}`}>
+        <Link href={`${url || prompt.promptUuid}`}>
           <Image
             priority
             src={`${image || prompt?.thumbnail || '/images/ChatGPT_logo.png'}`}
@@ -77,9 +85,16 @@ export default function PromptCard({ image, title, description, url, prompt }: P
         </Infos>
       </Body>
       <Footer>
-        <div className="user">
-          <Image priority src="/images/noProfile.png" alt="프사" width={30} height={30} />
-          <div className="nickname">{prompt?.writerResponse?.writerNickname || '닉네임'}</div>
+        <div className="user" onClick={handleMoveToUser} style={prompt && { cursor: 'pointer' }}>
+          <Image
+            priority
+            src={prompt?.writer?.writerImg || '/images/noProfile.png'}
+            alt="프사"
+            width={30}
+            height={30}
+            className="profileImg"
+          />
+          <div className="nickname">{prompt?.writer?.writerNickname || '닉네임'}</div>
         </div>
         <div className="extraBox">
           <div className="item">
