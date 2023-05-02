@@ -51,7 +51,7 @@ public class EsTalk {
 //			.build();
 //	}
 
-	private class EsMessage {
+	private static class EsMessage {
 		private String role;
 		private String content;
 	}
