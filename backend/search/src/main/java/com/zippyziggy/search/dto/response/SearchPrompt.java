@@ -36,7 +36,7 @@ public class SearchPrompt {
                 .isLiked(isLiked)
                 .isBookmarked(isBookmarked)
 
-                .writerResponse(writerResponse)
+                .writer(writerResponse)
                 .build();
     }
 
@@ -57,7 +57,7 @@ public class SearchPrompt {
     private final Boolean isLiked;
     private final Boolean isBookmarked;
 
-    private final WriterResponse writerResponse;
+    private final WriterResponse writer;
 
     @Builder
     public SearchPrompt(
@@ -78,7 +78,7 @@ public class SearchPrompt {
             Boolean isLiked,
             Boolean isBookmarked,
 
-            WriterResponse writerResponse
+            WriterResponse writer
     ) {
         this.promptUuid = promptUuid;
         this.title = title;
@@ -97,7 +97,7 @@ public class SearchPrompt {
         this.isLiked = isLiked;
         this.isBookmarked = isBookmarked;
 
-        this.writerResponse = writerResponse;
+        this.writer = writer;
     }
 
 }
