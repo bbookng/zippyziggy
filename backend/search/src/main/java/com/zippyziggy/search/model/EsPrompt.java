@@ -1,6 +1,6 @@
 package com.zippyziggy.search.model;
 
-import com.zippyziggy.search.dto.request.server.SyncEsPrompt;
+import com.zippyziggy.search.dto.response.server.SyncEsPrompt;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

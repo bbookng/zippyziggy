@@ -1,5 +1,6 @@
 package com.zippyziggy.search.dto.response;
 
+import com.zippyziggy.search.dto.response.server.MemberResponse;
 import com.zippyziggy.search.dto.response.server.PromptComment;
 import java.time.ZoneId;
 import lombok.Builder;
@@ -22,14 +23,12 @@ public class PromptCommentResponse {
 		long regDt = comment.getRegDt().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
 		long updDt = comment.getRegDt().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
 
-		PromptCommentResponse response = PromptCommentResponse.builder()
+		return PromptCommentResponse.builder()
 			.commentId(comment.getId())
 			.regDt(regDt)
 			.updDt(updDt)
 			.content(comment.getContent())
 			.build();
-
-		return response;
 	}
 
 }

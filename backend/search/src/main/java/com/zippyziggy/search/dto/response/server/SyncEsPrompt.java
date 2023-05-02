@@ -1,4 +1,4 @@
-package com.zippyziggy.search.dto.request.server;
+package com.zippyziggy.search.dto.response.server;
 
 import java.util.UUID;
 

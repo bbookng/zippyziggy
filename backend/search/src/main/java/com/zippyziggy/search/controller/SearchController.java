@@ -2,6 +2,7 @@ package com.zippyziggy.search.controller;
 
 import com.zippyziggy.search.dto.response.ExtensionSearchPromptList;
 import com.zippyziggy.search.dto.response.SearchPromptList;
+import com.zippyziggy.search.dto.response.SearchTalkList;
 import com.zippyziggy.search.service.EsPromptService;
 import com.zippyziggy.search.service.EsTalkService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -57,22 +58,23 @@ public class SearchController {
                 crntMemberUuid, keyword, category, page, size, sort));
     }
 
-//    @Operation(summary = "톡 검색", description = "톡을 검색한다.")
-//    @ApiResponses({
-//        @ApiResponse(responseCode = "200", description = "성공"),
-//        @ApiResponse(responseCode = "400", description = "잘못된 요청"),
-//        @ApiResponse(responseCode = "500", description = "서버 에러")
-//    })
-//    @GetMapping("/talks")
-//    public ResponseEntity<SearchTalkList> searchTalks(
-//        @RequestHeader(required = false) String crntMemberUuid,
-//        @RequestParam(required = false) String keyword,
-//        @RequestParam(required = false) String category,
-//        @PageableDefault(sort = "likeCnt",  direction = Sort.Direction.DESC) Pageable pageable
-//    ) {
-//        return ResponseEntity.ok(esTalkService.searchTalks(
-//            crntMemberUuid, keyword, category, pageable
-//        ));
-//    }
+    @Operation(summary = "톡 검색", description = "톡을 검색한다.")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "성공"),
+        @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+        @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
+    @GetMapping("/talks")
+    public ResponseEntity<SearchTalkList> searchTalks(
+        @RequestHeader(required = false) String crntMemberUuid,
+        @RequestParam(required = false) String keyword,
+        @RequestParam(required = false, defaultValue = "0") int page,
+        @RequestParam(required = false, defaultValue = "10") int size,
+        @RequestParam(required = false, defaultValue = "likeCnt") String sort
+    ) {
+        return ResponseEntity.ok(esTalkService.searchTalks(
+            crntMemberUuid, keyword, page, size, sort
+        ));
+    }
 
 }
