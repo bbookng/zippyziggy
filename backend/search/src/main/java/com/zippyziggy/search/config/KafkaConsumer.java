@@ -22,7 +22,7 @@ public class KafkaConsumer {
 
 	private final EsPromptService esPromptService;
 
-	private ObjectMapper objectMapper = new ObjectMapper();
+	private final ObjectMapper objectMapper = new ObjectMapper();
 
 	@KafkaListener(topics = "create-prompt-topic")
 	public void createPrompt(String kafkaMessage) {
