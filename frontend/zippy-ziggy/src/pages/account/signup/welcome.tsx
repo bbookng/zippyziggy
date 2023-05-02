@@ -1,25 +1,25 @@
-import Button from '@/components/Button/Button';
-import HomeAnimation from '@/components/LottieFiles/LoadingA';
 import Paragraph from '@/components/Typography/Paragraph';
 import Title from '@/components/Typography/Title';
-import { setIsLogin } from '@/core/user/userSlice';
-import { useAppDispatch, useAppSelector } from '@/hooks/reduxHook';
-import { httpAuth } from '@/lib/http';
 import { media } from '@/styles/media';
-import Link from 'next/link';
-import router, { useRouter } from 'next/router';
+import router from 'next/router';
 import styled from 'styled-components';
+import lottieJson from '@/assets/lottieJson/congratulation-sparkle.json';
+import Lottie from 'react-lottie-player';
 
-export const LoginContainer = styled.div`
+const LoginContainer = styled.div`
   width: 100%;
   height: 100vh;
   padding: 16px;
   background-color: ${({ theme: { colors } }) => colors.whiteColor100};
 `;
 
-export const LoginWarp = styled.div`
-  max-width: 360px;
-  margin: auto;
+const LoginWarp = styled.div`
+  max-width: 720px;
+  width: 100%;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  position: absolute;
 
   .kakao {
     background-color: #ffff16;
@@ -43,11 +43,27 @@ export const LoginWarp = styled.div`
   }
 `;
 
+const LottieWrap = styled.div`
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  .lottie {
+    pointer-events: none;
+    background-color: transparent;
+    width: 600px;
+  }
+`;
+
 export default function Index() {
   const { nickname } = router.query;
 
   return (
     <LoginContainer>
+      <LottieWrap>
+        <Lottie className="lottie" loop animationData={lottieJson} play />
+      </LottieWrap>
       <LoginWarp>
         <Title textAlign="center" margin="32px 0 0 0">
           {nickname}님 환영합니다!
@@ -68,7 +84,6 @@ export default function Index() {
         >
           프롬프트 제작이 처음이세요? →
         </Paragraph>
-        <HomeAnimation />
       </LoginWarp>
     </LoginContainer>
   );
