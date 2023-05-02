@@ -71,10 +71,6 @@ public class EsPrompt {
 
     public static EsPrompt of (SyncEsPrompt esPrompt) {
 
-        final String originalPromptUuid = (null != esPrompt.getOriginalPromptUuid())
-            ? esPrompt.getOriginalPromptUuid().toString()
-            : null;
-
         return EsPrompt.builder()
             .promptId(esPrompt.getPromptId())
             .userId(String.valueOf(esPrompt.getUserId()))
@@ -89,7 +85,8 @@ public class EsPrompt {
             .suffix(esPrompt.getSuffix())
             .example(esPrompt.getExample())
             .promptUuid(esPrompt.getPromptUuid().toString())
-            .originalPromptUuid(originalPromptUuid)
+            .originalPromptUuid(esPrompt.getOriginalPromptUuid() != null
+                ? esPrompt.getOriginalPromptUuid().toString() : null)
             .build();
     }
 }
