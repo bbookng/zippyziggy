@@ -5,8 +5,6 @@ import lombok.Data;
 
 @Data
 public class PromptCntResponse {
-    @JsonProperty("promptUuid")
     private final String promptUuid;
-    @JsonProperty("cnt")
     private final Integer cnt;
 }
