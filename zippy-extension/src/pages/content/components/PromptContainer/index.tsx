@@ -57,10 +57,11 @@ const PromptContainer = () => {
       category: selectedCategory,
       keyword: debouncedSearchTerm,
       sort: selectedSort,
+      page: page - 1,
     };
 
     return params;
-  }, [debouncedSearchTerm, selectedCategory, selectedSort]);
+  }, [debouncedSearchTerm, page, selectedCategory, selectedSort]);
 
   const {
     data: searchResult,
@@ -109,9 +110,9 @@ const PromptContainer = () => {
               if (searchResult?.totalPromptsCnt === 0) {
                 return <div>결과가 없습니다.</div>;
               }
-              return searchResult?.extensionSearchPromptList
-                .slice(offset, offset + limit)
-                .map((prompt) => <PromptCard key={prompt.promptUuid} prompt={prompt} />);
+              return searchResult?.extensionSearchPromptList.map((prompt) => (
+                <PromptCard key={prompt.promptUuid} prompt={prompt} />
+              ));
             })()}
           </ul>
         </section>

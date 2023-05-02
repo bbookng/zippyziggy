@@ -8,6 +8,7 @@ interface PaginationProps {
 }
 
 const Pagination = ({ total, limit, page, setPage }: PaginationProps) => {
+  console.log(total, limit, page);
   const numPages = Math.ceil(total / limit);
   const pagesPerGroup = 10; // 한 번에 표시할 페이지 수
   const currentPageGroup = Math.ceil(page / pagesPerGroup); // 현재 속한 페이지 그룹
