@@ -2,16 +2,13 @@ package com.zippyziggy.search.service;
 
 import com.zippyziggy.search.client.MemberClient;
 import com.zippyziggy.search.client.PromptClient;
-import com.zippyziggy.search.dto.response.server.SyncEsPrompt;
-import com.zippyziggy.search.dto.response.WriterResponse;
-import com.zippyziggy.search.dto.response.server.MemberResponse;
 import com.zippyziggy.search.dto.response.SearchTalk;
 import com.zippyziggy.search.dto.response.SearchTalkList;
+import com.zippyziggy.search.dto.response.WriterResponse;
+import com.zippyziggy.search.dto.response.server.MemberResponse;
 import com.zippyziggy.search.dto.response.server.SyncEsTalk;
-import com.zippyziggy.search.exception.EsPromptNotFoundException;
 import com.zippyziggy.search.exception.EsTalkNotFoundException;
 import com.zippyziggy.search.exception.MemberNotFoundException;
-import com.zippyziggy.search.model.EsPrompt;
 import com.zippyziggy.search.model.EsTalk;
 import com.zippyziggy.search.repository.EsTalkRepository;
 import lombok.RequiredArgsConstructor;
@@ -103,7 +100,7 @@ public class EsTalkService {
         String keyword,
         Pageable pageable
     ) {
-        Page<EsTalk> pagedEsTalk = null;
+        Page<EsTalk> pagedEsTalk;
         keyword = (keyword.equals("")) ? null : keyword;
 
         if (null != keyword) {
