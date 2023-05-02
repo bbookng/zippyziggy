@@ -16,7 +16,7 @@ export const LoginContainer = styled.div`
 `;
 
 export const LoginWarp = styled.div`
-  max-width: 360px;
+  max-width: 300px;
   margin: auto;
 
   .kakao {
@@ -43,14 +43,14 @@ export const LoginWarp = styled.div`
 
 export default function Login() {
   const HandleKokaoLogin = () => {
-    const redirectUri = `${window.location.origin}/account/oauth`;
+    const redirectUri = `${window.location.origin}/account/oauth/kakao`;
     router.push(
       `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=code`
     );
   };
 
   const HandlegoogleLogin = () => {
-    const redirectUri = `${window.location.origin}/account/oauth`;
+    const redirectUri = `${window.location.origin}/account/oauth/google`;
     router.push(
       `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=code&scope=https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile`
     );
@@ -70,14 +70,14 @@ export default function Login() {
         </Title>
         <br />
         <br />
-        <IconButton className="kakao" onClick={HandleKokaoLogin}>
+        <IconButton isRound className="kakao" onClick={HandleKokaoLogin}>
           <RiKakaoTalkFill className="icon" fill="#3B1A1F" size="30" />
-          <span className="flex1"> 카카오 로그인 </span>
+          <span className="flex1"> 카카오로 시작하기 </span>
         </IconButton>
         <br />
-        <IconButton color="blackColor10" className="google" onClick={HandlegoogleLogin}>
+        <IconButton isRound color="blackColor10" className="google" onClick={HandlegoogleLogin}>
           <FcGoogle className="icon" size="30" />
-          <span className="flex1"> 구글 로그인 </span>
+          <span className="flex1"> 구글로 시작하기 </span>
         </IconButton>
       </LoginWarp>
     </LoginContainer>

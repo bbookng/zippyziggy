@@ -121,7 +121,7 @@ const Navbar = ({ toggleTheme }) => {
               padding="0.5rem 1rem"
               style={{ color: '#4CC857' }}
             >
-              소셜로그인
+              로그인
             </Button>
           </Link>
         </NavUser>

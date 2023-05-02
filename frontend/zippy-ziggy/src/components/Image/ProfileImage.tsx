@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { HTMLAttributes } from 'react';
 
 /**
  * 타이틀을 사용한다.
@@ -6,8 +7,13 @@ import Image from 'next/image';
  * @param {string} alt
  * @param {int} size default = 64
  */
+interface ProfileProps extends HTMLAttributes<HTMLDivElement> {
+  src: string;
+  alt: string;
+  size: number;
+}
 
-function ProfileImage({ src, alt = '이미지', size = 64 }) {
+function ProfileImage({ src, alt = '이미지', size = 64, ...rest }: ProfileProps) {
   const handleImgError = (e) => {
     e.target.src = '/images/noProfile.png';
   };
