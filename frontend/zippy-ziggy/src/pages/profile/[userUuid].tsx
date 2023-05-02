@@ -26,6 +26,8 @@ const ProfileHeaderContainer = styled.div`
   justify-content: center;
   align-items: center;
   background-color: ${({ theme: { colors } }) => colors.whiteColor100};
+  .authContainer {
+  }
 `;
 
 const ProfilePromptContainer = styled.div`
@@ -74,6 +76,10 @@ export default function Index() {
     router.push('/');
   };
 
+  const handleGoModifyBtn = () => {
+    router.push('/account/modify');
+  };
+
   return (
     <ProfileContainer>
       <ProfileHeaderContainer>
@@ -82,21 +88,32 @@ export default function Index() {
           {nickname}
         </Title>
         {userState.userUuid === userUuid ? (
-          <div>
+          <div className="authContainer">
             <Button
+              isRound
               display="inline-block"
-              padding="4px 16px"
-              margin="4px 0 0 0"
+              color="blackColor05"
+              width="fit-content"
+              fontColor="blackColor70"
+              padding="0 24px"
+              margin="4px 4px 0 0"
               onClick={handleLogout}
             >
               로그아웃
             </Button>
 
-            <Link href="/account/modify">
-              <Button display="inline-block" margin="4px 0 0 0">
-                정보변경
-              </Button>
-            </Link>
+            <Button
+              isRound
+              display="inline-block"
+              width="fit-content"
+              color="blackColor05"
+              fontColor="blackColor70"
+              padding="0 24px"
+              margin="4px 0 0 4px"
+              onClick={handleGoModifyBtn}
+            >
+              정보변경
+            </Button>
           </div>
         ) : null}
       </ProfileHeaderContainer>
