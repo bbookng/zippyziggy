@@ -62,8 +62,8 @@ public class KafkaConsumer {
 		try {
 			final PromptCntResponse promptCntResponse = objectMapper.readValue(kafkaMessage, PromptCntResponse.class);
 			final String promptUuid = promptCntResponse.getPromptUuid();
-			final Long cnt = promptCntResponse.getCnt();
-			esPromptService.updateHit(promptUuid, Math.toIntExact(cnt));
+			final Integer cnt = promptCntResponse.getCnt();
+			esPromptService.updateHit(promptUuid, cnt);
 		} catch (JsonProcessingException ex) {
 			throw new CustomJsonProcessingException();
 		}
@@ -77,9 +77,9 @@ public class KafkaConsumer {
 			log.info("PromptCnt: ->" + promptCntResponse);
 			final String promptUuid = promptCntResponse.getPromptUuid();
 			log.info("promptUuid: ->" + promptUuid);
-			final Long cnt = promptCntResponse.getCnt();
+			final Integer cnt = promptCntResponse.getCnt();
 			log.info("cnt: ->" + cnt);
-			esPromptService.updateLikeCnt(promptUuid, Math.toIntExact(cnt));
+			esPromptService.updateLikeCnt(promptUuid, cnt);
 		} catch (JsonProcessingException ex) {
 			throw new CustomJsonProcessingException();
 		}
