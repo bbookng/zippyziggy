@@ -85,13 +85,16 @@ const darkTheme: DefaultTheme = {
     successColor: 'var(--colors-success)',
     bookmarkColor: 'var(--colors-bookmark)',
 
+    // 기타 세부적인 변경 컬러
     navColor: 'var(--colors-dark-nav)',
     bgColor: 'var(--colors-black-background)',
 
     whiteColor: 'var(--colors-white-100)',
     blackColor: 'var(--colors-black-100)',
-
     grayColor: 'var(--colors-dark-gray)',
+
+    talkYoursColor: '#D2F1D550',
+    talkMineColor: '#EDEDED50',
   },
   ...CommonTheme,
   isDark: true,
@@ -149,8 +152,10 @@ const lightTheme: DefaultTheme = {
 
     whiteColor: 'var(--colors-white-100)',
     blackColor: 'var(--colors-black-100)',
-
     grayColor: 'var(--colors-white-gray)',
+
+    talkYoursColor: '#E1F1E3',
+    talkMineColor: '#EDEDED',
   },
   ...CommonTheme,
   isDark: false,

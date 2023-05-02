@@ -91,7 +91,7 @@ export const getUserAPI = async (uuid: string) => {
     };
     return result;
   } catch (err) {
-    return err;
+    return { result: 'FAIL', data: err };
   }
 };
 
@@ -110,10 +110,25 @@ export const getNicknameAPI = async (nickname: string) => {
 /**
  * 구글로그인
  */
-export const getGoogleAPI = async (code: string, redirect: string) => {
+export const getGoogleAPI = async (code: string) => {
+  const queryParams = new URLSearchParams({
+    code,
+    redirect: `${window.location.origin}/account/oauth/google`,
+  }).toString();
   try {
-    const { data } = await http.get(`/members/login/oauth2/code/google`);
-    return data;
+    const res = await http.get(`/members/login/oauth2/code/google?${queryParams}`);
+    const { data } = res;
+    if (data?.isSignUp === true) {
+      // 회원가입으로 이동
+      return {
+        result: 'SUCCESS_SIGNUP',
+        socialSignUpDataResponseDto: data?.socialSignUpDataResponseDto ?? {},
+      };
+    }
+    // 로그인으로 이동
+    const { nickname, profileImg, userUuid } = data;
+    localStorage.setItem('accessToken', res?.headers?.authorization);
+    return { result: 'SUCCESS_LOGIN', userUuid, profileImg, nickname };
   } catch (err) {
     return err;
   }
@@ -125,7 +140,7 @@ export const getGoogleAPI = async (code: string, redirect: string) => {
 export const getKakaoAPI = async (code: string) => {
   const queryParams = new URLSearchParams({
     code,
-    redirect: `${window.location.origin}/account/oauth`,
+    redirect: `${window.location.origin}/account/oauth/kakao`,
   }).toString();
   try {
     const res = await http.get(`/members/auth/kakao/callback?${queryParams}`);
