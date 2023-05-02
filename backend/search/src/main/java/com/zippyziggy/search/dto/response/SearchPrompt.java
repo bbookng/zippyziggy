@@ -16,7 +16,7 @@ public class SearchPrompt {
             Long likeCnt,
             Boolean isLiked,
             Boolean isBookmarked,
-            WriterResponse writerResponse
+            WriterResponse writer
     ) {
 
         return SearchPrompt.builder()
@@ -36,7 +36,7 @@ public class SearchPrompt {
                 .isLiked(isLiked)
                 .isBookmarked(isBookmarked)
 
-                .writer(writerResponse)
+                .writer(writer)
                 .build();
     }
 

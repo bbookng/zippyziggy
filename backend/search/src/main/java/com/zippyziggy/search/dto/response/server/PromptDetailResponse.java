@@ -16,10 +16,10 @@ import org.springframework.lang.Nullable;
 @Builder
 public class PromptDetailResponse {
 
-	private WriterResponse writerResponse;
+	private WriterResponse writer;
 
 	@Nullable
-	private OriginerResponse originerResponse;
+	private OriginerResponse originer;
 
 	private String title;
 	private String description;

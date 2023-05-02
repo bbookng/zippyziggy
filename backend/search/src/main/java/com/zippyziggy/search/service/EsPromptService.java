@@ -61,7 +61,7 @@ public class EsPromptService {
 
             // 사용자 조회
             //TODO server to server api 만든 후 Member application에서 호출하는 방식으로 변경해야함
-            final WriterResponse writerResponse = promptDetailResponse.getWriterResponse();
+            final WriterResponse writerResponse = promptDetailResponse.getWriter();
 
             final CntResponse cntResponse = circuitBreaker
                 .run(() -> promptClient
@@ -111,7 +111,7 @@ public class EsPromptService {
 
             // 사용자 조회
             //TODO server to server api 만든 후 Member application에서 호출하는 방식으로 변경해야함
-            WriterResponse writerResponse = promptDetailResponse.getWriterResponse();
+            WriterResponse writerResponse = promptDetailResponse.getWriter();
 
             final CntResponse cntResponse = circuitBreaker
                 .run(() -> promptClient
