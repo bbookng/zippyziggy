@@ -81,7 +81,7 @@ public class MemberController {
      * 멤버가 좋아요를 누름 프롬프트 조회
      */
     @GetMapping("/prompts/like/{crntMemberUuid}")
-    @Operation(hidden = true)
+    @Operation(summary = "멤버의 좋아요 프롬프트 조회", description = "마이 프로필에서 좋아요한 프롬프트를 조회한다.")
     public ResponseEntity<?> findPromptsLike(@PathVariable String crntMemberUuid,
                              @RequestParam("page") Integer page,
                              @RequestParam("size") Integer size, HttpServletRequest request) throws Exception {
@@ -101,18 +101,37 @@ public class MemberController {
      * 멤버가 북마크를 누름 프롬프트 조회
      */
     @GetMapping("/prompts/bookmark/{crntMemberUuid}")
-    @Operation(hidden = true)
+    @Operation(summary = "멤버의 북마크 프롬프트 조회", description = "마이 프로필에서 북마크한 프롬프트를 조회한다.")
     public ResponseEntity<?> findPromptsBookmark(@PathVariable String crntMemberUuid,
                                           @RequestParam("page") Integer page,
                                           @RequestParam("size") Integer size, HttpServletRequest request) throws Exception {
         try {
             List<PromptCardResponse> promptsBookmark = promptClient.getPromptsBookmark(crntMemberUuid, page, size);
             if (promptsBookmark.size() == 0) {
-                return ResponseEntity.ok("좋아요를 누른 프롬프트가 존재하지 않습니다.");
+                return ResponseEntity.ok("북마크를 누른 프롬프트가 존재하지 않습니다.");
             }
             return ResponseEntity.ok(promptsBookmark);
         } catch (Exception e) {
-            return ResponseEntity.ok("좋아요를 누른 프롬프트가 존재하지 않습니다.");
+            return ResponseEntity.ok("북마크를 누른 프롬프트가 존재하지 않습니다.");
+        }
+    }
+
+    /**
+     * 멤버가 생성한 프롬프트 조회
+     */
+    @GetMapping("/prompts/profile/{crntMemberUuid}")
+    @Operation(summary = "멤버가 생성한 프롬프트 조회", description = "마이 프로필에서 프롬프트 조회한다.")
+    public ResponseEntity<?> findPrompts(@PathVariable String crntMemberUuid,
+                                          @RequestParam("page") Integer page,
+                                          @RequestParam("size") Integer size, HttpServletRequest request) throws Exception {
+        try {
+            List<PromptCardResponse> promptsBookmark = promptClient.getPrompts(crntMemberUuid, page, size);
+            if (promptsBookmark.size() == 0) {
+                return ResponseEntity.ok("생성한 프롬프트가 존재하지 않습니다.");
+            }
+            return ResponseEntity.ok(promptsBookmark);
+        } catch (Exception e) {
+            return ResponseEntity.ok("생성한 프롬프트가 존재하지 않습니다.");
         }
     }
 //
