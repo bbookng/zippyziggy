@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.SortDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,10 +35,11 @@ public class SearchController {
         @RequestHeader(required = false) String crntMemberUuid,
         @RequestParam(required = false) String keyword,
         @RequestParam(required = false) String category,
-        @PageableDefault(sort = "likeCnt",  direction = Sort.Direction.DESC) Pageable pageable
+        @PageableDefault(sort = "likeCnt",  direction = Sort.Direction.DESC) Pageable pageable,
+        @SortDefault(direction = Sort.Direction.DESC) Sort sort
     ) {
         return ResponseEntity.ok(esPromptService.searchPrompts(
-            crntMemberUuid, keyword, category, pageable));
+            crntMemberUuid, keyword, category, pageable, sort));
     }
 
     @Operation(summary = "[확장] 프롬프트 검색", description = "확장 프로그램에서 프롬프트를 검색한다.")
@@ -51,9 +53,10 @@ public class SearchController {
         @RequestHeader(required = false) String crntMemberUuid,
         @RequestParam(required = false) String keyword,
         @RequestParam(required = false) String category,
-        @PageableDefault(sort = "likeCnt",  direction = Sort.Direction.DESC) Pageable pageable
+        @PageableDefault(sort = "likeCnt",  direction = Sort.Direction.DESC) Pageable pageable,
+        @SortDefault(direction = Sort.Direction.DESC) Sort sort
     ) {
-        return ResponseEntity.ok(esPromptService.extensionSearch(crntMemberUuid, keyword, category, pageable));
+        return ResponseEntity.ok(esPromptService.extensionSearch(crntMemberUuid, keyword, category, pageable, sort));
     }
 
 //    @Operation(summary = "톡 검색", description = "톡을 검색한다.")
