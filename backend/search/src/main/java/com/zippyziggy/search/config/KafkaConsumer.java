@@ -32,6 +32,7 @@ public class KafkaConsumer {
 
 		try {
 			SyncEsPrompt syncEsPrompt = objectMapper.readValue(kafkaMessage, SyncEsPrompt.class);
+			log.info("syncEsPrompt: ->" + syncEsPrompt);
 			esPromptService.insertDocument(syncEsPrompt);
 		} catch (JsonProcessingException ex) {
 			throw new CustomJsonProcessingException();
