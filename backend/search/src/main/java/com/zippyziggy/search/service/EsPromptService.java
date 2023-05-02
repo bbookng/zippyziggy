@@ -23,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -45,10 +46,12 @@ public class EsPromptService {
         String crntMemberUuid,
         String keyword,
         String category,
-        Pageable pageable,
-        Sort sort
+        Integer page,
+        Integer size,
+        String sort
     ) {
-        pageable.getSortOr(sort);
+        final Sort sortBy = Sort.by(Sort.Direction.DESC, sort);
+        final Pageable pageable = PageRequest.of(page, size, sortBy);
 
         CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 
