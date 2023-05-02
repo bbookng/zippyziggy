@@ -3,11 +3,7 @@ package com.zippyziggy.prompt.prompt.service;
 import com.zippyziggy.prompt.common.aws.AwsS3Uploader;
 import com.zippyziggy.prompt.common.kafka.KafkaProducer;
 import com.zippyziggy.prompt.prompt.client.MemberClient;
-import com.zippyziggy.prompt.prompt.dto.request.PromptCntRequest;
-import com.zippyziggy.prompt.prompt.dto.request.PromptModifyRequest;
-import com.zippyziggy.prompt.prompt.dto.request.PromptRatingRequest;
-import com.zippyziggy.prompt.prompt.dto.request.PromptReportRequest;
-import com.zippyziggy.prompt.prompt.dto.request.PromptRequest;
+import com.zippyziggy.prompt.prompt.dto.request.*;
 import com.zippyziggy.prompt.prompt.dto.response.MemberResponse;
 import com.zippyziggy.prompt.prompt.dto.response.PromptCardResponse;
 import com.zippyziggy.prompt.prompt.dto.response.PromptDetailResponse;
@@ -46,7 +42,10 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
+
+import io.github.flashvayne.chatgpt.service.ChatgptService;
 import lombok.RequiredArgsConstructor;
+import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.data.domain.Page;
@@ -74,6 +73,7 @@ public class PromptService{
 	private final PromptReportRepository promptReportRepository;
 	private final KafkaProducer kafkaProducer;
 	private final PromptClickRepository promptClickRepository;
+	private final ChatgptService chatgptService;
 
 	// Exception 처리 필요
 	public PromptResponse createPrompt(PromptRequest data, UUID crntMemberUuid, MultipartFile thumbnail) {
@@ -231,7 +231,7 @@ public class PromptService{
 		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
 		List<TalkListResponse> talkListResponses = talkService.getTalkListResponses(circuitBreaker, prompt,
-			crntMemberUuid, pageable);
+				crntMemberUuid, pageable);
 		return new PromptTalkListResponse(talkListResponses.size(), talkListResponses);
 	}
 
@@ -241,7 +241,7 @@ public class PromptService{
 
 	public void removePrompt(String promptUuid, UUID crntMemberUuid) {
 		Prompt prompt = promptRepository.findByPromptUuid(UUID.fromString(promptUuid))
-			.orElseThrow(PromptNotFoundException::new);
+				.orElseThrow(PromptNotFoundException::new);
 
 		if (!crntMemberUuid.equals(prompt.getMemberUuid())) {
 			throw new ForbiddenMemberException();
@@ -346,8 +346,8 @@ public class PromptService{
 
 
 	/*
-	북마크 등록 및 삭제
-	 */
+    북마크 등록 및 삭제
+     */
 	public void bookmarkPrompt(UUID promptUuid, String crntMemberUuid) {
 
 		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
@@ -361,8 +361,8 @@ public class PromptService{
 
 
 	/*
-	북마크 조회하기
-	 */
+    북마크 조회하기
+     */
 	public List<PromptCardResponse> bookmarkPromptByMember(String crntMemberUuid, Pageable pageable) {
 		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 		MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(UUID.fromString(crntMemberUuid)))
@@ -389,8 +389,8 @@ public class PromptService{
 	}
 
 	/*
-	프롬프트 평가
-	 */
+    프롬프트 평가
+     */
 	public void ratingPrompt(UUID promptUuid, String crntMemberUuid, PromptRatingRequest promptRatingRequest) throws Exception {
 		Rating ratingExist = ratingRepository.findByMemberUuidAndPromptPromptUuid(UUID.fromString(crntMemberUuid), promptUuid);
 
@@ -405,8 +405,8 @@ public class PromptService{
 	}
 
 	/*
-	프롬프트 톡 및 댓글 개수 조회
-	 */
+    프롬프트 톡 및 댓글 개수 조회
+     */
 	public PromptTalkCommentCntResponse cntPrompt(UUID promptUuid) {
 		long talkCnt = talkRepository.countAllByPromptPromptUuid(promptUuid);
 		long commentCnt = promptCommentRepository.countAllByPromptPromptUuid(promptUuid);
@@ -414,8 +414,8 @@ public class PromptService{
 	}
 
 	/*
-	프롬프트 신고 접수 한 프롬프트 당 5개까지 작성가능
-	 */
+    프롬프트 신고 접수 한 프롬프트 당 5개까지 작성가능
+     */
 	public void promptReport(UUID promptUuid, String crntMemberUuid, PromptReportRequest promptReportRequest) throws Exception {
 		Long reportCnt = promptReportRepository.countAllByMemberUuidAndPrompt_PromptUuid(UUID.fromString(crntMemberUuid), promptUuid);
 		if (reportCnt <= 5 ) {
@@ -428,8 +428,8 @@ public class PromptService{
 	}
 
 	/*
-	프롬프트 신고 내용 확인
-	 */
+    프롬프트 신고 내용 확인
+     */
 	public Page<PromptReportResponse> reports(Pageable pageable) {
 		Page<PromptReport> reports = promptReportRepository.findAllByOrderByRegDtDesc(pageable);
 		Page<PromptReportResponse> promptReportResponse = PromptReportResponse.from(reports);
@@ -437,8 +437,8 @@ public class PromptService{
 	}
 
 	/*
-	최근 조회한 프롬프트 5개 조회
-	 */
+    최근 조회한 프롬프트 5개 조회
+     */
 	public List<PromptCardResponse> recentPrompts(String crntMemberUuid) {
 
 		if (crntMemberUuid.equals("defaultValue")) {
@@ -476,8 +476,8 @@ public class PromptService{
 	}
 
 	/*
-	memberUuid로 프롬프트 조회
-	 */
+    memberUuid로 프롬프트 조회
+     */
 	public List<PromptCardResponse> memberPrompts(String crntMemberUuid, Pageable pageable) {
 
 		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
@@ -503,4 +503,8 @@ public class PromptService{
 
 		return promptCardResponses;
 	}
+
+    public String testGptApi(String example) {
+		return chatgptService.sendMessage(example);
+    }
 }

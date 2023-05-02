@@ -81,6 +81,10 @@ dependencies {
 	// kafka
 	implementation 'org.springframework.kafka:spring-kafka'
 
+	// chatGpt
+	implementation group: 'com.theokanning.openai-gpt3-java', name: 'client', version: '0.9.0'
+	implementation 'io.github.flashvayne:chatgpt-spring-boot-starter:1.0.4'
+
 }
 
 dependencyManagement {
