@@ -71,10 +71,14 @@ public class KafkaConsumer {
 
 	@KafkaListener(topics = "sync-prompt-like-cnt")
 	public void modifyLikeCnt(String kafkaMessage) {
+		log.info("Kafka Message: ->" + kafkaMessage);
 		try {
 			final PromptCntResponse promptCntResponse = objectMapper.readValue(kafkaMessage, PromptCntResponse.class);
+			log.info("PromptCnt: ->" + promptCntResponse);
 			final String promptUuid = promptCntResponse.getPromptUuid();
+			log.info("promptUuid: ->" + promptUuid);
 			final Long cnt = promptCntResponse.getCnt();
+			log.info("cnt: ->" + cnt);
 			esPromptService.updateLikeCnt(promptUuid, Math.toIntExact(cnt));
 		} catch (JsonProcessingException ex) {
 			throw new CustomJsonProcessingException();
