@@ -1,6 +1,6 @@
 package com.zippyziggy.search.client;
 
-import com.zippyziggy.search.dto.response.Member;
+import com.zippyziggy.search.dto.response.server.Member;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.cloud.openfeign.FeignClient;

@@ -1,17 +1,16 @@
 package com.zippyziggy.search.config;
 
+import com.zippyziggy.search.dto.response.server.PromptCntResponse;
 import javax.transaction.Transactional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zippyziggy.search.dto.request.server.SyncEsPrompt;
 import com.zippyziggy.search.exception.CustomJsonProcessingException;
-import com.zippyziggy.search.repository.EsPromptRepository;
 import com.zippyziggy.search.service.EsPromptService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
@@ -57,5 +56,30 @@ public class KafkaConsumer {
 		esPromptService.deleteDocument(kafkaMessage);
 
 	}
+
+	@KafkaListener(topics = "sync-prompt-hit")
+	public void modifyHit(String kafkaMessage) {
+		try {
+			final PromptCntResponse promptCntResponse = objectMapper.readValue(kafkaMessage, PromptCntResponse.class);
+			final String promptUuid = promptCntResponse.getPromptUuid();
+			final Long cnt = promptCntResponse.getCnt();
+			esPromptService.updateHit(promptUuid, Math.toIntExact(cnt));
+		} catch (JsonProcessingException ex) {
+			throw new CustomJsonProcessingException();
+		}
+	}
+
+	@KafkaListener(topics = "sync-prompt-like-cnt")
+	public void modifyLikeCnt(String kafkaMessage) {
+		try {
+			final PromptCntResponse promptCntResponse = objectMapper.readValue(kafkaMessage, PromptCntResponse.class);
+			final String promptUuid = promptCntResponse.getPromptUuid();
+			final Long cnt = promptCntResponse.getCnt();
+			esPromptService.updateLikeCnt(promptUuid, Math.toIntExact(cnt));
+		} catch (JsonProcessingException ex) {
+			throw new CustomJsonProcessingException();
+		}
+	}
+
 }
 

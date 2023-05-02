@@ -1,33 +1,22 @@
 package com.zippyziggy.search.dto.response;
 
-import com.zippyziggy.search.model.EsPrompt;
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 public class SearchTalk {
 
-    public static SearchTalk of(
-            EsPrompt esPrompt,
-            PromptDetailResponse promptDetailResponse,
-            Integer talkCnt,
-            Integer commentCnt,
-            Long likeCnt,
-            Boolean isLiked,
-            Boolean isBookmarked,
-            WriterResponse writerResponse
-    ) {
-
-        return SearchTalk.builder()
-                .promptUuid(esPrompt.getPromptUuid())
-                .title(esPrompt.getTitle())
-                .regDt(promptDetailResponse.getRegDt())
-                .commentCnt(commentCnt)
-                .likeCnt(likeCnt)
-                .build();
-    }
-
-    private final String promptUuid;
+//    public static SearchTalk of(
+//        TalkDetailResponse talkDetailResponse
+//    ) {
+//        return SearchTalk.builder()
+//            .memberResponse()
+//            .title(esTalk.getTitle())
+//            .regDt(esTalk.getRegDt())
+//            .commentCnt()
+//            .likeCnt(esTalk.getLikeCnt())
+//            .build();
+//    }
 
     private final MemberResponse memberResponse;
 
@@ -40,22 +29,21 @@ public class SearchTalk {
 
     @Builder
     public SearchTalk(
-            String promptUuid,
+            MemberResponse memberResponse,
+
             String title,
             Integer hit,
             Long regDt,
             Integer commentCnt,
-            Long likeCnt,
+            Long likeCnt
+    ) {
+        this.memberResponse = memberResponse;
 
-        MemberResponse memberResponse) {
-        this.promptUuid = promptUuid;
         this.title = title;
         this.hit = hit;
         this.regDt = regDt;
         this.commentCnt = commentCnt;
         this.likeCnt = likeCnt;
-
-        this.memberResponse = memberResponse;
     }
 
 }

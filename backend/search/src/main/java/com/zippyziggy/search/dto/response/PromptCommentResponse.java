@@ -1,5 +1,6 @@
 package com.zippyziggy.search.dto.response;
 
+import com.zippyziggy.search.dto.response.server.PromptComment;
 import java.time.ZoneId;
 import lombok.Builder;
 import lombok.Data;

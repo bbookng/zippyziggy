@@ -1,6 +1,5 @@
 package com.zippyziggy.search.dto.response.server;
 
-import com.zippyziggy.search.dto.response.PromptDetailResponse;
 import com.zippyziggy.search.dto.response.WriterResponse;
 import com.zippyziggy.search.model.EsPrompt;
 import lombok.Builder;

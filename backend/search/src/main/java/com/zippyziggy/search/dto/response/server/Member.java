@@ -1,5 +1,6 @@
-package com.zippyziggy.search.dto.response;
+package com.zippyziggy.search.dto.response.server;
 
+import com.zippyziggy.search.dto.response.WriterResponse;
 import com.zippyziggy.search.exception.MemberNotFoundException;
 import java.util.UUID;
 import lombok.Data;
