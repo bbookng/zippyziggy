@@ -1,5 +1,6 @@
 package com.zippyziggy.prompt.prompt.service;
 
+import com.zippyziggy.prompt.common.kafka.KafkaProducer;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -44,6 +45,7 @@ public class ForkPromptService {
 	private final TalkRepository talkRepository;
 	private final MemberClient memberClient;
 	private final CircuitBreakerFactory circuitBreakerFactory;
+	private final KafkaProducer kafkaProducer;
 
 	public ForkPromptResponse createForkPrompt(UUID promptUuid, PromptRequest data, MultipartFile thumbnail, UUID crntMemberUuid) {
 
@@ -53,6 +55,8 @@ public class ForkPromptService {
 		prompt.setOriginPromptUuid(promptUuid);
 
 		promptRepository.save(prompt);
+
+		kafkaProducer.send("create-prompt-topic", prompt.toEsPromptRequest());
 
 		return ForkPromptResponse.from(prompt);
 	}
