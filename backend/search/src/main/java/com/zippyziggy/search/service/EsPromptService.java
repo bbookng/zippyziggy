@@ -1,6 +1,7 @@
 package com.zippyziggy.search.service;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.elasticsearch.core.UpdateRequest;
 import com.zippyziggy.search.client.MemberClient;
 import com.zippyziggy.search.client.PromptClient;
 import com.zippyziggy.search.dto.request.server.SyncEsPrompt;
@@ -12,9 +13,12 @@ import com.zippyziggy.search.dto.response.WriterResponse;
 import com.zippyziggy.search.dto.response.server.CntResponse;
 import com.zippyziggy.search.dto.response.server.ExtensionSearchPrompt;
 import com.zippyziggy.search.exception.EsPromptNotFoundException;
+import com.zippyziggy.search.exception.IllegalUpdateRequestException;
 import com.zippyziggy.search.exception.PromptNotFoundException;
 import com.zippyziggy.search.model.EsPrompt;
 import com.zippyziggy.search.repository.EsPromptRepository;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -176,18 +180,36 @@ public class EsPromptService {
 
     public void updateHit(String promptUuid, Integer hit) {
         final EsPrompt esPrompt = esPromptRepository
-            .findEsPromptByPromptUuid(promptUuid)
-            .orElseThrow(EsPromptNotFoundException::new);
+                .findEsPromptByPromptUuid(promptUuid)
+                .orElseThrow(EsPromptNotFoundException::new);
         esPrompt.setHit(hit);
-        esPromptRepository.save(esPrompt);
+        try {
+        elasticsearchClient.update(new UpdateRequest.Builder<Void, EsPrompt>()
+                .index("prompt")
+                .id(esPrompt.getId())
+                .doc(esPrompt)
+                .build(),
+                Void.class);
+        } catch (IOException e) {
+            throw new IllegalUpdateRequestException();
+        }
     }
 
     public void updateLikeCnt(String promptUuid, Integer likeCnt) {
         final EsPrompt esPrompt = esPromptRepository
-            .findEsPromptByPromptUuid(promptUuid)
-            .orElseThrow(EsPromptNotFoundException::new);
+                .findEsPromptByPromptUuid(promptUuid)
+                .orElseThrow(EsPromptNotFoundException::new);
         esPrompt.setLikeCnt(likeCnt);
-        esPromptRepository.save(esPrompt);
+        try {
+            elasticsearchClient.update(new UpdateRequest.Builder<Void, EsPrompt>()
+                    .index("prompt")
+                    .id(esPrompt.getId())
+                    .doc(esPrompt)
+                    .build(),
+                    Void.class);
+        } catch (IOException e) {
+            throw new IllegalUpdateRequestException();
+        }
     }
 
     private Page<EsPrompt> search(
