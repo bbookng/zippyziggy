@@ -9,8 +9,8 @@ import {
   CHROME_PAGE_KEY,
   CHROME_SEARCH_KEY,
   CHROME_SORT_KEY,
+  JSON_SERVER_URL,
   LIMIT,
-  ZIPPY_API_URL,
 } from '@pages/constants';
 import useDebounce from '@pages/hooks/@shared/useDebounce';
 import useChromeStorage from '@pages/hooks/@shared/useChromeStorage';
@@ -18,7 +18,7 @@ import Pagination from '@pages/content/components/PromptContainer/Pagination';
 import PromptCard from '@pages/content/components/PromptContainer/PromptCard';
 import useFetch from '@pages/hooks/@shared/useFetch';
 
-const category: Array<Category> = [
+export const category: Array<Category> = [
   { id: 'all', text: '전체', value: 'ALL' },
   { id: 'study', text: '학업', value: 'STUDY' },
   { id: 'fun', text: '오락', value: 'FUN' },
@@ -68,8 +68,9 @@ const PromptContainer = () => {
     loading,
     error,
   } = useFetch<SearchResult>({
-    url: `${ZIPPY_API_URL}/search/extension`,
+    // url: `${ZIPPY_API_URL}/search/extension`,
     params: memoizedParams,
+    url: `${JSON_SERVER_URL}`,
   });
 
   const isNewChatPage = !window.location.href.includes('/c/');
@@ -110,7 +111,7 @@ const PromptContainer = () => {
               if (searchResult?.totalPromptsCnt === 0) {
                 return <div>결과가 없습니다.</div>;
               }
-              return searchResult?.extensionSearchPromptList.map((prompt) => (
+              return searchResult?.extensionSearchPromptList?.map((prompt) => (
                 <PromptCard key={prompt.promptUuid} prompt={prompt} />
               ));
             })()}

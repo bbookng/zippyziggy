@@ -5,7 +5,7 @@ import FlagKit from '@pages/content/components/InputWrapper/FlagKit';
 import useChromeStorage from '@pages/hooks/@shared/useChromeStorage';
 import { CHAT_GPT_URL, CHROME_LANGUAGE_KEY } from '@pages/constants';
 import useBrowserName from '@pages/hooks/@shared/useBrowserName';
-import BrowserIcon from '@pages/content/components/InputWrapper/BrowserIcon';
+import BrowserIcon from '@pages/content/components/InputWrapper/LanguageDropdown/BrowserIcon';
 import SearchBar from '@pages/content/components/PromptContainer/SearchBar';
 import splitKorean from '@pages/content/utils/split-korean';
 

@@ -12,18 +12,18 @@ const capitalizeWords = (string: string) => {
   );
 };
 
-// 날짜 시간 포맷 YYYY-MM-DD HH:MM:SS
-const formatDateTime = function (timestamp: number) {
+// 날짜 시간 포맷 YYYY년 MM월 DD일
+const formatDateTime = (timestamp: number) => {
   const fullDate = new Date(timestamp);
 
   if (!fullDate || fullDate.toString() === 'Invalid Date') {
     return '';
   }
 
-  const date = fullDate.toISOString().split('T')[0];
-  const time = fullDate.toTimeString().split(' ')[0];
+  const date = fullDate.toISOString().split('T')[0].split('-');
+  const [year, month, day] = date;
 
-  return `${date} ${time}`;
+  return `${year}년 ${month}월 ${day}일`;
 };
 
 // 타임스탬프를  N {unit} 전 형태로 포맷

@@ -10,6 +10,7 @@ const TARGET_LANGUAGE_PLACEHOLDER = '[TARGET_LANGUAGE]';
 const FLAGKIT_CDN_URL = 'https://cdn.jsdelivr.net/gh/madebybowtie/FlagKit@2.2/Assets/SVG';
 const ZIPPY_SITE_URL = 'https://zippyziggy.kr';
 const ZIPPY_API_URL = 'https://zippyziggy.kr/api';
+const JSON_SERVER_URL = 'http://localhost:3003/data';
 const CHAT_GPT_URL = 'https://chat.openai.com/';
 const ENDPOINT_CONVERSATION_URL = 'https://chat.openai.com/backend-api/conversation';
 
@@ -33,6 +34,7 @@ const CHROME_PAGE_KEY = 'ZP_page';
 
 /* Pagination */
 const LIMIT = 12; // 페이지 당 갯수
+const PAGE_PER_GROUP = 10; // 한 번에 표시할 페이지 수
 
 export {
   DEFAULT_TARGET_LANGUAGE,
@@ -43,6 +45,7 @@ export {
   ZIPPY_SITE_URL,
   FLAGKIT_CDN_URL,
   ENDPOINT_CONVERSATION_URL,
+  JSON_SERVER_URL,
   ZP_ROOT_ID,
   ZP_PROMPT_CONTAINER_ID,
   ZP_INPUT_WRAPPER_ID,
@@ -56,4 +59,5 @@ export {
   CHROME_LANGUAGE_KEY,
   CHROME_PAGE_KEY,
   LIMIT,
+  PAGE_PER_GROUP,
 };

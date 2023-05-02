@@ -1,6 +1,8 @@
 import React from 'react';
 import { Prompt } from '@pages/content/types';
 import { CHAT_GPT_URL, PROMPT_PLACEHOLDER, TARGET_LANGUAGE_PLACEHOLDER } from '@pages/constants';
+import { formatDateTime } from '@src/utils';
+import { category } from '@pages/content/components/PromptContainer';
 
 interface PromptCardProps {
   prompt: Prompt;
@@ -20,7 +22,12 @@ const PromptCard = ({ prompt }: PromptCardProps) => {
     suffix,
     updDt,
     description,
-    category,
+    isLiked,
+    talkCnt,
+    commentCnt,
+    writerResponse,
+    isBookmarked,
+    category: promptCategory,
   } = prompt;
 
   const handlePromptClick = () => {
@@ -47,19 +54,49 @@ const PromptCard = ({ prompt }: PromptCardProps) => {
         onClick={handlePromptClick}
       >
         <article className="ZP_prompt-container__prompt-article">
+          <div
+            className="ZP_prompt-container__actions-wrapper--hover"
+            style={{ position: 'absolute', top: 0, right: 0 }}
+          >
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                console.log(1);
+              }}
+            >
+              1
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                console.log(2);
+              }}
+            >
+              2
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                console.log(3);
+              }}
+            >
+              3
+            </button>
+          </div>
           <div className="ZP_prompt-container__content-wrapper">
-            <h3 className="ZP_prompt-container__title">{prompt.title}</h3>
-            <p className="ZP_prompt-container__description">{prompt.description}</p>
+            <h3 className="ZP_prompt-container__title">{title}</h3>
+            <p>{category.find((item) => item.value === promptCategory).text ?? ''}</p>
+            <p className="ZP_prompt-container__description">{description}</p>
             <div className="ZP_prompt-container__info-wrapper">
-              <p className="ZP_prompt-container__date">2023년 04월 24일</p>
-              <p className="ZP_prompt-container__comments-count">19개의 댓글</p>
+              <p className="ZP_prompt-container__date">{formatDateTime(regDt)}</p>
+              <p className="ZP_prompt-container__comments-count">{}개의 댓글</p>
               <p className="ZP_prompt-container__talks-count">10개의 Talk</p>
             </div>
           </div>
           <div className="ZP_prompt-container__profile-wrapper">
             <div className="ZP_prompt-container__profile">프로필</div>
             <div className="ZP_prompt-container__actions-wrapper">
-              <div className="ZP_prompt-container__like">좋아요</div>
+              <div className="ZP_prompt-container__like">{likeCnt}좋아요</div>
               <div className="ZP_prompt-container__bookmark">북마크</div>
             </div>
           </div>
