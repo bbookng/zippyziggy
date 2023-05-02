@@ -1,9 +1,7 @@
 package com.zippyziggy.search.dto.response;
 
 import com.zippyziggy.search.dto.response.server.ExtensionSearchPrompt;
-import com.zippyziggy.search.model.EsPrompt;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.Data;
 
 @Data
