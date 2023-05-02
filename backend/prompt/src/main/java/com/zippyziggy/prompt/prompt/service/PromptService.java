@@ -204,7 +204,7 @@ public class PromptService{
 		MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid())
 				.orElseThrow(MemberNotFoundException::new));
 
-		promptDetailResponse.setWriterResponse(writerInfo.toWriterResponse());
+		promptDetailResponse.setWriter(writerInfo.toWriterResponse());
 
 		// 원본 id가 현재 프롬프트 아이디와 같지 않으면 포크된 프롬프트
 		if (prompt.isForked()) {
@@ -214,7 +214,7 @@ public class PromptService{
 			MemberResponse originalMemberInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(originalMemberUuid)
 					.orElseThrow(MemberNotFoundException::new), throwable -> null);
 
-			promptDetailResponse.setOriginerResponse(originalMemberInfo.toOriginerResponse());
+			promptDetailResponse.setOriginer(originalMemberInfo.toOriginerResponse());
 		}
 
 		if (!crntMemberUuid.equals("defaultValue")) {
