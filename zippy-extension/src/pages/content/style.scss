@@ -5,7 +5,7 @@
 
 #ZP_inputSection{
   transition: all 0.5s ease;
-  min-height: 200px;
+  height: fit-content;
   &.hide{
     transition: all 0.5s ease;
     transform: translateY(100%);
