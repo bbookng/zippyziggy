@@ -19,6 +19,7 @@ interface PropsTypes {
   setImage: (e) => void;
   preview: string | null;
   setPreview: (url: string) => void;
+  category?: string;
   handleSetCategory: (e) => void;
 }
 
@@ -29,6 +30,7 @@ export default function CreatePart2({
   setImage,
   preview,
   setPreview,
+  category,
   handleSetCategory,
 }: PropsTypes) {
   // 이미지 미리보기
@@ -56,6 +58,18 @@ export default function CreatePart2({
     ['프로그래밍', 'PROGRAMMING'],
     ['기타', 'ETC'],
   ];
+
+  // 카테고리에 해당하는 값 찾기
+  function findIndex0ByIndex1(itemList, index1Value) {
+    for (let i = 0; i < itemList.length; i++) {
+      if (itemList[i][1] === index1Value) {
+        return itemList[i][0];
+      }
+    }
+    return null;
+  }
+
+  const initialValue = findIndex0ByIndex1(itemList, category);
 
   return (
     <Container>
@@ -88,7 +102,11 @@ export default function CreatePart2({
             <label htmlFor="category" className="label">
               카테고리
             </label>
-            <DropBox itemList={itemList} handleChange={handleSetCategory} />
+            <DropBox
+              initialValue={initialValue}
+              itemList={itemList}
+              handleChange={handleSetCategory}
+            />
           </div>
           <span>
             <label htmlFor="image" className="btn">

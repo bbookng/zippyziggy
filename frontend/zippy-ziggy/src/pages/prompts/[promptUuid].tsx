@@ -7,6 +7,7 @@ import Tab from '@/components/DetailPrompt/Tab';
 import TalkComponent from '@/components/DetailPrompt/TalkComponent';
 import Modal from '@/components/Modal/Modal';
 import { bookmarkPrompt, deletePrompt, getPromptDetail, likePrompt } from '@/core/prompt/promptAPI';
+import { useAppSelector } from '@/hooks/reduxHook';
 import {
   Container,
   LeftContainer,
@@ -14,31 +15,35 @@ import {
   RightContainer,
   TopBox,
 } from '@/styles/prompt/Detail.style';
-import { isError, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import { FaArrowAltCircleUp } from 'react-icons/fa';
+import { FaAngleUp } from 'react-icons/fa';
 
 export default function DetailPrompt() {
   const router = useRouter();
   const { promptUuid } = router.query;
+  const { nickname } = useAppSelector((state) => state?.user);
   const [isLiked, setIsLiked] = useState<boolean>(false);
   const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
   const [likeCnt, setLikeCnt] = useState<number>(0);
   const [tab, setTab] = useState<number>(0);
+  const [scrollPosition, setScrollPosition] = useState<number>(0);
+  const [isMe, setIsMe] = useState<boolean>(false);
   const [isOpenPromptDeleteModal, setIsOpenPromptDeleteModal] = useState<boolean>(false);
 
   const handleScroll = () => {
-    const scrollPosition = document.documentElement.scrollTop;
+    const scrollPos = document.documentElement.scrollTop;
     const sections = document.querySelectorAll('section');
     sections.forEach((section) => {
       const offset = section.offsetTop;
       const height = section.offsetHeight;
-      if (scrollPosition >= offset && scrollPosition < offset + height) {
+      if (scrollPos >= offset && scrollPos < offset + height) {
         setTab(Number(section.id));
       }
     });
+    setScrollPosition(window.scrollY);
   };
 
   // Tab 리스트
@@ -77,6 +82,9 @@ export default function DetailPrompt() {
   // Prompt 상세 가져오기
   const { isLoading, data } = useQuery(['prompt', promptUuid], handleGetPromptDetail, {
     enabled: !!promptUuid,
+    onSuccess(res) {
+      setIsMe(res?.data?.writerResponse?.writerNickname === nickname);
+    },
     onError: (err) => {
       console.log(err);
     },
@@ -101,12 +109,23 @@ export default function DetailPrompt() {
 
   // 프롬프트 수정 페이지로 이동
   const handleMoveToUpdatePromptPage = () => {
-    router.push(`/prompt/${promptUuid}`);
+    if (nickname === data?.data?.writerResponse?.writerNickname) {
+      router.push(`/prompt/${promptUuid}`);
+    }
+  };
+
+  // 프롬프트 수정 페이지로 이동
+  const handleMoveToCreatePromptForkPage = () => {
+    if (nickname === data?.data?.writerResponse?.writerNickname) {
+      router.push(`/prompt/${promptUuid}/fork`);
+    }
   };
 
   // 프롬프트 삭제
   const handleDeletePrompt = async () => {
-    deletePrompt({ promptUuid, router });
+    if (nickname === data?.data?.writerResponse?.writerNickname) {
+      deletePrompt({ promptUuid, router });
+    }
   };
 
   useEffect(() => {
@@ -120,7 +139,7 @@ export default function DetailPrompt() {
       window.removeEventListener('scroll', handleScroll);
     };
   }, [isLoading]);
-  console.log(data);
+
   return (
     <>
       {isOpenPromptDeleteModal && (
@@ -142,6 +161,7 @@ export default function DetailPrompt() {
                   isLiked={isLiked}
                   isBookmarked={isBookmarked}
                   likeCnt={likeCnt}
+                  isMe={isMe}
                   handleLike={handleLike}
                   handleBookmark={handleBookmark}
                   handleOpenDeleteModal={() => setIsOpenPromptDeleteModal(true)}
@@ -161,15 +181,10 @@ export default function DetailPrompt() {
                 <Introduction prompt={data.data} />
               </section>
               <section id="1">
-                <TalkComponent promptUuid={promptUuid} size={2} />
+                <TalkComponent promptUuid={promptUuid} size={4} />
               </section>
               <section id="2">
-                <CommentList
-                  id={promptUuid}
-                  type="prompt"
-                  size={5}
-                  nickname={data?.data?.writerResponse?.writerNickname}
-                />
+                <CommentList id={promptUuid} type="prompt" size={5} />
               </section>
               <section id="3">
                 <ForkedPromptList promptUuid={promptUuid} size={4} />
@@ -180,15 +195,17 @@ export default function DetailPrompt() {
                 isLiked={isLiked}
                 isBookmarked={isBookmarked}
                 likeCnt={likeCnt}
+                isMe={isMe}
                 handleLike={handleLike}
                 handleBookmark={handleBookmark}
                 handleOpenDeleteModal={() => setIsOpenPromptDeleteModal(true)}
                 handleMoveToUpdatePromptPage={handleMoveToUpdatePromptPage}
+                handleMoveToCreatePromptForkPage={handleMoveToCreatePromptForkPage}
               />
             </RightContainer>
-            {tab > 0 && (
+            {scrollPosition > 0 && (
               <MoveTopBtn>
-                <FaArrowAltCircleUp className="icon" onClick={handleButtonClick} />
+                <FaAngleUp className="icon" onClick={handleButtonClick} />
               </MoveTopBtn>
             )}
           </>

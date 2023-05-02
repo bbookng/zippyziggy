@@ -4,7 +4,7 @@ const Conatiner = styled.div`
   border-radius: 4px;
   background-color: ${({ theme }) => theme.colors.whiteColor80};
   box-shadow: ${({ theme }) => theme.shadows.boxShadowLarge};
-  max-width: 350px;
+  /* max-width: 350px; */
 
   .image {
     background-color: ${({ theme }) => theme.colors.grayColor};

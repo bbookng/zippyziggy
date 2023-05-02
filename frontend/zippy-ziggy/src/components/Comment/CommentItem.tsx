@@ -4,6 +4,8 @@ import { getDateTime } from '@/lib/utils';
 import { FaEllipsisH, FaPencilAlt, FaTrash } from 'react-icons/fa';
 import { useForm } from 'react-hook-form';
 import { deletePromptComment, updatePromptComment } from '@/core/prompt/promptAPI';
+import { putTalksCommentAPI } from '@/core/talk/talkAPI';
+import { useAppSelector } from '@/hooks/reduxHook';
 import {
   Container,
   ContentBox,
@@ -22,12 +24,21 @@ type PropsType = {
   handleDeleteComment: any;
 };
 
+/**
+ *
+ * @param comment 댓글 정보
+ * @param type 프롬프트 or 톡
+ * @param id 프롬프트Uuid or 톡Uuid
+ * @param handleDeleteComment 댓글 삭제 함수
+ * @returns
+ */
 export default function CommentItem({ comment, type, id, handleDeleteComment }: PropsType) {
   const [isUpdated, setIsUpdated] = useState<boolean>(false);
-  const realContent = useRef<string>(comment.content);
   const [isEditPopUp, setIsEditPopUp] = useState<boolean>(false);
   const [isOpenCommentDeleteModal, setIsOpenCommentDeleteModal] = useState<boolean>(false);
+  const realContent = useRef<string>(comment.content);
   const popUpRef = useRef<HTMLDivElement>(null);
+  const { nickname } = useAppSelector((state) => state.user);
 
   // react-hook-form 설정
   type StateType = {
@@ -75,11 +86,25 @@ export default function CommentItem({ comment, type, id, handleDeleteComment }: 
       commentId: Number(comment.commentId),
       content,
     };
-    const data = await updatePromptComment(requestData);
-    if (data.result === 'SUCCESS') {
-      realContent.current = content;
-      setIsEditPopUp(false);
-      setIsUpdated((prev) => !prev);
+    try {
+      let data: any;
+      if (type === 'prompt') {
+        data = await updatePromptComment(requestData);
+        if (data.result === 'SUCCESS') {
+          realContent.current = content;
+          setIsEditPopUp(false);
+          setIsUpdated((prev) => !prev);
+        }
+      } else {
+        data = await putTalksCommentAPI(requestData);
+        if (data.result === 'SUCCESS') {
+          realContent.current = content;
+          setIsEditPopUp(false);
+          setIsUpdated((prev) => !prev);
+        }
+      }
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -122,7 +147,9 @@ export default function CommentItem({ comment, type, id, handleDeleteComment }: 
           <div className="infoBox">
             <div className="nameBox">
               <div className="name">{comment.member.nickname}</div>
-              <FaEllipsisH className="icon" onClick={() => setIsEditPopUp(true)} />
+              {nickname === comment.member.nickname && (
+                <FaEllipsisH className="icon" onClick={() => setIsEditPopUp(true)} />
+              )}
               {isEditPopUp ? (
                 <EditPopUp ref={popUpRef}>
                   <div className="popUp">
