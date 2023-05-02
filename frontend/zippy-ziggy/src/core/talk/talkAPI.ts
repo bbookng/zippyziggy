@@ -22,13 +22,15 @@ export const getTalkCommentList = async (requestData: GetTalkCommentListType) =>
  * @param content
  * @returns { result: 'SUCCESS', data: res.data }
  */
-export const putTalksCommentAPI = async (
-  commentId: string,
-  crntMemberUuid: string,
-  content: string
-) => {
+export const putTalksCommentAPI = async (requestData: {
+  id: string | string[] | number;
+  commentId: number;
+  content: string;
+}) => {
   try {
-    const res = await httpAuth.put(`/talks/${commentId}/comments/${crntMemberUuid}`, { content });
+    const res = await httpAuth.put(`/talks/${requestData.id}/comments/${requestData.commentId}`, {
+      content: requestData.content,
+    });
     if (res.status === 200) {
       Toastify({
         text: message.CreatePromptSuccess,
