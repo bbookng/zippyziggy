@@ -39,7 +39,7 @@ const InputWrapper = () => {
     button.click();
   };
   return (
-    <>
+    <div>
       {/* className="ZP_output-setting-group" */}
       <OutputSettingGroup>
         <LanguageDropbox />
@@ -54,7 +54,7 @@ const InputWrapper = () => {
           handleActionChange={handleActionChange}
         />
       </ActionGroup>
-    </>
+    </div>
   );
 };
 

@@ -1,5 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
-import { ZP_INPUT_WRAPPER_ID, ZP_PROMPT_CONTAINER_ID } from '@pages/constants';
+import {
+  ZP_INPUT_WRAPPER_ID,
+  ZP_PROMPT_CONTAINER_ID,
+  ZP_PROMPT_TITLE_HOLDER_ID,
+} from '@pages/constants';
 import {
   addToggleButton,
   addToTopButton,
@@ -12,8 +16,6 @@ import { findRegenerateButton, hideEmptyDiv } from '@pages/content/utils/add-ui-
 
 const useInputContainerPortal = () => {
   const [portalContainer, setPortalContainer] = useState<HTMLDivElement | null>(null);
-  const [intersectionTrigger, setIntersectionTrigger] = useState(false);
-  const isNewChatPage = !window.location.href.includes('/c/');
 
   const addInputWrapperPortal = useCallback(() => {
     const existingPortal = document.getElementById(ZP_INPUT_WRAPPER_ID);
@@ -33,6 +35,10 @@ const useInputContainerPortal = () => {
     addToggleButton($formParent);
     // 입력창 focus 시 border 스타일 지정
     setInputWrapperStyle($inputWrapperPortal.parentElement);
+    const $selectedPromptTitle = document.createElement('p');
+    $selectedPromptTitle.id = ZP_PROMPT_TITLE_HOLDER_ID;
+
+    $inputWrapperPortal.prepend($selectedPromptTitle);
 
     setPortalContainer($inputWrapperPortal);
   }, []);
@@ -77,10 +83,6 @@ const useInputContainerPortal = () => {
           const isNewChatPage = !window.location.href.includes('/c/');
           if (!isNewChatPage) $ZPActionGroup.classList.remove('ZP_invisible');
           if (findRegenerateButton()) $ZPActionGroup.classList.remove('ZP_invisible');
-        }
-
-        if (targetElement.className === 'flex flex-col items-center text-sm dark:bg-gray-800') {
-          setIntersectionTrigger(true);
         }
 
         if (targetElement.className.includes('react-scroll-to-bottom--css')) {

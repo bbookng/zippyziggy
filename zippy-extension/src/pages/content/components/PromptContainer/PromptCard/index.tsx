@@ -1,7 +1,13 @@
 import React from 'react';
 import { Prompt } from '@pages/content/types';
-import { CHAT_GPT_URL, PROMPT_PLACEHOLDER, TARGET_LANGUAGE_PLACEHOLDER } from '@pages/constants';
-import { formatDateTime } from '@src/utils';
+import {
+  CHAT_GPT_URL,
+  PROMPT_PLACEHOLDER,
+  TARGET_LANGUAGE_PLACEHOLDER,
+  ZIPPY_SITE_URL,
+  ZP_PROMPT_TITLE_HOLDER_ID,
+} from '@pages/constants';
+import { formatAgo, formatDateTime, formatHumanReadableNumber } from '@src/utils';
 import { category } from '@pages/content/components/PromptContainer';
 
 interface PromptCardProps {
@@ -34,14 +40,17 @@ const PromptCard = ({ prompt }: PromptCardProps) => {
     const message = {
       type: 'selectPrompt',
       data: {
-        prompt: `${prefix || ''} ${PROMPT_PLACEHOLDER} ${
-          suffix || ''
-        } ${TARGET_LANGUAGE_PLACEHOLDER}`.trim(),
+        prompt: `프롬프트 상세 정보 ${ZIPPY_SITE_URL}/prompts/${promptUuid}\n\n ${
+          prefix || ''
+        } ${PROMPT_PLACEHOLDER} ${suffix || ''} ${TARGET_LANGUAGE_PLACEHOLDER}`.trim(),
       },
     };
 
-    const textarea = document.querySelector(`form textarea`) as HTMLTextAreaElement;
-    textarea.placeholder = example;
+    const $textarea = document.querySelector(`form textarea`) as HTMLTextAreaElement;
+    $textarea.placeholder = `예시) ${example}`;
+
+    const $selectedPromptTitle = document.querySelector(`#${ZP_PROMPT_TITLE_HOLDER_ID}`);
+    $selectedPromptTitle.textContent = `📟 ${title}`;
 
     window.postMessage(message, CHAT_GPT_URL);
   };
@@ -58,44 +67,59 @@ const PromptCard = ({ prompt }: PromptCardProps) => {
             className="ZP_prompt-container__actions-wrapper--hover"
             style={{ position: 'absolute', top: 0, right: 0 }}
           >
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                console.log(1);
-              }}
-            >
-              1
-            </button>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                console.log(2);
-              }}
-            >
-              2
-            </button>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                console.log(3);
-              }}
-            >
-              3
-            </button>
+            {/* <button */}
+            {/*  type="button" */}
+            {/*  onClick={(e) => { */}
+            {/*    e.stopPropagation(); */}
+            {/*    console.log(1); */}
+            {/*  }} */}
+            {/* > */}
+            {/*  1 */}
+            {/* </button> */}
+            {/* <button */}
+            {/*  type="button" */}
+            {/*  onClick={(e) => { */}
+            {/*    e.stopPropagation(); */}
+            {/*    console.log(2); */}
+            {/*  }} */}
+            {/* > */}
+            {/*  2 */}
+            {/* </button> */}
+            {/* <button */}
+            {/*  type="button" */}
+            {/*  onClick={(e) => { */}
+            {/*    e.stopPropagation(); */}
+            {/*    console.log(3); */}
+            {/*  }} */}
+            {/* > */}
+            {/*  3 */}
+            {/* </button> */}
           </div>
           <div className="ZP_prompt-container__content-wrapper">
-            <h3 className="ZP_prompt-container__title">{title}</h3>
+            <h3 className="ZP_prompt-container__title" title={title}>
+              {title}
+            </h3>
             <p className="ZP_prompt-container__category caption">
-              {category.find((item) => item.value === promptCategory).text ?? ''}
+              {`카테고리 / ${category.find((item) => item.value === promptCategory).text ?? ''}`}
             </p>
-            <p className="ZP_prompt-container__description caption">{description}</p>
+            <p className="ZP_prompt-container__description" title={description}>
+              {description}
+            </p>
             <div className="ZP_prompt-container__info-wrapper">
-              <p className="ZP_prompt-container__date caption">{formatDateTime(regDt)}</p>
-              <p className="ZP_prompt-container__comments-count caption">{commentCnt}개의 댓글</p>
-              <p className="ZP_prompt-container__talks-count caption">{talkCnt}개의 Talk</p>
+              <p
+                className="ZP_prompt-container__date caption"
+                title={`마지막 업데이트 ${formatAgo(updDt * 1000)}`}
+              >
+                {formatDateTime(regDt * 1000)}
+              </p>
+              <span className="caption">&middot;</span>
+              <p className="ZP_prompt-container__comments-count caption">
+                {formatHumanReadableNumber(commentCnt)}개의 댓글
+              </p>
+              <span className="caption">&middot;</span>
+              <p className="ZP_prompt-container__talks-count caption">
+                {formatHumanReadableNumber(talkCnt)}개의 Talk
+              </p>
             </div>
           </div>
           <div className="ZP_prompt-container__profile-wrapper">
@@ -104,8 +128,10 @@ const PromptCard = ({ prompt }: PromptCardProps) => {
               {writerResponse?.writerNickname}
             </div>
             <div className="ZP_prompt-container__actions-wrapper">
-              <div className="ZP_prompt-container__like">{likeCnt}좋아요</div>
-              <div className="ZP_prompt-container__bookmark">북마크</div>
+              <div className="ZP_prompt-container__like caption">
+                {formatHumanReadableNumber(likeCnt)} 좋아요
+              </div>
+              {/* <div className="ZP_prompt-container__bookmark caption">북마크</div> */}
             </div>
           </div>
         </article>
