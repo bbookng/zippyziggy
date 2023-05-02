@@ -20,4 +20,10 @@ public interface PromptClient {
     List<PromptCardResponse> getPromptsBookmark(@PathVariable("crntMemberUuid") String crntMemberUuid,
                                                 @RequestParam("page") Integer page,
                                                 @RequestParam("size") Integer size);
+
+
+    @GetMapping("/prompts/members/profile/{crntMemberUuid}")
+    List<PromptCardResponse> getPrompts(@PathVariable("crntMemberUuid") String crntMemberUuid,
+                                                @RequestParam("page") Integer page,
+                                                @RequestParam("size") Integer size);
 }
