@@ -220,8 +220,8 @@ public class PromptController {
 	@Operation(summary = "프롬프트 좋아요 하기(Authorization 필요)", description = "프롬프트에 좋아요 처리 진행. prompt의 UUID를 Pathvariable로 제공해야한다.")
 	@PostMapping("/{promptUuid}/like")
 	public ResponseEntity<?> likePrompt(
-		@PathVariable UUID promptUuid,
-		@RequestHeader String crntMemberUuid
+			@PathVariable UUID promptUuid,
+			@RequestHeader String crntMemberUuid
 	) {
 		promptService.likePrompt(promptUuid, crntMemberUuid);
 		return ResponseEntity.ok("좋아요 처리 완료");
@@ -240,7 +240,7 @@ public class PromptController {
 	@Operation(summary = "프롬프트 북마크 하기(Authorization 필요)", description = "프롬프트 북마크 처리 진행. prompt의 UUID를 Pathvariable로 제공해야한다.")
 	@PostMapping("/{promptUuid}/bookmark")
 	public ResponseEntity<?> bookmarkPrompt(@PathVariable UUID promptUuid,
-													@RequestHeader String crntMemberUuid) {
+											@RequestHeader String crntMemberUuid) {
 		promptService.bookmarkPrompt(promptUuid, crntMemberUuid);
 		return ResponseEntity.ok("프롬프트 북마크 진행 완료");
 	}
@@ -248,8 +248,8 @@ public class PromptController {
 	@Operation(hidden = true)
 	@GetMapping("/members/bookmark/{crntMemberUuid}")
 	public ResponseEntity<List<PromptCardResponse>> bookmarkPromptByMember(@PathVariable String crntMemberUuid,
-													@RequestParam("page") Integer page,
-													@RequestParam("size") Integer size) {
+																		   @RequestParam("page") Integer page,
+																		   @RequestParam("size") Integer size) {
 		PageRequest pageRequest = PageRequest.of(page, size);
 		return ResponseEntity.ok(promptService.bookmarkPromptByMember(crntMemberUuid, pageRequest));
 	}
@@ -257,8 +257,8 @@ public class PromptController {
 	@Operation(summary = "프롬프트 평가", description = "헤더에는 accessToken을 담고, promptUuid를 pathVariable로 전달 필요")
 	@PostMapping("/{promptUuid}/rating")
 	public ResponseEntity<?> ratingPrompt(@PathVariable UUID promptUuid,
-											@RequestBody PromptRatingRequest promptRatingRequest,
-											@RequestHeader String crntMemberUuid) {
+										  @RequestBody PromptRatingRequest promptRatingRequest,
+										  @RequestHeader String crntMemberUuid) {
 		try {
 			promptService.ratingPrompt(promptUuid, crntMemberUuid, promptRatingRequest);
 		} catch (Exception e) {
@@ -310,4 +310,16 @@ public class PromptController {
 		return ResponseEntity.ok(promptService.memberPrompts(crntMemberUuid, pageRequest));
 
 	}
+
+	@Operation(summary = "ChatGPT API", description = "프롬프트 생성 시 이용하는 ChatGPT API")
+	@PostMapping(value = "/gpt", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ApiResponses({
+			@ApiResponse(responseCode = "200", description = "성공"),
+			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+			@ApiResponse(responseCode = "500", description = "서버 에러")
+	})
+	public ResponseEntity<String> testGptApi(@RequestBody String createTest) {
+		return ResponseEntity.ok(promptService.testGptApi(createTest));
+	}
+
 }
