@@ -34,11 +34,12 @@ public class SearchController {
         @RequestHeader(required = false) String crntMemberUuid,
         @RequestParam(required = false) String keyword,
         @RequestParam(required = false) String category,
-        @PageableDefault(sort = "likeCnt",  direction = Sort.Direction.DESC) Pageable pageable,
-        @SortDefault(direction = Sort.Direction.DESC) Sort sort
+        @RequestParam(required = false, defaultValue = "0") int page,
+        @RequestParam(required = false, defaultValue = "10") int size,
+        @RequestParam(required = false, defaultValue = "likeCnt") String sort
     ) {
         return ResponseEntity.ok(esPromptService.searchPrompts(
-            crntMemberUuid, keyword, category, pageable, sort));
+            crntMemberUuid, keyword, category, page, size, sort));
     }
 
     @Operation(summary = "[확장] 프롬프트 검색", description = "확장 프로그램에서 프롬프트를 검색한다.")
