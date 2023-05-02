@@ -14,6 +14,7 @@ import lombok.Setter;
 @Builder
 public class PromptCardResponse {
 
+	private String promptUuid;
 	private String thumbnail;
 	private String title;
 	private String description;
@@ -41,6 +42,7 @@ public class PromptCardResponse {
 		long updDt = prompt.getRegDt().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
 
 		PromptCardResponse response = PromptCardResponse.builder()
+			.promptUuid(prompt.getPromptUuid().toString())
 			.thumbnail(prompt.getThumbnail())
 			.title(prompt.getTitle())
 			.description(prompt.getDescription())
