@@ -100,8 +100,8 @@ const PromptCard = ({ prompt }: PromptCardProps) => {
           </div>
           <div className="ZP_prompt-container__profile-wrapper">
             <div className="ZP_prompt-container__profile caption">
-              <img src={writerResponse.writerImg} alt={writerResponse.writerNickname} />
-              {writerResponse.writerNickname}
+              <img src={writerResponse?.writerImg} alt={writerResponse?.writerNickname} />
+              {writerResponse?.writerNickname}
             </div>
             <div className="ZP_prompt-container__actions-wrapper">
               <div className="ZP_prompt-container__like">{likeCnt}좋아요</div>

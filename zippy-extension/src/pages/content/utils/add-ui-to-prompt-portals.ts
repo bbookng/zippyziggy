@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-import { ZP_PROMPT_CONTAINER_ID } from '@pages/constants';
+import { ZP_INPUT_WRAPPER_ID, ZP_PROMPT_CONTAINER_ID } from '@pages/constants';
 
 const addRootWrapperToTargetElement = ($target: HTMLElement) => {
   const rootWrapper = document.createElement('div');
@@ -68,6 +68,7 @@ export const shouldCreatePromptContainerPortal = (
 // 대화 화면에서 마지막 부분에 빈 div를 숨기는 함수
 export const hideEmptyDiv = (targetElement: Element) => {
   if (
+    targetElement.id === ZP_INPUT_WRAPPER_ID ||
     targetElement.className === 'flex-1 overflow-hidden' ||
     targetElement.className ===
       'h-full flex ml-1 md:w-full md:m-auto md:mb-2 gap-0 md:gap-2 justify-center'

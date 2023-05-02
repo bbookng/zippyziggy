@@ -2,16 +2,18 @@ import { useCallback, useEffect, useState } from 'react';
 import { ZP_INPUT_WRAPPER_ID, ZP_PROMPT_CONTAINER_ID } from '@pages/constants';
 import {
   addToggleButton,
+  addToTopButton,
   adjustToBottomButtonPosition,
   createPortalContainer,
   removeFormParentClasses,
   setInputWrapperStyle,
 } from '@pages/content/utils/add-ui-to-input-portals';
-import { findRegenerateButton } from '@pages/content/utils/add-ui-to-prompt-portals';
+import { findRegenerateButton, hideEmptyDiv } from '@pages/content/utils/add-ui-to-prompt-portals';
 
 const useInputContainerPortal = () => {
   const [portalContainer, setPortalContainer] = useState<HTMLDivElement | null>(null);
   const [intersectionTrigger, setIntersectionTrigger] = useState(false);
+  const isNewChatPage = !window.location.href.includes('/c/');
 
   const addInputWrapperPortal = useCallback(() => {
     const existingPortal = document.getElementById(ZP_INPUT_WRAPPER_ID);
@@ -35,35 +37,6 @@ const useInputContainerPortal = () => {
     setPortalContainer($inputWrapperPortal);
   }, []);
 
-  // eslint-disable-next-line consistent-return
-  // useEffect(() => {
-  //   const $gptModelBox = document.querySelector(
-  //     'div.flex.w-full.items-center.justify-center.gap-1.border-b.border-black\\/10.bg-gray-50.p-3.text-gray-500.dark\\:border-gray-900\\/50.dark\\:bg-gray-700.dark\\:text-gray-300'
-  //   );
-  //   console.log($gptModelBox, intersectionTrigger);
-  //
-  //   if (intersectionTrigger && $gptModelBox) {
-  //     const observer = new IntersectionObserver((entries) => {
-  //       entries.forEach((entry) => {
-  //         if (entry.isIntersecting) {
-  //           document.querySelector('#ZP_to-top-button').classList.add('hide');
-  //         } else {
-  //           document.querySelector('#ZP_to-top-button').classList.remove('hide');
-  //         }
-  //       });
-  //     });
-  //     observer.observe(
-  //       document.querySelector(
-  //         '.flex.w-full.items-center.justify-center.gap-1.border-b.border-black\\/10.bg-gray-50.p-3.text-gray-500.dark\\:border-gray-900\\/50.dark\\:bg-gray-700.dark\\:text-gray-300'
-  //       ) as HTMLDivElement
-  //     );
-  //
-  //     return () => {
-  //       observer.disconnect();
-  //     };
-  //   }
-  // }, [intersectionTrigger]);
-
   useEffect(() => {
     const shouldCreateInputWrapperPortal = (element: Element): boolean => {
       const { id, className } = element;
@@ -73,8 +46,9 @@ const useInputContainerPortal = () => {
       const isInputWrapper = className?.includes(
         'flex ml-1 md:w-full md:m-auto md:mb-2 gap-0 md:gap-2 justify-center'
       );
+      const isChange = className?.includes('overflow-hidden w-full h-full relative flex');
 
-      return Boolean(isPromptContainer || isRoot || isInputWrapper);
+      return Boolean(isPromptContainer || isRoot || isInputWrapper || isChange);
     };
 
     // MutationObserver를 이용하여 __next 요소의 자식요소 추가, 제거, 변경을 감지하고,
@@ -82,12 +56,27 @@ const useInputContainerPortal = () => {
     const observer = new MutationObserver((mutations) => {
       for (const mutation of mutations) {
         const targetElement = mutation.target as Element;
+        if (
+          (targetElement.id === ZP_INPUT_WRAPPER_ID &&
+            document.querySelector("[class^='react-scroll-to-bottom--css']")?.children[0]) ||
+          (targetElement.className === 'ZP_prompt-container__inner' &&
+            document.querySelector("[class^='react-scroll-to-bottom--css']")?.children[0]) ||
+          (targetElement.className === 'flex-1 overflow-hidden' &&
+            document.querySelector("[class^='react-scroll-to-bottom--css']")?.children[0])
+        ) {
+          const scrollWrapper = document.querySelector("[class^='react-scroll-to-bottom--css']")
+            ?.children[0];
+          if (scrollWrapper.scrollHeight > scrollWrapper.clientHeight) {
+            addToTopButton(scrollWrapper);
+          }
+        }
 
         if (targetElement.id === ZP_INPUT_WRAPPER_ID) {
-          const a = document.querySelector('#ZP_actionGroup');
+          const $ZPActionGroup = document.querySelector('#ZP_actionGroup');
+
           const isNewChatPage = !window.location.href.includes('/c/');
-          if (!isNewChatPage) a.classList.remove('ZP_invisible');
-          if (findRegenerateButton()) a.classList.remove('ZP_invisible');
+          if (!isNewChatPage) $ZPActionGroup.classList.remove('ZP_invisible');
+          if (findRegenerateButton()) $ZPActionGroup.classList.remove('ZP_invisible');
         }
 
         if (targetElement.className === 'flex flex-col items-center text-sm dark:bg-gray-800') {
@@ -103,6 +92,8 @@ const useInputContainerPortal = () => {
           addInputWrapperPortal();
           return;
         }
+
+        hideEmptyDiv(targetElement);
       }
     });
 

@@ -41,8 +41,7 @@
 /* to top 버튼 */
 #ZP_toTopButton {
   display: block;
-  transform: translate(-120%, 100%);
-
+  transform: translateX(-120%);
   &.hide {
     display: none;
   }
