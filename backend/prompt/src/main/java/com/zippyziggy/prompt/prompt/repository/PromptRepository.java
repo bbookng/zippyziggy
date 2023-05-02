@@ -23,10 +23,12 @@ public interface PromptRepository extends JpaRepository<Prompt, Long> {
 
 	Page<Prompt> findAllByOriginPromptUuid(UUID promptUuid, Pageable pageable);
 
+	Page<Prompt> findAllByMemberUuid(UUID memberUuid, Pageable pageable);
+
 	List<Prompt> findAllByOriginPromptUuid(UUID promptUuid);
 
 	Long countAllByOriginPromptUuid(UUID promptUuid);
 
 
-	List<Prompt> findAllByMemberUuid(UUID memberUuid);
+//	List<Prompt> findAllByMemberUuid(UUID memberUuid);
 }

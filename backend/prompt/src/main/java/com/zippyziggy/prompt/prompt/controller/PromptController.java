@@ -229,7 +229,7 @@ public class PromptController {
 		return ResponseEntity.ok("좋아요 처리 완료");
 	}
 
-	@Operation(summary = "프롬프트 좋아요 조회(Authorization 필요)", description = "page와 size도 함께 적어주어야 조회가 된다. Authorizatioin 입력 필요")
+	@Operation(hidden = true)
 	@GetMapping("/members/like/{crntMemberUuid}")
 	public ResponseEntity<?> likePromptByMember(@PathVariable String crntMemberUuid,
 												@RequestParam("page") Integer page,
@@ -247,7 +247,7 @@ public class PromptController {
 		return ResponseEntity.ok("프롬프트 북마크 진행 완료");
 	}
 
-	@Operation(summary = "프롬프트 북마크 조회하기(Authorization 필요)", description = "프롬프트 북마크 조회, page 및 size를 쿼리스트링으로 입력 필요")
+	@Operation(hidden = true)
 	@GetMapping("/members/bookmark/{crntMemberUuid}")
 	public ResponseEntity<List<PromptCardResponse>> bookmarkPromptByMember(@PathVariable String crntMemberUuid,
 													@RequestParam("page") Integer page,
@@ -300,5 +300,16 @@ public class PromptController {
 	@GetMapping("/members/recent/prompts")
 	public ResponseEntity<?> recentPrompts(@RequestHeader String crntMemberUuid) {
 		return ResponseEntity.ok(promptService.recentPrompts(crntMemberUuid));
+	}
+
+	@Operation(hidden = true)
+	@GetMapping("/members/profile/{crntMemberUuid}")
+	public ResponseEntity<?> memberPrompts(@PathVariable String crntMemberUuid,
+										   @RequestParam("page") Integer page,
+										   @RequestParam("size") Integer size) {
+
+		PageRequest pageRequest = PageRequest.of(page, size);
+		return ResponseEntity.ok(promptService.memberPrompts(crntMemberUuid, pageRequest));
+
 	}
 }
