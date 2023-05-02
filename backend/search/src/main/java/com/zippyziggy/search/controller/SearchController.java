@@ -2,7 +2,6 @@ package com.zippyziggy.search.controller;
 
 import com.zippyziggy.search.dto.response.ExtensionSearchPromptList;
 import com.zippyziggy.search.dto.response.SearchPromptList;
-import com.zippyziggy.search.dto.response.SearchTalkList;
 import com.zippyziggy.search.service.EsPromptService;
 import com.zippyziggy.search.service.EsTalkService;
 import io.swagger.v3.oas.annotations.Operation;
