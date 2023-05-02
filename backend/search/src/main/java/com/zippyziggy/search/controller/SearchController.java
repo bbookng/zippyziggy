@@ -33,7 +33,7 @@ public class SearchController {
     public ResponseEntity<SearchPromptList> searchPrompts(
         @RequestHeader(required = false) String crntMemberUuid,
         @RequestParam(required = false) String keyword,
-        @RequestParam(required = false) String category,
+        @RequestParam(required = false, defaultValue = "ALL") String category,
         @RequestParam(required = false, defaultValue = "0") int page,
         @RequestParam(required = false, defaultValue = "10") int size,
         @RequestParam(required = false, defaultValue = "likeCnt") String sort
@@ -52,11 +52,13 @@ public class SearchController {
     public ResponseEntity<ExtensionSearchPromptList> searchInExtension(
         @RequestHeader(required = false) String crntMemberUuid,
         @RequestParam(required = false) String keyword,
-        @RequestParam(required = false) String category,
-        @PageableDefault(sort = "likeCnt",  direction = Sort.Direction.DESC) Pageable pageable,
-        @SortDefault(direction = Sort.Direction.DESC) Sort sort
+        @RequestParam(required = false, defaultValue = "ALL") String category,
+        @RequestParam(required = false, defaultValue = "0") int page,
+        @RequestParam(required = false, defaultValue = "10") int size,
+        @RequestParam(required = false, defaultValue = "likeCnt") String sort
     ) {
-        return ResponseEntity.ok(esPromptService.extensionSearch(crntMemberUuid, keyword, category, pageable, sort));
+        return ResponseEntity.ok(esPromptService.extensionSearch(
+                crntMemberUuid, keyword, category, page, size, sort));
     }
 
 //    @Operation(summary = "톡 검색", description = "톡을 검색한다.")

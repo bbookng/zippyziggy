@@ -101,10 +101,12 @@ public class EsPromptService {
         String crntMemberUuid,
         String keyword,
         String category,
-        Pageable pageable,
-        Sort sort
+        Integer page,
+        Integer size,
+        String sort
     ) {
-        pageable.getSortOr(sort);
+        final Sort sortBy = Sort.by(Sort.Direction.DESC, sort);
+        final Pageable pageable = PageRequest.of(page, size, sortBy);
 
         CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 
