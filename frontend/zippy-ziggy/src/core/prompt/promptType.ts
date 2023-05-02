@@ -11,6 +11,7 @@ export type GetPromptListType = {
 export type CreatePromptType = {
   data: FormData;
   router: NextRouter;
+  id?: string | string[] | number;
 };
 
 export type DeletePromptType = {

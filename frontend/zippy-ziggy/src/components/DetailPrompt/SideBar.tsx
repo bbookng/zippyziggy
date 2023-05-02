@@ -8,7 +8,6 @@ import {
   FaRegHeart,
   FaTrash,
 } from 'react-icons/fa';
-import { useRouter } from 'next/router';
 import Button from '../Button/Button';
 import { ActionBox, ButtonBox, Container, EditBox } from './SideBarStyle';
 
@@ -16,20 +15,24 @@ interface PropsType {
   isLiked: boolean;
   isBookmarked: boolean;
   likeCnt: number;
+  isMe: boolean;
   handleLike?: () => void;
   handleBookmark?: () => void;
   handleOpenDeleteModal?: () => void;
   handleMoveToUpdatePromptPage?: () => void;
+  handleMoveToCreatePromptForkPage?: () => void;
 }
 
 export default function SideBar({
   isLiked,
   isBookmarked,
   likeCnt,
+  isMe,
   handleLike,
   handleBookmark,
   handleOpenDeleteModal,
   handleMoveToUpdatePromptPage,
+  handleMoveToCreatePromptForkPage,
 }: PropsType) {
   return (
     <Container className="sidebar">
@@ -56,7 +59,11 @@ export default function SideBar({
           사용하기
           <FaArrowRight className="icon" />
         </Button>
-        <Button buttonType="outline" className="btn btn2">
+        <Button
+          buttonType="outline"
+          className="btn btn2"
+          onClick={handleMoveToCreatePromptForkPage}
+        >
           수정해서 사용하기
           <FaArrowRight className="icon" />
         </Button>
@@ -64,16 +71,18 @@ export default function SideBar({
           사용하는 법
         </Button>
       </ButtonBox>
-      <EditBox>
-        <div className="editBtnBox" onClick={handleMoveToUpdatePromptPage}>
-          <FaPencilAlt className="icon" />
-          수정
-        </div>
-        <div className="editBtnBox" onClick={handleOpenDeleteModal}>
-          <FaTrash className="icon" />
-          삭제
-        </div>
-      </EditBox>
+      {isMe && (
+        <EditBox>
+          <div className="editBtnBox" onClick={handleMoveToUpdatePromptPage}>
+            <FaPencilAlt className="icon" />
+            수정
+          </div>
+          <div className="editBtnBox" onClick={handleOpenDeleteModal}>
+            <FaTrash className="icon" />
+            삭제
+          </div>
+        </EditBox>
+      )}
     </Container>
   );
 }

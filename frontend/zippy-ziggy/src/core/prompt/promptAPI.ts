@@ -1,4 +1,4 @@
-import { http, httpAuth, httpAuthForm, httpForm } from '@/lib/http';
+import { http, httpAuth, httpAuthForm } from '@/lib/http';
 import Toastify from 'toastify-js';
 import toastifyCSS from '@/assets/toastify.json';
 import message from '@/assets/message.json';
@@ -44,6 +44,58 @@ export const createPrompt = async (requestData: CreatePromptType) => {
   } catch (err) {
     Toastify({
       text: message.CreatePromptFail,
+      duration: 1000,
+      position: 'center',
+      stopOnFocus: true,
+      style: toastifyCSS.fail,
+    }).showToast();
+    return { result: 'FAIL', data: err };
+  }
+};
+
+// 프롬프트 수정
+export const updatePrompt = async (requestData: CreatePromptType) => {
+  const payload = requestData.data;
+  try {
+    const { data } = await httpAuthForm.put(`/prompts/${requestData.id}`, payload);
+    Toastify({
+      text: message.UpdatePromptSuccess,
+      duration: 1000,
+      position: 'center',
+      stopOnFocus: true,
+      style: toastifyCSS.success,
+    }).showToast();
+    requestData.router.push(`/prompts/${data.promptUuid}`);
+    return { result: 'SUCCESS', data };
+  } catch (err) {
+    Toastify({
+      text: message.UpdatePromptFail,
+      duration: 1000,
+      position: 'center',
+      stopOnFocus: true,
+      style: toastifyCSS.fail,
+    }).showToast();
+    return { result: 'FAIL', data: err };
+  }
+};
+
+// 프롬프트 포크 생성
+export const createPromptFork = async (requestData: CreatePromptType) => {
+  const payload = requestData.data;
+  try {
+    const { data } = await httpAuthForm.post(`/prompts/${requestData.id}/fork`, payload);
+    Toastify({
+      text: message.CreatePromptForkSuccess,
+      duration: 1000,
+      position: 'center',
+      stopOnFocus: true,
+      style: toastifyCSS.success,
+    }).showToast();
+    requestData.router.push(`/prompts/${data.promptUuid}`);
+    return { result: 'SUCCESS', data };
+  } catch (err) {
+    Toastify({
+      text: message.CreatePromptForkFail,
       duration: 1000,
       position: 'center',
       stopOnFocus: true,
@@ -186,8 +238,22 @@ export const updatePromptComment = async (requestData: UpdatePromptCommentType) 
       `/prompts/${requestData.id}/comments/${requestData.commentId}`,
       payload
     );
+    Toastify({
+      text: message.UpdateCommentSuccess,
+      duration: 1000,
+      position: 'center',
+      stopOnFocus: true,
+      style: toastifyCSS.success,
+    }).showToast();
     return { result: 'SUCCESS', data };
   } catch (err) {
+    Toastify({
+      text: message.UpdateCommentFail,
+      duration: 1000,
+      position: 'center',
+      stopOnFocus: true,
+      style: toastifyCSS.fail,
+    }).showToast();
     return { result: 'FAIL', data: err };
   }
 };

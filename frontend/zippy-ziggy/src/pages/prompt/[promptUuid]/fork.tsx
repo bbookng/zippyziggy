@@ -10,7 +10,7 @@ import {
 import { useAppSelector } from '@/hooks/reduxHook';
 import { checkInputFormToast } from '@/lib/utils';
 import { ContainerTitle, TitleInfoWrapper, TitleWrapper } from '@/styles/prompt/Create.style';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
@@ -59,8 +59,7 @@ export default function PromptUpdate() {
   const [preview, setPreview] = useState<string | null>(null);
   const { nickname } = useAppSelector((state) => state.user);
   const router = useRouter();
-  const fork = true;
-  const { promptUuid } = router.query;
+  const { promptUuid, fork } = router.query;
 
   const initialState = {
     prompt1: '',
@@ -235,7 +234,7 @@ export default function PromptUpdate() {
         />
       ) : (
         <CreatePart1
-          fork={fork}
+          fork
           prompt1={prompt1}
           prompt2={prompt2}
           example={example}
@@ -245,7 +244,7 @@ export default function PromptUpdate() {
       <FooterBox />
       <CreateFooter
         isNext={isNext}
-        fork={fork}
+        fork
         handleNext={handleNext}
         handlePrompt={handleUpdatePrompt}
       />

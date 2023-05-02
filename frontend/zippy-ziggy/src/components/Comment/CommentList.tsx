@@ -10,11 +10,10 @@ import CommentItem from './CommentItem';
 type PropsType = {
   id: string | string[] | number;
   type: string;
-  nickname: string;
   size: number;
 };
 
-export default function CommentList({ id, type, nickname, size }: PropsType) {
+export default function CommentList({ id, type, size }: PropsType) {
   const [totalCnt, setTotalCnt] = useState<number>(0);
   const [commentList, setCommentList] = useState([]);
   // const myNickname =
