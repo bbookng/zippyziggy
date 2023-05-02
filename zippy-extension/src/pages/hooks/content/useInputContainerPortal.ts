@@ -79,7 +79,7 @@ const useInputContainerPortal = () => {
 
         if (targetElement.id === ZP_INPUT_WRAPPER_ID) {
           const $ZPActionGroup = document.querySelector('#ZP_actionGroup');
-
+          if (!$ZPActionGroup) return;
           const isNewChatPage = !window.location.href.includes('/c/');
           if (!isNewChatPage) $ZPActionGroup.classList.remove('ZP_invisible');
           if (findRegenerateButton()) $ZPActionGroup.classList.remove('ZP_invisible');

@@ -15,6 +15,7 @@ export default function App() {
 
   const onScroll = () => {
     const toTopButton = document.querySelector(`#${ZP_TO_TOP_BUTTON_ID}`) as HTMLElement;
+    if (!toTopButton) return;
     if (targetElementRef.current.scrollTop === 0) {
       toTopButton.style.display = 'none';
     } else {
