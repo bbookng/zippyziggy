@@ -17,6 +17,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import com.zippyziggy.prompt.talk.dto.request.EsTalkRequest;
 import com.zippyziggy.prompt.talk.dto.response.TalkResponse;
 
 import com.zippyziggy.prompt.prompt.dto.response.MemberResponse;
@@ -109,5 +110,24 @@ public class Talk {
 			.messages(messageResponses)
 			.writerMember(writerInfo)
 			.build();
+	}
+
+	public EsTalkRequest toEsTalkRequest() {
+
+		List<MessageResponse> messageResponses = this.getMessages()
+				.stream()
+				.map(message -> message.toMessageResponse())
+				.collect(Collectors.toList());
+
+		return EsTalkRequest.builder()
+				.talkId(this.id)
+				.promptUuid(this.getPrompt().getPromptUuid().toString())
+				.memberUuid(this.getMemberUuid().toString())
+				.title(this.getTitle())
+				.regDt(this.regDt.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond())
+				.likeCnt(this.likeCnt)
+				.hit(this.hit)
+				.esMessages(messageResponses)
+				.build();
 	}
 }

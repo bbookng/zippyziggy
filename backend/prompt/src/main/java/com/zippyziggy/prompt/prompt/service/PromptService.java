@@ -154,7 +154,7 @@ public class PromptService{
 		}
 
 		// Elasticsearch에 조회수 반영
-		final PromptCntRequest promptCntRequest = new PromptCntRequest(promptUuid.toString(), prompt.getHit());
+		final PromptCntRequest promptCntRequest = prompt.toPromptHitRequest();
 		kafkaProducer.sendPromptCnt("sync-prompt-hit", promptCntRequest);
 
 		return result;
@@ -249,7 +249,7 @@ public class PromptService{
 
 		awsS3Uploader.delete("thumbnails/", prompt.getThumbnail());
 
-		// 수정 시 search 서비스에 Elasticsearch DELETE 요청
+		// 삭제 시 search 서비스에 Elasticsearch DELETE 요청
 		kafkaProducer.sendDeleteMessage("delete-prompt-topic", promptUuid);
 
 		promptRepository.delete(prompt);
@@ -294,7 +294,7 @@ public class PromptService{
 		}
 
 		// Elasticsearch에 좋아요 수 반영
-		final PromptCntRequest promptCntRequest = new PromptCntRequest(promptUuid.toString(), prompt.getLikeCnt().intValue());
+		final PromptCntRequest promptCntRequest = prompt.toPromptLikeCntRequest();
 		kafkaProducer.sendPromptCnt("sync-prompt-like-cnt", promptCntRequest);
 	}
 

@@ -168,4 +168,10 @@ public class TalkController {
 		talkService.unlikeTalk(talkId, UUID.fromString(crntMemberUuid));
 		return ResponseEntity.noContent().build();
 	}
+
+	@Operation(summary = "톡 댓글 개수", description = "톡 댓글 개수를 반환합니다.")
+	@GetMapping("/{talkId}/commentCnt")
+	public ResponseEntity<Long> talkCommentCnt(@PathVariable Long talkId) {
+		return ResponseEntity.ok(talkService.findCommentCnt(talkId));
+	}
 }

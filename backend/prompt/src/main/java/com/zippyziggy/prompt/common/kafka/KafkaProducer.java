@@ -3,6 +3,7 @@ package com.zippyziggy.prompt.common.kafka;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zippyziggy.prompt.prompt.dto.request.EsPromptRequest;
+import com.zippyziggy.prompt.talk.dto.request.EsTalkRequest;
 import com.zippyziggy.prompt.prompt.dto.request.PromptCntRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,4 +52,23 @@ public class KafkaProducer {
         }
         return promptCntRequest.getPromptUuid();
     }
+
+    public EsTalkRequest sendTalkCreateMessage(String topic, EsTalkRequest esTalkRequest) {
+        try {
+            String jsonInString = mapper.writeValueAsString(esTalkRequest);
+            log.info("Kafka Producer sent data from the Order microservice: " + esTalkRequest);
+            kafkaTemplate.send(topic, jsonInString);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        return esTalkRequest;
+    }
+
+    public Long sendTalkDeleteMessage(String topic, Long talkId) {
+        kafkaTemplate.send(topic, talkId.toString());
+        log.info("Kafka Producer sent data from the Order microservice: " + talkId);
+        return talkId;
+    }
+
+    //TODO Talk 좋아요수, 조회수
 }
