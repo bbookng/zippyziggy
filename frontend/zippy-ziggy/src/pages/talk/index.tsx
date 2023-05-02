@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import ProfileImage from '@/components/Image/ProfileImage';
 import Paragraph from '@/components/Typography/Paragraph';
 import CreateFooter from '@/components/CreatePrompt/CreateFooter';
+import WithAuth from '@/components/HOC/withAuth';
 
 export const StyledTalksContainer = styled.div`
   width: 100%;
@@ -19,7 +20,7 @@ export const StyledTalksWarp = styled.div`
   margin: 0 0 120px 0;
 `;
 
-export default function Index() {
+const Index = () => {
   const userState = useAppSelector((state) => state.user); // 유저정보
   const [promptUuid, setPromptUuid] = useState('');
   const [title, setTitle] = useState('');
@@ -117,4 +118,6 @@ export default function Index() {
       <CreateFooter isNext isNew handleNext={handleA} handlePrompt={handleA} />
     </StyledTalksContainer>
   );
-}
+};
+
+export default WithAuth(Index);
