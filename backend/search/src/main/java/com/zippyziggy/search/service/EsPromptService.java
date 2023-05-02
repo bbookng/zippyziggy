@@ -2,6 +2,7 @@ package com.zippyziggy.search.service;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch.core.UpdateRequest;
+import co.elastic.clients.elasticsearch.core.UpdateResponse;
 import com.zippyziggy.search.client.MemberClient;
 import com.zippyziggy.search.client.PromptClient;
 import com.zippyziggy.search.dto.request.server.SyncEsPrompt;
@@ -201,12 +202,14 @@ public class EsPromptService {
                 .orElseThrow(EsPromptNotFoundException::new);
         esPrompt.setLikeCnt(likeCnt);
         try {
-            elasticsearchClient.update(new UpdateRequest.Builder<Void, EsPrompt>()
+            final UpdateRequest updateRequest = new UpdateRequest.Builder<EsPrompt, EsPrompt>()
                     .index("prompt")
                     .id(esPrompt.getId())
                     .doc(esPrompt)
-                    .build(),
-                    Void.class);
+                    .build();
+            log.info(updateRequest.toString());
+            final UpdateResponse result = elasticsearchClient.update(updateRequest, EsPrompt.class);
+            log.info(result.toString());
         } catch (IOException e) {
             throw new IllegalUpdateRequestException();
         }
