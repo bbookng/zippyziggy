@@ -4,7 +4,7 @@ import com.zippyziggy.search.client.MemberClient;
 import com.zippyziggy.search.client.PromptClient;
 import com.zippyziggy.search.dto.request.server.SyncEsPrompt;
 import com.zippyziggy.search.dto.response.ExtensionSearchPromptList;
-import com.zippyziggy.search.dto.response.PromptDetailResponse;
+import com.zippyziggy.search.dto.response.server.PromptDetailResponse;
 import com.zippyziggy.search.dto.response.SearchPrompt;
 import com.zippyziggy.search.dto.response.SearchPromptList;
 import com.zippyziggy.search.dto.response.WriterResponse;
@@ -17,7 +17,6 @@ import com.zippyziggy.search.repository.EsPromptRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
@@ -62,11 +61,11 @@ public class EsPromptService {
 
             // 사용자 조회
             //TODO server to server api 만든 후 Member application에서 호출하는 방식으로 변경해야함
-            WriterResponse writerResponse = promptDetailResponse.getWriterResponse();
+            final WriterResponse writerResponse = promptDetailResponse.getWriterResponse();
 
             final CntResponse cntResponse = circuitBreaker
                 .run(() -> promptClient
-                    .getCnt(promptUuid));
+                    .getCntOfPrompt(promptUuid));
 
             // 로그인 여부에 따른 좋아요/북마크 여부
             final Boolean isLiked =
@@ -116,7 +115,7 @@ public class EsPromptService {
 
             final CntResponse cntResponse = circuitBreaker
                 .run(() -> promptClient
-                    .getCnt(promptUuid));
+                    .getCntOfPrompt(promptUuid));
 
             // 로그인 여부에 따른 좋아요/북마크 여부
             final Boolean isLiked =

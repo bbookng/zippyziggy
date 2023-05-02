@@ -1,5 +1,8 @@
-package com.zippyziggy.search.dto.response;
+package com.zippyziggy.search.dto.response.server;
 
+import com.zippyziggy.search.dto.response.OriginerResponse;
+import com.zippyziggy.search.dto.response.PromptMessageResponse;
+import com.zippyziggy.search.dto.response.WriterResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

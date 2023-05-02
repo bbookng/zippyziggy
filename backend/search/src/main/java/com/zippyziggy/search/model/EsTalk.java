@@ -22,6 +22,9 @@ public class EsTalk {
 	@Id
 	private Long id;
 
+	@Field(type = FieldType.Long, name = "talk_id")
+	private Long talkId;
+
 	@Field(type = FieldType.Text, name = "prompt_uuid")
 	private String promptUuid;
 
