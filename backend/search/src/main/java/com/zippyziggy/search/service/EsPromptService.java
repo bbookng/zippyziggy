@@ -139,6 +139,7 @@ public class EsPromptService {
     }
 
     public void insertDocument(SyncEsPrompt syncEsPrompt) {
+        log.info(String.valueOf(syncEsPrompt));
         final EsPrompt esPrompt = EsPrompt.of(syncEsPrompt);
         esPromptRepository.save(esPrompt);
     }

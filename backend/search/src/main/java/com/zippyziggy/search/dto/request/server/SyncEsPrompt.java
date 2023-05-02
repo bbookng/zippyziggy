@@ -1,6 +1,9 @@
 package com.zippyziggy.search.dto.request.server;
 
 import java.util.UUID;
+
+import org.springframework.lang.Nullable;
+
 import lombok.Data;
 
 @Data
@@ -18,5 +21,7 @@ public class SyncEsPrompt {
     private String suffix;
     private String example;
     private UUID promptUuid;
+
+    @Nullable
     private UUID originalPromptUuid;
 }

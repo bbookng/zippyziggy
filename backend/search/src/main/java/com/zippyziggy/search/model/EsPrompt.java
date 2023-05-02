@@ -10,6 +10,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.lang.Nullable;
 
 @Builder
 @AllArgsConstructor
@@ -61,6 +62,7 @@ public class EsPrompt {
     private String promptUuid;
 
     @Field(type = FieldType.Text, name = "original_prompt_uuid")
+    @Nullable
     private String originalPromptUuid;
 
     public void setHit(Integer hit) { this.hit = hit; }
@@ -68,10 +70,6 @@ public class EsPrompt {
     public void setLikeCnt(Integer likeCnt) { this.likeCnt = likeCnt; }
 
     public static EsPrompt of (SyncEsPrompt esPrompt) {
-
-        final String originalPromptUuid = (null != esPrompt.getOriginalPromptUuid())
-            ? esPrompt.getOriginalPromptUuid().toString()
-            : null;
 
         return EsPrompt.builder()
             .promptId(esPrompt.getPromptId())
@@ -87,7 +85,8 @@ public class EsPrompt {
             .suffix(esPrompt.getSuffix())
             .example(esPrompt.getExample())
             .promptUuid(esPrompt.getPromptUuid().toString())
-            .originalPromptUuid(originalPromptUuid)
+            .originalPromptUuid(esPrompt.getOriginalPromptUuid() != null
+                ? esPrompt.getOriginalPromptUuid().toString() : null)
             .build();
     }
 }
