@@ -49,19 +49,28 @@ const TopBox = styled.div`
 `;
 
 const MoveTopBtn = styled.button`
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   position: fixed;
   display: flex;
+  color: ${({ theme }) => theme.colors.blackColor80};
+  background-color: ${({ theme }) => theme.colors.whiteColor80};
   justify-content: center;
   align-items: center;
   padding: 0;
   bottom: 3rem;
   right: 3rem;
+  border-radius: 50%;
+
+  ${media.small`
+    width: 30px;
+    height: 30px;
+  `}
 
   .icon {
     width: 100%;
     height: 100%;
+    border-radius: 50%;
   }
 `;
 

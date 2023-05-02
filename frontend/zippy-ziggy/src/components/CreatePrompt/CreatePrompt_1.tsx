@@ -8,11 +8,12 @@ interface PropTypes {
   prompt1: string | null;
   prompt2: string | null;
   example: string | null;
+  fork?: boolean | string | string[] | null;
 
   handleChange: (e: unknown, string: string) => void;
 }
 
-export default function CreatePart1({ prompt1, prompt2, example, handleChange }: PropTypes) {
+export default function CreatePart1({ prompt1, prompt2, example, fork, handleChange }: PropTypes) {
   return (
     <Container>
       <LeftContainer>
@@ -27,6 +28,7 @@ export default function CreatePart1({ prompt1, prompt2, example, handleChange }:
             value={prompt1}
             onChange={(e) => handleChange(e, 'prompt1')}
             placeholder="질문의 앞에 붙을 프롬프트를 작성해주세요."
+            disabled={!fork}
           />
         </div>
         <div className="question">
@@ -42,6 +44,7 @@ export default function CreatePart1({ prompt1, prompt2, example, handleChange }:
               placeholder="예시를 작성해주세요"
               onChange={(e) => handleChange(e, 'example')}
               id="example"
+              disabled={!fork}
             />
           </div>
         </div>
@@ -56,6 +59,7 @@ export default function CreatePart1({ prompt1, prompt2, example, handleChange }:
             onChange={(e) => handleChange(e, 'prompt2')}
             placeholder="질문의 뒤에 붙을 프롬프트를 작성해주세요."
             id="prompt2"
+            disabled={!fork}
           />
         </div>
       </LeftContainer>

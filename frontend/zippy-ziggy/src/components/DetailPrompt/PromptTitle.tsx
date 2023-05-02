@@ -18,6 +18,7 @@ interface PropsType {
   isLiked?: boolean;
   isBookmarked?: boolean;
   likeCnt: number;
+  isMe: boolean;
   handleLike?: () => void;
   handleBookmark?: () => void;
   handleOpenDeleteModal?: () => void;
@@ -29,6 +30,7 @@ export default function PromptTitle({
   isLiked,
   isBookmarked,
   likeCnt,
+  isMe,
   handleLike,
   handleBookmark,
   handleOpenDeleteModal,
@@ -80,26 +82,30 @@ export default function PromptTitle({
               )}
             </div>
             {/* ***************** 내가 쓴 글만 보이도록 설정하기 *************** */}
-            <FaEllipsisH
-              className="dot"
-              onClick={() => {
-                isPopUp ? setIsPopUp(false) : setIsPopUp(true);
-              }}
-            />
-            {isPopUp ? (
-              <PopUp ref={popUpRef}>
-                <div className="popUp">
-                  <div onClick={handleMoveToUpdatePromptPage}>
-                    <FaPencilAlt className="icon" />
-                    수정
-                  </div>
-                  <div onClick={handleOpenDeleteModal}>
-                    <FaTrash className="icon" />
-                    삭제
-                  </div>
-                </div>
-              </PopUp>
-            ) : null}
+            {isMe && (
+              <>
+                <FaEllipsisH
+                  className="dot"
+                  onClick={() => {
+                    isPopUp ? setIsPopUp(false) : setIsPopUp(true);
+                  }}
+                />
+                {isPopUp ? (
+                  <PopUp ref={popUpRef}>
+                    <div className="popUp">
+                      <div onClick={handleMoveToUpdatePromptPage}>
+                        <FaPencilAlt className="icon" />
+                        수정
+                      </div>
+                      <div onClick={handleOpenDeleteModal}>
+                        <FaTrash className="icon" />
+                        삭제
+                      </div>
+                    </div>
+                  </PopUp>
+                ) : null}
+              </>
+            )}
           </ActionBox>
         </div>
         <div className="title">{prompt?.title}</div>

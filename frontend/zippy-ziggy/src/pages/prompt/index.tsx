@@ -2,6 +2,7 @@ import CreateFooter from '@/components/CreatePrompt/CreateFooter';
 import CreatePart1 from '@/components/CreatePrompt/CreatePrompt_1';
 import CreatePart2 from '@/components/CreatePrompt/CreatePrompt_2';
 import { createPrompt } from '@/core/prompt/promptAPI';
+import { useAppSelector } from '@/hooks/reduxHook';
 import { checkInputFormToast } from '@/lib/utils';
 import { ContainerTitle, TitleInfoWrapper, TitleWrapper } from '@/styles/prompt/Create.style';
 import { useRouter } from 'next/router';
@@ -29,9 +30,9 @@ export default function PromptCreate() {
   // isForked 인지 확인하면 로직 짜기!!!!!!!
   const isForked = false;
   const [isNext, setIsNext] = useState<boolean>(false);
-  // const [image, setImage] = useState<FileList | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const router = useRouter();
+  const { nickname } = useAppSelector((state) => state.user);
 
   // react-hook-form 설정
   const { setValue, getValues, watch } = useForm({
@@ -123,28 +124,19 @@ export default function PromptCreate() {
             <div>작성이 처음이신가요?</div>
           </div>
         </TitleWrapper>
-        {/* prompt.forkCnt > 0 으로 확인하도록 바꾸기!! */}
-        {isForked ? (
-          <TitleInfoWrapper>
-            <div className="fork">포크</div>
-            <div className="forkName">오행시 업그레이드</div>
-            <div className="userName">작성자</div>
-          </TitleInfoWrapper>
-        ) : (
-          <TitleInfoWrapper>
-            <div className="userName">작성자 : 내 이름</div>
-          </TitleInfoWrapper>
-        )}
+        <TitleInfoWrapper>
+          <div className="userName">작성자 : {nickname}</div>
+        </TitleInfoWrapper>
       </ContainerTitle>
       {isNext ? (
         <CreatePart2
           title={title}
           content={content}
           handleChange={handleChange}
-          // image={image}
           setImage={handleSetImage}
           preview={preview}
           setPreview={setPreview}
+          category={category}
           handleSetCategory={handleSetCategory}
         />
       ) : (
