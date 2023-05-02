@@ -154,7 +154,7 @@ public class PromptService{
 		}
 
 		// Elasticsearch에 조회수 반영
-		final PromptCntRequest promptCntRequest = new PromptCntRequest(promptUuid.toString(), prompt.getHit());
+		final PromptCntRequest promptCntRequest = prompt.toPromptHitRequest();
 		kafkaProducer.sendPromptCnt("sync-prompt-hit", promptCntRequest);
 
 		return result;
@@ -294,7 +294,7 @@ public class PromptService{
 		}
 
 		// Elasticsearch에 좋아요 수 반영
-		final PromptCntRequest promptCntRequest = new PromptCntRequest(promptUuid.toString(), prompt.getLikeCnt().intValue());
+		final PromptCntRequest promptCntRequest = prompt.toPromptLikeCntRequest();
 		kafkaProducer.sendPromptCnt("sync-prompt-like-cnt", promptCntRequest);
 	}
 

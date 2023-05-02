@@ -1,6 +1,7 @@
 package com.zippyziggy.prompt.prompt.model;
 
 import com.zippyziggy.prompt.prompt.dto.request.EsPromptRequest;
+import com.zippyziggy.prompt.prompt.dto.request.PromptCntRequest;
 import com.zippyziggy.prompt.prompt.dto.request.PromptRequest;
 import com.zippyziggy.prompt.prompt.dto.response.PromptMessageResponse;
 import com.zippyziggy.prompt.prompt.dto.response.PromptDetailResponse;
@@ -140,6 +141,20 @@ public class Prompt {
 
 	public boolean isForked() {
 		return (this.originPromptUuid != null);
+	}
+
+	public PromptCntRequest toPromptHitRequest() {
+		return PromptCntRequest.builder()
+				.promptUuid(this.promptUuid.toString())
+				.cnt(this.hit)
+				.build();
+	}
+
+	public PromptCntRequest toPromptLikeCntRequest() {
+		return PromptCntRequest.builder()
+				.promptUuid(this.promptUuid.toString())
+				.cnt(this.likeCnt.intValue())
+				.build();
 	}
 
 }
