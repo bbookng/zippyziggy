@@ -1,5 +1,6 @@
 package com.zippyziggy.prompt.talk.service;
 
+import com.zippyziggy.prompt.common.kafka.KafkaProducer;
 import com.zippyziggy.prompt.prompt.client.MemberClient;
 import com.zippyziggy.prompt.prompt.dto.response.MemberResponse;
 import com.zippyziggy.prompt.prompt.dto.response.PromptCardResponse;
@@ -51,6 +52,7 @@ public class TalkService {
 	private final PromptLikeRepository promptLikeRepository;
 	private final MessageRepository messageRepository;
 	private final TalkCommentRepository talkCommentRepository;
+	private final KafkaProducer kafkaProducer;
 
 	// 은지가 짤거임, 지금 검색 안됨 그냥 전체 조회
 	public List<TalkListResponse> getTalkList(String crntMemberUuid) {
@@ -69,6 +71,10 @@ public class TalkService {
 			talk.setPrompt(promptRepository.findByPromptUuid(UUID.fromString(data.getPromptUuid()))
 					.orElseThrow(PromptNotFoundException::new));
 		}
+
+		// 생성 시 search 서비스에 Elasticsearch INSERT 요청
+		kafkaProducer.sendTalkCreateMessage("create-talk-topic", talk.toEsTalkRequest());
+
 		return talk.toTalkResponse();
 	}
 
@@ -182,7 +188,8 @@ public class TalkService {
 			throw new ForbiddenMemberException();
 		}
 
-		//TODO 삭제 시 search 서비스에 Elasticsearch DELETE 요청
+		// 삭제 시 search 서비스에 Elasticsearch DELETE 요청
+		kafkaProducer.sendTalkDeleteMessage("delete-talk-topic", talk.getId());
 
 		talkRepository.delete(talk);
 	}
@@ -203,4 +210,8 @@ public class TalkService {
 
 		talkLikeRepository.delete(oldTalkLike);
 	}
+
+    public Long findCommentCnt(Long talkId) {
+		return talkCommentRepository.countAllByTalk_Id(talkId);
+    }
 }

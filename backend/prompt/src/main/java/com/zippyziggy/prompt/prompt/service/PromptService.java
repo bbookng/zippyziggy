@@ -249,7 +249,7 @@ public class PromptService{
 
 		awsS3Uploader.delete("thumbnails/", prompt.getThumbnail());
 
-		// 수정 시 search 서비스에 Elasticsearch DELETE 요청
+		// 삭제 시 search 서비스에 Elasticsearch DELETE 요청
 		kafkaProducer.sendDeleteMessage("delete-prompt-topic", promptUuid);
 
 		promptRepository.delete(prompt);

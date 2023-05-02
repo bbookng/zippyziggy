@@ -290,7 +290,7 @@ public class PromptController {
 		return ResponseEntity.ok(promptService.reports(pageRequest));
 	}
 
-	@Operation(summary = "프롬프트의 톡과 댓글 갯수", description = "promptUuid를 pathvariable로 전달 필요")
+	@Operation(summary = "프롬프트의 톡과 댓글 개수", description = "promptUuid를 pathvariable로 전달 필요")
 	@GetMapping("/{promptUuid}/cnt")
 	public ResponseEntity<PromptTalkCommentCntResponse> cntPrompt(@PathVariable UUID promptUuid) {
 		return ResponseEntity.ok(promptService.cntPrompt(promptUuid));

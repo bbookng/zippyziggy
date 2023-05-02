@@ -1,10 +1,8 @@
 package com.zippyziggy.prompt.prompt.dto.request;
 
-import com.zippyziggy.prompt.prompt.model.Prompt;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.ZoneId;
 import java.util.UUID;
 
 @Data
