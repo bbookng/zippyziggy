@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -76,7 +77,7 @@ public class TalkController {
 			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
 			@ApiResponse(responseCode = "500", description = "서버 에러")
 	})
-	public ResponseEntity<TalkDetailResponse> getTalkDetail(@PathVariable Long talkId, @RequestHeader String crntMemberUuid, Pageable pageable) {
+	public ResponseEntity<TalkDetailResponse> getTalkDetail(@PathVariable Long talkId, @RequestHeader String crntMemberUuid, @PageableDefault(sort = "regDt",  direction = Sort.Direction.DESC) Pageable pageable) {
 		return ResponseEntity.ok(talkService.getTalkDetail(talkId, crntMemberUuid, pageable));
 	}
 

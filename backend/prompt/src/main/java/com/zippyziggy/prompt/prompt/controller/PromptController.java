@@ -143,7 +143,7 @@ public class PromptController {
 			@ApiResponse(responseCode = "500", description = "서버 에러")
 	})
 	public ResponseEntity<ForkedPromptListResponse> getForkedPrompt(@PathVariable String promptUuid,
-																	Pageable pageable,
+																	@PageableDefault(sort = "regDt",  direction = Sort.Direction.DESC) Pageable pageable,
 																	@RequestHeader String crntMemberUuid) {
 		ForkedPromptListResponse forkedPromptList = forkPromptService.getForkedPromptList(UUID.fromString(promptUuid),
 				pageable, crntMemberUuid);
@@ -158,8 +158,8 @@ public class PromptController {
 			@ApiResponse(responseCode = "500", description = "서버 에러")
 	})
 	public ResponseEntity<PromptTalkListResponse> getPromptTalkList(@PathVariable UUID promptUuid,
-		@RequestHeader String crntMemberUuid,
-		Pageable pageable) {
+																	@RequestHeader String crntMemberUuid,
+																	@PageableDefault(sort = "regDt",  direction = Sort.Direction.DESC) Pageable pageable) {
 		return ResponseEntity.ok(promptService.getPromptTalkList(promptUuid, crntMemberUuid, pageable));
 	}
 
@@ -171,7 +171,7 @@ public class PromptController {
 			@ApiResponse(responseCode = "500", description = "서버 에러")
 	})
 	public ResponseEntity<PromptCommentListResponse> getPromptComments(@PathVariable String promptUuid,
-																	   @PageableDefault(size = 8, sort = "id",  direction = Sort.Direction.DESC)
+																	   @PageableDefault(sort = "id",  direction = Sort.Direction.DESC)
 																	   Pageable pageable) {
 		PromptCommentListResponse promptCommentList = promptCommentService.getPromptCommentList(UUID.fromString(promptUuid), pageable);
 		return ResponseEntity.ok(promptCommentList);
