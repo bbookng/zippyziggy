@@ -1,5 +1,6 @@
 package com.zippyziggy.search.service;
 
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import com.zippyziggy.search.client.MemberClient;
 import com.zippyziggy.search.client.PromptClient;
 import com.zippyziggy.search.dto.request.server.SyncEsPrompt;
@@ -23,6 +24,7 @@ import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,13 +39,17 @@ public class EsPromptService {
     private final CircuitBreakerFactory circuitBreakerFactory;
     private final PromptClient promptClient;
     private final MemberClient memberClient;
+    private final ElasticsearchClient elasticsearchClient;
 
     public SearchPromptList searchPrompts(
         String crntMemberUuid,
         String keyword,
         String category,
-        Pageable pageable
+        Pageable pageable,
+        Sort sort
     ) {
+        pageable.getSortOr(sort);
+
         CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 
         final Page<EsPrompt> pagedEsPrompt = search(keyword, category, pageable);
@@ -92,8 +98,11 @@ public class EsPromptService {
         String crntMemberUuid,
         String keyword,
         String category,
-        Pageable pageable
+        Pageable pageable,
+        Sort sort
     ) {
+        pageable.getSortOr(sort);
+
         CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 
         final Page<EsPrompt> pagedEsPrompt = search(keyword, category, pageable);
