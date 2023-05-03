@@ -12,6 +12,7 @@ const NavWrapper = styled.div`
   justify-content: space-between;
   background-color: ${({ theme }) => theme.colors.navColor};
   box-shadow: ${({ theme }) => theme.shadows.boxShadowLarge};
+  z-index: 100;
 
   ${media.small`
     min-height: 3rem;
@@ -42,7 +43,7 @@ const NavList = styled.ul<NavListProps>`
     display: ${(props) => (props.isOpen ? 'flex' : 'hide')};
     flex-direction: column;
     align-items: center;
-    position: absolute;
+    position: fixed;
     background-color: ${({ theme: { colors } }) => colors.navColor};
     top: 0px;
     left: -50%;

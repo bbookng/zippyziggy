@@ -1,6 +1,7 @@
 import Button from '@/components/Button/Button';
 import ProfileImage from '@/components/Image/ProfileImage';
 import Title from '@/components/Typography/Title';
+import { getPromptBookmarkAPI } from '@/core/prompt/promptAPI';
 import { deleteUserAPI, getUserAPI, postUserLogoutAPI } from '@/core/user/userAPI';
 import { setIsLogin, setUserReset } from '@/core/user/userSlice';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHook';
@@ -25,6 +26,8 @@ const ProfileHeaderContainer = styled.div`
   justify-content: center;
   align-items: center;
   background-color: ${({ theme: { colors } }) => colors.whiteColor100};
+  .authContainer {
+  }
 `;
 
 const ProfilePromptContainer = styled.div`
@@ -49,8 +52,16 @@ export default function Index() {
       setNickname(result?.nickname);
       setProfileImg(result?.profileImg);
     }
+    const bookmarkResult = await getPromptBookmarkAPI(uuid, 1);
+    if (bookmarkResult?.result === 'SUCCESS') {
+      console.log(bookmarkResult);
+    }
+    if (result?.result === 'FAIL') {
+      router.replace('/profile');
+    }
   };
 
+  // query undefine 없애기
   useEffect(() => {
     if (userUuid) {
       handleUserAPI(paramUserUuid);
@@ -65,44 +76,71 @@ export default function Index() {
     router.push('/');
   };
 
+  const handleGoModifyBtn = () => {
+    router.push('/account/modify');
+  };
+
   return (
     <ProfileContainer>
       <ProfileHeaderContainer>
         <ProfileImage src={profileImg} alt="프로필이미지" size={128} />
-        <Title sizeType="2xl">{nickname}</Title>
+        <Title sizeType="2xl" margin="8px 0px">
+          {nickname}
+        </Title>
         {userState.userUuid === userUuid ? (
-          <div>
+          <div className="authContainer">
             <Button
+              isRound
               display="inline-block"
-              padding="4px 16px"
-              margin="4px 0 0 0"
+              color="blackColor05"
+              width="fit-content"
+              fontColor="blackColor70"
+              padding="0 24px"
+              margin="4px 4px 0 0"
               onClick={handleLogout}
             >
               로그아웃
             </Button>
 
-            <Link href="/account/modify">
-              <Button display="inline-block" margin="4px 0 0 0">
-                정보변경
-              </Button>
-            </Link>
+            <Button
+              isRound
+              display="inline-block"
+              width="fit-content"
+              color="blackColor05"
+              fontColor="blackColor70"
+              padding="0 24px"
+              margin="4px 0 0 4px"
+              onClick={handleGoModifyBtn}
+            >
+              정보변경
+            </Button>
           </div>
         ) : null}
       </ProfileHeaderContainer>
       <ProfilePromptContainer>
         <Title>프롬프트</Title>
         <br />
-        <Button display="inline-block" padding="0 24px" width="1">
-          사용자가 게시한 프롬프트
+        <Button
+          isRound
+          display="inline-block"
+          color="whiteColor100"
+          fontColor="blackColor70"
+          padding="0 24px"
+          width="1"
+        >
+          {nickname}님의 프롬프트
         </Button>
-        <Button display="inline-block" padding="0 32px" width="1">
-          안녕
+        <Button
+          isRound
+          display="inline-block"
+          color="whiteColor100"
+          fontColor="blackColor70"
+          margin="0 0 0 12px"
+          padding="0 32px"
+          width="1"
+        >
+          북마크
         </Button>
-
-        <Title margin="8 0 0 0" sizeType="2xl">
-          {userState.nickname}님의 프로필
-        </Title>
-        <br />
       </ProfilePromptContainer>
     </ProfileContainer>
   );

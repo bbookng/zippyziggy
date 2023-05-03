@@ -2,7 +2,18 @@ import { http, httpAuth } from '@/lib/http';
 import Toastify from 'toastify-js';
 import message from '@/assets/message.json';
 import toastifyCSS from '@/assets/toastify.json';
-import { PostTalkType } from './talkType';
+import { PostTalkType, GetTalkCommentListType } from './talkType';
+
+export const getTalkCommentList = async (requestData: GetTalkCommentListType) => {
+  try {
+    const { data } = await http.get(`/talk/${requestData.id}/comments`, {
+      params: { page: requestData.page, size: requestData.size },
+    });
+    return data;
+  } catch (err) {
+    return err;
+  }
+};
 
 /**
  * 톡 댓글 수정
@@ -11,13 +22,15 @@ import { PostTalkType } from './talkType';
  * @param content
  * @returns { result: 'SUCCESS', data: res.data }
  */
-export const putTalksCommentAPI = async (
-  commentId: string,
-  crntMemberUuid: string,
-  content: string
-) => {
+export const putTalksCommentAPI = async (requestData: {
+  id: string | string[] | number;
+  commentId: number;
+  content: string;
+}) => {
   try {
-    const res = await httpAuth.put(`/talks/${commentId}/comments/${crntMemberUuid}`, { content });
+    const res = await httpAuth.put(`/talks/${requestData.id}/comments/${requestData.commentId}`, {
+      content: requestData.content,
+    });
     if (res.status === 200) {
       Toastify({
         text: message.CreatePromptSuccess,

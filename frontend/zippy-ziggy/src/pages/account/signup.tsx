@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 // 컴포넌트들을 import
 import Title from '@/components/Typography/Title';
@@ -11,7 +11,6 @@ import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHook';
 import { setIsLogin, setNickname, setProfileImg, setUserUuid } from '@/core/user/userSlice';
 import ProfileImage from '@/components/Image/ProfileImage';
-import Image from 'next/image';
 
 const LoginContainer = styled.div`
   width: 100%;
@@ -43,13 +42,13 @@ const LoginWarp = styled.div`
 `;
 
 // 이미지 파일이면 URL.createObjectURL() 메서드를 이용하여 이미지 URL을 생성합니다
-const ImagePreview = ({ file }) => {
+const ImagePreview = ({ file, queryProfileImg }) => {
   let imageUrl = null;
   if (file) {
     imageUrl = URL.createObjectURL(file); // 이미지를 화면에 보여줍니다
   }
   return !file ? (
-    <ProfileImage src="/images/noProfile.png" alt="프로필이미지" />
+    <ProfileImage src={queryProfileImg} alt="프로필이미지" />
   ) : (
     <ProfileImage src={imageUrl} alt="프로필이미지" />
   );
@@ -62,6 +61,7 @@ export default function SignUp() {
   const userState = useAppSelector((state) => state.user); // 유저정보
   const { name, platform, platformId, profileImg } = router.query;
   const userName = Array.isArray(name) ? name[0] : name;
+  const queryProfileImg = Array.isArray(profileImg) ? profileImg[0] : profileImg;
 
   // useState를 사용하여 닉네임과 닉네임의 검증 상태를 저장합니다
   const [nickname, setBeforeNickname] = useState('');
@@ -148,7 +148,8 @@ export default function SignUp() {
         <form onSubmit={(e) => e.preventDefault()}>
           <label htmlFor="image" className="btn">
             <div style={{ flex: '1', display: 'flex', alignItems: 'center', margin: '0 0 12px 0' }}>
-              <ImagePreview file={file} />
+              <ImagePreview file={file} queryProfileImg={queryProfileImg} />
+
               <Button
                 width="fit-content"
                 padding="0 1rem"

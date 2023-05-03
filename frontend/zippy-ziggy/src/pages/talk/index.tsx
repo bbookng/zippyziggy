@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import ProfileImage from '@/components/Image/ProfileImage';
 import Paragraph from '@/components/Typography/Paragraph';
 import CreateFooter from '@/components/CreatePrompt/CreateFooter';
+import WithAuth from '@/components/HOC/withAuth';
 
 export const StyledTalksContainer = styled.div`
   width: 100%;
@@ -19,13 +20,17 @@ export const StyledTalksWarp = styled.div`
   margin: 0 0 120px 0;
 `;
 
-export default function Index() {
+const Index = () => {
   const userState = useAppSelector((state) => state.user); // 유저정보
   const [promptUuid, setPromptUuid] = useState('');
   const [title, setTitle] = useState('');
   const [messages, setMessages] = useState({});
 
   const handleA = () => {};
+
+  const handleChange = (e) => {
+    setTitle(e);
+  };
 
   return (
     <StyledTalksContainer>
@@ -44,14 +49,19 @@ export default function Index() {
         <Paragraph fontWeight="600" color="blackColor90" sizeType="base" margin="36px 0 4px 0">
           제목
         </Paragraph>
-        <input type="text" value={title} placeholder="제목을 입력해주세요." />
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => handleChange(e.target.value)}
+          placeholder="제목을 입력해주세요."
+        />
         {/* <ProfileImage src={userState.profileImg} alt="안녕" size={36} />
       <Paragraph>닉네임</Paragraph> */}
         <Paragraph fontWeight="600" color="blackColor90" sizeType="base" margin="36px 0 4px 0">
           대화내용
         </Paragraph>
 
-        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
+        {/* <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <ProfileImage src="\images\ChatGPT_logo.png" alt="안녕" size={36} />
             <Paragraph fontWeight="700" margin="0 8px 0 8px">
@@ -64,7 +74,7 @@ export default function Index() {
             </Paragraph>
             <ProfileImage src={userState.profileImg} alt="안녕" size={36} />
           </div>
-        </div>
+        </div> */}
         <TalksBalloons
           messages={[
             {
@@ -105,7 +115,9 @@ export default function Index() {
           ]}
         />
       </StyledTalksWarp>
-      <CreateFooter isNext handleNext={handleA} handleCreatePrompt={handleA} />
+      <CreateFooter isNext isNew handleNext={handleA} handlePrompt={handleA} />
     </StyledTalksContainer>
   );
-}
+};
+
+export default WithAuth(Index);

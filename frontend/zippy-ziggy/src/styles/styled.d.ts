@@ -47,12 +47,15 @@ declare module 'styled-components' {
       successColor: string;
       bookmarkColor: string;
 
+      // 세부 컬러
       navColor: string;
       bgColor: string;
 
       whiteColor: string;
       blackColor: string;
 
+      talkYoursColor: string;
+      talkMineColor: string;
       grayColor: string;
     };
 

@@ -20,6 +20,7 @@ import Hr from '@/components/Hr/Hr';
 import ProfileImage from '@/components/Image/ProfileImage';
 import { useQuery } from '@tanstack/react-query';
 import { deleteUserAPI, putUserAPI } from '@/core/user/userAPI';
+import Modal from '@/components/Modal/Modal';
 
 const LoginContainer = styled.div`
   width: 100%;
@@ -78,6 +79,9 @@ export default function Modify() {
   const [file, setFile] = useState<File | null>(null); // 파일 정보를 저장하는 state를 설정합니다
 
   const inputRef = useRef(null); // useRef를 사용하여 input element를 참조합니다
+
+  // 모달
+  const [isOpenCommentDeleteModal, setIsOpenCommentDeleteModal] = useState<boolean>(false);
 
   // Prompt 상세 요청 API
   const handleGetUserDetail = async () => {
@@ -142,8 +146,21 @@ export default function Modify() {
     router.push('/');
   };
 
+  const handelRequestDeleteUser = async () => {
+    handleSignout();
+  };
+
   return (
     <LoginContainer>
+      {isOpenCommentDeleteModal && (
+        <Modal
+          isOpen={isOpenCommentDeleteModal}
+          title="회원 탈퇴"
+          content="회원을 탈퇴하시겠습니까?"
+          handleModalClose={() => setIsOpenCommentDeleteModal(false)}
+          handleModalConfirm={handelRequestDeleteUser}
+        />
+      )}
       <LoginWarp>
         <Title margin="0 0 4px 0">{beforeNickname}님의 정보변경</Title>
         <Paragraph margin="0 0 12px 0">닉네임을 설정하고 회원가입을 완료하세요!</Paragraph>
@@ -192,7 +209,13 @@ export default function Modify() {
             정보변경
           </Button>
           <Hr color="blackColor10" margin="12px auto" width="90%" />
-          <Button color="dangerColor" margin="0 0 0 0" onClick={handleSignout}>
+          <Button
+            color="dangerColor"
+            margin="0 0 0 0"
+            onClick={() => {
+              setIsOpenCommentDeleteModal(true);
+            }}
+          >
             회원탈퇴
           </Button>
         </form>
