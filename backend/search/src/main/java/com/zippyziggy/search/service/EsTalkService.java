@@ -7,8 +7,10 @@ import com.zippyziggy.search.dto.response.SearchTalkList;
 import com.zippyziggy.search.dto.response.WriterResponse;
 import com.zippyziggy.search.dto.response.server.MemberResponse;
 import com.zippyziggy.search.dto.response.server.SyncEsTalk;
+import com.zippyziggy.search.exception.EsPromptNotFoundException;
 import com.zippyziggy.search.exception.EsTalkNotFoundException;
 import com.zippyziggy.search.exception.MemberNotFoundException;
+import com.zippyziggy.search.model.EsPrompt;
 import com.zippyziggy.search.model.EsTalk;
 import com.zippyziggy.search.repository.EsTalkRepository;
 import lombok.RequiredArgsConstructor;
@@ -94,7 +96,21 @@ public class EsTalkService {
         esTalkRepository.delete(esTalk);
     }
 
-    //TODO 조회수, 좋아요수 업데이트 프롬프트 완료 후 여기도 추가
+    public void updateHit(Long talkId, Long hit) {
+        final EsTalk esTalk = esTalkRepository
+            .findEsTalkByTalkId(talkId)
+            .orElseThrow(EsTalkNotFoundException::new);
+        esTalk.setHit(hit);
+        esTalkRepository.save(esTalk);
+    }
+
+    public void updateLikeCnt(Long talkId, Long likeCnt) {
+        final EsTalk esTalk = esTalkRepository
+            .findEsTalkByTalkId(talkId)
+            .orElseThrow(EsTalkNotFoundException::new);
+        esTalk.setLikeCnt(likeCnt);
+        esTalkRepository.save(esTalk);
+    }
 
     private Page<EsTalk> search(
         String keyword,
@@ -111,7 +127,6 @@ public class EsTalkService {
             pagedEsTalk = esTalkRepository
                 .findAll(pageable);
         }
-
         return pagedEsTalk;
     }
 

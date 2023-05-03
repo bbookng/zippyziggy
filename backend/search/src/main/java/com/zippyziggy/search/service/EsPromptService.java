@@ -179,19 +179,19 @@ public class EsPromptService {
         esPromptRepository.delete(esPrompt);
     }
 
-    public void updateHit(String promptUuid, Integer hit) {
+    public void updateHit(String promptUuid, Long hit) {
         final EsPrompt esPrompt = esPromptRepository
             .findEsPromptByPromptUuid(promptUuid)
             .orElseThrow(EsPromptNotFoundException::new);
-        esPrompt.setHit(hit);
+        esPrompt.setHit(hit.intValue());
         esPromptRepository.save(esPrompt);
     }
 
-    public void updateLikeCnt(String promptUuid, Integer likeCnt) {
+    public void updateLikeCnt(String promptUuid, Long likeCnt) {
         final EsPrompt esPrompt = esPromptRepository
                 .findEsPromptByPromptUuid(promptUuid)
                 .orElseThrow(EsPromptNotFoundException::new);
-        esPrompt.setLikeCnt(likeCnt);
+        esPrompt.setLikeCnt(likeCnt.intValue());
         esPromptRepository.save(esPrompt);
     }
 

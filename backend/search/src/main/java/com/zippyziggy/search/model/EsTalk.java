@@ -17,7 +17,7 @@ import java.util.List;
 public class EsTalk {
 
 	@Id
-	private Long id;
+	private String id;
 
 	@Field(type = FieldType.Long, name = "talk_id")
 	private Long talkId;
@@ -41,6 +41,10 @@ public class EsTalk {
 	private Long hit;
 
 	private List<EsMessage> esMessages;
+
+	public void setHit(Long hit) { this.hit = hit; }
+
+	public void setLikeCnt(Long likeCnt) { this.likeCnt = likeCnt; }
 
 	public static EsTalk of (SyncEsTalk syncEsTalk) {
 		return EsTalk.builder()
