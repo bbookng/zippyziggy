@@ -8,6 +8,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import Paging from '@/components/Paging/Paging';
 import useDebounce from '@/hooks/useDebounce';
 import { getPromptList } from '@/core/prompt/promptAPI';
+import { FiPlus } from 'react-icons/fi';
 
 export default function Prompt() {
   const [category, setCategory] = useState<string>('ALL');
@@ -120,7 +121,7 @@ export default function Prompt() {
             + 글쓰기
           </Button>
           <Button onClick={createPrompt} width="2rem" className="btn btn2">
-            +
+            <FiPlus />
           </Button>
         </SortBox>
       </TitleBox>

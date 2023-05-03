@@ -45,7 +45,7 @@ export default function Index() {
   const router = useRouter();
   const { userUuid, mypage } = router.query;
   const paramUserUuid = typeof userUuid === 'string' ? userUuid : '';
-  const paramMypage = typeof mypage === 'string' ? mypage : '';
+  const paramMypage = typeof mypage === 'string' ? mypage : 'false';
 
   const handleUserAPI = async (uuid: string, page: string) => {
     const result = await getUserAPI(uuid);
@@ -58,7 +58,7 @@ export default function Index() {
       bookmarkResult;
     }
     if (result?.result === 'FAIL') {
-      if (page) {
+      if (page === 'true') {
         // 로그인 모달 띄우기
         router.replace('/account/login');
       }
