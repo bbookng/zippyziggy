@@ -146,8 +146,6 @@ export const getKakaoAPI = async (code: string) => {
     const res = await http.get(`/members/auth/kakao/callback?${queryParams}`);
     const { data } = res;
     if (data?.isSignUp === true) {
-      // 회원가입으로 이동
-      // const { name, platform, platformId, profileImg } = data?.socialSignUpDataResponseDto ?? {};
       return {
         result: 'SUCCESS_SIGNUP',
         socialSignUpDataResponseDto: data?.socialSignUpDataResponseDto ?? {},

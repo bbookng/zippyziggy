@@ -9,6 +9,7 @@ import LottieAnimation from '@/components/LottieFiles/LoadingA';
 
 function KakaoLoginRedirect() {
   const userState = useAppSelector((state) => state.user); // 유저정보
+  const modalState = useAppSelector((state) => state.modal); // 유저정보
   const dispatch = useAppDispatch();
 
   const router = useRouter();
@@ -50,9 +51,15 @@ function KakaoLoginRedirect() {
       dispatch(setNickname(nickname));
       dispatch(setProfileImg(profileImg));
       dispatch(setUserUuid(userUuid));
-      router.push({
-        pathname: '/',
-      });
+      if (modalState.beforeUrl) {
+        router.push({
+          pathname: modalState.beforeUrl,
+        });
+      } else {
+        router.push({
+          pathname: '/',
+        });
+      }
     }
   };
 

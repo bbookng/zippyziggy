@@ -6,8 +6,8 @@ import TalksBalloons from '@/components/TalksBalloons/TalksBallons';
 import styled from 'styled-components';
 import ProfileImage from '@/components/Image/ProfileImage';
 import Paragraph from '@/components/Typography/Paragraph';
+import withLoginModal from '@/components/HOC/withLoginModal';
 import CreateFooter from '@/components/CreatePrompt/CreateFooter';
-import WithAuth from '@/components/HOC/withAuth';
 
 export const StyledTalksContainer = styled.div`
   width: 100%;
@@ -120,4 +120,4 @@ const Index = () => {
   );
 };
 
-export default WithAuth(Index);
+export default withLoginModal(Index);
