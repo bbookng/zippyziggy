@@ -318,8 +318,8 @@ public class PromptController {
 			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
 			@ApiResponse(responseCode = "500", description = "서버 에러")
 	})
-	public ResponseEntity<String> testGptApi(@RequestBody String createTest) {
-		return ResponseEntity.ok(promptService.testGptApi(createTest));
+	public ResponseEntity<GptApiResponse> testGptApi(@RequestBody GptApiRequest data) {
+		return ResponseEntity.ok(promptService.testGptApi(data));
 	}
 
 }

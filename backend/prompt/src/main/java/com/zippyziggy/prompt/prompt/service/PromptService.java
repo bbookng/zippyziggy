@@ -4,6 +4,7 @@ import com.zippyziggy.prompt.common.aws.AwsS3Uploader;
 import com.zippyziggy.prompt.common.kafka.KafkaProducer;
 import com.zippyziggy.prompt.prompt.client.MemberClient;
 import com.zippyziggy.prompt.prompt.dto.request.*;
+import com.zippyziggy.prompt.prompt.dto.response.GptApiResponse;
 import com.zippyziggy.prompt.prompt.dto.response.MemberResponse;
 import com.zippyziggy.prompt.prompt.dto.response.PromptCardResponse;
 import com.zippyziggy.prompt.prompt.dto.response.PromptDetailResponse;
@@ -504,7 +505,10 @@ public class PromptService{
 		return promptCardResponses;
 	}
 
-    public String testGptApi(String example) {
-		return chatgptService.sendMessage(example);
+    public GptApiResponse testGptApi(GptApiRequest data) {
+
+		String apiResult = new String(data.getPrefix() + data.getExample() + data.getSuffix());
+
+		return GptApiResponse.from(chatgptService.sendMessage(apiResult));
     }
 }
