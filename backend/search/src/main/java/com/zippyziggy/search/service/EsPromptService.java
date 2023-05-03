@@ -181,19 +181,10 @@ public class EsPromptService {
 
     public void updateHit(String promptUuid, Integer hit) {
         final EsPrompt esPrompt = esPromptRepository
-                .findEsPromptByPromptUuid(promptUuid)
-                .orElseThrow(EsPromptNotFoundException::new);
+            .findEsPromptByPromptUuid(promptUuid)
+            .orElseThrow(EsPromptNotFoundException::new);
         esPrompt.setHit(hit);
-        try {
-        elasticsearchClient.update(new UpdateRequest.Builder<Void, EsPrompt>()
-                .index("prompt")
-                .id(esPrompt.getId())
-                .doc(esPrompt)
-                .build(),
-                Void.class);
-        } catch (IOException e) {
-            throw new IllegalUpdateRequestException();
-        }
+        esPromptRepository.save(esPrompt);
     }
 
     public void updateLikeCnt(String promptUuid, Integer likeCnt) {
@@ -202,18 +193,6 @@ public class EsPromptService {
                 .orElseThrow(EsPromptNotFoundException::new);
         esPrompt.setLikeCnt(likeCnt);
         esPromptRepository.save(esPrompt);
-//        try {
-//            final UpdateRequest updateRequest = new UpdateRequest.Builder<EsPrompt, EsPrompt>()
-//                    .index("prompt")
-//                    .id(esPrompt.getId())
-//                    .doc(esPrompt)
-//                    .build();
-//            log.info(updateRequest.toString());
-//            final UpdateResponse result = elasticsearchClient.update(updateRequest, EsPrompt.class);
-//            log.info(result.toString());
-//        } catch (IOException e) {
-//            throw new IllegalUpdateRequestException();
-//        }
     }
 
     private Page<EsPrompt> search(
