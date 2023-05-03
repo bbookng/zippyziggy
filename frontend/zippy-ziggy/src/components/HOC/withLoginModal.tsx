@@ -1,4 +1,3 @@
-// HOC/withAuth.jsx
 import { setBeforeUrl, setIsLoginModal } from '@/core/modal/modalSlice';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHook';
 import Router from 'next/router';
@@ -46,10 +45,10 @@ const WrappedComponent = (Component, ...props) => {
   );
 };
 
-const withAuth = (Component) => {
+const withLoginModal = (Component) => {
   return (props) => {
     return WrappedComponent(Component, props);
   };
 };
 
-export default withAuth;
+export default withLoginModal;
