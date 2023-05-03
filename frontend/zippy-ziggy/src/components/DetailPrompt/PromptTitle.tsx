@@ -64,7 +64,7 @@ export default function PromptTitle({
     <Container>
       <TitleBox>
         <div className="category">
-          <div>{Category[prompt?.category] || '카테고리'}</div>
+          <div>{Category[prompt?.category] || ''}</div>
           <ActionBox>
             <div className="heartBox">
               {isLiked ? (

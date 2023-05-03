@@ -159,7 +159,7 @@ export default function DetailPrompt() {
                 <TalkComponent promptUuid={promptUuid} size={4} />
               </section>
               <section id="2">
-                <CommentList id={promptUuid} type="prompt" size={5} />
+                <CommentList id={talkId} type="talk" size={5} />
               </section>
               <section id="3">
                 <ForkedPromptList promptUuid={promptUuid} size={4} />
