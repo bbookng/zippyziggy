@@ -7,7 +7,6 @@ import java.util.List;
 
 @Data
 public class SyncEsTalk {
-
     private Long talkId;
     private String promptUuid;
     private String memberUuid;
@@ -17,6 +16,4 @@ public class SyncEsTalk {
     private Long hit;
 
     private List<EsMessage> esMessages;
-
-
 }

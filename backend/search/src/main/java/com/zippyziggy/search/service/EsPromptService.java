@@ -201,18 +201,19 @@ public class EsPromptService {
                 .findEsPromptByPromptUuid(promptUuid)
                 .orElseThrow(EsPromptNotFoundException::new);
         esPrompt.setLikeCnt(likeCnt);
-        try {
-            final UpdateRequest updateRequest = new UpdateRequest.Builder<EsPrompt, EsPrompt>()
-                    .index("prompt")
-                    .id(esPrompt.getId())
-                    .doc(esPrompt)
-                    .build();
-            log.info(updateRequest.toString());
-            final UpdateResponse result = elasticsearchClient.update(updateRequest, EsPrompt.class);
-            log.info(result.toString());
-        } catch (IOException e) {
-            throw new IllegalUpdateRequestException();
-        }
+        esPromptRepository.save(esPrompt);
+//        try {
+//            final UpdateRequest updateRequest = new UpdateRequest.Builder<EsPrompt, EsPrompt>()
+//                    .index("prompt")
+//                    .id(esPrompt.getId())
+//                    .doc(esPrompt)
+//                    .build();
+//            log.info(updateRequest.toString());
+//            final UpdateResponse result = elasticsearchClient.update(updateRequest, EsPrompt.class);
+//            log.info(result.toString());
+//        } catch (IOException e) {
+//            throw new IllegalUpdateRequestException();
+//        }
     }
 
     private Page<EsPrompt> search(
