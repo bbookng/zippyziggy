@@ -96,7 +96,7 @@ public class Talk {
 				.build();
 	}
 
-	public TalkDetailResponse toDetailResponse(boolean isLiked, Long likeCnt, MemberResponse writerInfo) {
+	public TalkDetailResponse toDetailResponse(boolean isLiked, Long likeCnt, MemberResponse memberResponse) {
 
 		long regDt = this.getRegDt().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
 		long updDt = this.getRegDt().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
@@ -113,7 +113,7 @@ public class Talk {
 			.regDt(regDt)
 			.updDt(updDt)
 			.messages(messageResponses)
-			.writerMember(writerInfo)
+			.writer(memberResponse.toWriterResponse())
 			.build();
 	}
 
