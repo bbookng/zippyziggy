@@ -59,7 +59,7 @@ public class EsTalkService {
             // MemberClient에 memberUuid로 요청
             final MemberResponse member = circuitBreaker
                     .run(() -> memberClient
-                            .getMemberInfo(UUID.fromString(crntMemberUuid))
+                            .getMemberInfo(UUID.fromString(esTalk.getMemberUuid()))
                             .orElseThrow(MemberNotFoundException::new));
             final WriterResponse writer = member.toWriterResponse();
 
