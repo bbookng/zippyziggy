@@ -85,9 +85,12 @@ window.addEventListener("message", function(event) {
       const {data : {prompt}} = data;
       ZIPPY.selectedPrompt = sanitizeInput(prompt);
       break;
+    case "accessToken":
+      console.log(data);
+      break;
     default:
       break;
   }
 });
 
-export default ZIPPY;
+

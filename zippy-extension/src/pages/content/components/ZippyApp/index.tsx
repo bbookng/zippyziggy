@@ -1,6 +1,6 @@
 import refreshOnUpdate from 'virtual:reload-on-update-in-view';
 import injectScript from '@pages/content/utils/inject-script';
-import { ZP_ROOT_ID } from '@pages/constants';
+import { CHAT_GPT_URL, ZP_ROOT_ID } from '@pages/constants';
 import { createRoot } from 'react-dom/client';
 import ContentScript from '@pages/content/components/ZippyApp/ZippyApp';
 
@@ -15,5 +15,7 @@ const addRoot = () => {
   createRoot(root).render(<ContentScript />);
 };
 
-addRoot();
+if (window.location.href.includes(CHAT_GPT_URL)) {
+  addRoot();
+}
 injectScript();
