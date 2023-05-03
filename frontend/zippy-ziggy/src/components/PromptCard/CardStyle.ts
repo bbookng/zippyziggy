@@ -4,7 +4,7 @@ const Conatiner = styled.div`
   border-radius: 4px;
   background-color: ${({ theme }) => theme.colors.whiteColor80};
   box-shadow: ${({ theme }) => theme.shadows.boxShadowLarge};
-  /* max-width: 350px; */
+  max-width: 500px;
 
   .image {
     background-color: ${({ theme }) => theme.colors.grayColor};
@@ -12,7 +12,7 @@ const Conatiner = styled.div`
     width: 100%;
 
     /* height: 10rem; */
-    object-fit: contain;
+    object-fit: cover;
     border-radius: 4px 4px 0 0;
     aspect-ratio: calc(2);
   }
@@ -105,9 +105,11 @@ const Footer = styled.div`
       .like {
         margin-right: 0.25rem;
         color: var(--colors-heart);
+        cursor: pointer;
       }
       .bookmark {
         color: var(--colors-bookmark);
+        cursor: pointer;
       }
       .play {
         width: 2rem;

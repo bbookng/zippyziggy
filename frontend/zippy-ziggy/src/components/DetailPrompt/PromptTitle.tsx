@@ -81,7 +81,6 @@ export default function PromptTitle({
                 <FaRegBookmark onClick={handleBookmark} />
               )}
             </div>
-            {/* ***************** 내가 쓴 글만 보이도록 설정하기 *************** */}
             {isMe && (
               <>
                 <FaEllipsisH
@@ -112,12 +111,12 @@ export default function PromptTitle({
       </TitleBox>
       <div className="time">
         마지막 업데이트:{' '}
-        {prompt.updDt ? getDateTime(new Date(prompt.updDt * 1000)) : getDateTime(new Date())}
+        {prompt?.updDt ? getDateTime(new Date(prompt.updDt * 1000)) : getDateTime(new Date())}
       </div>
       <UserBox>
         <Image
           priority
-          src={prompt?.writerResponse?.writerImg || '/images/noProfile.png'}
+          src={prompt?.writer?.writerImg || '/images/noProfile.png'}
           width={50}
           height={50}
           alt="작성자 프로필 이미지"
@@ -125,14 +124,14 @@ export default function PromptTitle({
         />
         <div className="user">
           <div className="info">작성자</div>
-          <div className="name">{prompt?.writerResponse?.writerNickname}</div>
+          <div className="name">{prompt?.writer?.writerNickname}</div>
         </div>
-        {prompt?.originerResponse && (
+        {prompt?.originer && (
           <>
             <FaArrowLeft className="icon" />
             <Image
               priority
-              src={prompt?.originerResponse?.originerImg || '/images/noProfile.png'}
+              src={prompt?.originer?.originerImg || '/images/noProfile.png'}
               width={50}
               height={50}
               alt="원작자 프로필 이미지"
@@ -140,7 +139,7 @@ export default function PromptTitle({
             />
             <div className="user">
               <div className="info">원작자</div>
-              <div className="name">{prompt?.originerResponse?.originerNickname}</div>
+              <div className="name">{prompt?.originer?.originerNickname}</div>
             </div>
           </>
         )}

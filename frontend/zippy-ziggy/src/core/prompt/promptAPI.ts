@@ -287,9 +287,12 @@ export const deletePromptComment = async (reqeustData: DeletePromptCommentType) 
 
 // ChatGPT 테스트 API 요청
 export const testPrompt = async (requestData: TestPromptType) => {
-  // try {
-  //   const {data} = await httpAuth
-  // }
+  try {
+    const { data } = await http.post('/prompts/gpt', requestData);
+    return { result: 'SUCCESS', data };
+  } catch (err) {
+    return { result: 'FAIL', err };
+  }
 };
 
 // ******* mypage 관련 prompt API  ******/

@@ -1,7 +1,7 @@
 import CreateFooter from '@/components/CreatePrompt/CreateFooter';
 import CreatePart1 from '@/components/CreatePrompt/CreatePrompt_1';
 import CreatePart2 from '@/components/CreatePrompt/CreatePrompt_2';
-import { createPromptFork, getPromptDetail } from '@/core/prompt/promptAPI';
+import { createPromptFork, getPromptDetail, testPrompt } from '@/core/prompt/promptAPI';
 import { useAppSelector } from '@/hooks/reduxHook';
 import { checkInputFormToast } from '@/lib/utils';
 import { ContainerTitle, TitleInfoWrapper, TitleWrapper } from '@/styles/prompt/Create.style';
@@ -18,43 +18,20 @@ const FooterBox = styled.div`
   height: 4.25rem;
 `;
 
-// type DataType = {
-//   data: {
-//     category: string;
-//     description: string;
-//     isBookmarked: boolean;
-//     isForked: boolean;
-//     isLiked: boolean;
-//     likeCnt: number;
-//     messageResponse: {
-//       example: string;
-//       prefix: string;
-//       suffix: string;
-//     };
-//     originerResponse: {
-//       originerImg: string;
-//       originerNickname: string;
-//       originerUuid: string;
-//     } | null;
-//     regDt: number;
-//     thumbnail: string;
-//     title: string;
-//     updDt: SVGNumber;
-//     writerResponse: {
-//       writerImg: string;
-//       writerNickname: string;
-//       writerUuid: string;
-//     };
-//   };
-//   result: string;
-// };
-
 export default function PromptUpdate() {
   const [isNext, setIsNext] = useState<boolean>(false);
   const [preview, setPreview] = useState<string | null>(null);
   const { nickname } = useAppSelector((state) => state.user);
   const router = useRouter();
   const { promptUuid } = router.query;
+  const [testContent, setTestContent] = useState<string | null>('위의 테스트 버튼을 눌러주세요!');
+  const [GPTIsLoading, setGPTIsLoading] = useState<boolean>(false);
+  const textList = [
+    'GPT에게 요청중입니다',
+    '잠시만 기다려주세요',
+    '최대 1분 이상 소요될 수 있습니다',
+  ];
+  const [text, setText] = useState<string>(textList[0]);
   const fork = true;
 
   const initialState = {
@@ -127,6 +104,29 @@ export default function PromptUpdate() {
     }
   }, [isLoading]);
 
+  // 프롬프트 테스트 요청
+  const handleTest = async () => {
+    setGPTIsLoading(true);
+    let i = 1;
+    const loadingText = setInterval(() => {
+      setText(textList[i % textList.length]);
+      i++;
+    }, 2000);
+    const requestData = {
+      prefix: prompt1,
+      example,
+      suffix: prompt2,
+    };
+    const test = await testPrompt(requestData);
+    setGPTIsLoading(false);
+    clearInterval(loadingText);
+    if (test.result === 'SUCCESS') {
+      setTestContent(test.data.apiResult.trim());
+    } else {
+      setTestContent('다시 테스트해주세요');
+    }
+  };
+
   // textarea 높이 변경
   const handleChange = (e, value) => {
     setValue(value, e.target.value);
@@ -164,7 +164,7 @@ export default function PromptUpdate() {
 
   // 포크 생성 요청
   const handleCreatePromptFork = async () => {
-    handleCheck();
+    if (!handleCheck()) return;
     try {
       const tmpData = {
         title,
@@ -184,7 +184,6 @@ export default function PromptUpdate() {
         data: formData,
         router,
       };
-      console.log(tmpData);
       createPromptFork(requestData);
     } catch (err) {
       console.log(err);
@@ -227,10 +226,14 @@ export default function PromptUpdate() {
         />
       ) : (
         <CreatePart1
-          possible
           prompt1={prompt1}
           prompt2={prompt2}
           example={example}
+          possible
+          text={text}
+          testContent={testContent}
+          isLoading={GPTIsLoading}
+          handleTest={handleTest}
           handleChange={handleChange}
         />
       )}

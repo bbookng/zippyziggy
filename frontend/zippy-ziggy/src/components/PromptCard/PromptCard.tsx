@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
-import { getDate, getDateTime } from '@/lib/utils';
-import { FaHeart, FaBookmark, FaPlayCircle } from 'react-icons/fa';
+import { getDate } from '@/lib/utils';
+import { FaHeart, FaBookmark, FaPlayCircle, FaRegHeart, FaRegBookmark } from 'react-icons/fa';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { bookmarkPrompt, likePrompt } from '@/core/prompt/promptAPI';
 import { Body, Conatiner, Content, Footer, Infos, Title } from './CardStyle';
 
 interface PromptType {
@@ -18,6 +19,7 @@ interface PromptType {
   cateory: string;
   description: string;
   likeCnt: number;
+  isLiked: boolean;
   isBookmarked: boolean;
   thumbnail: string;
   updDt: string;
@@ -39,19 +41,41 @@ interface PropsType {
 
 export default function PromptCard({ image, title, description, url, prompt }: PropsType) {
   const router = useRouter();
+  const [isLiked, setIsLiked] = useState<boolean>(prompt ? prompt?.isLiked : true);
+  const [isBookmarked, setIsBookmarked] = useState<boolean>(prompt ? prompt?.isBookmarked : true);
+  const [likeCnt, setLikeCnt] = useState<number>(prompt ? prompt?.likeCnt : 0);
+
+  // 유저 프로필 페이지 이동
   const handleMoveToUser = () => {
     if (prompt) {
       router.push(`/profile/${prompt?.writer?.writerUuid}`);
     }
   };
 
+  // 해당 카드 좋아요
+  const handleLike = async () => {
+    const res = await likePrompt({ promptUuid: prompt?.promptUuid });
+    if (res.result === 'SUCCESS') {
+      setIsLiked((prev) => !prev);
+      isLiked ? setLikeCnt((prev) => prev - 1) : setLikeCnt((prev) => prev + 1);
+    }
+  };
+
+  // 해당 카드 북마크
+  const handleBookmark = async () => {
+    const res = await bookmarkPrompt({ promptUuid: prompt?.promptUuid });
+    if (res.result === 'SUCCESS') {
+      setIsBookmarked((prev) => !prev);
+    }
+  };
+
   return (
     <Conatiner>
-      {url ? (
+      {url || prompt?.promptUuid ? (
         <Link href={`${url || prompt.promptUuid}`}>
           <Image
             priority
-            src={`${image || prompt?.thumbnail || '/images/ChatGPT_logo.png'}`}
+            src={`${image || prompt?.thumbnail || '/images/noCardImg.png'}`}
             width={100}
             height={160}
             className="image"
@@ -61,7 +85,7 @@ export default function PromptCard({ image, title, description, url, prompt }: P
       ) : (
         <Image
           priority
-          src={`${image || prompt?.thumbnail || '/images/ChatGPT_logo.png'}`}
+          src={`${image || prompt?.thumbnail || '/images/noCardImg.png'}`}
           width={100}
           height={160}
           className="image"
@@ -76,7 +100,7 @@ export default function PromptCard({ image, title, description, url, prompt }: P
         <Content>{description || prompt?.description || '설명을 입력해주세요.'}</Content>
         <Infos>
           <div className="caption">
-            {prompt?.updDt ? getDate(new Date(prompt?.updDt)) : getDate(new Date())}
+            {prompt?.updDt ? getDate(new Date(Number(prompt?.updDt) * 1000)) : getDate(new Date())}
           </div>
           <div className="divider caption">·</div>
           <div className="caption">{prompt?.commentCnt ? prompt?.commentCnt : '0'}개의 댓글</div>
@@ -89,7 +113,7 @@ export default function PromptCard({ image, title, description, url, prompt }: P
           <Image
             priority
             src={prompt?.writer?.writerImg || '/images/noProfile.png'}
-            alt="프사"
+            alt="프로필 사진"
             width={30}
             height={30}
             className="profileImg"
@@ -98,11 +122,27 @@ export default function PromptCard({ image, title, description, url, prompt }: P
         </div>
         <div className="extraBox">
           <div className="item">
-            <FaHeart className="like" />
-            <div>{prompt?.likeCnt || '0'}</div>
+            {prompt !== undefined ? (
+              isLiked ? (
+                <FaHeart className="like" onClick={handleLike} />
+              ) : (
+                <FaRegHeart className="like" onClick={handleLike} />
+              )
+            ) : (
+              <FaRegHeart className="like" />
+            )}
+            <div>{likeCnt}</div>
           </div>
           <div className="item">
-            <FaBookmark className="bookmark" />
+            {prompt !== undefined ? (
+              isBookmarked ? (
+                <FaBookmark className="bookmark" onClick={handleBookmark} />
+              ) : (
+                <FaRegBookmark className="bookmark" onClick={handleBookmark} />
+              )
+            ) : (
+              <FaRegBookmark className="bookmark" />
+            )}
           </div>
           <div className="item">
             <FaPlayCircle className="play" />

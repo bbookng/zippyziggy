@@ -4,6 +4,7 @@ import { media } from '@/styles/media';
 const ContainerTitle = styled.div`
   display: flex;
   width: 100%;
+  margin-top: 2rem;
   padding: 1rem 10rem;
   justify-content: center;
   align-items: flex-end;
@@ -13,6 +14,7 @@ const ContainerTitle = styled.div`
   `}
 
   ${media.small`
+    margin-top: 1rem;
     padding: 1rem 1rem;
   `}
 `;

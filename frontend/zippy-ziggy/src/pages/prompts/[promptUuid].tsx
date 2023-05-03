@@ -87,7 +87,7 @@ export default function DetailPrompt() {
   const { isLoading, data } = useQuery(['prompt', promptUuid], handleGetPromptDetail, {
     enabled: !!promptUuid,
     onSuccess(res) {
-      setIsMe(res?.data?.writerResponse?.writerNickname === nickname);
+      setIsMe(res?.data?.writer?.writerNickname === nickname);
     },
     onError: (err) => {
       console.log(err);
@@ -113,7 +113,7 @@ export default function DetailPrompt() {
 
   // 프롬프트 수정 페이지로 이동
   const handleMoveToUpdatePromptPage = () => {
-    if (nickname === data?.data?.writerResponse?.writerNickname) {
+    if (nickname === data?.data?.writer?.writerNickname) {
       router.push(`/prompt/${promptUuid}`);
     }
   };
@@ -125,7 +125,7 @@ export default function DetailPrompt() {
 
   // 프롬프트 삭제
   const handleDeletePrompt = async () => {
-    if (nickname === data?.data?.writerResponse?.writerNickname) {
+    if (nickname === data?.data?.writer?.writerNickname) {
       deletePrompt({ promptUuid, router });
     }
   };
@@ -205,11 +205,9 @@ export default function DetailPrompt() {
                 handleMoveToCreatePromptForkPage={handleMoveToCreatePromptForkPage}
               />
             </RightContainer>
-            {scrollTop && (
-              <MoveTopBtn>
-                <FaAngleUp className="icon" onClick={handleButtonClick} />
-              </MoveTopBtn>
-            )}
+            <MoveTopBtn scrollTop={!!scrollTop}>
+              <FaAngleUp className="icon" onClick={handleButtonClick} />
+            </MoveTopBtn>
           </>
         )}
       </Container>

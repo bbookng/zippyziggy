@@ -11,7 +11,7 @@ import { getPromptList } from '@/core/prompt/promptAPI';
 
 export default function Prompt() {
   const [category, setCategory] = useState<string>('ALL');
-  const [sort, setSort] = useState<string>('likeCnt,desc');
+  const [sort, setSort] = useState<string>('likeCnt');
   const [keyword, setKeyword] = useState<string>('');
   const [cardList, setCardList] = useState<Array<unknown>>([]);
   const [totalPromptsCnt, setTotalPromptsCnt] = useState<number>(0);
@@ -67,9 +67,9 @@ export default function Prompt() {
 
   // 정렬 목록들
   const sortList: Category[] = [
-    { name: '좋아요', value: 'likeCnt,desc' },
-    { name: '조회수', value: 'hit,desc' },
-    { name: '최신순', value: 'regDt,desc' },
+    { name: '좋아요', value: 'likeCnt' },
+    { name: '조회수', value: 'hit' },
+    { name: '최신순', value: 'regDt' },
   ];
 
   // 선택된 정렬 옵션 표시
@@ -133,7 +133,7 @@ export default function Prompt() {
           />
         ))}
       </CardList>
-      <Paging page={page.current} size={6} totalCnt={totalPromptsCnt} setPage={handlePage} />
+      <Paging page={page.current} size={6} totalCnt={totalPromptsCnt || 0} setPage={handlePage} />
     </Container>
   );
 }
