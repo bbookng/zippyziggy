@@ -180,10 +180,16 @@ public class TalkService {
 			MemberResponse talkMemberInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(t.getMemberUuid())
 					.orElseThrow(MemberNotFoundException::new));
 
-			return TalkListResponse.from(question, answer,
-					talkMemberInfo.getProfileImg(), talkMemberInfo.getNickname(),
-					talkLikeCnt, talkCommentCnt,
-					isTalkLiked);
+			return TalkListResponse.from(
+				t.getId(),
+				t.getTitle(),
+				question,
+				answer,
+				talkMemberInfo.getProfileImg(),
+				talkMemberInfo.getNickname(),
+				talkLikeCnt,
+				talkCommentCnt,
+				isTalkLiked);
 
 		}).collect(Collectors.toList());
 		return talkListResponses;
