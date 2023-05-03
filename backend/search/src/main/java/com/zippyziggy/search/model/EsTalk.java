@@ -49,7 +49,7 @@ public class EsTalk {
 	public static EsTalk of (SyncEsTalk syncEsTalk) {
 		return EsTalk.builder()
 				.talkId(syncEsTalk.getTalkId())
-				.promptUuid(syncEsTalk.getPromptUuid().toString())
+				.promptUuid(syncEsTalk.getPromptUuid())
 				.memberUuid(syncEsTalk.getMemberUuid())
 				.title(syncEsTalk.getTitle())
 				.regDt(syncEsTalk.getRegDt())

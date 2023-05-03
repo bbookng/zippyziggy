@@ -7,12 +7,13 @@ import com.zippyziggy.search.dto.response.SearchTalkList;
 import com.zippyziggy.search.dto.response.WriterResponse;
 import com.zippyziggy.search.dto.response.server.MemberResponse;
 import com.zippyziggy.search.dto.response.server.SyncEsTalk;
-import com.zippyziggy.search.exception.EsPromptNotFoundException;
 import com.zippyziggy.search.exception.EsTalkNotFoundException;
 import com.zippyziggy.search.exception.MemberNotFoundException;
-import com.zippyziggy.search.model.EsPrompt;
 import com.zippyziggy.search.model.EsTalk;
 import com.zippyziggy.search.repository.EsTalkRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
@@ -23,10 +24,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -78,15 +75,6 @@ public class EsTalkService {
     public void insertDocument(SyncEsTalk syncEsTalk) {
         final EsTalk esTalk = EsTalk.of(syncEsTalk);
         esTalkRepository.save(esTalk);
-    }
-
-    public void updateDocument(Long talkId, SyncEsTalk syncEsTalk) {
-        final EsTalk oldEsTalk = esTalkRepository
-                .findEsTalkByTalkId(talkId)
-                .orElseThrow(EsTalkNotFoundException::new);
-        esTalkRepository.delete(oldEsTalk);
-        final EsTalk newEsTalk = EsTalk.of(syncEsTalk);
-        esTalkRepository.save(newEsTalk);
     }
 
     public void deleteDocument(Long talkId) {
