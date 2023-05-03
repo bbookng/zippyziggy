@@ -15,13 +15,13 @@ export default function TalkCard({ talk }: PropsType) {
         <div className="userBox">
           <Image
             priority
-            src={talk.member.memberImg}
+            src={talk.memberImg}
             alt="프로필 사진"
             width={20}
             height={20}
             className="img"
           />
-          <div>{talk.member.memberNickname}</div>
+          <div>{talk.memberNickname}</div>
         </div>
         <div className="infoBox">
           <div className="heartBox">

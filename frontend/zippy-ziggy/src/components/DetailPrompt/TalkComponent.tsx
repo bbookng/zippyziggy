@@ -12,7 +12,7 @@ export default function TalkComponent({ promptUuid, size }: PropsType) {
   const [talkCnt, setTalkCnt] = useState<number>(0);
   const [talkList, setTalkList] = useState<Array<any>>([]);
   const page = useRef<number>(0);
-  const sizeRef = useRef<number>(2);
+  const sizeRef = useRef<number>(size);
   const isStop = useRef<boolean>(false);
 
   // Talk 가져오기
@@ -44,14 +44,18 @@ export default function TalkComponent({ promptUuid, size }: PropsType) {
       isStop.current = false;
       page.current = 0;
     };
-  }, []);
+  }, [promptUuid]);
 
   return (
     <Container>
       <div className="label">Talk 프롬프트를 사용해 대화한 목록({talkCnt})</div>
       <TalkListLayout talkList={talkList} columnList={[2, 2, 1]} />
       {isStop.current ? (
-        <div className="btnNone">불러올 대화목록이 없습니다</div>
+        talkList.length > 0 ? (
+          <div className="btnNone" />
+        ) : (
+          <div className="btnNone">불러올 대화목록이 없습니다</div>
+        )
       ) : (
         <div onClick={handleGetTalk} onKeyDown={handleGetTalk} role="button" className="btn">
           더보기

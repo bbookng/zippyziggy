@@ -66,7 +66,7 @@ const ActionBox = styled.div`
 
   .bookmark {
     color: ${({ theme }) => theme.colors.bookmarkColor};
-    margin-right: 0.75rem;
+    /* margin-right: 0.75rem; */
     cursor: pointer;
     transition: all 0.2s ease-out;
     &:hover {
@@ -80,6 +80,7 @@ const ActionBox = styled.div`
 
   .dot {
     cursor: pointer;
+    margin-left: 0.75rem;
   }
 
   ${media.small`
@@ -93,6 +94,7 @@ const UserBox = styled.div`
 
   .image {
     width: 3rem;
+    aspect-ratio: calc(1);
     border-radius: 50%;
   }
 

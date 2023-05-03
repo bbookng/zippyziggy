@@ -1,19 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { FaPlayCircle } from 'react-icons/fa';
-import { Container, LeftContainer, RightContainer, SubContainer, Textarea } from './Create_1Style';
+import { testPrompt } from '@/core/prompt/promptAPI';
+import Lottie from 'react-lottie-player';
+import lottieJson from '@/assets/lottieJson/loadingA.json';
+import {
+  Container,
+  LeftContainer,
+  Loading,
+  RightContainer,
+  SubContainer,
+  Textarea,
+} from './Create_1Style';
 import Button from '../Button/Button';
 
 interface PropTypes {
   prompt1: string | null;
   prompt2: string | null;
   example: string | null;
-  fork?: boolean | string | string[] | null;
-
+  possible?: boolean;
+  text?: string;
+  testContent?: string;
+  isLoading?: boolean;
   handleChange: (e: unknown, string: string) => void;
+  handleTest?: () => void;
 }
 
-export default function CreatePart1({ prompt1, prompt2, example, fork, handleChange }: PropTypes) {
+export default function CreatePart1({
+  prompt1,
+  prompt2,
+  example,
+  possible,
+  text,
+  testContent,
+  isLoading,
+  handleChange,
+  handleTest,
+}: PropTypes) {
   return (
     <Container>
       <LeftContainer>
@@ -28,7 +51,7 @@ export default function CreatePart1({ prompt1, prompt2, example, fork, handleCha
             value={prompt1}
             onChange={(e) => handleChange(e, 'prompt1')}
             placeholder="질문의 앞에 붙을 프롬프트를 작성해주세요."
-            disabled={!fork}
+            disabled={!possible}
           />
         </div>
         <div className="question">
@@ -44,7 +67,7 @@ export default function CreatePart1({ prompt1, prompt2, example, fork, handleCha
               placeholder="예시를 작성해주세요"
               onChange={(e) => handleChange(e, 'example')}
               id="example"
-              disabled={!fork}
+              disabled={!possible}
             />
           </div>
         </div>
@@ -59,7 +82,7 @@ export default function CreatePart1({ prompt1, prompt2, example, fork, handleCha
             onChange={(e) => handleChange(e, 'prompt2')}
             placeholder="질문의 뒤에 붙을 프롬프트를 작성해주세요."
             id="prompt2"
-            disabled={!fork}
+            disabled={!possible}
           />
         </div>
       </LeftContainer>
@@ -77,7 +100,7 @@ export default function CreatePart1({ prompt1, prompt2, example, fork, handleCha
             </div>
           </div>
           <div className="row">
-            <Button className="testBtn">
+            <Button className="testBtn" onClick={handleTest}>
               <FaPlayCircle />
               <div className="text">테스트</div>
             </Button>
@@ -85,18 +108,35 @@ export default function CreatePart1({ prompt1, prompt2, example, fork, handleCha
         </SubContainer>
         <SubContainer>
           <div className="row">
-            <div className="label">테스트 결과</div>
+            <div className="label testTitle">
+              <Image
+                priority
+                src="/images/ChatGPT_logo.png"
+                width={40}
+                height={40}
+                alt="GPT 사진"
+              />
+              <div>테스트 결과</div>
+            </div>
             <div className="sentenceBox">
-              <div className="questionMark">
-                <Image
-                  priority
-                  src="/images/ChatGPT_logo.png"
-                  width={40}
-                  height={40}
-                  alt="GPT 사진"
-                />
+              {/* <div className="questionMark">
+              </div> */}
+              <div className="text">
+                {!isLoading ? (
+                  testContent
+                ) : (
+                  <Loading>
+                    <Lottie
+                      className="lottie"
+                      loop
+                      animationData={lottieJson}
+                      play
+                      style={{ width: '200px', height: '200px' }}
+                    />
+                    {text}
+                  </Loading>
+                )}
               </div>
-              <div className="text">Chat GPT 결과창 - 바꿔야됨!</div>
             </div>
           </div>
         </SubContainer>

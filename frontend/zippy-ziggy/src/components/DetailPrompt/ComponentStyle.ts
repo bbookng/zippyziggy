@@ -71,12 +71,17 @@ const SubContainer = styled.div`
 
 const CardList = styled.div`
   display: grid;
-  grid-template-columns: repeat(2, 2fr);
+  grid-template-columns: repeat(3, 2fr);
   grid-gap: 1rem;
   margin-top: 0.5rem;
 
+  ${media.large`
+    grid-template-columns: repeat(2, 1fr);  
+  `}
+
   ${media.small`
     grid-template-columns: repeat(1, 1fr);
+    margin-inline: auto;
   `}
 `;
 

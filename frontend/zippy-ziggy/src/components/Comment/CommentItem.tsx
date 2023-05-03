@@ -165,7 +165,7 @@ export default function CommentItem({ comment, type, id, handleDeleteComment }: 
                 </EditPopUp>
               ) : null}
             </div>
-            <div className="date">{getDateTime(new Date(comment.regDt))}</div>
+            <div className="date">{getDateTime(new Date(comment.regDt * 1000))}</div>
           </div>
         </UserBox>
         {isUpdated ? (

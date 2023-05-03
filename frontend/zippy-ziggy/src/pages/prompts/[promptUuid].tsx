@@ -29,7 +29,7 @@ export default function DetailPrompt() {
   const [isBookmarked, setIsBookmarked] = useState<boolean>(false);
   const [likeCnt, setLikeCnt] = useState<number>(0);
   const [tab, setTab] = useState<number>(0);
-  const [scrollPosition, setScrollPosition] = useState<number>(0);
+  const [scrollTop, setScrollTop] = useState<boolean>(false);
   const [isMe, setIsMe] = useState<boolean>(false);
   const [isOpenPromptDeleteModal, setIsOpenPromptDeleteModal] = useState<boolean>(false);
 
@@ -43,7 +43,11 @@ export default function DetailPrompt() {
         setTab(Number(section.id));
       }
     });
-    setScrollPosition(window.scrollY);
+    if (window.scrollY > 0) {
+      setScrollTop(true);
+    } else {
+      setScrollTop(false);
+    }
   };
 
   // Tab 리스트
@@ -83,7 +87,7 @@ export default function DetailPrompt() {
   const { isLoading, data } = useQuery(['prompt', promptUuid], handleGetPromptDetail, {
     enabled: !!promptUuid,
     onSuccess(res) {
-      setIsMe(res?.data?.writerResponse?.writerNickname === nickname);
+      setIsMe(res?.data?.writer?.writerNickname === nickname);
     },
     onError: (err) => {
       console.log(err);
@@ -109,21 +113,19 @@ export default function DetailPrompt() {
 
   // 프롬프트 수정 페이지로 이동
   const handleMoveToUpdatePromptPage = () => {
-    if (nickname === data?.data?.writerResponse?.writerNickname) {
+    if (nickname === data?.data?.writer?.writerNickname) {
       router.push(`/prompt/${promptUuid}`);
     }
   };
 
-  // 프롬프트 수정 페이지로 이동
+  // 프롬프트 포크 페이지로 이동
   const handleMoveToCreatePromptForkPage = () => {
-    if (nickname === data?.data?.writerResponse?.writerNickname) {
-      router.push(`/prompt/${promptUuid}/fork`);
-    }
+    router.push(`/prompt/${promptUuid}/fork`);
   };
 
   // 프롬프트 삭제
   const handleDeletePrompt = async () => {
-    if (nickname === data?.data?.writerResponse?.writerNickname) {
+    if (nickname === data?.data?.writer?.writerNickname) {
       deletePrompt({ promptUuid, router });
     }
   };
@@ -203,11 +205,9 @@ export default function DetailPrompt() {
                 handleMoveToCreatePromptForkPage={handleMoveToCreatePromptForkPage}
               />
             </RightContainer>
-            {scrollPosition > 0 && (
-              <MoveTopBtn>
-                <FaAngleUp className="icon" onClick={handleButtonClick} />
-              </MoveTopBtn>
-            )}
+            <MoveTopBtn scrollTop={!!scrollTop}>
+              <FaAngleUp className="icon" onClick={handleButtonClick} />
+            </MoveTopBtn>
           </>
         )}
       </Container>
