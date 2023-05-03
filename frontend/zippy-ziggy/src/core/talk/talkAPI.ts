@@ -2,7 +2,7 @@ import { http, httpAuth } from '@/lib/http';
 import Toastify from 'toastify-js';
 import message from '@/assets/message.json';
 import toastifyCSS from '@/assets/toastify.json';
-import { PostTalkType, GetTalkCommentListType } from './talkType';
+import { PostTalkType, GetTalkCommentListType, GetTalksListType } from './talkType';
 
 export const getTalkCommentList = async (requestData: GetTalkCommentListType) => {
   try {
@@ -73,29 +73,17 @@ export const deleteTalksCommentAPI = async (commentId: string, crntMemberUuid: s
 };
 
 /**
- * 톡 목록조회
- * @param crntMemberUuid
- * @returns { result: 'SUCCESS', data: res.data }
+ * 톡 목록 조회
+ * @param requestData
+ * @returns
  */
-export const getTalksListAPI = async (crntMemberUuid = '') => {
+export const getTalksListAPI = async (requestData: GetTalksListType) => {
   try {
-    // uuid가 들어있지 않으면 auth정보가 없는 요청
-    if (crntMemberUuid === '') {
-      const res = await http.get(`/talks`);
-      if (res.status === 200) {
-        return { result: 'SUCCESS', data: res.data };
-      }
-      return { result: 'FAIL', data: res.data };
+    const res = await httpAuth.get(`/search/talks`, { params: requestData });
+    if (res.status === 200) {
+      return { result: 'SUCCESS', data: res.data };
     }
-    // uuid가 들어있으면 auth정보가 있는 요청
-    if (crntMemberUuid) {
-      const res = await httpAuth.get(`/talks`);
-      if (res.status === 200) {
-        return { result: 'SUCCESS', data: res.data };
-      }
-      return { result: 'FAIL', data: res.data };
-    }
-    return { result: 'FAIL' };
+    return { result: 'FAIL', data: res.data };
   } catch (err) {
     return { result: 'FAIL', data: err };
   }

@@ -4,6 +4,13 @@ export type GetTalkCommentListType = {
   size: number;
 };
 
+export type GetTalksListType = {
+  page: number;
+  size: number;
+  sort: string;
+  keyword: string;
+};
+
 export type PostTalkType = {
   promptUuid: string;
   title: string;
