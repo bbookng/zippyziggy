@@ -81,6 +81,7 @@ public class KafkaConsumer {
 			final Integer cnt = promptCntResponse.getCnt();
 			esPromptService.updateLikeCnt(promptUuid, cnt);
 		} catch (JsonProcessingException ex) {
+			ex.printStackTrace();
 			throw new CustomJsonProcessingException();
 		}
 	}
