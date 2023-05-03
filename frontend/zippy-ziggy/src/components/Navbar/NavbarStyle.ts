@@ -11,7 +11,7 @@ const NavWrapper = styled.div`
   padding: 0 1.5rem;
   justify-content: space-between;
   background-color: ${({ theme }) => theme.colors.navColor};
-  box-shadow: ${({ theme }) => theme.shadows.boxShadowLarge};
+  box-shadow: ${({ theme }) => theme.shadows.boxShadowSmall};
   z-index: 100;
 
   ${media.small`

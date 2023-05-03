@@ -80,7 +80,7 @@ const SortBox = styled.div`
 
 const CardList = styled.div`
   margin-block: 1rem;
-  width: 100%;
+  /* width: 100%; */
   display: grid;
   grid-template-columns: repeat(3, 3fr);
   grid-gap: 2rem;

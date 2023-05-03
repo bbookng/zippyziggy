@@ -4,7 +4,7 @@ import { media } from '../media';
 const Container = styled.div`
   display: flex;
   padding: 4rem 0 4rem 4rem;
-
+  background-color: ${({ theme }) => theme.colors.navColor};
   ${media.small`
     padding: 2rem 1rem;
   `}

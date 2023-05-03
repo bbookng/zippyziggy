@@ -7,6 +7,7 @@ import Tab from '@/components/DetailPrompt/Tab';
 import TalkComponent from '@/components/DetailPrompt/TalkComponent';
 import Modal from '@/components/Modal/Modal';
 import { bookmarkPrompt, deletePrompt, getPromptDetail, likePrompt } from '@/core/prompt/promptAPI';
+import { getTalksAPI } from '@/core/talk/talkAPI';
 import { useAppSelector } from '@/hooks/reduxHook';
 import {
   Container,
@@ -23,6 +24,7 @@ import { FaAngleUp } from 'react-icons/fa';
 
 export default function DetailPrompt() {
   const router = useRouter();
+  const { talkId } = router.query;
   const { promptUuid } = router.query;
   const { nickname } = useAppSelector((state) => state?.user);
   const [isLiked, setIsLiked] = useState<boolean>(false);
@@ -32,6 +34,8 @@ export default function DetailPrompt() {
   const [scrollTop, setScrollTop] = useState<boolean>(false);
   const [isMe, setIsMe] = useState<boolean>(false);
   const [isOpenPromptDeleteModal, setIsOpenPromptDeleteModal] = useState<boolean>(false);
+
+  const queryTalkId = Array.isArray(talkId) ? talkId[0] : talkId;
 
   const handleScroll = () => {
     const scrollPos = document.documentElement.scrollTop;
@@ -52,10 +56,10 @@ export default function DetailPrompt() {
 
   // Tab 리스트
   const itemList = [
-    ['설명', 0],
-    [`Talk`, 1],
-    ['댓글', 2],
-    ['Fork', 3],
+    ['대화내용', 0],
+    [`프롬프트 정보`, 1],
+    ['다른 대화', 2],
+    ['댓글', 3],
   ];
 
   // 선택된 옵션 표시
@@ -79,13 +83,13 @@ export default function DetailPrompt() {
 
   // Prompt 상세 요청 API
   const handleGetPromptDetail = async () => {
-    const res = await getPromptDetail({ promptUuid });
+    const res = await getTalksAPI(queryTalkId);
     return res;
   };
 
   // Prompt 상세 가져오기
-  const { isLoading, data } = useQuery(['prompt', promptUuid], handleGetPromptDetail, {
-    enabled: !!promptUuid,
+  const { isLoading, data } = useQuery(['talk', talkId], handleGetPromptDetail, {
+    enabled: !!talkId,
     onSuccess(res) {
       setIsMe(res?.data?.writer?.writerNickname === nickname);
     },
@@ -101,26 +105,6 @@ export default function DetailPrompt() {
       setIsLiked((prev) => !prev);
       isLiked ? setLikeCnt((prev) => prev - 1) : setLikeCnt((prev) => prev + 1);
     }
-  };
-
-  // 북마크
-  const handleBookmark = async () => {
-    const res = await bookmarkPrompt({ promptUuid });
-    if (res.result === 'SUCCESS') {
-      setIsBookmarked((prev) => !prev);
-    }
-  };
-
-  // 프롬프트 수정 페이지로 이동
-  const handleMoveToUpdatePromptPage = () => {
-    if (nickname === data?.data?.writer?.writerNickname) {
-      router.push(`/prompt/${promptUuid}`);
-    }
-  };
-
-  // 프롬프트 포크 페이지로 이동
-  const handleMoveToCreatePromptForkPage = () => {
-    router.push(`/prompt/${promptUuid}/fork`);
   };
 
   // 프롬프트 삭제
@@ -165,23 +149,12 @@ export default function DetailPrompt() {
                   likeCnt={likeCnt}
                   isMe={isMe}
                   handleLike={handleLike}
-                  handleBookmark={handleBookmark}
                   handleOpenDeleteModal={() => setIsOpenPromptDeleteModal(true)}
-                  handleMoveToUpdatePromptPage={handleMoveToUpdatePromptPage}
                 />
               </TopBox>
               <Tab itemList={itemList} tab={tab} handleIsSelected={handleIsSelectedTab} />
-              <Image
-                priority
-                src={data.data.thumbnail}
-                alt="프롬프트 이미지"
-                width={100}
-                height={100}
-                className="promptImage"
-              />
-              <section id="0">
-                <Introduction prompt={data.data} />
-              </section>
+
+              <section id="0">{/* <Introduction prompt={data.data} /> */}</section>
               <section id="1">
                 <TalkComponent promptUuid={promptUuid} size={4} />
               </section>
@@ -192,7 +165,7 @@ export default function DetailPrompt() {
                 <ForkedPromptList promptUuid={promptUuid} size={4} />
               </section>
             </LeftContainer>
-            <RightContainer>
+            {/* <RightContainer>
               <SideBar
                 isLiked={isLiked}
                 isBookmarked={isBookmarked}
@@ -204,7 +177,7 @@ export default function DetailPrompt() {
                 handleMoveToUpdatePromptPage={handleMoveToUpdatePromptPage}
                 handleMoveToCreatePromptForkPage={handleMoveToCreatePromptForkPage}
               />
-            </RightContainer>
+            </RightContainer> */}
             <MoveTopBtn scrollTop={!!scrollTop}>
               <FaAngleUp className="icon" onClick={handleButtonClick} />
             </MoveTopBtn>

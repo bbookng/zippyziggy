@@ -4,7 +4,8 @@ const ColorBox = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background-color: var(--colors-primary-10);
+  background-color: ${({ theme }) => theme.colors.whiteColor100};
+  /* background-color: var(--colors-primary-10); */
   padding: 1rem 1.25rem;
   width: 100%;
   height: 8rem;

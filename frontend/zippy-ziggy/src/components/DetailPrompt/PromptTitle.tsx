@@ -22,7 +22,7 @@ interface PropsType {
   handleLike?: () => void;
   handleBookmark?: () => void;
   handleOpenDeleteModal?: () => void;
-  handleMoveToUpdatePromptPage: () => void;
+  handleMoveToUpdatePromptPage?: () => void;
 }
 
 export default function PromptTitle({

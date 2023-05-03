@@ -9,7 +9,7 @@ const Container = styled.div`
     margin-top: 5rem;
     font-size: var(--fonts-desktop-heading-xl);
     font-weight: var(--fonts-heading);
-    /* margin-bottom: 0.5rem; */
+    margin-bottom: 8px;
 
     ${media.small`
       margin-top: 3rem;
@@ -41,7 +41,7 @@ const SubContainer = styled.div`
   background-color: ${({ theme }) => theme.colors.whiteColor80};
 
   .basicBox {
-    background-color: ${({ theme }) => theme.colors.navColor};
+    background-color: ${({ theme }) => theme.colors.blackColor03};
     padding: 1rem 1.25rem;
     width: 100%;
   }

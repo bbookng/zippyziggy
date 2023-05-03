@@ -21,7 +21,7 @@ const Title = styled.div`
   margin-top: 5rem;
   font-size: var(--fonts-desktop-heading-xl);
   font-weight: var(--fonts-heading);
-  /* margin-bottom: 0.5rem; */
+  margin-bottom: 8px;
 
   ${media.small`
       margin-top: 3rem;
@@ -35,11 +35,13 @@ const InputBox = styled.div`
   width: 100%;
   border: 1px solid ${({ theme }) => theme.colors.grayColor};
   border-radius: var(--borders-radius-base);
-  padding: 1rem;
+  padding: 8px;
   margin-top: 0.5rem;
+  background-color: ${({ theme }) => theme.colors.bgColor};
 
   .btn {
     font-size: var(--fonts-body-sm);
+    margin: 0 8px 0 0;
     &:hover {
       color: white;
     }
@@ -49,7 +51,8 @@ const InputBox = styled.div`
 const Textarea = styled.textarea`
   display: flex;
   width: 100%;
-  background-color: ${({ theme }) => theme.colors.bgColor};
+  background: none;
+  /* background-color: ${({ theme }) => theme.colors.bgColor}; */
   box-shadow: none;
   min-height: 1rem;
   resize: none;

@@ -226,33 +226,18 @@ export const postTalksCommentsAPI = async (talkId: string, content: string) => {
  * @param crntMemberUuid
  * @returns
  */
-export const getTalksAPI = async (talkId: string, crntMemberUuid = '') => {
+export const getTalksAPI = async (talkId: string) => {
   try {
-    if (crntMemberUuid === '') {
-      const res = await http.get(`/talks/${talkId}/comments`);
-      if (res.status === 200) {
-        Toastify({
-          text: message.CreatePromptSuccess,
-          duration: 1000,
-          position: 'center',
-          stopOnFocus: true,
-          style: toastifyCSS.success,
-        }).showToast();
-        return { result: 'SUCCESS', data: res.data };
-      }
-    }
-    if (crntMemberUuid) {
-      const res = await httpAuth.get(`/talks/${talkId}`);
-      if (res.status === 200) {
-        Toastify({
-          text: message.CreatePromptSuccess,
-          duration: 1000,
-          position: 'center',
-          stopOnFocus: true,
-          style: toastifyCSS.success,
-        }).showToast();
-        return { result: 'SUCCESS', data: res.data };
-      }
+    const res = await httpAuth.get(`/talks/${talkId}`);
+    if (res.status === 200) {
+      Toastify({
+        text: message.CreatePromptSuccess,
+        duration: 1000,
+        position: 'center',
+        stopOnFocus: true,
+        style: toastifyCSS.success,
+      }).showToast();
+      return { result: 'SUCCESS', data: res.data };
     }
     return { result: 'FAIL' };
   } catch (err) {
