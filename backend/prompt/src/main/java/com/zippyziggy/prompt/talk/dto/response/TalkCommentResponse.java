@@ -1,6 +1,7 @@
 package com.zippyziggy.prompt.talk.dto.response;
 
 import com.zippyziggy.prompt.prompt.dto.response.MemberResponse;
+import com.zippyziggy.prompt.prompt.dto.response.WriterResponse;
 import com.zippyziggy.prompt.talk.model.TalkComment;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +15,7 @@ import java.time.ZoneId;
 public class TalkCommentResponse {
 
     private Long commentId;
-    private MemberResponse member;
+    private WriterResponse writer;
     private long regDt;
     private long updDt;
     private String content;
@@ -26,7 +27,7 @@ public class TalkCommentResponse {
 
         return TalkCommentResponse.builder()
                 .commentId(comment.getId())
-                .member(member)
+                .writer(member.toWriterResponse())
                 .regDt(regDt)
                 .updDt(updDt)
                 .content(comment.getContent())

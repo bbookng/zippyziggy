@@ -1,5 +1,7 @@
 package com.zippyziggy.prompt.talk.dto.response;
 
+import com.zippyziggy.prompt.prompt.dto.response.MemberResponse;
+import com.zippyziggy.prompt.prompt.dto.response.WriterResponse;
 import lombok.Builder;
 import lombok.Data;
 
@@ -11,8 +13,7 @@ public class TalkListResponse {
 	private String title;
 	private String question;
 	private String answer;
-	private String memberImg;
-	private String memberNickname;
+	private WriterResponse writer;
 	private Long likeCnt;
 	private Long commentCnt;
 	private Boolean isLiked;
@@ -22,8 +23,7 @@ public class TalkListResponse {
 		String title,
 		String question,
 		String answer,
-		String memberImg,
-		String memberNickname,
+		MemberResponse member,
 		Long likeCnt,
 		Long commentCnt,
 		Boolean isLiked
@@ -33,8 +33,7 @@ public class TalkListResponse {
 				.title(title)
 				.question(question)
 				.answer(answer)
-				.memberImg(memberImg)
-				.memberNickname(memberNickname)
+				.writer(member.toWriterResponse())
 				.likeCnt(likeCnt)
 				.commentCnt(commentCnt)
 				.isLiked(isLiked)

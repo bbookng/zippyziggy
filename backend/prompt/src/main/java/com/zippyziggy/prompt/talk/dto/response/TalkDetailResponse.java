@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
+import com.zippyziggy.prompt.prompt.dto.response.WriterResponse;
 import org.springframework.lang.Nullable;
 
 import com.zippyziggy.prompt.prompt.dto.response.MemberResponse;
@@ -22,7 +23,7 @@ public class TalkDetailResponse {
 	private MemberResponse originMember;
 
 	@NotNull
-	private MemberResponse writerMember;
+	private WriterResponse writer;
 
 	private Boolean isLiked;
 	private Long likeCnt;
