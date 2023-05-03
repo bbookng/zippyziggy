@@ -33,6 +33,7 @@
     "styled-components": "^5.3.9",
     "styled-normalize": "^8.0.7",
     "typeit": "^8.7.1",
+    "typeit-react": "^2.6.4",
     "typescript": "5.0.4"
   },
   "devDependencies": {
