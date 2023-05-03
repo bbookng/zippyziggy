@@ -507,7 +507,21 @@ public class PromptService{
 
     public GptApiResponse testGptApi(GptApiRequest data) {
 
-		String apiResult = new String(data.getPrefix() + data.getExample() + data.getSuffix());
+		String prefix = data.getPrefix();
+		String example = data.getExample();
+		String suffix = data.getSuffix();
+
+		String apiResult = "";
+
+		if (prefix != null) {
+			apiResult += prefix;
+		}
+		if (example != null) {
+			apiResult += example;
+		}
+		if (suffix != null) {
+			apiResult += suffix;
+		}
 
 		return GptApiResponse.from(chatgptService.sendMessage(apiResult));
     }
