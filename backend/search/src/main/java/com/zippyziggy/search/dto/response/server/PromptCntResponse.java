@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class PromptCntResponse {
-    private final String promptUuid;
-    private final Integer cnt;
+    private String promptUuid;
+    private Integer cnt;
 }
