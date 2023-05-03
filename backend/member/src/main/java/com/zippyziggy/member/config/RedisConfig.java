@@ -20,8 +20,8 @@ public class RedisConfig {
     @Value("${spring.redis.port}")
     private int port;
 
-    @Value("${spring.redis.password}")
-    private String password;
+//    @Value("${spring.redis.password}")
+//    private String password;
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
@@ -37,9 +37,9 @@ public class RedisConfig {
 //
         RedisSentinelConfiguration redisSentinelConfiguration = new RedisSentinelConfiguration();
         redisSentinelConfiguration.master("mymaster")
-                .sentinel("127.0.0.1", 5000)
-                .sentinel("127.0.0.1", 5001)
-                .sentinel("127.0.0.1", 5002);
+                .sentinel("zippyziggy.kr", 5000)
+                .sentinel("zippyziggy.kr", 5001)
+                .sentinel("zippyziggy.kr", 5002);
 
         return new LettuceConnectionFactory(redisSentinelConfiguration);
     }
