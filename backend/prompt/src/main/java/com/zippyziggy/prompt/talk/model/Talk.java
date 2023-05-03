@@ -71,12 +71,17 @@ public class Talk {
 		this.messages = messages;
 	}
 
+	public void setLikeCnt(Long likeCnt) {
+		this.likeCnt = likeCnt;
+	}
+
 	public static Talk from(TalkRequest data, UUID crntMemberUuid) {
 		return Talk.builder()
 			.memberUuid(crntMemberUuid)
 			.title(data.getTitle())
 			.regDt(LocalDateTime.now())
 			.likeCnt(0L)
+			.hit(0L)
 			.build();
 	}
 
