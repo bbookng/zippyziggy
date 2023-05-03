@@ -16,6 +16,7 @@ import com.zippyziggy.member.model.Platform;
 import com.zippyziggy.member.repository.MemberRepository;
 import com.zippyziggy.member.service.*;
 //import com.zippyziggy.member.util.RedisUtils;
+import com.zippyziggy.member.util.RedisUtils;
 import com.zippyziggy.member.util.SecurityUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -24,6 +25,7 @@ import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -56,6 +58,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/members")
 @RequiredArgsConstructor
+@Slf4j
 @Transactional
 public class MemberController {
 
@@ -69,6 +72,7 @@ public class MemberController {
 
     private final CircuitBreakerFactory circuitBreakerFactory;
     private final PromptClient promptClient;
+    private final RedisUtils redisUtils;
 
 
     @Bean
@@ -76,6 +80,30 @@ public class MemberController {
         return new OpenAPI().components(new Components().addSecuritySchemes("bearer-key",
             new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")));
     }
+
+    @Value("${spring.redis.host}")
+    private String host;
+
+    @Value("${spring.redis.port}")
+    private int port;
+
+    /**
+     * Redis 테스트
+     */
+    @PostMapping("/redis/put")
+    public ResponseEntity<?> redisPut(@RequestBody String value) {
+        redisUtils.put("redistest", value, 100000L);
+        return ResponseEntity.ok("redis 테스트");
+    }
+
+    @GetMapping("/redis/get")
+    public ResponseEntity<?> redisGet(@RequestParam String key) {
+        log.info(host);
+        log.info(String.valueOf(port));
+        log.info(String.valueOf(redisUtils.getExpireTime(key)));
+        return ResponseEntity.ok(redisUtils.get(key, String.class));
+    }
+
 
     /**
      * 멤버가 좋아요를 누름 프롬프트 조회
