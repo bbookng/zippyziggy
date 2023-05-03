@@ -11,6 +11,9 @@ import com.zippyziggy.search.exception.EsTalkNotFoundException;
 import com.zippyziggy.search.exception.MemberNotFoundException;
 import com.zippyziggy.search.model.EsTalk;
 import com.zippyziggy.search.repository.EsTalkRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
@@ -21,10 +24,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -78,15 +77,6 @@ public class EsTalkService {
         esTalkRepository.save(esTalk);
     }
 
-    public void updateDocument(Long talkId, SyncEsTalk syncEsTalk) {
-        final EsTalk oldEsTalk = esTalkRepository
-                .findEsTalkByTalkId(talkId)
-                .orElseThrow(EsTalkNotFoundException::new);
-        esTalkRepository.delete(oldEsTalk);
-        final EsTalk newEsTalk = EsTalk.of(syncEsTalk);
-        esTalkRepository.save(newEsTalk);
-    }
-
     public void deleteDocument(Long talkId) {
         final EsTalk esTalk = esTalkRepository
                 .findEsTalkByTalkId(talkId)
@@ -94,7 +84,21 @@ public class EsTalkService {
         esTalkRepository.delete(esTalk);
     }
 
-    //TODO 조회수, 좋아요수 업데이트 프롬프트 완료 후 여기도 추가
+    public void updateHit(Long talkId, Long hit) {
+        final EsTalk esTalk = esTalkRepository
+            .findEsTalkByTalkId(talkId)
+            .orElseThrow(EsTalkNotFoundException::new);
+        esTalk.setHit(hit);
+        esTalkRepository.save(esTalk);
+    }
+
+    public void updateLikeCnt(Long talkId, Long likeCnt) {
+        final EsTalk esTalk = esTalkRepository
+            .findEsTalkByTalkId(talkId)
+            .orElseThrow(EsTalkNotFoundException::new);
+        esTalk.setLikeCnt(likeCnt);
+        esTalkRepository.save(esTalk);
+    }
 
     private Page<EsTalk> search(
         String keyword,
@@ -111,7 +115,6 @@ public class EsTalkService {
             pagedEsTalk = esTalkRepository
                 .findAll(pageable);
         }
-
         return pagedEsTalk;
     }
 
