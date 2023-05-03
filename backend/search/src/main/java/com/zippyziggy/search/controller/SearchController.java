@@ -58,7 +58,7 @@ public class SearchController {
                 crntMemberUuid, keyword, category, page, size, sort));
     }
 
-    @Operation(summary = "톡 검색", description = "톡을 검색한다.")
+    @Operation(summary = "톡 검색", description = "톡을 검색한다. keyword는 값이 없으면 빈 스트링으로 보낸다. (keyword=) 정렬 기준은 좋아요(likeCnt, 기본), 조회수(hit), 최신순(regDt)이다.")
     @ApiResponses({
         @ApiResponse(responseCode = "200", description = "성공"),
         @ApiResponse(responseCode = "400", description = "잘못된 요청"),
