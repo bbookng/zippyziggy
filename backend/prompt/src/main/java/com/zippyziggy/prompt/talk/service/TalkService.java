@@ -2,6 +2,8 @@ package com.zippyziggy.prompt.talk.service;
 
 import com.zippyziggy.prompt.common.kafka.KafkaProducer;
 import com.zippyziggy.prompt.prompt.client.MemberClient;
+import com.zippyziggy.prompt.prompt.dto.request.PromptCntRequest;
+import com.zippyziggy.prompt.prompt.dto.request.TalkCntRequest;
 import com.zippyziggy.prompt.prompt.dto.response.MemberResponse;
 import com.zippyziggy.prompt.prompt.dto.response.PromptCardResponse;
 import com.zippyziggy.prompt.prompt.exception.ForbiddenMemberException;
@@ -26,6 +28,11 @@ import com.zippyziggy.prompt.talk.repository.MessageRepository;
 import com.zippyziggy.prompt.talk.repository.TalkCommentRepository;
 import com.zippyziggy.prompt.talk.repository.TalkLikeRepository;
 import com.zippyziggy.prompt.talk.repository.TalkRepository;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
@@ -53,6 +60,8 @@ public class TalkService {
 	private final MessageRepository messageRepository;
 	private final TalkCommentRepository talkCommentRepository;
 	private final KafkaProducer kafkaProducer;
+
+	private static final String VIEWCOOKIENAME = "alreadyViewCookie";
 
 	// 은지가 짤거임, 지금 검색 안됨 그냥 전체 조회
 	public List<TalkListResponse> getTalkList(String crntMemberUuid) {
@@ -202,16 +211,83 @@ public class TalkService {
 		talkLikeRepository.findByTalk_IdAndMemberUuid(talkId, crntMemberUuid)
 				.orElseGet(() -> talkLikeRepository.save(talkLike));
 
+		talk.setLikeCnt(talk.getLikeCnt() + 1);
+		talkRepository.save(talk);
+
+		// Elasticsearch에 좋아요 수 반영
+		final TalkCntRequest talkCntRequest = new TalkCntRequest(talkId, talk.getLikeCnt());
+		kafkaProducer.sendTalkCnt("sync-talk-like-cnt", talkCntRequest);
+
 	}
 
 	public void unlikeTalk(Long talkId, UUID crntMemberUuid) {
+		final Talk talk = talkRepository.findById(talkId)
+			.orElseThrow(TalkNotFoundException::new);
 		final TalkLike oldTalkLike = talkLikeRepository.findByTalk_IdAndMemberUuid(talkId, crntMemberUuid)
 				.orElseThrow(TalkLikeNotFoundException::new);
 
 		talkLikeRepository.delete(oldTalkLike);
+
+		talk.setLikeCnt(talk.getLikeCnt() - 1);
+		talkRepository.save(talk);
+
+		// Elasticsearch에 좋아요 수 반영
+		final TalkCntRequest talkCntRequest = new TalkCntRequest(talkId, talk.getLikeCnt());
+		kafkaProducer.sendTalkCnt("sync-talk-like-cnt", talkCntRequest);
 	}
 
     public Long findCommentCnt(Long talkId) {
 		return talkCommentRepository.countAllByTalk_Id(talkId);
     }
+
+	public int updateHit(Long talkId, HttpServletRequest request, HttpServletResponse response) {
+
+		final Talk talk = talkRepository.findById(talkId).orElseThrow(TalkNotFoundException::new);
+
+		Cookie[] cookies = request.getCookies();
+		boolean checkCookie = false;
+		int result = 0;
+		if(cookies != null){
+			for (Cookie cookie : cookies) {
+				// 이미 조회를 한 경우 체크
+				if (cookie.getName().equals(VIEWCOOKIENAME+talkId)) checkCookie = true;
+
+			}
+			if(!checkCookie){
+				Cookie newCookie = createCookieForForNotOverlap(talkId);
+				response.addCookie(newCookie);
+				result = talkRepository.updateHit(talkId);
+			}
+		} else {
+			Cookie newCookie = createCookieForForNotOverlap(talkId);
+			response.addCookie(newCookie);
+			result = talkRepository.updateHit(talkId);
+		}
+
+		// Elasticsearch에 조회수 반영
+		final TalkCntRequest talkCntRequest = new TalkCntRequest(talkId, talk.getHit());
+		kafkaProducer.sendTalkCnt("sync-talk-hit", talkCntRequest);
+
+		return result;
+	}
+
+	/*
+	 * 조회수 중복 방지를 위한 쿠키 생성 메소드
+	 * @param cookie
+	 * @return
+	 * */
+	private Cookie createCookieForForNotOverlap(Long talkId) {
+		Cookie cookie = new Cookie(VIEWCOOKIENAME+talkId, String.valueOf(talkId));
+		cookie.setComment("조회수 중복 증가 방지 쿠키");    // 쿠키 용도 설명 기재
+		cookie.setMaxAge(getRemainSecondForTomorrow());     // 하루를 준다.
+		cookie.setHttpOnly(true);                // 서버에서만 조작 가능
+		return cookie;
+	}
+
+	// 다음 날 정각까지 남은 시간(초)
+	private int getRemainSecondForTomorrow() {
+		LocalDateTime now = LocalDateTime.now();
+		LocalDateTime tomorrow = LocalDateTime.now().plusDays(1L).truncatedTo(ChronoUnit.DAYS);
+		return (int) now.until(tomorrow, ChronoUnit.SECONDS);
+	}
 }

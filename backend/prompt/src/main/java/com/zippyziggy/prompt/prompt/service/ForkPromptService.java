@@ -76,11 +76,9 @@ public class ForkPromptService {
 	private List<PromptCardResponse> getForkedPromptResponses(Page<Prompt> forkedPrompts, @Nullable UUID crntMemberUuid) {
 		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 
-
 		List<PromptCardResponse> promptDtoList = forkedPrompts.stream().map(prompt -> {
 			MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid())
 				.orElseThrow(MemberNotFoundException::new), throwable -> null);
-
 
 			// 댓글, 포크 프롬프트의 포크 수, 대화 수 가져오기
 			long commentCnt = promptCommentRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
@@ -92,7 +90,7 @@ public class ForkPromptService {
 			boolean isBookmarked;
 
 			// 현재 로그인된 사용자가 아니면 기본값 false
-			if (crntMemberUuid.equals("defaultValue")) {
+			if (crntMemberUuid.toString().equals("defaultValue")) {
 				isBookmarked = false;
 				isLiked = false;
 			} else {

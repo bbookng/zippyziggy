@@ -3,8 +3,9 @@ package com.zippyziggy.prompt.common.kafka;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zippyziggy.prompt.prompt.dto.request.EsPromptRequest;
-import com.zippyziggy.prompt.talk.dto.request.EsTalkRequest;
 import com.zippyziggy.prompt.prompt.dto.request.PromptCntRequest;
+import com.zippyziggy.prompt.prompt.dto.request.TalkCntRequest;
+import com.zippyziggy.prompt.talk.dto.request.EsTalkRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -70,5 +71,13 @@ public class KafkaProducer {
         return talkId;
     }
 
-    //TODO Talk 좋아요수, 조회수
+    public Long sendTalkCnt(String topic, TalkCntRequest talkCntRequest) {
+        try {
+            String jsonInString = mapper.writeValueAsString(talkCntRequest);
+            kafkaTemplate.send(topic, jsonInString);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        return talkCntRequest.getTalkId();
+    }
 }

@@ -8,6 +8,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.zippyziggy.prompt.talk.model.Talk;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface TalkRepository extends JpaRepository<Talk, Long> {
 	Page<Talk> findAllByPromptPromptUuid(UUID promptUuid, Pageable pageable);
@@ -15,4 +18,8 @@ public interface TalkRepository extends JpaRepository<Talk, Long> {
 	long countAllByPromptPromptUuid(UUID promptUuid);
 
 	List<Talk> findAllByMemberUuid(UUID memberUuid);
+
+	@Modifying
+	@Query("update Talk set hit = hit + 1 where id = :talkId")
+	int updateHit(@Param(value = "talkId") Long talkId);
 }
