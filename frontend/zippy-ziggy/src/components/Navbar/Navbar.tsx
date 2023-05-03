@@ -106,8 +106,11 @@ const Navbar = ({ toggleTheme }) => {
         <NavUser>
           <FaRegBookmark className="item bookmark" />
           <FaRegBell className="item" />
-          <Link href={{ pathname: `/profile/${userState.userUuid}` }} style={{ display: 'flex' }}>
-            <ProfileImage src={userState.profileImg} alt="안녕" size={36} />
+          <Link
+            href={{ pathname: `/profile/${userState.userUuid}`, query: { mypage: true } }}
+            style={{ display: 'flex' }}
+          >
+            <ProfileImage src={userState.profileImg} alt="img" size={36} />
           </Link>
         </NavUser>
       ) : (

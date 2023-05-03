@@ -43,10 +43,11 @@ export default function Index() {
   const [nickname, setNickname] = useState('');
   const [profileImg, setProfileImg] = useState('');
   const router = useRouter();
-  const { userUuid } = router.query;
+  const { userUuid, mypage } = router.query;
   const paramUserUuid = typeof userUuid === 'string' ? userUuid : '';
+  const paramMypage = typeof mypage === 'string' ? mypage : '';
 
-  const handleUserAPI = async (uuid: string) => {
+  const handleUserAPI = async (uuid: string, page: string) => {
     const result = await getUserAPI(uuid);
     if (result?.result === 'SUCCESS') {
       setNickname(result?.nickname);
@@ -54,19 +55,23 @@ export default function Index() {
     }
     const bookmarkResult = await getPromptBookmarkAPI(uuid, 1);
     if (bookmarkResult?.result === 'SUCCESS') {
-      console.log(bookmarkResult);
+      bookmarkResult;
     }
     if (result?.result === 'FAIL') {
+      if (page) {
+        // 로그인 모달 띄우기
+        router.replace('/account/login');
+      }
       router.replace('/profile');
     }
   };
 
   // query undefine 없애기
   useEffect(() => {
-    if (userUuid) {
-      handleUserAPI(paramUserUuid);
+    if (userUuid && mypage) {
+      handleUserAPI(paramUserUuid, paramMypage);
     }
-  }, [userUuid]);
+  }, [userUuid, mypage]);
 
   // 로그아웃
   const handleLogout = async () => {

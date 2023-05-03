@@ -1,36 +1,48 @@
 // HOC/withAuth.jsx
+import { setBeforeUrl, setIsLoginModal } from '@/core/modal/modalSlice';
+import { useAppDispatch, useAppSelector } from '@/hooks/reduxHook';
 import Router from 'next/router';
 import { useEffect, useState } from 'react';
 import LoginModal from '../Modal/LoginModal';
+
 // the below function could be any of your custom implementation for verifying the token. I've added it as means of explanantion
 
 const WrappedComponent = (Component, ...props) => {
-  const [isLogin, setIsLogin] = useState(true);
+  const modalState = useAppSelector((state) => state.modal); // 유저정보
+  const [isModal, setIsModal] = useState(false);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const accessToken = localStorage.getItem('accessToken');
+
+    const handleRouteChange = (url) => {
+      // dispatch(setBeforeUrl(url));
+    };
+
     // if no accessToken was found,then we redirect to "/" page.
-    if (!accessToken) {
-      // Router.replace('/');
+    if (accessToken) {
+      setIsModal(false);
     } else {
-      // localStorage.removeItem('accessToken');
-      // Router.replace('/');
+      setIsModal(true);
+      dispatch(setBeforeUrl(window.location.href));
+      Router.events.on('routeChangeComplete', handleRouteChange);
     }
-  }, []);
+    return () => {
+      Router.events.off('routeChangeComplete', handleRouteChange);
+    };
+  }, [Router]);
 
   const handleBack = () => {
     Router.back();
   };
 
   return (
-    <div>
-      <LoginModal
-        isOpen={isLogin}
-        title="로그인이 필요합니다"
-        handleModalClose={() => handleBack()}
-      />
+    <>
       <Component {...props} />
-    </div>
+      {isModal ? (
+        <LoginModal title="로그인이 필요합니다" handleModalClose={() => handleBack()} />
+      ) : null}
+    </>
   );
 };
 
