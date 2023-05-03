@@ -96,7 +96,7 @@ public class ForkPromptService {
 			} else {
 				isBookmarked = promptBookmarkRepository.findByMemberUuidAndPrompt(crntMemberUuid, prompt) != null
 					? true : false;
-				isLiked =  promptLikeRepository.countAllByMemberUuidAndPrompt(crntMemberUuid, prompt) != null
+				isLiked =  promptLikeRepository.findByPromptAndMemberUuid(prompt, crntMemberUuid) != null
 					? true : false;
 			}
 

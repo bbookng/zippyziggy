@@ -215,7 +215,14 @@ public class PromptService{
 			MemberResponse originalMemberInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(originalMemberUuid)
 					.orElseThrow(MemberNotFoundException::new), throwable -> null);
 
+			UUID originPromptUuid = prompt.getOriginPromptUuid();
+
 			promptDetailResponse.setOriginer(originalMemberInfo.toOriginerResponse());
+			promptDetailResponse.setOriginPromptUuid(originPromptUuid);
+			promptDetailResponse.setOriginPromptTitle(promptRepository
+				.findByPromptUuid(originPromptUuid)
+				.orElseThrow(PromptNotFoundException::new)
+				.getTitle());
 		}
 
 		if (!crntMemberUuid.equals("defaultValue")) {

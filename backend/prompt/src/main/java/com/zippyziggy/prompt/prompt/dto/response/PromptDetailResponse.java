@@ -1,5 +1,7 @@
 package com.zippyziggy.prompt.prompt.dto.response;
 
+import java.util.UUID;
+
 import org.springframework.lang.Nullable;
 
 import lombok.AllArgsConstructor;
@@ -30,6 +32,8 @@ public class PromptDetailResponse {
 	private long regDt;
 	private long updDt;
 	private long hit;
+	private UUID originPromptUuid;
+	private String originPromptTitle;
 
 	private PromptMessageResponse messageResponse;
 
