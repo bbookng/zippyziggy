@@ -104,6 +104,56 @@ public class MemberController {
         return ResponseEntity.ok(redisUtils.get(key, String.class));
     }
 
+    /**
+     * refreshToken이 있는지 확인
+     */
+    @Operation(summary = "refreshToken으로 로그인되었는지 확인")
+    @GetMapping("/extension/login/check/refreshToken")
+    public ResponseEntity<?> loginCheckByRefreshToken(HttpServletRequest request) {
+        try {
+            // 기존 쿠키 확인해서 refreshToken 검증진행
+            Cookie[] myCookies = request.getCookies();
+            String refreshToken = null;
+            if (myCookies != null) {
+                for (Cookie myCookie : myCookies) {
+                    if (myCookie.getName().equals("refreshToken")) {
+                        refreshToken = myCookie.getValue();
+                        log.info("쿠키의 refreshToken = " + refreshToken);
+                        log.info("refreshToken 유효성 검증 진행 시작");
+                        jwtValidationService.validateRefreshToken(refreshToken);
+                        log.info("refreshToken 유효성 검증 진행 완료");
+                    }
+                }
+                log.info("쿠키에 refreshToken이 없습니다.");
+                return ResponseEntity.ok("로그인한 유저입니다.");
+            } else {
+                return ResponseEntity.ok("쿠키에 refreshToken이 없습니다. 로그인 된 유저가 아닙니다요.");
+            }
+
+        } catch (TokenExpiredException e) {
+            return new ResponseEntity<>("Refresh Token이 만료되었습니다", HttpStatus.UNAUTHORIZED);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Refresh Token이 유효하지 않습니다", HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    /**
+     * accessToken 유효성 검사 후 로그인되었는지 확인
+     */
+    @GetMapping(value = "/extension/login/check/accessToken", headers = "Authorization")
+    @Operation(summary = "accessToken으로 유효성 검사 후 로그인 체크", description = "Authorization Bearer로 accessToken을 보내면 유효성 검사 후 ok이면 로그인됨, 아니면 로그인된 유저가 아니거나 잘못된 토큰 요청")
+    public ResponseEntity<?> loginCheckByAccessToken() {
+        Member member = securityUtil.getCurrentMember();
+        if (member == null) {
+            return ResponseEntity.ok("로그인되지 않은 유저이거나 유효하지 않은 토큰 요청입니다.");
+        } else {
+            MemberInformResponseDto memberInformResponseDto = MemberInformResponseDto.builder()
+                    .userUuid(member.getUserUuid())
+                    .nickname(member.getNickname())
+                    .profileImg(member.getProfileImg()).build();
+            return ResponseEntity.ok(memberInformResponseDto + "로그인된 유저");
+        }
+    }
 
     /**
      * 멤버가 좋아요를 누름 프롬프트 조회
@@ -442,7 +492,6 @@ public class MemberController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
-
     public ResponseEntity<?> logout(@RequestParam(value = "redirect", required = false) String redirectUrl ,HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         // 기존 유저 찾아온 후 refreshToken 제거
