@@ -44,7 +44,7 @@ export default function ForkedPromptList({ promptUuid, size }: PropsType) {
       isStop.current = false;
       page.current = 0;
     };
-  }, []);
+  }, [promptUuid]);
 
   return (
     <Container>
@@ -55,7 +55,11 @@ export default function ForkedPromptList({ promptUuid, size }: PropsType) {
         })}
       </CardList>
       {isStop.current ? (
-        <div className="btnNone">불러올 프롬프트가 없습니다</div>
+        forkedPromptList.length > 0 ? (
+          <div className="btnNone" />
+        ) : (
+          <div className="btnNone">불러올 프롬프트가 없습니다</div>
+        )
       ) : (
         <div
           onClick={handleGetForkedPrompt}

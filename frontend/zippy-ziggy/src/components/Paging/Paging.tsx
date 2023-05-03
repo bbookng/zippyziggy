@@ -3,9 +3,9 @@ import Pagination from 'react-js-pagination';
 import { Container } from './PaginationStyle';
 
 interface PropsType {
-  page: number;
-  size: number;
-  totalCnt: number;
+  page?: number;
+  size?: number;
+  totalCnt?: number;
   setPage?: (e) => void;
 }
 

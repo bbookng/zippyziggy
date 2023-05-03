@@ -16,7 +16,6 @@ type PropsType = {
 export default function CommentList({ id, type, size }: PropsType) {
   const [totalCnt, setTotalCnt] = useState<number>(0);
   const [commentList, setCommentList] = useState([]);
-  // const myNickname =
 
   // GET 요청 변수
   const isStop = useRef<boolean>(false);
@@ -106,7 +105,7 @@ export default function CommentList({ id, type, size }: PropsType) {
       isStop.current = false;
       page.current = 0;
     };
-  }, []);
+  }, [id]);
 
   return (
     <Container>
@@ -125,7 +124,6 @@ export default function CommentList({ id, type, size }: PropsType) {
       {commentList.map((comment, index) => {
         return (
           <CommentItem
-            // eslint-disable-next-line react/no-array-index-key
             key={index}
             comment={comment}
             type={type}
@@ -135,7 +133,11 @@ export default function CommentList({ id, type, size }: PropsType) {
         );
       })}
       {isStop.current ? (
-        <div className="btnNone">불러올 댓글이 없습니다</div>
+        commentList.length > 0 ? (
+          <div className="btnNone" />
+        ) : (
+          <div className="btnNone">불러올 댓글이 없습니다</div>
+        )
       ) : (
         <div
           onClick={handleGetCommentList}

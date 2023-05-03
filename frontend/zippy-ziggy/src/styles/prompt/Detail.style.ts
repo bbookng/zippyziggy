@@ -6,7 +6,7 @@ const Container = styled.div`
   padding: 4rem 0 4rem 4rem;
 
   ${media.small`
-    padding: 1rem 1rem;
+    padding: 2rem 1rem;
   `}
 `;
 
@@ -28,6 +28,7 @@ const LeftContainer = styled.div`
 
     ${media.small`
       height: 150px;
+      /* object-fit: cover; */
     `}
   }
 `;
@@ -48,7 +49,11 @@ const TopBox = styled.div`
   flex-direction: column;
 `;
 
-const MoveTopBtn = styled.button`
+type MoveTopBtnType = {
+  scrollTop: boolean;
+};
+
+const MoveTopBtn = styled.button<MoveTopBtnType>`
   width: 40px;
   height: 40px;
   position: fixed;
@@ -61,6 +66,7 @@ const MoveTopBtn = styled.button`
   bottom: 3rem;
   right: 3rem;
   border-radius: 50%;
+  display: ${(props) => (props.scrollTop ? 'block' : 'none')};
 
   ${media.small`
     width: 30px;

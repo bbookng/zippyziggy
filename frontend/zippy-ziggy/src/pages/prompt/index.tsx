@@ -1,7 +1,7 @@
 import CreateFooter from '@/components/CreatePrompt/CreateFooter';
 import CreatePart1 from '@/components/CreatePrompt/CreatePrompt_1';
 import CreatePart2 from '@/components/CreatePrompt/CreatePrompt_2';
-import { createPrompt } from '@/core/prompt/promptAPI';
+import { createPrompt, testPrompt } from '@/core/prompt/promptAPI';
 import { useAppSelector } from '@/hooks/reduxHook';
 import { checkInputFormToast } from '@/lib/utils';
 import { ContainerTitle, TitleInfoWrapper, TitleWrapper } from '@/styles/prompt/Create.style';
@@ -28,11 +28,18 @@ const initialState = {
 
 export default function PromptCreate() {
   // isForked 인지 확인하면 로직 짜기!!!!!!!
-  const isForked = false;
   const [isNext, setIsNext] = useState<boolean>(false);
   const [preview, setPreview] = useState<string | null>(null);
   const router = useRouter();
   const { nickname } = useAppSelector((state) => state.user);
+  const [testContent, setTestContent] = useState<string | null>('위의 테스트 버튼을 눌러주세요!');
+  const [GPTIsLoading, setGPTIsLoading] = useState<boolean>(false);
+  const textList = [
+    'GPT에게 요청중입니다',
+    '잠시만 기다려주세요',
+    '최대 1분 이상 소요될 수 있습니다',
+  ];
+  const [text, setText] = useState<string>(textList[0]);
 
   // react-hook-form 설정
   const { setValue, getValues, watch } = useForm({
@@ -51,6 +58,29 @@ export default function PromptCreate() {
   useEffect(() => {
     watch();
   }, []);
+
+  // 프롬프트 테스트 요청
+  const handleTest = async () => {
+    setGPTIsLoading(true);
+    let i = 1;
+    const loadingText = setInterval(() => {
+      setText(textList[i % textList.length]);
+      i++;
+    }, 2000);
+    const requestData = {
+      prefix: prompt1,
+      example,
+      suffix: prompt2,
+    };
+    const test = await testPrompt(requestData);
+    setGPTIsLoading(false);
+    clearInterval(loadingText);
+    if (test.result === 'SUCCESS') {
+      setTestContent(test.data.apiResult.trim());
+    } else {
+      setTestContent('다시 테스트해주세요');
+    }
+  };
 
   // textarea 높이 변경
   const handleChange = (e, value) => {
@@ -89,7 +119,7 @@ export default function PromptCreate() {
 
   // 생성 요청
   const handleCreatePrompt = async () => {
-    handleCheck();
+    if (!handleCheck()) return;
     try {
       const data = {
         title,
@@ -144,6 +174,11 @@ export default function PromptCreate() {
           prompt1={prompt1}
           prompt2={prompt2}
           example={example}
+          possible
+          text={text}
+          testContent={testContent}
+          isLoading={GPTIsLoading}
+          handleTest={handleTest}
           handleChange={handleChange}
         />
       )}

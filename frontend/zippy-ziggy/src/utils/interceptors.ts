@@ -16,7 +16,10 @@ const tokenInterceptor = (instance: AxiosInstance) => {
       const axiosConfig = config;
       // 토큰을 얻어오는 함수
       const token = localStorage.getItem('accessToken');
-      axiosConfig.headers.Authorization = `Bearer ${token}`;
+      if (token) {
+        axiosConfig.headers.Authorization = `Bearer ${token}`;
+      }
+
       return axiosConfig;
     },
     (error: AxiosError) => Promise.reject(error.response)

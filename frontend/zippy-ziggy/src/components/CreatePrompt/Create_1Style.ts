@@ -98,6 +98,14 @@ const SubContainer = styled.div`
     font-weight: var(--fonts-heading);
   }
 
+  .testTitle {
+    display: flex;
+    align-items: center;
+    div {
+      margin-left: 0.5rem;
+    }
+  }
+
   .sentenceBox {
     display: flex;
     margin-block: 1rem;
@@ -119,6 +127,7 @@ const SubContainer = styled.div`
     .text {
       white-space: pre-wrap;
       padding-left: 0.5rem;
+      width: 100%;
     }
   }
 
@@ -157,4 +166,12 @@ const Textarea = styled.textarea`
   `}
 `;
 
-export { Container, LeftContainer, RightContainer, Textarea, SubContainer };
+const Loading = styled.div`
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+export { Container, LeftContainer, RightContainer, Textarea, SubContainer, Loading };

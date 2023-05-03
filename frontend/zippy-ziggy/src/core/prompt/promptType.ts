@@ -64,3 +64,9 @@ export type DeletePromptCommentType = {
   commentId: string | string[] | number;
   id: string | string[] | number;
 };
+
+export type TestPromptType = {
+  prefix: string | null;
+  example: string | null;
+  suffix: string | null;
+};
