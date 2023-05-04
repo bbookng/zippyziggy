@@ -5,6 +5,7 @@ import SortFilter from '@pages/content/components/PromptContainer/SortFilter';
 import { useMemo, useState } from 'react';
 import { Category, SearchResult, Sort } from '@pages/content/types';
 import {
+  CHAT_GPT_URL,
   CHROME_CATEGORY_KEY,
   CHROME_PAGE_KEY,
   CHROME_SEARCH_KEY,
@@ -88,7 +89,11 @@ const PromptContainer = () => {
           {/* <UserInfo /> */}
         </section>
         <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-
+        <a
+          href={`https://kauth.kakao.com/oauth/authorize?client_id=caeb5575d99036003c187adfadea9863&redirect_uri=${CHAT_GPT_URL}&response_type=code`}
+        >
+          테스트
+        </a>
         <section className="ZP_prompt-container__main">
           <div className="ZP_prompt-container__category-wrapper">
             <h2 className="ZP_prompt-container__search-info">
