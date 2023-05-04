@@ -34,13 +34,14 @@ public class PromptBookmarkRepositoryImpl implements PromptBookmarkCustomReposit
                 .distinct()
                 .where(qPromptBookmark.memberUuid.eq((memberUuid))
                         .and(qPrompt.statusCode.eq(StatusCode.OPEN)));
-
+        System.out.println("query = 뭐지??? 이게 안 받아지나???" + query);
         long totalCount = query.fetchCount();
+        System.out.println("totalCount = 이건/" + totalCount);
         List<Prompt> promptList = query.orderBy(qPromptBookmark.regDt.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-
+        System.out.println("promptList = 설마 이것도???" + promptList);
 
         return new PageImpl<>(promptList, pageable, totalCount);
 
