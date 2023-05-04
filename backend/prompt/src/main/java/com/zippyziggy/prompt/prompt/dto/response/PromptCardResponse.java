@@ -33,30 +33,30 @@ public class PromptCardResponse {
 	private Boolean isLiked;
 
 	public static PromptCardResponse from(MemberResponse writerInfo, Prompt prompt,
-		Long commentCnt, Long forkCnt, Long talkCnt,
-		Boolean isBookmarked, Boolean isLiked) {
+										  Long commentCnt, Long forkCnt, Long talkCnt,
+										  Boolean isBookmarked, Boolean isLiked) {
 
 		WriterResponse writer = writerInfo.toWriterResponse();
-
+		System.out.println("writer = " + writer);
 		long regDt = prompt.getRegDt().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
 		long updDt = prompt.getRegDt().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
 
 		PromptCardResponse response = PromptCardResponse.builder()
-			.promptUuid(prompt.getPromptUuid().toString())
-			.thumbnail(prompt.getThumbnail())
-			.title(prompt.getTitle())
-			.description(prompt.getDescription())
-			.writer(writer)
-			.likeCnt(prompt.getLikeCnt())
-			.commentCnt(commentCnt)
-			.forkCnt(forkCnt)
-			.talkCnt(talkCnt)
-			.regDt(regDt)
-			.updDt(updDt)
-			.isBookmarked(isBookmarked)
-			.isLiked(isLiked)
-			.hit(prompt.getHit())
-			.build();
+				.promptUuid(prompt.getPromptUuid().toString())
+				.thumbnail(prompt.getThumbnail())
+				.title(prompt.getTitle())
+				.description(prompt.getDescription())
+				.writer(writer)
+				.likeCnt(prompt.getLikeCnt())
+				.commentCnt(commentCnt)
+				.forkCnt(forkCnt)
+				.talkCnt(talkCnt)
+				.regDt(regDt)
+				.updDt(updDt)
+				.isBookmarked(isBookmarked)
+				.isLiked(isLiked)
+				.hit(prompt.getHit())
+				.build();
 
 		return response;
 	}

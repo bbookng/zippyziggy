@@ -435,7 +435,6 @@ public class PromptService{
 		} else {
 			throw new RatingAlreadyExistException();
 		}
-
 	}
 
 	/*
