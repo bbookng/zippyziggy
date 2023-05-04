@@ -13,7 +13,7 @@ import java.util.List;
 @FeignClient(name="prompt")
 public interface PromptClient {
     @GetMapping("/prompts/members/like/{crntMemberUuid}")
-    List<PromptCardResponse> getPromptsLike(@PathVariable("crntMemberUuid") String crntMemberUuid,
+    PromptCardListResponse getPromptsLike(@PathVariable("crntMemberUuid") String crntMemberUuid,
                                             @RequestParam("page") Integer page,
                                             @RequestParam("size") Integer size);
 
@@ -24,7 +24,7 @@ public interface PromptClient {
 
 
     @GetMapping("/prompts/members/profile/{crntMemberUuid}")
-    List<PromptCardResponse> getPrompts(@PathVariable("crntMemberUuid") String crntMemberUuid,
+    PromptCardListResponse getPrompts(@PathVariable("crntMemberUuid") String crntMemberUuid,
                                                 @RequestParam("page") Integer page,
                                                 @RequestParam("size") Integer size);
 }
