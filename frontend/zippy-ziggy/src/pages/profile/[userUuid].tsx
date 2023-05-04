@@ -125,6 +125,7 @@ export default function Index() {
             </Button>
 
             <IconButton
+              id="integrate"
               isRound
               display="inline-block"
               width="100%"

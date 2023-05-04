@@ -26,20 +26,17 @@ import Paragraph from '../Typography/Paragraph';
 //   return doc;
 // };
 
-const TalksBalloons = ({ messages, ...rest }: TalksBalloonsProps) => {
-  const userState = useAppSelector((state) => state.user);
+const TalksBalloons = ({ writerImg, messages, ...rest }: TalksBalloonsProps) => {
   return (
-    <StyledTalksContainer>
+    <div>
       <StyledTalksWrap>
         {messages.map((message, index) => (
-          <div className={message.role === 'yours' ? 'yours' : 'mine'} key={index}>
+          <div className={message.role === 'ASSISTANT' ? 'yours' : 'mine'} key={index}>
             <div className="messagesContainer">
               <div style={{ display: 'flex', alignItems: 'flex-start', padding: '8px 0px' }}>
                 <div style={{ width: 'fit-content' }}>
                   <ProfileImage
-                    src={
-                      message.role === 'yours' ? '\\images\\ChatGPT_logo.png' : userState.profileImg
-                    }
+                    src={message.role === 'ASSISTANT' ? '\\images\\ChatGPT_logo.png' : writerImg}
                     alt="안녕"
                     size={36}
                   />
@@ -56,7 +53,7 @@ const TalksBalloons = ({ messages, ...rest }: TalksBalloonsProps) => {
           </div>
         ))}
       </StyledTalksWrap>
-    </StyledTalksContainer>
+    </div>
   );
 };
 
