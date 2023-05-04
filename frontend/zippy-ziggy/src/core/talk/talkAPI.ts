@@ -163,22 +163,19 @@ export const deleteTalksLikeAPI = async (talkId: string) => {
  * @param talkId
  * @param page
  * @param size
- * @param sort
  * @returns
  */
-export const getTalksCommentsAPI = async (
-  talkId: string,
-  page?: number,
-  size?: number,
-  sort?: string[]
-) => {
+export const getTalksCommentsAPI = async (requestData: {
+  id: string | string[] | number;
+  page: number;
+  size: number;
+}) => {
   const queryParams = new URLSearchParams({
-    page: String(page),
-    size: String(size),
-    sort: sort.join(','),
+    page: String(requestData.page),
+    size: String(requestData.size),
   }).toString();
   try {
-    const res = await http.get(`/talks/${talkId}/like?${queryParams}`);
+    const res = await http.get(`/talks/${requestData.id}/comments?${queryParams}`);
     if (res.status === 200) {
       Toastify({
         text: message.CreatePromptSuccess,
@@ -226,33 +223,18 @@ export const postTalksCommentsAPI = async (talkId: string, content: string) => {
  * @param crntMemberUuid
  * @returns
  */
-export const getTalksAPI = async (talkId: string, crntMemberUuid = '') => {
+export const getTalksAPI = async (talkId: string) => {
   try {
-    if (crntMemberUuid === '') {
-      const res = await http.get(`/talks/${talkId}/comments`);
-      if (res.status === 200) {
-        Toastify({
-          text: message.CreatePromptSuccess,
-          duration: 1000,
-          position: 'center',
-          stopOnFocus: true,
-          style: toastifyCSS.success,
-        }).showToast();
-        return { result: 'SUCCESS', data: res.data };
-      }
-    }
-    if (crntMemberUuid) {
-      const res = await httpAuth.get(`/talks/${talkId}`);
-      if (res.status === 200) {
-        Toastify({
-          text: message.CreatePromptSuccess,
-          duration: 1000,
-          position: 'center',
-          stopOnFocus: true,
-          style: toastifyCSS.success,
-        }).showToast();
-        return { result: 'SUCCESS', data: res.data };
-      }
+    const res = await httpAuth.get(`/talks/${talkId}`);
+    if (res.status === 200) {
+      Toastify({
+        text: message.CreatePromptSuccess,
+        duration: 1000,
+        position: 'center',
+        stopOnFocus: true,
+        style: toastifyCSS.success,
+      }).showToast();
+      return { result: 'SUCCESS', data: res.data };
     }
     return { result: 'FAIL' };
   } catch (err) {

@@ -9,6 +9,7 @@ const Container = styled.div`
   grid-gap: 0.5rem;
   background-color: ${({ theme }) => theme.colors.navColor};
   margin-top: 0.5rem;
+  border-bottom: ${({ theme }) => `1px solid  ${theme.colors.blackColor10}`};
 `;
 
 const Item = styled.div`

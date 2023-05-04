@@ -1,5 +1,5 @@
 import { createPromptComment, getPromptCommentList } from '@/core/prompt/promptAPI';
-import { getTalkCommentList } from '@/core/talk/talkAPI';
+import { getTalkCommentList, getTalksCommentsAPI } from '@/core/talk/talkAPI';
 import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { checkInputFormToast } from '@/lib/utils';
@@ -45,7 +45,7 @@ export default function CommentList({ id, type, size }: PropsType) {
       if (type === 'prompt') {
         res = await getPromptCommentList(requestData);
       } else {
-        res = await getTalkCommentList(requestData);
+        res = await getTalksCommentsAPI(requestData);
       }
       if (res.result === 'SUCCESS') {
         setTotalCnt(res.data.commentCnt);
@@ -77,14 +77,16 @@ export default function CommentList({ id, type, size }: PropsType) {
 
     const requestData = { id, content };
 
-    const data = await createPromptComment(requestData);
+    if (type === 'prompt') {
+      const data = await createPromptComment(requestData);
 
-    if (data.result === 'SUCCESS') {
-      isStop.current = false;
-      setValue('content', '');
-      page.current = 0;
-      setCommentList([]);
-      handleGetCommentList();
+      if (data.result === 'SUCCESS') {
+        isStop.current = false;
+        setValue('content', '');
+        page.current = 0;
+        setCommentList([]);
+        handleGetCommentList();
+      }
     }
   };
 

@@ -7,6 +7,7 @@ const Container = styled.div`
 
   .time {
     font-size: var(--fonts-body-sm);
+    margin: 8px 0 12px 0;
     color: ${({ theme }) => theme.colors.blackColor30};
 
     ${media.small`
