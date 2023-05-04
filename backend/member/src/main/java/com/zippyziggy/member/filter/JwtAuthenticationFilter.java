@@ -1,14 +1,13 @@
 package com.zippyziggy.member.filter;
 
 import com.auth0.jwt.exceptions.JWTDecodeException;
-import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.zippyziggy.member.dto.response.JwtPayLoadResponseDto;
 import com.zippyziggy.member.model.JwtResponse;
-import com.zippyziggy.member.model.Member;
 import com.zippyziggy.member.service.JwtProviderService;
 import com.zippyziggy.member.service.JwtValidationService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -16,6 +15,7 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
+@Slf4j
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends GenericFilter {
 
@@ -26,25 +26,24 @@ public class JwtAuthenticationFilter extends GenericFilter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         // 헤더에서 JWT를 받아온다.
         String token = jwtProviderService.resolveToken((HttpServletRequest) request);
-        System.out.println("header token = " + token);
-
+        log.info("header token = " + token);
         if (token != null) {
             try {
                 // accessToken인지 refreshToken인지 확인
                 JwtPayLoadResponseDto jwtPayLoadResponseDto = jwtValidationService.checkToken(token);
                 String tokenType = jwtPayLoadResponseDto.getSub();
-                System.out.println("tokenType =  " + tokenType);
+                log.info("tokenType =  " + tokenType);
                 // accessToken인 경우
                 if (tokenType.equals("accessToken")) {
                     //유효한 access토큰인지 확인
                     JwtResponse jwtResponse = jwtValidationService.validateAccessToken(token);
-                    System.out.println("accessTokenJwtResponse = " + jwtResponse);
+                    log.info("accessTokenJwtResponse = " + jwtResponse);
                 }
                 // refreshToken인 경우
                 else {
                     //유효한 refresh토큰인지 확인
                     JwtResponse jwtResponse = jwtValidationService.validateRefreshToken(token);
-                    System.out.println("refreshTokenJwtResponse = " + jwtResponse);
+                    log.info("refreshTokenJwtResponse = " + jwtResponse);
                 }
 
                 // 토큰이 유효하면 토큰으로부터 유저 정보를 받아온다.
@@ -55,7 +54,7 @@ public class JwtAuthenticationFilter extends GenericFilter {
 
             } catch (JWTDecodeException e) {
 
-                System.out.println("e = " + e);
+                log.error("e = " + e);
                 JwtPayLoadResponseDto jwtPayLoadResponseDto = jwtValidationService.checkToken(token);
                 String tokenType = jwtPayLoadResponseDto.getSub();
                 request.setAttribute("tokenType", tokenType);
@@ -67,7 +66,7 @@ public class JwtAuthenticationFilter extends GenericFilter {
 
             } catch (TokenExpiredException e) {
 
-                System.out.println("e = " + e);
+                log.error("e = " + e);
                 JwtPayLoadResponseDto jwtPayLoadResponseDto = jwtValidationService.checkToken(token);
                 String tokenType = jwtPayLoadResponseDto.getSub();
                 request.setAttribute("tokenType", tokenType);

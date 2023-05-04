@@ -2,21 +2,18 @@ package com.zippyziggy.member.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTDecodeException;
-import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.zippyziggy.member.filter.User.CustomUserDetailService;
-import com.zippyziggy.member.model.JwtResponse;
 import com.zippyziggy.member.model.JwtToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.net.http.HttpRequest;
 import java.util.Date;
 import java.util.UUID;
 
@@ -118,5 +115,19 @@ public class JwtProviderService {
             UserDetails userDetails = customUserDetailService.loadUserByUsername(userUuid);
             return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
+
+    /**
+     * refreshToken으로 쿠키 설정 -> sameSite("None"), httpOnly("true"), secure("true"), maxAge(2주)
+     */
+    public ResponseCookie createSetCookie(String refreshToken) {
+        return ResponseCookie.from("refreshToken", refreshToken)
+                .path("/")
+                .sameSite("None")
+                .httpOnly(true)
+                .secure(true)
+                .maxAge(60 * 60 * 24 * 14)
+                .build();
+    }
+
 
 }
