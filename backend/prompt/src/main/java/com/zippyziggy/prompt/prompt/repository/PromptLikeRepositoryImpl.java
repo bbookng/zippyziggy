@@ -4,6 +4,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.zippyziggy.prompt.prompt.model.Prompt;
 import com.zippyziggy.prompt.prompt.model.QPrompt;
 import com.zippyziggy.prompt.prompt.model.QPromptLike;
+import com.zippyziggy.prompt.prompt.model.StatusCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -32,7 +33,8 @@ public class PromptLikeRepositoryImpl implements PromptLikeCustomRepository {
                 .orderBy(
                         qPromptLike.regDt.desc()
                 )
-                .where(qPromptLike.memberUuid.eq(memberUuid))
+                .where(qPromptLike.memberUuid.eq(memberUuid)
+                    .and(qPrompt.statusCode.eq(StatusCode.OPEN)))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

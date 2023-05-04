@@ -78,6 +78,9 @@ public class Prompt {
 	@Column(nullable = false, length = 10)
 	private Languages languages;
 
+	@Column(nullable = false)
+	private StatusCode statusCode;
+
 	public static Prompt from(PromptRequest data, UUID memberUuid, String thumbnailUrl) {
 
 		return Prompt.builder()
@@ -95,8 +98,8 @@ public class Prompt {
 				.hit(0)
 				.likeCnt(0L)
 				.thumbnail(thumbnailUrl)
+				.statusCode(StatusCode.OPEN)
 				.build();
-
 	}
 
 	public PromptDetailResponse toDetailResponse(boolean isLiked, boolean isBookmarked) {

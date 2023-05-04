@@ -4,6 +4,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.zippyziggy.prompt.prompt.model.Prompt;
 import com.zippyziggy.prompt.prompt.model.QPrompt;
 import com.zippyziggy.prompt.prompt.model.QPromptBookmark;
+import com.zippyziggy.prompt.prompt.model.StatusCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -32,7 +33,8 @@ public class PromptBookmarkRepositoryImpl implements PromptBookmarkCustomReposit
                         qPromptBookmark.regDt.desc()
                 )
                 .distinct()
-                .where(qPromptBookmark.memberUuid.eq(memberUuid))
+                .where(qPromptBookmark.memberUuid.eq(memberUuid)
+                    .and(qPrompt.statusCode.eq(StatusCode.OPEN)))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

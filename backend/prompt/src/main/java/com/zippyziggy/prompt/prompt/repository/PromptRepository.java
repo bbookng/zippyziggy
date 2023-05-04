@@ -1,10 +1,9 @@
 package com.zippyziggy.prompt.prompt.repository;
 
-import java.util.List;
+import com.zippyziggy.prompt.prompt.model.StatusCode;
 import java.util.Optional;
 import java.util.UUID;
 
-import com.zippyziggy.prompt.prompt.model.PromptReport;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -19,16 +18,11 @@ public interface PromptRepository extends JpaRepository<Prompt, Long> {
 	@Query("update Prompt set hit = hit + 1 where id = :promptId")
 	int updateHit(@Param(value = "promptId") Long promptId);
 
-	Optional<Prompt> findByPromptUuid(UUID promptUuid);
+	Optional<Prompt> findByPromptUuidAndStatusCode(UUID promptUuid, StatusCode statusCode);
 
-	Page<Prompt> findAllByOriginPromptUuid(UUID promptUuid, Pageable pageable);
+	Page<Prompt> findAllByOriginPromptUuidAndStatusCode(UUID promptUuid, StatusCode statusCode, Pageable pageable);
 
-	Page<Prompt> findAllByMemberUuid(UUID memberUuid, Pageable pageable);
+	Page<Prompt> findAllByMemberUuidAndStatusCode(UUID memberUuid, StatusCode statusCode, Pageable pageable);
 
-	List<Prompt> findAllByOriginPromptUuid(UUID promptUuid);
-
-	Long countAllByOriginPromptUuid(UUID promptUuid);
-
-
-//	List<Prompt> findAllByMemberUuid(UUID memberUuid);
+	Long countAllByOriginPromptUuidAndStatusCode(UUID promptUuid, StatusCode statusCode);
 }
