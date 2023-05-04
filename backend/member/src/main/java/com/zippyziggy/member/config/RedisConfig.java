@@ -20,31 +20,28 @@ public class RedisConfig {
     @Value("${spring.redis.port}")
     private int port;
 
-    @Value("${spring.redis.password}")
-    private String password;
+//    @Value("${spring.redis.password}")
+//    private String password;
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
 
-
-        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
-        redisStandaloneConfiguration.setHostName(host);
-        redisStandaloneConfiguration.setPort(port);
-        redisStandaloneConfiguration.setPassword(password);
-        return new LettuceConnectionFactory(redisStandaloneConfiguration);
-
+//        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
+//        redisStandaloneConfiguration.setHostName(host);
+//        redisStandaloneConfiguration.setPort(port);
+//        redisStandaloneConfiguration.setPassword(password);
+//        return new LettuceConnectionFactory(redisStandaloneConfiguration);
 
 //        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(host, port);
 //        redisStandaloneConfiguration.setPassword("zippyziggy");
 //
-//        RedisSentinelConfiguration redisSentinelConfiguration = new RedisSentinelConfiguration();
-//        redisSentinelConfiguration.master("mymaster")
-//                .sentinel("zippyziggy.kr", 26379)
-//                .sentinel("zippyziggy.kr", 26380)
-//                .sentinel("zippyziggy.kr", 26381)
-//                .setPassword("zippyziggy");
+        RedisSentinelConfiguration redisSentinelConfiguration = new RedisSentinelConfiguration();
+        redisSentinelConfiguration.master("mymaster")
+                .sentinel("zippyziggy.kr", 5000)
+                .sentinel("zippyziggy.kr", 5001)
+                .sentinel("zippyziggy.kr", 5002);
 
-//        return new LettuceConnectionFactory(redisSentinelConfiguration);
+        return new LettuceConnectionFactory(redisSentinelConfiguration);
     }
 
 

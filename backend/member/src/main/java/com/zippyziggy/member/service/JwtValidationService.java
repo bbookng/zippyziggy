@@ -9,6 +9,7 @@ import com.zippyziggy.member.dto.response.JwtPayLoadResponseDto;
 import com.zippyziggy.member.model.JwtResponse;
 import com.zippyziggy.member.model.Member;
 import com.zippyziggy.member.repository.MemberRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ import static com.auth0.jwt.JWT.require;
 /**
  * JWT 검증과 관련된 서비스
  */
+@Slf4j
 @Service
 public class JwtValidationService {
 
@@ -109,12 +111,12 @@ public class JwtValidationService {
             }
         } catch (TokenExpiredException e) {
 
-            System.out.println("만료된 토큰입니다." + e);
+            log.error("만료된 토큰" + e);
             throw new TokenExpiredException("만료된 토큰입니다.", Instant.now());
 
         } catch (Exception e) {
 
-            System.out.println("유효하지 않은 토큰입니다" + e);
+            log.error("유효하지 않은 토큰" + e);
             throw new JWTDecodeException(JwtResponse.REFRESH_TOKEN_MISMATCH.getJwtResponse());
 
         }
@@ -191,9 +193,7 @@ public class JwtValidationService {
         String s = data[1];
         String decode = new String(Base64Utils.decode(s.getBytes()));
         try {
-            JwtPayLoadResponseDto jwtPayLoadResponseDto = objectMapper.readValue(decode, JwtPayLoadResponseDto.class);
-
-            return jwtPayLoadResponseDto;
+            return objectMapper.readValue(decode, JwtPayLoadResponseDto.class);
         } catch (Exception e) {
             throw new JWTDecodeException("유효하지 않은 토큰입니다.");
         }
