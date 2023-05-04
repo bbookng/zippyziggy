@@ -392,10 +392,11 @@ public class PromptService{
 				.orElseThrow(MemberNotFoundException::new);
 		System.out.println("writerInfo = " + writerInfo);
 		Page<Prompt> prompts = promptBookmarkRepository.findAllPromptsByMemberUuid(UUID.fromString(crntMemberUuid), pageable);
-
+		System.out.println("prompts = " + prompts);
 		final long totalPromptsCnt = prompts.getTotalElements();
 		final int totalPageCnt = prompts.getTotalPages();
-
+		System.out.println("totalPageCnt = " + totalPageCnt);
+		System.out.println("totalPageCnt = " + totalPageCnt);
 		List<PromptCardResponse> promptCardResponses = new ArrayList<>();
 
 		for (Prompt prompt : prompts) {
@@ -410,10 +411,9 @@ public class PromptService{
 
 			PromptCardResponse promptCardResponse = PromptCardResponse.from(writerInfo, prompt, commentCnt, forkCnt, talkCnt, isBookmarded, isLiked);
 			promptCardResponses.add(promptCardResponse);
+			System.out.println("prompt = " + prompt);
+
 		}
-
-
-
 		return PromptCardListResponse.from(totalPromptsCnt, totalPageCnt, promptCardResponses);
 	}
 
