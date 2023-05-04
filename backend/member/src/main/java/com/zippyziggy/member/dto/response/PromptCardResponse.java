@@ -14,7 +14,7 @@ public class PromptCardResponse {
 	private String title;
 	private String description;
 
-	private MemberResponse writer;
+	private WriterResponse writer;
 	private Long likeCnt;
 	private Long commentCnt;
 	private Long forkCnt;
