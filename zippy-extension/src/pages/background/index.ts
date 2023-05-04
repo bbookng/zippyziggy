@@ -1,5 +1,6 @@
 import reloadOnUpdate from 'virtual:reload-on-update-in-background-script';
 import {
+  CHAT_GPT_URL,
   CHROME_CATEGORY_KEY,
   CHROME_PAGE_KEY,
   CHROME_SEARCH_KEY,
@@ -22,4 +23,22 @@ chrome.runtime.onStartup.addListener(() => {
   chrome.storage.local.remove(CHROME_SORT_KEY);
   chrome.storage.local.remove(CHROME_SEARCH_KEY);
   chrome.storage.local.remove(CHROME_PAGE_KEY);
+});
+
+let testId;
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === 'contentScriptReady') {
+    testId = sender.tab.id;
+  } else if (message.type === 'test' && testId) {
+    console.log(message);
+    const { token } = message.data;
+
+    // 탭 정보를 가져옵니다.
+    chrome.tabs.query({}, (tabs) => {
+      const gpt = tabs.find((tab) => tab.url.startsWith(CHAT_GPT_URL)).id;
+
+      // 지피티 사이트의 content script로 토큰을 전달합니다.
+      chrome.tabs.sendMessage(gpt, { type: 'test', token });
+    });
+  }
 });
