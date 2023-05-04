@@ -32,11 +32,9 @@ public class PromptCardResponse {
 	private Boolean isBookmarked;
 	private Boolean isLiked;
 
-	public static PromptCardResponse from(MemberResponse writerInfo, Prompt prompt,
+	public static PromptCardResponse from(WriterResponse writerInfo, Prompt prompt,
 		Long commentCnt, Long forkCnt, Long talkCnt,
 		Boolean isBookmarked, Boolean isLiked) {
-
-		WriterResponse writer = writerInfo.toWriterResponse();
 
 		long regDt = prompt.getRegDt().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
 		long updDt = prompt.getRegDt().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
@@ -46,7 +44,7 @@ public class PromptCardResponse {
 			.thumbnail(prompt.getThumbnail())
 			.title(prompt.getTitle())
 			.description(prompt.getDescription())
-			.writer(writer)
+			.writer(writerInfo)
 			.likeCnt(prompt.getLikeCnt())
 			.commentCnt(commentCnt)
 			.forkCnt(forkCnt)
