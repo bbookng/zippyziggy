@@ -15,11 +15,4 @@ public class WriterResponse {
 	private UUID writerUuid;
 	private String writerImg;
 	private String writerNickname;
-
-	public static WriterResponse from (MemberResponse memberResponse) {
-		return WriterResponse.builder()
-				.writerUuid(memberResponse.getUserUuid())
-				.writerImg(memberResponse.getProfileImg())
-				.writerNickname(memberResponse.getNickname()).build();
-	}
 }
