@@ -247,7 +247,7 @@ public class PromptController {
 
 	@Operation(hidden = true)
 	@GetMapping("/members/bookmark/{crntMemberUuid}")
-	public ResponseEntity<List<PromptCardResponse>> bookmarkPromptByMember(@PathVariable String crntMemberUuid,
+	public ResponseEntity<PromptCardListResponse> bookmarkPromptByMember(@PathVariable String crntMemberUuid,
 																		   @RequestParam("page") Integer page,
 																		   @RequestParam("size") Integer size) {
 		PageRequest pageRequest = PageRequest.of(page, size);
