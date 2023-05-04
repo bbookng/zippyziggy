@@ -1,5 +1,6 @@
 package com.zippyziggy.member.util;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zippyziggy.member.config.CustomModelMapper;
@@ -36,11 +37,14 @@ public class RedisUtils {
     // redis에서 내용 가져오기
     public <T> T get(String key, Class<T> clazz){
         Object object = redisTemplate.opsForValue().get(key);
-        System.out.println("object = " + object);
+        log.info("object = " + object);
+        log.info("object = " +  object.getClass().getName());
         if (object != null) {
             ObjectMapper objectMapper = new ObjectMapper();
             try {
-                return objectMapper.readValue(object.toString(), clazz);
+                T value = objectMapper.readValue((JsonParser) object, clazz);
+                log.info("value = " + value);
+                return value;
             } catch (Exception e) {
                 log.error("Redis 추출 에러 발생 = " + e);
                 return null;
