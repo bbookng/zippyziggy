@@ -17,7 +17,7 @@ import java.util.Locale;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class VisitedMemberCountService {
 
     private final VisitedMemberCountRepository visitedMemberCountRepository;
@@ -26,7 +26,7 @@ public class VisitedMemberCountService {
     /**
      * 일일 방문자 수
      */
-    public static String DateTimeDaily() {
+    public String DateTimeDaily() {
 
         ZoneId zoneId = ZoneId.of("Asia/Seoul");
         ZonedDateTime zonedDateTime = ZonedDateTime.now(zoneId);
@@ -42,8 +42,7 @@ public class VisitedMemberCountService {
 
 
     // 1분마다 총 방문자 수 저장
-    @Scheduled(cron = "0 1 * * * *")
-    @Transactional
+    @Scheduled(cron = "0 */1 * * * *")
     public void VisitedTotalCountMemberScheduler() {
 
         // 현재 DB에 있는 총 방문자 수 조회
@@ -84,8 +83,28 @@ public class VisitedMemberCountService {
             }
         }
 
-
-
-
+        // 일일 방문자 수 저장
+        VisitedMemberCount visitedMemberCount = visitedMemberCountRepository.findByNowDate(DateTimeDaily());
+        // 첫 방문자인지 확인
+        if (visitedMemberCount == null) {
+            // 첫 방문일 경우
+            if (redisUtils.isExists(DateTimeDaily())) {
+                // 방문한 사람이 있는 경우
+                VisitedMemberCount visitedMemberCountDaily = VisitedMemberCount.builder()
+                        .nowDate(DateTimeDaily())
+                        .visitedCount(redisUtils.getBitCount(DateTimeDaily())).build();
+                visitedMemberCountRepository.save(visitedMemberCountDaily);
+            } else {
+                // 오늘 하루 방문한 사람이 없는 경우
+                VisitedMemberCount visitedMemberCountDaily = VisitedMemberCount.builder()
+                        .nowDate(DateTimeDaily())
+                        .visitedCount(0L).build();
+                visitedMemberCountRepository.save(visitedMemberCountDaily);
+            }
+        } else {
+            // 아닐 경우 일일 방문자 갱신
+            visitedMemberCount.setVisitedCount(redisUtils.getBitCount(DateTimeDaily()));
+            visitedMemberCountRepository.save(visitedMemberCount);
+        }
     }
 }
