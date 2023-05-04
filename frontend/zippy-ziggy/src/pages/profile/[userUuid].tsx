@@ -13,6 +13,7 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { FiLink2 } from 'react-icons/fi';
 import IconButton from '@/components/Button/IconButton';
+import ProfilePromptList from '@/components/DetailPrompt/ProfilePromptList';
 
 const ProfileContainer = styled.div`
   width: 100%;
@@ -167,6 +168,7 @@ export default function Index() {
         >
           북마크
         </Button>
+        <ProfilePromptList userUuid={userUuid} size={4} />
       </ProfilePromptContainer>
     </ProfileContainer>
   );

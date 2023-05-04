@@ -48,7 +48,7 @@ export default function TalkComponent({ promptUuid, size }: PropsType) {
 
   return (
     <Container>
-      <div className="label">Talk 프롬프트를 사용해 대화한 목록({talkCnt})</div>
+      <div className="label">이 프롬프트를 사용한 대화({talkCnt})</div>
       <TalkListLayout talkList={talkList} columnList={[2, 2, 1]} />
       {isStop.current ? (
         talkList.length > 0 ? (

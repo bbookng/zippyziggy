@@ -19,6 +19,7 @@ interface PropsType {
   isBookmarked?: boolean;
   likeCnt: number;
   isMe: boolean;
+  type?: 'prompt' | 'talk';
   handleLike?: () => void;
   handleBookmark?: () => void;
   handleOpenDeleteModal?: () => void;
@@ -31,6 +32,7 @@ export default function PromptTitle({
   isBookmarked,
   likeCnt,
   isMe,
+  type = 'prompt',
   handleLike,
   handleBookmark,
   handleOpenDeleteModal,
@@ -74,13 +76,16 @@ export default function PromptTitle({
               )}
               <div className="likeCnt">{likeCnt}</div>
             </div>
-            <div className="bookmark">
-              {isBookmarked ? (
-                <FaBookmark onClick={handleBookmark} />
-              ) : (
-                <FaRegBookmark onClick={handleBookmark} />
-              )}
-            </div>
+            {type === 'prompt' ? (
+              <div className="bookmark">
+                {isBookmarked ? (
+                  <FaBookmark onClick={handleBookmark} />
+                ) : (
+                  <FaRegBookmark onClick={handleBookmark} />
+                )}
+              </div>
+            ) : null}
+
             {isMe && (
               <>
                 <FaEllipsisH
@@ -96,10 +101,12 @@ export default function PromptTitle({
                         <FaPencilAlt className="icon" />
                         수정
                       </div>
-                      <div onClick={handleOpenDeleteModal}>
-                        <FaTrash className="icon" />
-                        삭제
-                      </div>
+                      {type === 'prompt' ? (
+                        <div onClick={handleOpenDeleteModal}>
+                          <FaTrash className="icon" />
+                          삭제
+                        </div>
+                      ) : null}
                     </div>
                   </PopUp>
                 ) : null}

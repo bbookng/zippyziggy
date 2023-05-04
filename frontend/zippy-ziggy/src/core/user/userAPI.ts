@@ -159,3 +159,30 @@ export const getKakaoAPI = async (code: string) => {
     return err;
   }
 };
+
+/**
+ * 맴버가 생성한 프롬프트 조회
+ * @param id
+ * @param page
+ * @param size
+ * @returns
+ */
+export const getPromptsMemberAPI = async (requestData: {
+  id: string | string[] | number;
+  page: number;
+  size: number;
+}) => {
+  const queryParams = new URLSearchParams({
+    page: String(requestData.page),
+    size: String(requestData.size),
+  }).toString();
+  try {
+    const res = await http.get(`/members/prompts/profile/${requestData.id}?${queryParams}`);
+    if (res.status === 200) {
+      return { result: 'SUCCESS', data: res.data };
+    }
+    return { result: 'FAIL', data: res.data };
+  } catch (err) {
+    return { result: 'FAIL', data: err };
+  }
+};

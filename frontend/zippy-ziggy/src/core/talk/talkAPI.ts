@@ -116,17 +116,10 @@ export const postTalksAPI = async (talkData: PostTalkType) => {
  * 톡 좋아요
  * @returns { result: 'SUCCESS', data: res.data };
  */
-export const postTalksLikeAPI = async (talkId: string) => {
+export const postTalksLikeAPI = async (requestData: { talkId: string | string[] }) => {
   try {
-    const res = await httpAuth.post(`/talks/${talkId}/like`);
+    const res = await httpAuth.post(`/talks/${requestData.talkId}/like`);
     if (res.status === 200) {
-      Toastify({
-        text: message.CreatePromptSuccess,
-        duration: 1000,
-        position: 'center',
-        stopOnFocus: true,
-        style: toastifyCSS.success,
-      }).showToast();
       return { result: 'SUCCESS', data: res.data };
     }
     return { result: 'FAIL', data: res.data };
@@ -198,9 +191,13 @@ export const getTalksCommentsAPI = async (requestData: {
  * @param content
  * @returns
  */
-export const postTalksCommentsAPI = async (talkId: string, content: string) => {
+export const postTalksCommentsAPI = async (requestData: {
+  id: string | string[] | number;
+  content: string;
+}) => {
   try {
-    const res = await httpAuth.post(`/talks/${talkId}/comments`, { content });
+    const { content } = requestData;
+    const res = await httpAuth.post(`/talks/${requestData.id}/comments`, { content });
     if (res.status === 200) {
       Toastify({
         text: message.CreatePromptSuccess,
@@ -247,9 +244,11 @@ export const getTalksAPI = async (talkId: string) => {
  * @param talkId
  * @returns
  */
-export const deleteTalksAPI = async (talkId: string) => {
+export const deleteTalksAPI = async (reqeustData: { talkId: string | string[]; router }) => {
   try {
-    const res = await httpAuth.delete(`/talks/${talkId}/comments`);
+    const res = await httpAuth.delete(`/talks/${reqeustData.talkId}/comments`);
+    const { router } = reqeustData;
+    router.push(`/prompts`);
     if (res.status === 204) {
       Toastify({
         text: message.CreatePromptSuccess,
@@ -262,6 +261,13 @@ export const deleteTalksAPI = async (talkId: string) => {
     }
     return { result: 'FAIL' };
   } catch (err) {
+    Toastify({
+      text: message.DeletePromptFail,
+      duration: 1000,
+      position: 'center',
+      stopOnFocus: true,
+      style: toastifyCSS.fail,
+    }).showToast();
     return { result: 'FAIL', data: err };
   }
 };
