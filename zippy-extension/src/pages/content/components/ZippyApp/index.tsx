@@ -6,6 +6,8 @@ import ContentScript from '@pages/content/components/ZippyApp/ZippyApp';
 
 refreshOnUpdate('pages/content');
 
+const currentUrl = window.location.href;
+
 // 리액트의 root 심기
 const addRoot = () => {
   const root = document.createElement('div');
@@ -15,7 +17,32 @@ const addRoot = () => {
   createRoot(root).render(<ContentScript />);
 };
 
-if (window.location.href.includes(CHAT_GPT_URL)) {
+if (currentUrl.startsWith(CHAT_GPT_URL)) {
   addRoot();
 }
-injectScript();
+
+if (currentUrl.startsWith(CHAT_GPT_URL)) {
+  // ChatGPT 사이트에서 실행할 로직
+  injectScript();
+
+  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.type === 'test') {
+      console.log(message);
+    }
+  });
+}
+
+// if (currentUrl.startsWith(ZIPPY_SITE_URL)) {
+//   console.log('지피지기 kr 로직');
+//   const a = document.querySelector('h1');
+//   a.addEventListener('click', () => {
+//     console.log(1111);
+//     const token = localStorage.getItem('accessToken');
+//     chrome.runtime.sendMessage({
+//       type: 'test',
+//       data: {
+//         token,
+//       },
+//     });
+//   });
+// }
