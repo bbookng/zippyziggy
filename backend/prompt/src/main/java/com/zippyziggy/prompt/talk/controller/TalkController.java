@@ -34,13 +34,7 @@ public class TalkController {
 	private final TalkService talkService;
 	private final TalkCommentService talkCommentService;
 
-	@Operation(summary = "톡 목록 조회", description = "톡 목록을 전체 조회한다.")
 	@GetMapping("")
-	@ApiResponses({
-			@ApiResponse(responseCode = "200", description = "성공"),
-			@ApiResponse(responseCode = "400", description = "잘못된 요청"),
-			@ApiResponse(responseCode = "500", description = "서버 에러")
-	})
 	public ResponseEntity<List<TalkListResponse>> getTalkList(@RequestHeader String crntMemberuuid) {
 		return ResponseEntity.ok(talkService.getTalkList(crntMemberuuid));
 	}
