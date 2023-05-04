@@ -1,13 +1,11 @@
 package com.zippyziggy.prompt.talk.dto.response;
 
 import com.zippyziggy.prompt.prompt.dto.response.MemberResponse;
-import com.zippyziggy.prompt.prompt.dto.response.WriterResponse;
 import com.zippyziggy.prompt.talk.model.TalkComment;
+import java.time.ZoneId;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
-
-import java.time.ZoneId;
 
 @Data
 @Getter
