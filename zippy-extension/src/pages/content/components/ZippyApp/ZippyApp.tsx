@@ -9,42 +9,7 @@ import useScrollToTopButton from '@pages/hooks/content/useScrollToTopButton';
 export default function App() {
   const promptContainerPortal = usePromptListPortal();
   const inputWrapperPortal = useInputContainerPortal();
-  useScrollToTopButton(promptContainerPortal, inputWrapperPortal, ZP_TO_TOP_BUTTON_ID); // 이 부분을 추가하세요.
-
-  // /* 탑 버튼 관련 코드 */
-  // const targetElementRef = useRef(null);
-  //
-  // const onScroll = () => {
-  //   const toTopButton = document.querySelector(`#${ZP_TO_TOP_BUTTON_ID}`) as HTMLElement;
-  //   if (!toTopButton) return;
-  //   if (targetElementRef.current.scrollTop === 0) {
-  //     toTopButton.style.display = 'none';
-  //   } else {
-  //     toTopButton.style.display = 'block';
-  //   }
-  // };
-  //
-  // useEffect(() => {
-  //   const findTargetElement = () => {
-  //     const targetElement = document.querySelector("[class^='react-scroll-to-bottom--css']");
-  //     if (targetElement) {
-  //       // eslint-disable-next-line prefer-destructuring
-  //       targetElementRef.current = targetElement.children[0];
-  //
-  //       targetElementRef.current.addEventListener('scroll', onScroll);
-  //     } else {
-  //       setTimeout(findTargetElement, 500); // 요소를 찾지 못한 경우 0.5초 후 다시 시도
-  //     }
-  //   };
-  //
-  //   findTargetElement();
-  //
-  //   return () => {
-  //     if (targetElementRef.current) {
-  //       targetElementRef.current.removeEventListener('scroll', onScroll);
-  //     }
-  //   };
-  // }, [promptContainerPortal, inputWrapperPortal]);
+  useScrollToTopButton(promptContainerPortal, inputWrapperPortal, ZP_TO_TOP_BUTTON_ID);
 
   return (
     <div>
