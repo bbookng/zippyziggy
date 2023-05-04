@@ -50,10 +50,10 @@ public class VisitedMemberCountService {
 
             // 누적 방문자 수 업데이트
             // redis에 총 방문자 수가 있을 경우
-            if (redisUtils.isExists("totalMemberCount")) {
+            if (redisUtils.isExists("0000-00-00")) {
 
                 // redis에 저장되어 있는 총 방문자 수
-                Long totalCount = redisUtils.get("visitedTotalMemberCount", Long.class);
+                Long totalCount = redisUtils.get("0000-00-00", Long.class);
 
                 if (totalMemberCount == null) {
                     // DB에 방문자 수 기록이 없다면 바로 저장
@@ -65,7 +65,7 @@ public class VisitedMemberCountService {
                     // 있으면 최신 방문자수로 업데이트
                     totalMemberCount.setVisitedCount(totalCount);
                     visitedMemberCountRepository.save(totalMemberCount);
-                    redisUtils.put("visitedTotalMemberCount", totalMemberCount.getVisitedCount(), 60 * 11L);
+                    redisUtils.put("0000-00-00", totalMemberCount.getVisitedCount(), 60 * 11L);
                 }
             } else {
                 // redis에 내용이 없는 경우
@@ -80,7 +80,7 @@ public class VisitedMemberCountService {
                 } else {
                     // DB에 데이터가 있는데 Redis가 다운되었을 경우가 있음
                     // 이때는 DB의 총 조회 수를 업데이트 해준다.
-                    redisUtils.put("visitedTotalMemberCount", totalMemberCount.getVisitedCount(), 60 * 60 * 24L);
+                    redisUtils.put("0000-00-00", totalMemberCount.getVisitedCount(), 60 * 60 * 24L);
                 }
             }
             log.info("일일 방문자 수 저장 중...");
