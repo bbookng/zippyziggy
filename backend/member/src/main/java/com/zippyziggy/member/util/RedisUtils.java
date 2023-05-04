@@ -42,7 +42,8 @@ public class RedisUtils {
         if (object != null) {
             ObjectMapper objectMapper = new ObjectMapper();
             try {
-                T value = objectMapper.readValue((JsonParser) object, clazz);
+//                T value = objectMapper.readValue((String) object, clazz);
+                T value = objectMapper.convertValue(object, clazz);
                 log.info("value = " + value);
                 return value;
             } catch (Exception e) {
