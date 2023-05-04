@@ -1,7 +1,6 @@
 package com.zippyziggy.prompt.prompt.repository;
 
 import com.zippyziggy.prompt.prompt.model.PromptClick;
-import com.zippyziggy.prompt.prompt.model.StatusCode;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

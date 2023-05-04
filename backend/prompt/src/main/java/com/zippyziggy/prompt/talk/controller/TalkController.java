@@ -34,6 +34,7 @@ public class TalkController {
 	private final TalkService talkService;
 	private final TalkCommentService talkCommentService;
 
+	@GetMapping("")
 	public ResponseEntity<List<TalkListResponse>> getTalkList(@RequestHeader String crntMemberuuid) {
 		return ResponseEntity.ok(talkService.getTalkList(crntMemberuuid));
 	}
