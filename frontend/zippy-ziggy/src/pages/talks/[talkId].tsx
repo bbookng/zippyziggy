@@ -5,6 +5,7 @@ import PromptTitle from '@/components/DetailPrompt/PromptTitle';
 import SideBar from '@/components/DetailPrompt/SideBar';
 import Tab from '@/components/DetailPrompt/Tab';
 import TalkComponent from '@/components/DetailPrompt/TalkComponent';
+import TalkIntroduction from '@/components/DetailPrompt/TalkIntroduction';
 import Modal from '@/components/Modal/Modal';
 import { bookmarkPrompt, deletePrompt, getPromptDetail, likePrompt } from '@/core/prompt/promptAPI';
 import { getTalksAPI } from '@/core/talk/talkAPI';
@@ -154,7 +155,9 @@ export default function DetailPrompt() {
               </TopBox>
               <Tab itemList={itemList} tab={tab} handleIsSelected={handleIsSelectedTab} />
 
-              <section id="0">{/* <Introduction prompt={data.data} /> */}</section>
+              <section id="0">
+                <TalkIntroduction talk={data.data} />
+              </section>
               <section id="1">
                 <TalkComponent promptUuid={promptUuid} size={4} />
               </section>

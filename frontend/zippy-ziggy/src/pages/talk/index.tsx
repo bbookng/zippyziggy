@@ -76,6 +76,7 @@ const Index = () => {
           </div>
         </div> */}
         <TalksBalloons
+          writerImg={userState.profileImg}
           messages={[
             {
               role: 'yours',
