@@ -177,8 +177,8 @@ public class MemberController {
                                           @RequestParam("page") Integer page,
                                           @RequestParam("size") Integer size) {
         try {
-            List<PromptCardResponse> promptsBookmark = promptClient.getPromptsBookmark(crntMemberUuid, page, size);
-            if (promptsBookmark.size() == 0) {
+            PromptCardListResponse promptsBookmark = promptClient.getPromptsBookmark(crntMemberUuid, page, size);
+            if (promptsBookmark == null) {
                 return ResponseEntity.ok("북마크를 누른 프롬프트가 존재하지 않습니다.");
             }
             return ResponseEntity.ok(promptsBookmark);
