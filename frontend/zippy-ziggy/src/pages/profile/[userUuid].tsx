@@ -11,6 +11,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { FiLink2 } from 'react-icons/fi';
+import IconButton from '@/components/Button/IconButton';
 
 const ProfileContainer = styled.div`
   width: 100%;
@@ -85,6 +87,8 @@ export default function Index() {
     router.push('/account/modify');
   };
 
+  const handleGptBtn = () => {};
+
   return (
     <ProfileContainer>
       <ProfileHeaderContainer>
@@ -119,6 +123,22 @@ export default function Index() {
             >
               정보변경
             </Button>
+
+            <IconButton
+              isRound
+              display="inline-block"
+              width="100%"
+              color="linkColor"
+              padding="0 24px"
+              margin="8px 0 4px 0 "
+              onClick={handleGptBtn}
+            >
+              <FiLink2 className="icon" size="20" style={{ marginLeft: '8px' }} />
+              <span className="flex1" style={{ marginLeft: '8px' }}>
+                {' '}
+                GPT 계정 연동하기{' '}
+              </span>
+            </IconButton>
           </div>
         ) : null}
       </ProfileHeaderContainer>
