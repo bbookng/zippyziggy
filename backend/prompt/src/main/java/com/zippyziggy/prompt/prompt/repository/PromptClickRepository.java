@@ -8,6 +8,6 @@ import java.util.List;
 import java.util.UUID;
 
 public interface PromptClickRepository extends JpaRepository<PromptClick, Long> {
-    List<PromptClick> findTop5DistinctByMemberUuidAndPrompt_StatusCodeOrderByRegDtDesc(UUID memberUuid, StatusCode statusCode);
+    List<PromptClick> findTop5DistinctByMemberUuidAndPrompt_StatusCode_OpenOrderByRegDtDesc(UUID memberUuid);
 
 }

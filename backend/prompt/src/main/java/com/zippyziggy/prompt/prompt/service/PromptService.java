@@ -482,7 +482,7 @@ public class PromptService{
 					.orElseThrow(MemberNotFoundException::new);
 
 			List<PromptClick> promptClicks = promptClickRepository
-					.findTop5DistinctByMemberUuidAndPrompt_StatusCodeOrderByRegDtDesc(UUID.fromString(crntMemberUuid), StatusCode.OPEN);
+					.findTop5DistinctByMemberUuidAndPrompt_StatusCode_OpenOrderByRegDtDesc(UUID.fromString(crntMemberUuid));
 
 			List<Prompt> prompts = new ArrayList<>();
 			for (PromptClick promptClick: promptClicks) {
