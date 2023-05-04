@@ -32,16 +32,9 @@ public class RedisUtils {
     // redis에서 내용 가져오기
     public <T> T get(String key, Class<T> clazz) {
         Object object = redisTemplate.opsForValue().get(key);
-//        System.out.println("o = " + o);
-//        System.out.println("clazz = " + clazz);
+
         if (object != null) {
-//            if (o instanceof LinkedHashMap) {
-//                System.out.println("1111111111");
-//                return customModelMapper.strictMapper().map(o, clazz);
-//            } else {
-//                System.out.println("222222222222");
             return customModelMapper.strictMapper().map(object, clazz);
-//            }
         }
         return null;
     }
@@ -64,7 +57,16 @@ public class RedisUtils {
         } catch (NullPointerException e) {
             throw new NullPointerException("만료 시간이 설정되어 있지 않습니다.");
         }
+    }
 
+    // bitset 생성하기
+    public void setBitSet(String key) {
+
+    }
+
+    // 비트에 해당하는 결과값 가져오기
+    public Boolean getBitSet(String key, Long offset) {
+        return redisTemplate.opsForValue().getBit(key, offset);
     }
 
 }
