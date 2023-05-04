@@ -337,19 +337,21 @@ public class PromptService{
     /*
     로그인한 유저가 좋아요를 누른 프롬프트 조회하기, PromptCard 타입의 리스트 형식으로 응답
      */
-	public List<PromptCardResponse> likePromptsByMember (String crntMemberUuid, Pageable pageable) {
-		// 로그인한 유저 정보 가져오기
-		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
-		MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(UUID.fromString(crntMemberUuid)))
-				.orElseThrow(MemberNotFoundException::new);
+	public PromptCardListResponse likePromptsByMember (String crntMemberUuid, Pageable pageable) {
 
-		List<Prompt> prompts = promptLikeRepository.findAllPromptsByMemberUuid(UUID.fromString(crntMemberUuid), pageable);
+		Page<Prompt> prompts = promptLikeRepository.findAllPromptsByMemberUuid(UUID.fromString(crntMemberUuid), pageable);
+		final long totalPromptsCnt = prompts.getTotalElements();
+		final int totalPageCnt = prompts.getTotalPages();
 		List<PromptCardResponse> promptCardResponses = new ArrayList<>();
 
 		for (Prompt prompt: prompts) {
 			long commentCnt = promptCommentRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
 			long forkCnt = promptRepository.countAllByOriginPromptUuidAndStatusCode(prompt.getPromptUuid(), StatusCode.OPEN);
 			long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
+
+			CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
+			MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid()))
+					.orElseThrow(MemberNotFoundException::new);
 
 			// 좋아요, 북마크 여부
 			boolean isBookmarked = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid),prompt) != null
@@ -361,7 +363,7 @@ public class PromptService{
 			promptCardResponses.add(promptCardResponse);
 		}
 
-		return promptCardResponses;
+		return PromptCardListResponse.from(totalPromptsCnt, totalPageCnt, promptCardResponses);
 
 	}
 
@@ -389,11 +391,8 @@ public class PromptService{
 	public PromptCardListResponse bookmarkPromptByMember(String crntMemberUuid, Pageable pageable) {
 
 		Page<Prompt> prompts = promptBookmarkRepository.findAllPromptsByMemberUuid(UUID.fromString(crntMemberUuid), pageable);
-		System.out.println("prompts = " + prompts);
 		final long totalPromptsCnt = prompts.getTotalElements();
 		final int totalPageCnt = prompts.getTotalPages();
-		System.out.println("totalPageCnt = " + totalPageCnt);
-		System.out.println("totalPageCnt = " + totalPageCnt);
 		List<PromptCardResponse> promptCardResponses = new ArrayList<>();
 
 		for (Prompt prompt : prompts) {
@@ -405,7 +404,6 @@ public class PromptService{
 			MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid()))
 					.orElseThrow(MemberNotFoundException::new);
 
-			System.out.println("writerInfo = " + writerInfo);
 
 			boolean isBookmarded = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
 					? true : false;
@@ -414,7 +412,6 @@ public class PromptService{
 
 			PromptCardResponse promptCardResponse = PromptCardResponse.from(writerInfo, prompt, commentCnt, forkCnt, talkCnt, isBookmarded, isLiked);
 			promptCardResponses.add(promptCardResponse);
-			System.out.println("prompt = " + prompt);
 
 		}
 		return PromptCardListResponse.from(totalPromptsCnt, totalPageCnt, promptCardResponses);
@@ -514,19 +511,22 @@ public class PromptService{
 	/*
     memberUuid로 프롬프트 조회
      */
-	public List<PromptCardResponse> memberPrompts(String crntMemberUuid, Pageable pageable) {
-
-		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
-		MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(UUID.fromString(crntMemberUuid)))
-				.orElseThrow(MemberNotFoundException::new);
+	public PromptCardListResponse memberPrompts(String crntMemberUuid, Pageable pageable) {
 
 		Page<Prompt> prompts = promptRepository.findAllByMemberUuidAndStatusCode(UUID.fromString(crntMemberUuid), StatusCode.OPEN, pageable);
+		final long totalPromptsCnt = prompts.getTotalElements();
+		final int totalPageCnt = prompts.getTotalPages();
+
 		List<PromptCardResponse> promptCardResponses = new ArrayList<>();
 
 		for (Prompt prompt : prompts) {
 			long commentCnt = promptCommentRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
 			long forkCnt = promptRepository.countAllByOriginPromptUuidAndStatusCode(prompt.getPromptUuid(), StatusCode.OPEN);
 			long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
+
+			CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
+			MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid()))
+					.orElseThrow(MemberNotFoundException::new);
 
 			boolean isBookmarded = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
 					? true : false;
@@ -537,7 +537,7 @@ public class PromptService{
 			promptCardResponses.add(promptCardResponse);
 		}
 
-		return promptCardResponses;
+		return PromptCardListResponse.from(totalPromptsCnt, totalPageCnt, promptCardResponses);
 	}
 
     public GptApiResponse testGptApi(GptApiRequest data) {
