@@ -402,10 +402,8 @@ public class PromptService{
 			long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
 
 			CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
-			MemberResponse memberResponse = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid()))
+			MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid()))
 					.orElseThrow(MemberNotFoundException::new);
-
-			WriterResponse writerInfo = WriterResponse.from(memberResponse);
 
 			System.out.println("writerInfo = " + writerInfo);
 
