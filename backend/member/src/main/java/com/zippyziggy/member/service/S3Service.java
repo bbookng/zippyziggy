@@ -54,9 +54,7 @@ public class S3Service {
     public void deleteS3File(String fileName) throws Exception {
         String filePath = fileName.replace("https://zippyziggyimage.s3.ap-northeast-2.amazonaws.com/", "");
         boolean isObjectExist = amazonS3Client.doesObjectExist(bucket, filePath);
-        System.out.println("isObjectExist = " + isObjectExist);
         if (isObjectExist) {
-
             amazonS3Client.deleteObject(bucket, filePath);
         }
 

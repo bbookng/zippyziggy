@@ -8,7 +8,7 @@ import com.zippyziggy.member.model.Member;
 import com.zippyziggy.member.model.Platform;
 import com.zippyziggy.member.model.RoleType;
 import com.zippyziggy.member.repository.MemberRepository;
-//import com.zippyziggy.member.util.RedisUtils;
+import com.zippyziggy.member.util.RedisUtils;
 import com.zippyziggy.member.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class MemberService {
     private final S3Service s3Service;
     private final SecurityUtil securityUtil;
     private final KafkaProducer kafkaProducer;
-//    private final RedisUtils redisUtils;
+    private final RedisUtils redisUtils;
 
 
     /**
@@ -166,16 +166,16 @@ public class MemberService {
 //        member.setRefreshToken(null);
 
         // 기존에 있던 redis 정보 삭제
-//        String MemberKey = "member" + member.getUserUuid();
-//        String RefreshKey = "refreshToken" + member.getUserUuid();
-//
-//        if (redisUtils.isExists(MemberKey)) {
-//            redisUtils.delete(MemberKey);
-//        }
-//
-//        if (redisUtils.isExists(RefreshKey)) {
-//            redisUtils.delete(RefreshKey);
-//        }
+        String MemberKey = "member" + member.getUserUuid();
+        String RefreshKey = "refreshToken" + member.getUserUuid();
+
+        if (redisUtils.isExists(MemberKey)) {
+            redisUtils.delete(MemberKey);
+        }
+
+        if (redisUtils.isExists(RefreshKey)) {
+            redisUtils.delete(RefreshKey);
+        }
 
         s3Service.deleteS3File(member.getProfileImg());
 
@@ -186,7 +186,6 @@ public class MemberService {
      * 회원 수정
      */
     public Member updateProfile(String nickname, MultipartFile file, Member member) throws Exception {
-        System.out.println("file = " + file);
         // 닉네임만 바꿀 경우
         if (nickname != null && (file.isEmpty()) ) {
             member.setNickname(nickname);

@@ -33,6 +33,7 @@ import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.*;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.security.core.GrantedAuthority;
@@ -70,7 +71,6 @@ public class MemberController {
     private final JwtValidationService jwtValidationService;
     private final SecurityUtil securityUtil;
 
-    private final CircuitBreakerFactory circuitBreakerFactory;
     private final PromptClient promptClient;
     private final RedisUtils redisUtils;
 
@@ -81,12 +81,6 @@ public class MemberController {
             new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")));
     }
 
-    @Value("${spring.redis.host}")
-    private String host;
-
-    @Value("${spring.redis.port}")
-    private int port;
-
     /**
      * Redis 테스트
      */
@@ -96,19 +90,24 @@ public class MemberController {
         return ResponseEntity.ok("redis 테스트");
     }
 
+
     @GetMapping("/redis/get")
     public ResponseEntity<?> redisGet(@RequestParam String key) {
-        log.info(host);
-        log.info(String.valueOf(port));
         log.info(String.valueOf(redisUtils.getExpireTime(key)));
         return ResponseEntity.ok(redisUtils.get(key, String.class));
     }
+
 
     /**
      * refreshToken이 있는지 확인
      */
     @Operation(summary = "refreshToken으로 로그인되었는지 확인")
     @GetMapping("/extension/login/check/refreshToken")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
     public ResponseEntity<?> loginCheckByRefreshToken(HttpServletRequest request) {
         try {
             // 기존 쿠키 확인해서 refreshToken 검증진행
@@ -137,11 +136,17 @@ public class MemberController {
         }
     }
 
+
     /**
      * accessToken 유효성 검사 후 로그인되었는지 확인
      */
     @GetMapping(value = "/extension/login/check/accessToken", headers = "Authorization")
     @Operation(summary = "accessToken으로 유효성 검사 후 로그인 체크", description = "Authorization Bearer로 accessToken을 보내면 유효성 검사 후 ok이면 로그인됨, 아니면 로그인된 유저가 아니거나 잘못된 토큰 요청")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
     public ResponseEntity<?> loginCheckByAccessToken() {
         Member member = securityUtil.getCurrentMember();
         if (member == null) {
@@ -160,6 +165,11 @@ public class MemberController {
      */
     @GetMapping("/prompts/like/{crntMemberUuid}")
     @Operation(summary = "멤버의 좋아요 프롬프트 조회", description = "마이 프로필에서 좋아요한 프롬프트를 조회한다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
     public ResponseEntity<?> findPromptsLike(@PathVariable String crntMemberUuid,
                              @RequestParam("page") Integer page,
                              @RequestParam("size") Integer size, HttpServletRequest request) throws Exception {
@@ -180,6 +190,11 @@ public class MemberController {
      */
     @GetMapping("/prompts/bookmark/{crntMemberUuid}")
     @Operation(summary = "멤버의 북마크 프롬프트 조회", description = "마이 프로필에서 북마크한 프롬프트를 조회한다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
     public ResponseEntity<?> findPromptsBookmark(@PathVariable String crntMemberUuid,
                                           @RequestParam("page") Integer page,
                                           @RequestParam("size") Integer size, HttpServletRequest request) throws Exception {
@@ -199,6 +214,11 @@ public class MemberController {
      */
     @GetMapping("/prompts/profile/{crntMemberUuid}")
     @Operation(summary = "멤버가 생성한 프롬프트 조회", description = "마이 프로필에서 프롬프트 조회한다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
     public ResponseEntity<?> findPrompts(@PathVariable String crntMemberUuid,
                                           @RequestParam("page") Integer page,
                                           @RequestParam("size") Integer size, HttpServletRequest request) throws Exception {
@@ -259,10 +279,10 @@ public class MemberController {
         String platformId = kakaoUserInfo.getId();
         Member member = memberService.memberCheck(Platform.KAKAO, platformId);
 
-
         // DB에 해당 유저가 없다면 회원가입 진행, 없으면 로그인 진행
         // 회원가입을 위해서 일단 프런트로 회원 정보를 넘기고 회원가입 페이지로 넘어가게 해야 할 듯
         if (member == null || member.getActivate().equals(false)) {
+
             // 회원가입 요청 메세지
             SocialSignUpDataResponseDto socialSignUpDataResponseDto = SocialSignUpDataResponseDto.builder()
                     .name(kakaoUserInfo.getProperties().getNickname())
@@ -321,39 +341,37 @@ public class MemberController {
                 .userUuid(member.getUserUuid()).build();
 
 
-
         ///////////////////////////////레디스/////////////////////////////////
         // 기존에 있던 redis 정보 삭제
-//        String MemberKey = "member" + member.getUserUuid();
-//        String RefreshKey = "refreshToken" + member.getUserUuid();
-//
-//        if (redisUtils.isExists(MemberKey)) {
-//            redisUtils.delete(MemberKey);
-//        }
-//
-//        if (redisUtils.isExists(RefreshKey)) {
-//            redisUtils.delete(RefreshKey);
-//        }
-//
-//        // redis 설정(1. 유저 정보 저장 -> UUID나 AccessToken으로 회원 조회할 시 활용
-//        //           2. refreshToken 저장 -> accessToken 만료 시 DB가 아닌 Redis에서 먼저 찾아오기)
-//
-//        // 유저 정보 Redis에 저장
-//        redisUtils.put(MemberKey, memberInformResponseDto, 60 * 60 * 24 * 14L); // refreshToken의 만료시간과 동일하게 설정
-//        MemberInformResponseDto dto = redisUtils.get(MemberKey, MemberInformResponseDto.class);
-//        long expireTime = redisUtils.getExpireTime(MemberKey);
-//
-//        // RefreshToken Redis에 저장
-//        redisUtils.put(RefreshKey, jwtToken.getRefreshToken(), 60 * 60 * 24 * 14L);
-//        String redisRefreshToken = redisUtils.get(RefreshKey, String.class);
-//        long refreshExpireTime = redisUtils.getExpireTime(RefreshKey);
-//
-//        System.out.println("Redis dto 결과 = " + dto);
-//        System.out.println("Redis expireTime 결과 = " + expireTime);
-//        System.out.println("redisRefreshToken = " + redisRefreshToken);
-//        System.out.println("refreshExpireTime = " + refreshExpireTime);
-        ///////////////////////////////레디스/////////////////////////////////
+        String MemberKey = "member" + member.getUserUuid();
+        String RefreshKey = "refreshToken" + member.getUserUuid();
 
+        if (redisUtils.isExists(MemberKey)) {
+            redisUtils.delete(MemberKey);
+        }
+
+        if (redisUtils.isExists(RefreshKey)) {
+            redisUtils.delete(RefreshKey);
+        }
+
+        // redis 설정(1. 유저 정보 저장 -> UUID나 AccessToken으로 회원 조회할 시 활용
+        //           2. refreshToken 저장 -> accessToken 만료 시 DB가 아닌 Redis에서 먼저 찾아오기)
+
+        // 유저 정보 Redis에 저장
+        redisUtils.put(MemberKey, memberInformResponseDto, 60 * 60 * 24 * 14L); // refreshToken의 만료시간(2주)과 동일하게 설정
+        MemberInformResponseDto dto = redisUtils.get(MemberKey, MemberInformResponseDto.class);
+        long expireTime = redisUtils.getExpireTime(MemberKey);
+
+        // RefreshToken Redis에 저장
+        redisUtils.put(RefreshKey, jwtToken.getRefreshToken(), 60 * 60 * 24 * 14L);
+        String redisRefreshToken = redisUtils.get(RefreshKey, String.class);
+        long refreshExpireTime = redisUtils.getExpireTime(RefreshKey);
+
+        log.info("Redis dto 결과 = " + dto);
+        log.info("Redis expireTime 결과 = " + expireTime);
+        log.info("redisRefreshToken = " + redisRefreshToken);
+        log.info("refreshExpireTime = " + refreshExpireTime);
+        ///////////////////////////////레디스/////////////////////////////////
 
 
         return ResponseEntity.ok()
@@ -420,11 +438,6 @@ public class MemberController {
             }
         }
 
-        // 쿠키 설정
-//        Cookie cookie = new Cookie("refreshToken", jwtToken.getRefreshToken());
-//        cookie.setHttpOnly(true);
-//        cookie.setSecure(true);
-//        cookie.setMaxAge(60 * 60 * 24 * 14);
 
         ResponseCookie cookie = ResponseCookie.from("refreshToken", jwtToken.getRefreshToken())
                 .path("/")
@@ -445,39 +458,38 @@ public class MemberController {
                 .userUuid(member.getUserUuid()).build();
 
         ///////////////////////////////레디스/////////////////////////////////
-//        // 기존에 있던 redis 정보 삭제
-//        String MemberKey = "member" + member.getUserUuid();
-//        String RefreshKey = "refreshToken" + member.getUserUuid();
-//
-//        if (redisUtils.isExists(MemberKey)) {
-//            redisUtils.delete(MemberKey);
-//        }
-//
-//        if (redisUtils.isExists(RefreshKey)) {
-//            redisUtils.delete(RefreshKey);
-//        }
-//
-//        // redis 설정(1. 유저 정보 저장 -> UUID나 AccessToken으로 회원 조회할 시 활용
-//        //           2. refreshToken 저장 -> accessToken 만료 시 DB가 아닌 Redis에서 먼저 찾아오기)
-//
-//        // 유저 정보 Redis에 저장
-//        redisUtils.put(MemberKey, memberInformResponseDto, 60 * 60 * 24 * 14L); // refreshToken의 만료시간과 동일하게 설정
-//        MemberInformResponseDto dto = redisUtils.get(MemberKey, MemberInformResponseDto.class);
-//        long expireTime = redisUtils.getExpireTime(MemberKey);
-//
-//        // RefreshToken Redis에 저장
-//        redisUtils.put(RefreshKey, jwtToken.getRefreshToken(), 60 * 60 * 24 * 14L);
-//        String redisRefreshToken = redisUtils.get(RefreshKey, String.class);
-//        long refreshExpireTime = redisUtils.getExpireTime(RefreshKey)
-//
-//        System.out.println("Redis dto 결과 = " + dto);
-//        System.out.println("Redis expireTime 결과 = " + expireTime);
-//        System.out.println("redisRefreshToken = " + redisRefreshToken);
-//        System.out.println("refreshExpireTime = " + refreshExpireTime);
+        // 기존에 있던 redis 정보 삭제
+        String MemberKey = "member" + member.getUserUuid();
+        String RefreshKey = "refreshToken" + member.getUserUuid();
+
+        if (redisUtils.isExists(MemberKey)) {
+            redisUtils.delete(MemberKey);
+        }
+
+        if (redisUtils.isExists(RefreshKey)) {
+            redisUtils.delete(RefreshKey);
+        }
+
+        // redis 설정(1. 유저 정보 저장 -> UUID나 AccessToken으로 회원 조회할 시 활용
+        //           2. refreshToken 저장 -> accessToken 만료 시 DB가 아닌 Redis에서 먼저 찾아오기)
+
+        // 유저 정보 Redis에 저장
+        redisUtils.put(MemberKey, memberInformResponseDto, 60 * 60 * 24 * 14L); // refreshToken의 만료시간과 동일하게 설정
+        MemberInformResponseDto dto = redisUtils.get(MemberKey, MemberInformResponseDto.class);
+        long expireTime = redisUtils.getExpireTime(MemberKey);
+
+        // RefreshToken Redis에 저장
+        redisUtils.put(RefreshKey, jwtToken.getRefreshToken(), 60 * 60 * 24 * 14L);
+        String redisRefreshToken = redisUtils.get(RefreshKey, String.class);
+        long refreshExpireTime = redisUtils.getExpireTime(RefreshKey);
+
+        log.info("Redis dto 결과 = " + dto);
+        log.info("Redis expireTime 결과 = " + expireTime);
+        log.info("redisRefreshToken = " + redisRefreshToken);
+        log.info("refreshExpireTime = " + refreshExpireTime);
         ///////////////////////////////레디스/////////////////////////////////
 
         return ResponseEntity.ok()
-//                .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
                 .headers(headers)
                 .body(memberInformResponseDto);
     }
@@ -499,16 +511,16 @@ public class MemberController {
         member.setRefreshToken(null);
 
         // 기존에 있던 redis 정보 삭제
-//        String MemberKey = "member" + member.getUserUuid();
-//        String RefreshKey = "refreshToken" + member.getUserUuid();
-//
-//        if (redisUtils.isExists(MemberKey)) {
-//            redisUtils.delete(MemberKey);
-//        }
-//
-//        if (redisUtils.isExists(RefreshKey)) {
-//            redisUtils.delete(RefreshKey);
-//        }
+        String MemberKey = "member" + member.getUserUuid();
+        String RefreshKey = "refreshToken" + member.getUserUuid();
+
+        if (redisUtils.isExists(MemberKey)) {
+            redisUtils.delete(MemberKey);
+        }
+
+        if (redisUtils.isExists(RefreshKey)) {
+            redisUtils.delete(RefreshKey);
+        }
 
 
         // Kakao 계정도 함께 로그아웃 진행
@@ -659,7 +671,6 @@ public class MemberController {
                 for (Cookie myCookie : myCookies) {
                     if (myCookie.getName().equals("refreshToken")) {
                         refreshToken = myCookie.getValue();
-                        System.out.println("value = 여기닷@@@@@@@" + refreshToken);
                         jwtValidationService.validateRefreshToken(refreshToken);
                     }
                 }
@@ -668,16 +679,19 @@ public class MemberController {
             // 기존 유저 찾아오기
             Member member = jwtValidationService.findMemberByJWT(refreshToken);
             String accessToken = jwtProviderService.createAccessToken(member.getUserUuid());
-            System.out.println("accessToken = 꺄울!!!!!!!" + accessToken);
+
             HttpHeaders new_headers = new HttpHeaders();
             new_headers.add("Authorization", accessToken);
+
             return ResponseEntity.ok()
                     .headers(new_headers)
                     .body("accessToken이 새로 발급되었습니다.");
 
         } catch (TokenExpiredException e) {
+
             return new ResponseEntity<>("Refresh Token이 만료되었습니다", HttpStatus.UNAUTHORIZED);
         } catch (Exception e) {
+
             return new ResponseEntity<>("Refresh Token이 유효하지 않습니다", HttpStatus.UNAUTHORIZED);
         }
     }
@@ -695,12 +709,12 @@ public class MemberController {
     })
     public ResponseEntity<MemberInformResponseDto> findMemberByUUID(@RequestParam UUID userUuid) throws Exception {
 
-//        if (redisUtils.isExists("member" + userUuid)) {
-//            System.out.println("redis 실행");
-//            MemberInformResponseDto memberInformResponseDto = redisUtils.get("member" + userUuid, MemberInformResponseDto.class);
-//            return new ResponseEntity<>(memberInformResponseDto, HttpStatus.OK);
-//        } else {
-//            System.out.println("DB 실행");
+        if (redisUtils.isExists("member" + userUuid)) {
+            log.info("redis 실행");
+            MemberInformResponseDto memberInformResponseDto = redisUtils.get("member" + userUuid, MemberInformResponseDto.class);
+            return new ResponseEntity<>(memberInformResponseDto, HttpStatus.OK);
+        } else {
+            log.info("DB 실행");
             Member member = memberRepository.findByUserUuid(userUuid).orElseThrow(MemberNotFoundException::new);
 
             MemberInformResponseDto memberInformResponseDto = MemberInformResponseDto.builder()
@@ -708,7 +722,7 @@ public class MemberController {
                     .profileImg(member.getProfileImg())
                     .userUuid(member.getUserUuid()).build();
             return new ResponseEntity<>(memberInformResponseDto, HttpStatus.OK);
-//        }
+        }
         }
 
 
@@ -723,18 +737,10 @@ public class MemberController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
-    public ResponseEntity<MemberInformResponseDto> findProfile() throws Exception {
-
-        // 기존 유저 찾아오기
-        Member member = securityUtil.getCurrentMember();
-
-        MemberInformResponseDto memberInformResponseDto = MemberInformResponseDto.builder()
-                .nickname(member.getNickname())
-                .profileImg(member.getProfileImg())
-                .userUuid(member.getUserUuid()).build();
-
-        return new ResponseEntity<>(memberInformResponseDto, HttpStatus.OK);
+    public ResponseEntity<MemberInformResponseDto> findProfile() {
+        return new ResponseEntity<>(securityUtil.getCurrentMemberInformResponseDto(), HttpStatus.OK);
     }
+
 
     /**
      * 회원 정보 수정
@@ -753,8 +759,6 @@ public class MemberController {
         // 기존 유저 찾아오기
         Member member = securityUtil.getCurrentMember();
 
-        System.out.println("file = " + file);
-
         // 회원 정보 수정
         Member updateMember = memberService.updateProfile(nickname, file, member);
 
@@ -766,12 +770,5 @@ public class MemberController {
         return new ResponseEntity<>(memberInformResponseDto, HttpStatus.OK);
     }
 
-    @GetMapping("/uuid/{uuid}")
-    public ResponseEntity<?> test(@PathVariable UUID uuid) {
-        Optional<Member> byUserUuidEquals = memberRepository.findByUserUuid(uuid);
-        System.out.println("byUserUuidEquals = 움하하" + byUserUuidEquals);
-
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
 
 }
