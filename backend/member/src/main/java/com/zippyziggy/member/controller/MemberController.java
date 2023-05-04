@@ -8,7 +8,9 @@ import com.zippyziggy.member.exception.MemberNotFoundException;
 import com.zippyziggy.member.model.JwtToken;
 import com.zippyziggy.member.model.Member;
 import com.zippyziggy.member.model.Platform;
+import com.zippyziggy.member.model.VisitedMemberCount;
 import com.zippyziggy.member.repository.MemberRepository;
+import com.zippyziggy.member.repository.VisitedMemberCountRepository;
 import com.zippyziggy.member.service.*;
 import com.zippyziggy.member.util.CookieUtils;
 import com.zippyziggy.member.util.RedisUtils;
@@ -48,6 +50,7 @@ public class MemberController {
     private final JwtValidationService jwtValidationService;
     private final RedisService redisService;
     private final VisitedMemberCountService visitedMemberCountService;
+    private final VisitedMemberCountRepository visitedMemberCountRepository;
 
     private final PromptClient promptClient;
 
@@ -64,19 +67,54 @@ public class MemberController {
     }
 
     /**
-     * Redis 테스트
+     * 누적 방문자수 조회
      */
-    @PostMapping("/redis/put")
-    public ResponseEntity<?> redisPut(@RequestBody String value) {
-        redisUtils.put("redistest", value, 100000L);
-        return ResponseEntity.ok("redis 테스트");
+    @Operation(summary = "누적 방문자수 조회", description = "누적 방문자수를 조회해서 보여준다.")
+    @GetMapping("/total/visited")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
+    public ResponseEntity<?> totalVisitedCount() {
+        String totalTempDate = "0000-00-00";
+        // 방문한 사람이 있을 경우 or Redis에 값이 있을 경우
+        if (redisUtils.isExists(totalTempDate)) {
+            Long totalVisitedCount = redisUtils.get(totalTempDate, Long.class);
+            return ResponseEntity.ok(TotalVisitedCount.builder()
+                    .totalTempDate(totalTempDate)
+                    .totalVisitedCount(totalVisitedCount).build());
+        } else {
+            VisitedMemberCount visitedMemberCount = visitedMemberCountRepository.findByNowDate(totalTempDate);
+            return ResponseEntity.ok(TotalVisitedCount.builder()
+                    .totalTempDate(totalTempDate)
+                    .totalVisitedCount(visitedMemberCount.getVisitedCount()).build());
+        }
     }
 
-
-    @GetMapping("/redis/get")
-    public ResponseEntity<?> redisGet(@RequestParam String key) {
-        log.info(String.valueOf(redisUtils.getExpireTime(key)));
-        return ResponseEntity.ok(redisUtils.get(key, String.class));
+    /**
+     * 일일 방문자수 조회
+     */
+    @Operation(summary = "일일 방문자수 조회", description = "일일 방문자수를 조회해서 보여준다.")
+    @GetMapping("/daily/visited")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
+    public ResponseEntity<?> dailyVisitedCount() {
+        String dateTimeDaily = visitedMemberCountService.DateTimeDaily();
+        if (redisUtils.isExists(dateTimeDaily)) {
+            Long dailyCount = redisUtils.get(dateTimeDaily, Long.class);
+            return ResponseEntity.ok(DailyVisitedCount.builder()
+                    .dailyVisitedCount(dailyCount)
+                    .dailyDate(dateTimeDaily).build());
+        } else {
+            VisitedMemberCount visitedMemberCount = visitedMemberCountRepository.findByNowDate(dateTimeDaily);
+            return ResponseEntity.ok(DailyVisitedCount.builder()
+                    .dailyVisitedCount(visitedMemberCount.getVisitedCount())
+                    .dailyDate(dateTimeDaily).build());
+        }
     }
 
 
