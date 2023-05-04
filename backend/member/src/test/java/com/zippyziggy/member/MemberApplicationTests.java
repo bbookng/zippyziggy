@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -41,4 +42,11 @@ class MemberApplicationTests {
 		MemberInformResponseDto dto = redisUtils.get("membera5026dad-70d0-4515-8e96-122415c6833d", MemberInformResponseDto.class);
 		System.out.println("dto = " + dto);
 	}
+
+	@Test
+	@Scheduled(cron = "0 1 * * * *")
+	public void testestest() {
+		System.out.println("꺄울");
+	}
+
 }

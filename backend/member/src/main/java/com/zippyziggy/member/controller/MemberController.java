@@ -47,6 +47,7 @@ public class MemberController {
     private final MemberService memberService;
     private final JwtValidationService jwtValidationService;
     private final RedisService redisService;
+    private final VisitedMemberCountService visitedMemberCountService;
 
     private final PromptClient promptClient;
 
@@ -294,6 +295,21 @@ public class MemberController {
         MemberInformResponseDto memberInformResponseDto = MemberInformResponseDto.from(member);
 
         ///////////////////////////////레디스/////////////////////////////////
+        String dateTimeDaily = visitedMemberCountService.DateTimeDaily();
+        // 방문한 사람이 있는지 확인
+        if (redisUtils.isExists(dateTimeDaily)) {
+            // 로그인한 유저가 오늘 방문했는지 확인
+            if (!redisUtils.getBitSet(dateTimeDaily, member.getId())) {
+                // 방문한 사람이 아니라면 방문 체크 및 전체 방문 수 1 증가
+                redisUtils.setBitSet(dateTimeDaily, member.getId());
+                redisUtils.increaseTotalVisitedCount();
+            }
+        } else {
+            // 첫 방문일 경우 일일 방문자수와 누적 방문자수 모두 생성
+            redisUtils.setBitSet(dateTimeDaily, member.getId());
+            redisUtils.increaseTotalVisitedCount();
+        }
+
         // 기존 redis 정보 삭제
         redisService.deleteRedisData(member.getUserUuid().toString());
 
@@ -366,6 +382,22 @@ public class MemberController {
         MemberInformResponseDto memberInformResponseDto = MemberInformResponseDto.from(member);
 
         ///////////////////////////////레디스/////////////////////////////////
+
+        String dateTimeDaily = visitedMemberCountService.DateTimeDaily();
+        // 방문한 사람이 있는지 확인
+        if (redisUtils.isExists(dateTimeDaily)) {
+            // 로그인한 유저가 오늘 방문했는지 확인
+            if (!redisUtils.getBitSet(dateTimeDaily, member.getId())) {
+                // 방문한 사람이 아니라면 방문 체크 및 전체 방문 수 1 증가
+                redisUtils.setBitSet(dateTimeDaily, member.getId());
+                redisUtils.increaseTotalVisitedCount();
+            }
+        } else {
+            // 첫 방문일 경우 일일 방문자수와 누적 방문자수 모두 생성
+            redisUtils.setBitSet(dateTimeDaily, member.getId());
+            redisUtils.increaseTotalVisitedCount();
+        }
+
         // 기존 redis 정보 삭제
         redisService.deleteRedisData(member.getUserUuid().toString());
 
@@ -454,6 +486,21 @@ public class MemberController {
             MemberSignUpResponseDto memberSignUpResponseDto = MemberSignUpResponseDto.builder()
                     .isSignUp(false)
                     .memberInformResponseDto(memberInformResponseDto).build();
+
+            String dateTimeDaily = visitedMemberCountService.DateTimeDaily();
+            // 방문한 사람이 있는지 확인
+            if (redisUtils.isExists(dateTimeDaily)) {
+                // 로그인한 유저가 오늘 방문했는지 확인
+                if (!redisUtils.getBitSet(dateTimeDaily, member.getId())) {
+                    // 방문한 사람이 아니라면 방문 체크 및 전체 방문 수 1 증가
+                    redisUtils.setBitSet(dateTimeDaily, member.getId());
+                    redisUtils.increaseTotalVisitedCount();
+                }
+            } else {
+                // 첫 방문일 경우 일일 방문자수와 누적 방문자수 모두 생성
+                redisUtils.setBitSet(dateTimeDaily, member.getId());
+                redisUtils.increaseTotalVisitedCount();
+            }
 
             // Redis에 refreshToken과 유저 정보 저장
             redisService.saveRedisData(member.getUserUuid().toString(), memberInformResponseDto, jwtToken.getRefreshToken());

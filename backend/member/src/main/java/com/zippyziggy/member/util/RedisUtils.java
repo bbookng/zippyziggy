@@ -4,11 +4,16 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zippyziggy.member.config.CustomModelMapper;
+import com.zippyziggy.member.model.VisitedMemberCount;
+import com.zippyziggy.member.repository.VisitedMemberCountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -17,7 +22,10 @@ import java.util.concurrent.TimeUnit;
 public class RedisUtils {
 
     private final RedisTemplate<String, Object> redisTemplate;
-    private final CustomModelMapper customModelMapper;
+    private final VisitedMemberCountRepository visitedMemberCountRepository;
+
+    @Resource(name = "redisTemplate")
+    private ValueOperations<String, String> valueOps;
 
     // redis에 key, value, expiration(초 단위) 값 입력하기
     public void put(String key, Object value, Long expirationTime) {
@@ -75,13 +83,34 @@ public class RedisUtils {
     }
 
     // bitset 생성하기
-    public void setBitSet(String key) {
-
+    public void setBitSet(String key, Long offset) {
+        redisTemplate.opsForValue().setBit(key, offset, true);
     }
 
     // 비트에 해당하는 결과값 가져오기
     public Boolean getBitSet(String key, Long offset) {
         return redisTemplate.opsForValue().getBit(key, offset);
+    }
+
+    // 비트 카운트 들고오기
+    public long getBitCount(String key) {
+        RedisTemplate<String, String> redisTemplate = (RedisTemplate<String, String>) valueOps.getOperations();
+        return redisTemplate.execute((RedisCallback<Long>) connection -> connection.bitCount(key.getBytes()));
+    }
+
+    // 전체 방문자수 1증가
+    public void increaseTotalVisitedCount() {
+        if (isExists("0000-00-00")) {
+            redisTemplate.opsForValue().increment("0000-00-00");
+        } else {
+            // 최초 방문자일 경우
+            VisitedMemberCount visitedMemberCount = visitedMemberCountRepository.findByNowDate("0000-00-00");
+            if (visitedMemberCount == null) {
+                put("0000-00-00", 1, 60 * 60L);
+            } else {
+                put("0000-00-00", visitedMemberCount.getVisitedCount() + 1, 60 * 60L);
+            }
+        }
     }
 
 }
