@@ -9,6 +9,8 @@ import com.zippyziggy.prompt.prompt.exception.ForbiddenMemberException;
 import com.zippyziggy.prompt.prompt.exception.MemberNotFoundException;
 import com.zippyziggy.prompt.prompt.exception.PromptNotFoundException;
 import com.zippyziggy.prompt.prompt.model.Prompt;
+import com.zippyziggy.prompt.prompt.model.PromptLike;
+import com.zippyziggy.prompt.prompt.model.StatusCode;
 import com.zippyziggy.prompt.prompt.repository.PromptBookmarkRepository;
 import com.zippyziggy.prompt.prompt.repository.PromptCommentRepository;
 import com.zippyziggy.prompt.prompt.repository.PromptLikeRepository;
@@ -75,8 +77,9 @@ public class TalkService {
 				Collectors.toList());
 		talk.setMessages(messageList);
 		if (data.getPromptUuid() != null) {
-			talk.setPrompt(promptRepository.findByPromptUuid(UUID.fromString(data.getPromptUuid()))
-					.orElseThrow(PromptNotFoundException::new));
+			talk.setPrompt(promptRepository
+				.findByPromptUuidAndStatusCode(UUID.fromString(data.getPromptUuid()), StatusCode.OPEN)
+				.orElseThrow(PromptNotFoundException::new));
 		}
 
 		// 생성 시 search 서비스에 Elasticsearch INSERT 요청
@@ -126,7 +129,7 @@ public class TalkService {
 
 	private PromptCardResponse getPromptCardResponse(String crntMemberUuid, Prompt originPrompt, MemberResponse originMember) {
 		long commentCnt = promptCommentRepository.countAllByPromptPromptUuid(originPrompt.getPromptUuid());
-		long forkCnt = promptRepository.countAllByOriginPromptUuid(originPrompt.getPromptUuid());
+		long forkCnt = promptRepository.countAllByOriginPromptUuidAndStatusCode(originPrompt.getPromptUuid(), StatusCode.OPEN);
 		long talkCnt = talkRepository.countAllByPromptPromptUuid(originPrompt.getPromptUuid());
 
 		// 좋아요, 북마크 여부
@@ -207,36 +210,43 @@ public class TalkService {
 	}
 
 	public void likeTalk(Long talkId, UUID crntMemberUuid) {
-		final Talk talk = talkRepository.findById(talkId)
-				.orElseThrow(TalkNotFoundException::new);
-		final TalkLike talkLike = TalkLike.from(talk, crntMemberUuid);
+		// 좋아요 상태
+		final Boolean talkLikeExist = talkLikeRepository.existsByTalk_IdAndMemberUuid(talkId, crntMemberUuid);
 
-		talkLikeRepository.findByTalk_IdAndMemberUuid(talkId, crntMemberUuid)
-				.orElseGet(() -> talkLikeRepository.save(talkLike));
-
-		talk.setLikeCnt(talk.getLikeCnt() + 1);
-		talkRepository.save(talk);
-
-		// Elasticsearch에 좋아요 수 반영
-		final TalkCntRequest talkCntRequest = new TalkCntRequest(talkId, talk.getLikeCnt());
-		kafkaProducer.sendTalkCnt("sync-talk-like-cnt", talkCntRequest);
-
-	}
-
-	public void unlikeTalk(Long talkId, UUID crntMemberUuid) {
-		final Talk talk = talkRepository.findById(talkId)
+		Talk talk = talkRepository.findById(talkId)
 			.orElseThrow(TalkNotFoundException::new);
-		final TalkLike oldTalkLike = talkLikeRepository.findByTalk_IdAndMemberUuid(talkId, crntMemberUuid)
-				.orElseThrow(TalkLikeNotFoundException::new);
 
-		talkLikeRepository.delete(oldTalkLike);
+		if (!talkLikeExist) {
+			// 톡 좋아요 조회
+			TalkLike talkLike = TalkLike.builder()
+				.talk(talk)
+				.memberUuid(crntMemberUuid)
+				.regDt(LocalDateTime.now()).build();
 
-		talk.setLikeCnt(talk.getLikeCnt() - 1);
-		talkRepository.save(talk);
+			// 톡 - 사용자 좋아요 관계 생성
+			talkLikeRepository.save(talkLike);
+
+			// 프롬프트 좋아요 개수 1 증가
+			talk.setLikeCnt(talk.getLikeCnt() + 1);
+			talkRepository.save(talk);
+
+		} else {
+
+			// 프롬프트 - 사용자 좋아요 취소
+			final TalkLike talkLike = talkLikeRepository
+				.findByTalk_IdAndMemberUuid(talkId, crntMemberUuid)
+				.orElseThrow(TalkNotFoundException::new);
+			talkLikeRepository.delete(talkLike);
+
+			// 프롬프트 좋아요 개수 1 감소
+			talk.setLikeCnt(talk.getLikeCnt() - 1);
+			talkRepository.save(talk);
+		}
 
 		// Elasticsearch에 좋아요 수 반영
 		final TalkCntRequest talkCntRequest = new TalkCntRequest(talkId, talk.getLikeCnt());
 		kafkaProducer.sendTalkCnt("sync-talk-like-cnt", talkCntRequest);
+
 	}
 
     public Long findCommentCnt(Long talkId) {

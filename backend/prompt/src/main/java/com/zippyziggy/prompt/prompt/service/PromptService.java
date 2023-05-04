@@ -3,7 +3,12 @@ package com.zippyziggy.prompt.prompt.service;
 import com.zippyziggy.prompt.common.aws.AwsS3Uploader;
 import com.zippyziggy.prompt.common.kafka.KafkaProducer;
 import com.zippyziggy.prompt.prompt.client.MemberClient;
-import com.zippyziggy.prompt.prompt.dto.request.*;
+import com.zippyziggy.prompt.prompt.dto.request.GptApiRequest;
+import com.zippyziggy.prompt.prompt.dto.request.PromptCntRequest;
+import com.zippyziggy.prompt.prompt.dto.request.PromptModifyRequest;
+import com.zippyziggy.prompt.prompt.dto.request.PromptRatingRequest;
+import com.zippyziggy.prompt.prompt.dto.request.PromptReportRequest;
+import com.zippyziggy.prompt.prompt.dto.request.PromptRequest;
 import com.zippyziggy.prompt.prompt.dto.response.GptApiResponse;
 import com.zippyziggy.prompt.prompt.dto.response.MemberResponse;
 import com.zippyziggy.prompt.prompt.dto.response.PromptCardResponse;
@@ -23,6 +28,7 @@ import com.zippyziggy.prompt.prompt.model.PromptClick;
 import com.zippyziggy.prompt.prompt.model.PromptLike;
 import com.zippyziggy.prompt.prompt.model.PromptReport;
 import com.zippyziggy.prompt.prompt.model.Rating;
+import com.zippyziggy.prompt.prompt.model.StatusCode;
 import com.zippyziggy.prompt.prompt.repository.PromptBookmarkRepository;
 import com.zippyziggy.prompt.prompt.repository.PromptClickRepository;
 import com.zippyziggy.prompt.prompt.repository.PromptCommentRepository;
@@ -34,6 +40,7 @@ import com.zippyziggy.prompt.talk.dto.response.PromptTalkListResponse;
 import com.zippyziggy.prompt.talk.dto.response.TalkListResponse;
 import com.zippyziggy.prompt.talk.repository.TalkRepository;
 import com.zippyziggy.prompt.talk.service.TalkService;
+import io.github.flashvayne.chatgpt.service.ChatgptService;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -43,10 +50,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
-
-import io.github.flashvayne.chatgpt.service.ChatgptService;
 import lombok.RequiredArgsConstructor;
-import org.apache.kafka.common.protocol.types.Field;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.data.domain.Page;
@@ -98,7 +102,9 @@ public class PromptService{
 	}
 
 	public PromptResponse modifyPrompt(UUID promptUuid, PromptModifyRequest data, UUID crntMemberUuid, MultipartFile thumbnail) {
-		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
+		Prompt prompt = promptRepository
+			.findByPromptUuidAndStatusCode(promptUuid, StatusCode.OPEN)
+			.orElseThrow(PromptNotFoundException::new);
 
 		if (!crntMemberUuid.equals(prompt.getMemberUuid())) {
 			throw new ForbiddenMemberException();
@@ -131,7 +137,9 @@ public class PromptService{
 
 	public int updateHit(UUID promptUuid, HttpServletRequest request, HttpServletResponse response) {
 
-		final Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
+		final Prompt prompt = promptRepository
+			.findByPromptUuidAndStatusCode(promptUuid, StatusCode.OPEN)
+			.orElseThrow(PromptNotFoundException::new);
 		final Long promptId = prompt.getId();
 
 		Cookie[] cookies = request.getCookies();
@@ -182,7 +190,9 @@ public class PromptService{
 	}
 
 	public PromptDetailResponse getPromptDetail(UUID promptUuid, @Nullable String crntMemberUuid) {
-		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
+		Prompt prompt = promptRepository
+			.findByPromptUuidAndStatusCode(promptUuid, StatusCode.OPEN)
+			.orElseThrow(PromptNotFoundException::new);
 		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 
 		boolean isLiked;
@@ -209,8 +219,10 @@ public class PromptService{
 
 		// 원본 id가 현재 프롬프트 아이디와 같지 않으면 포크된 프롬프트
 		if (prompt.isForked()) {
-			UUID originalMemberUuid = promptRepository.findByPromptUuid(prompt.getOriginPromptUuid())
-					.orElseThrow(PromptNotFoundException::new).getMemberUuid();
+			UUID originalMemberUuid = promptRepository
+				.findByPromptUuidAndStatusCode(prompt.getOriginPromptUuid(), StatusCode.OPEN)
+				.orElseThrow(PromptNotFoundException::new)
+				.getMemberUuid();
 
 			MemberResponse originalMemberInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(originalMemberUuid)
 					.orElseThrow(MemberNotFoundException::new), throwable -> null);
@@ -220,7 +232,7 @@ public class PromptService{
 			promptDetailResponse.setOriginer(originalMemberInfo.toOriginerResponse());
 			promptDetailResponse.setOriginPromptUuid(originPromptUuid);
 			promptDetailResponse.setOriginPromptTitle(promptRepository
-				.findByPromptUuid(originPromptUuid)
+				.findByPromptUuidAndStatusCode(originPromptUuid, StatusCode.OPEN)
 				.orElseThrow(PromptNotFoundException::new)
 				.getTitle());
 		}
@@ -237,7 +249,9 @@ public class PromptService{
 
 	public PromptTalkListResponse getPromptTalkList(UUID promptUuid, String crntMemberUuid, Pageable pageable) {
 		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
-		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
+		Prompt prompt = promptRepository
+			.findByPromptUuidAndStatusCode(promptUuid, StatusCode.OPEN)
+			.orElseThrow(PromptNotFoundException::new);
 		List<TalkListResponse> talkListResponses = talkService.getTalkListResponses(circuitBreaker, prompt,
 				crntMemberUuid, pageable);
 		return new PromptTalkListResponse(talkListResponses.size(), talkListResponses);
@@ -248,19 +262,21 @@ public class PromptService{
 	 */
 
 	public void removePrompt(String promptUuid, UUID crntMemberUuid) {
-		Prompt prompt = promptRepository.findByPromptUuid(UUID.fromString(promptUuid))
-				.orElseThrow(PromptNotFoundException::new);
+		Prompt prompt = promptRepository
+			.findByPromptUuidAndStatusCode(UUID.fromString(promptUuid), StatusCode.OPEN)
+			.orElseThrow(PromptNotFoundException::new);
 
 		if (!crntMemberUuid.equals(prompt.getMemberUuid())) {
 			throw new ForbiddenMemberException();
 		}
 
 		awsS3Uploader.delete("thumbnails/", prompt.getThumbnail());
+		prompt.setThumbnail(null);
+		prompt.setStatusCode(StatusCode.DELETED);
+		promptRepository.save(prompt);
 
 		// 삭제 시 search 서비스에 Elasticsearch DELETE 요청
 		kafkaProducer.sendDeleteMessage("delete-prompt-topic", promptUuid);
-
-		promptRepository.delete(prompt);
 	}
 
     /*
@@ -273,11 +289,12 @@ public class PromptService{
 		PromptLike promptLikeExist = likePromptExist(promptUuid, crntMemberUuid);
 
 		// 좋아요를 이미 한 상태일 경우
-		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
+		Prompt prompt = promptRepository
+			.findByPromptUuidAndStatusCode(promptUuid, StatusCode.OPEN)
+			.orElseThrow(PromptNotFoundException::new);
 
 		if (promptLikeExist == null) {
 			// 프롬프트 조회
-			System.out.println("prompt = " + prompt);
 
 			PromptLike promptLike = PromptLike.builder()
 					.prompt(prompt)
@@ -312,7 +329,9 @@ public class PromptService{
      */
 
 	private PromptLike likePromptExist(UUID promptUuid, String crntMemberUuid) {
-		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
+		Prompt prompt = promptRepository
+			.findByPromptUuidAndStatusCode(promptUuid, StatusCode.OPEN)
+			.orElseThrow(PromptNotFoundException::new);
 		PromptLike promptLike = promptLikeRepository.findByPromptAndMemberUuid(prompt, UUID.fromString(crntMemberUuid));
 		if (promptLike != null) {
 			return promptLike;
@@ -335,7 +354,7 @@ public class PromptService{
 
 		for (Prompt prompt: prompts) {
 			long commentCnt = promptCommentRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
-			long forkCnt = promptRepository.countAllByOriginPromptUuid(prompt.getPromptUuid());
+			long forkCnt = promptRepository.countAllByOriginPromptUuidAndStatusCode(prompt.getPromptUuid(), StatusCode.OPEN);
 			long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
 
 			// 좋아요, 북마크 여부
@@ -358,7 +377,9 @@ public class PromptService{
      */
 	public void bookmarkPrompt(UUID promptUuid, String crntMemberUuid) {
 
-		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
+		Prompt prompt = promptRepository
+			.findByPromptUuidAndStatusCode(promptUuid, StatusCode.OPEN)
+			.orElseThrow(PromptNotFoundException::new);
 		PromptBookmark promptBookmark = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt);
 		if (promptBookmark == null) {
 			promptBookmarkRepository.save(PromptBookmark.from(prompt, UUID.fromString(crntMemberUuid)));
@@ -381,7 +402,7 @@ public class PromptService{
 
 		for (Prompt prompt : prompts) {
 			long commentCnt = promptCommentRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
-			long forkCnt = promptRepository.countAllByOriginPromptUuid(prompt.getPromptUuid());
+			long forkCnt = promptRepository.countAllByOriginPromptUuidAndStatusCode(prompt.getPromptUuid(), StatusCode.OPEN);
 			long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
 
 			boolean isBookmarded = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
@@ -403,7 +424,9 @@ public class PromptService{
 		Rating ratingExist = ratingRepository.findByMemberUuidAndPromptPromptUuid(UUID.fromString(crntMemberUuid), promptUuid);
 
 		if (ratingExist == null) {
-			Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
+			Prompt prompt = promptRepository
+				.findByPromptUuidAndStatusCode(promptUuid, StatusCode.OPEN)
+				.orElseThrow(PromptNotFoundException::new);
 			Rating rating = Rating.from(UUID.fromString(crntMemberUuid), prompt, promptRatingRequest.getScore());
 			ratingRepository.save(rating);
 		} else {
@@ -427,7 +450,9 @@ public class PromptService{
 	public void promptReport(UUID promptUuid, String crntMemberUuid, PromptReportRequest promptReportRequest) throws Exception {
 		Long reportCnt = promptReportRepository.countAllByMemberUuidAndPrompt_PromptUuid(UUID.fromString(crntMemberUuid), promptUuid);
 		if (reportCnt <= 5 ) {
-			Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
+			Prompt prompt = promptRepository
+				.findByPromptUuidAndStatusCode(promptUuid, StatusCode.OPEN)
+				.orElseThrow(PromptNotFoundException::new);
 			PromptReport promptReport = PromptReport.from(UUID.fromString(crntMemberUuid), prompt, promptReportRequest.getContent());
 			promptReportRepository.save(promptReport);
 		} else {
@@ -457,7 +482,8 @@ public class PromptService{
 			MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(UUID.fromString(crntMemberUuid)))
 					.orElseThrow(MemberNotFoundException::new);
 
-			List<PromptClick> promptClicks = promptClickRepository.findTop5DistinctByMemberUuidOrderByRegDtDesc(UUID.fromString(crntMemberUuid));
+			List<PromptClick> promptClicks = promptClickRepository
+				.findTop5DistinctByMemberUuidAndPrompt_StatusCodeOrderByRegDtDesc(UUID.fromString(crntMemberUuid), StatusCode.OPEN);
 
 			List<Prompt> prompts = new ArrayList<>();
 			for (PromptClick promptClick: promptClicks) {
@@ -467,7 +493,7 @@ public class PromptService{
 
 			for (Prompt prompt : prompts) {
 				long commentCnt = promptCommentRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
-				long forkCnt = promptRepository.countAllByOriginPromptUuid(prompt.getPromptUuid());
+				long forkCnt = promptRepository.countAllByOriginPromptUuidAndStatusCode(prompt.getPromptUuid(), StatusCode.OPEN);
 				long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
 
 				boolean isBookmarded = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
@@ -492,12 +518,12 @@ public class PromptService{
 		MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(UUID.fromString(crntMemberUuid)))
 				.orElseThrow(MemberNotFoundException::new);
 
-		Page<Prompt> prompts = promptRepository.findAllByMemberUuid(UUID.fromString(crntMemberUuid), pageable);
+		Page<Prompt> prompts = promptRepository.findAllByMemberUuidAndStatusCode(UUID.fromString(crntMemberUuid), StatusCode.OPEN, pageable);
 		List<PromptCardResponse> promptCardResponses = new ArrayList<>();
 
 		for (Prompt prompt : prompts) {
 			long commentCnt = promptCommentRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
-			long forkCnt = promptRepository.countAllByOriginPromptUuid(prompt.getPromptUuid());
+			long forkCnt = promptRepository.countAllByOriginPromptUuidAndStatusCode(prompt.getPromptUuid(), StatusCode.OPEN);
 			long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
 
 			boolean isBookmarded = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null

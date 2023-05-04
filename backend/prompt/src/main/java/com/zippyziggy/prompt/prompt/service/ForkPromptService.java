@@ -1,6 +1,7 @@
 package com.zippyziggy.prompt.prompt.service;
 
 import com.zippyziggy.prompt.common.kafka.KafkaProducer;
+import com.zippyziggy.prompt.prompt.model.StatusCode;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -63,9 +64,9 @@ public class ForkPromptService {
 
 	public ForkedPromptListResponse getForkedPromptList(UUID promptUuid, Pageable pageable, String crntMemberUuid) {
 
-		Long forkPromptCnt = promptRepository.countAllByOriginPromptUuid(promptUuid);
+		Long forkPromptCnt = promptRepository.countAllByOriginPromptUuidAndStatusCode(promptUuid, StatusCode.OPEN);
 
-		Page<Prompt> forkedPrompts = promptRepository.findAllByOriginPromptUuid(promptUuid, pageable);
+		Page<Prompt> forkedPrompts = promptRepository.findAllByOriginPromptUuidAndStatusCode(promptUuid, StatusCode.OPEN, pageable);
 
 		// fork 프롬프트들 카드 정보 가져오는 메서드
 		List<PromptCardResponse> prompts = getForkedPromptResponses(forkedPrompts, UUID.fromString(crntMemberUuid));
@@ -82,7 +83,7 @@ public class ForkPromptService {
 
 			// 댓글, 포크 프롬프트의 포크 수, 대화 수 가져오기
 			long commentCnt = promptCommentRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
-			long forkCnt = promptRepository.countAllByOriginPromptUuid(prompt.getPromptUuid());
+			long forkCnt = promptRepository.countAllByOriginPromptUuidAndStatusCode(prompt.getPromptUuid(), StatusCode.OPEN);
 			long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
 
 			// 좋아요, 북마크 여부

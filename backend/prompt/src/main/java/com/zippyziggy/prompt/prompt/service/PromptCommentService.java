@@ -1,5 +1,6 @@
 package com.zippyziggy.prompt.prompt.service;
 
+import com.zippyziggy.prompt.prompt.model.StatusCode;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -59,7 +60,7 @@ public class PromptCommentService {
 	}
 
 	public PromptCommentResponse createPromptComment(UUID promptUuid, PromptCommentRequest data, UUID crntMemberUuid) {
-		Prompt prompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
+		Prompt prompt = promptRepository.findByPromptUuidAndStatusCode(promptUuid, StatusCode.OPEN).orElseThrow(PromptNotFoundException::new);
 
 		PromptComment promptComment = PromptComment.from(data, crntMemberUuid, prompt);
 		promptCommentRepository.save(promptComment);

@@ -15,7 +15,7 @@ import java.time.ZoneId;
 public class TalkCommentResponse {
 
     private Long commentId;
-    private WriterResponse writer;
+    private MemberResponse member;
     private long regDt;
     private long updDt;
     private String content;
@@ -27,7 +27,7 @@ public class TalkCommentResponse {
 
         return TalkCommentResponse.builder()
                 .commentId(comment.getId())
-                .writer(member.toWriterResponse())
+                .member(member)
                 .regDt(regDt)
                 .updDt(updDt)
                 .content(comment.getContent())
