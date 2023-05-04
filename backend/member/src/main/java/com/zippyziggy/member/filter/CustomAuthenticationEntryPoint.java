@@ -1,8 +1,5 @@
 package com.zippyziggy.member.filter;
 
-import com.zippyziggy.member.model.JwtResponse;
-import com.zippyziggy.member.service.JwtProviderService;
-import com.zippyziggy.member.service.JwtValidationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,8 +18,6 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         String exception = (String) request.getAttribute("exception");
-
-        System.out.println("exception = " + exception);
 
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setHeader(HttpHeaders.CONTENT_ENCODING, "UTF-8");

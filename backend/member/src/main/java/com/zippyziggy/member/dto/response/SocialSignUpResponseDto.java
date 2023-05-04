@@ -18,4 +18,10 @@ public class SocialSignUpResponseDto {
     private Boolean isSignUp;
     private SocialSignUpDataResponseDto socialSignUpDataResponseDto;
 
+    public static SocialSignUpResponseDto from(SocialSignUpDataResponseDto socialSignUpDataResponseDto) {
+        return SocialSignUpResponseDto.builder()
+                .isSignUp(true)
+                .socialSignUpDataResponseDto(socialSignUpDataResponseDto)
+                .build();
+    }
 }
