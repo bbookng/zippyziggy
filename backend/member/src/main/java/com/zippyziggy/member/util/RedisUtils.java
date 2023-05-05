@@ -1,9 +1,6 @@
 package com.zippyziggy.member.util;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zippyziggy.member.config.CustomModelMapper;
 import com.zippyziggy.member.model.VisitedMemberCount;
 import com.zippyziggy.member.repository.VisitedMemberCountRepository;
 import lombok.RequiredArgsConstructor;
