@@ -462,22 +462,27 @@ public class PromptService{
 			return null;
 		} else {
 
-			CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
-			MemberResponse writerInfo = getWriterInfo(UUID.fromString(crntMemberUuid));
 
 			List<PromptClick> promptClicks = promptClickRepository
 					.findTop5DistinctByMemberUuidAndPrompt_StatusCodeOrderByRegDtDesc(UUID.fromString(crntMemberUuid), StatusCode.OPEN);
 
+			// 해당 프롬프트 내용 가져오기
 			List<Prompt> prompts = new ArrayList<>();
 			for (PromptClick promptClick: promptClicks) {
 				prompts.add(promptClick.getPrompt());
 			}
+
 			List<PromptCardResponse> promptCardResponses = new ArrayList<>();
 
+			// PromptCardResponse Dto로 변환
 			for (Prompt prompt : prompts) {
 				long commentCnt = promptCommentRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
 				long forkCnt = promptRepository.countAllByOriginPromptUuidAndStatusCode(prompt.getPromptUuid(), StatusCode.OPEN);
 				long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
+
+				CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
+				MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getPromptUuid()))
+						.orElseThrow(MemberNotFoundException::new);
 
 				boolean isBookmarded = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
 						? true : false;
