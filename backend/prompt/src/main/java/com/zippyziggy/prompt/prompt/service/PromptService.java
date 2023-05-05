@@ -459,7 +459,6 @@ public class PromptService{
     최근 조회한 프롬프트 5개 조회
      */
 	public List<PromptCardResponse> recentPrompts(String crntMemberUuid) {
-		log.info("crntMemberUuid = " + crntMemberUuid);
 		if (crntMemberUuid.equals("defaultValue")) {
 			return null;
 		} else {
@@ -468,7 +467,6 @@ public class PromptService{
 			List<PromptClick> promptClicks = promptClickRepository
 					.findTop5DistinctByMemberUuidAndPrompt_StatusCodeOrderByRegDtDesc(UUID.fromString(crntMemberUuid), StatusCode.OPEN);
 
-			log.info("promptClicks =>>>" + promptClicks);
 
 			// 해당 프롬프트 내용 가져오기
 			List<Prompt> prompts = new ArrayList<>();
@@ -476,7 +474,6 @@ public class PromptService{
 				prompts.add(promptClick.getPrompt());
 			}
 
-			log.info("prompts =>>>> " + prompts);
 
 			List<PromptCardResponse> promptCardResponses = new ArrayList<>();
 
@@ -487,15 +484,7 @@ public class PromptService{
 				long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
 
 				CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
-				MemberResponse writerInfo;
-				try {
-					writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getPromptUuid()))
-							.orElseThrow(MemberNotFoundException::new);
-				} catch (NoFallbackAvailableException e) {
-					log.error("회원이 존재하지 않습니다.");
-					writerInfo = new MemberResponse();
-					log.info("writerInfo =>> " + writerInfo);
-				}
+				MemberResponse writerInfo = getWriterInfo(prompt.getMemberUuid());
 
 
 				boolean isBookmarded = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
@@ -504,10 +493,8 @@ public class PromptService{
 						? true : false;
 
 				PromptCardResponse promptCardResponse = PromptCardResponse.from(writerInfo, prompt, commentCnt, forkCnt, talkCnt, isBookmarded, isLiked);
-				log.info("promptCardResponse =>>> " + promptCardResponse);
 				promptCardResponses.add(promptCardResponse);
 			}
-			log.info("promptCardResponses =>>> " + promptCardResponses);
 			return promptCardResponses;
 		}
 	}
