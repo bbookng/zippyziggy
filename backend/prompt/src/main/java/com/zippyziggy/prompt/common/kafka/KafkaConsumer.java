@@ -1,12 +1,11 @@
 package com.zippyziggy.prompt.common.kafka;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zippyziggy.prompt.prompt.model.PromptBookmark;
+import com.zippyziggy.prompt.prompt.model.PromptClick;
 import com.zippyziggy.prompt.prompt.model.PromptComment;
 import com.zippyziggy.prompt.prompt.model.PromptLike;
 import com.zippyziggy.prompt.prompt.repository.PromptBookmarkRepository;
+import com.zippyziggy.prompt.prompt.repository.PromptClickRepository;
 import com.zippyziggy.prompt.prompt.repository.PromptCommentRepository;
 import com.zippyziggy.prompt.prompt.repository.PromptLikeRepository;
 import com.zippyziggy.prompt.talk.model.Talk;
@@ -16,16 +15,18 @@ import com.zippyziggy.prompt.talk.repository.TalkCommentRepository;
 import com.zippyziggy.prompt.talk.repository.TalkLikeRepository;
 import com.zippyziggy.prompt.talk.repository.TalkRepository;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
+import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
+@Transactional
+@RequiredArgsConstructor
 @Service
 @Slf4j
 public class KafkaConsumer {
@@ -36,32 +37,13 @@ public class KafkaConsumer {
     private final TalkRepository talkRepository;
     private final TalkLikeRepository talkLikeRepository;
     private final TalkCommentRepository talkCommentRepository;
-
-    public KafkaConsumer(PromptLikeRepository promptLikeRepository, PromptCommentRepository promptCommentRepository,
-        PromptBookmarkRepository promptBookmarkRepository, TalkRepository talkRepository,
-        TalkLikeRepository talkLikeRepository, TalkCommentRepository talkCommentRepository) {
-        this.promptLikeRepository = promptLikeRepository;
-        this.promptCommentRepository = promptCommentRepository;
-        this.promptBookmarkRepository = promptBookmarkRepository;
-        this.talkRepository = talkRepository;
-        this.talkLikeRepository = talkLikeRepository;
-        this.talkCommentRepository = talkCommentRepository;
-    }
+    private final PromptClickRepository promptClickRepository;
 
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @KafkaListener(topics = "delete-member-topic")
     public void deleteMember(String kafkaMessage) {
         log.info("Kafka Message: ->" + kafkaMessage);
-        //
-        // Map<Object, Object> map = new HashMap<>();
-        // ObjectMapper mapper = new ObjectMapper();
-        //
-        // try {
-        //     map = mapper.readValue(kafkaMessage, new TypeReference<Map<Object, Object>>() {
-        //     });
-        // } catch (JsonProcessingException ex) {
-        //     ex.printStackTrace();
-        // }
+
         UUID memberUuid = UUID.fromString(kafkaMessage);
 
         List<PromptLike> promptLikes = promptLikeRepository.findAllByMemberUuid(memberUuid);
@@ -70,6 +52,8 @@ public class KafkaConsumer {
         List<Talk> talkList = talkRepository.findAllByMemberUuid(memberUuid);
         List<TalkComment> talkComments = talkCommentRepository.findAllByMemberUuid(memberUuid);
         List<TalkLike> talkLikes = talkLikeRepository.findAllByMemberUuid(memberUuid);
+        List<PromptClick> promptClicks = promptClickRepository.findAllByMemberUuid(memberUuid);
+
 
         if (promptLikes != null) {
             promptLikes.stream().map(promptLike -> {promptLikeRepository.delete(promptLike);
@@ -104,6 +88,13 @@ public class KafkaConsumer {
         if (talkLikes != null) {
             talkLikes.stream().map(talkLike -> {talkLikeRepository.delete(talkLike);
             return "톡 좋아요 삭제 완료";
+            });
+        }
+
+        if (promptClicks != null) {
+            promptClicks.stream().map(promptClick -> {
+                promptClickRepository.delete(promptClick);
+            return "최근 본 프롬프트 삭제 완료";
             });
         }
 
