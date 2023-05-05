@@ -481,8 +481,14 @@ public class PromptService{
 				long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
 
 				CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
-				MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getPromptUuid()))
-						.orElseThrow(MemberNotFoundException::new);
+				MemberResponse writerInfo;
+				try {
+					writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getPromptUuid()))
+							.orElseThrow(MemberNotFoundException::new);
+				} catch (MemberNotFoundException e) {
+					writerInfo = new MemberResponse();
+				}
+
 
 				boolean isBookmarded = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
 						? true : false;

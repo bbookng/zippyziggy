@@ -22,14 +22,6 @@ public class KakaoLoginService {
     @Value("${kakao.client.id}")
     private String kakaoClientId;
 
-    // redirect_url
-    @Value("${kakao.redirect.uri}")
-    private String kakaoRedirectUri;
-
-    // logout_redirect_url
-    @Value("${kakao.logout.redirect.uri}")
-    private String kakaoLogoutRedirectUri;
-
     // json타입을 객체로 변환하기 위한 객체
     @Autowired
     private ObjectMapper objectMapper;
@@ -38,7 +30,7 @@ public class KakaoLoginService {
     private MemberRepository memberRepository;
 
     // code를 이용해 kakaoToken 가져오기
-    public String kakaoGetToken(String code) throws Exception {
+    public String kakaoGetToken(String code, String redirectUrl) throws Exception {
 
         // 요청 URL
         String kakaoTokenUri = "https://kauth.kakao.com/oauth/token";
@@ -47,10 +39,10 @@ public class KakaoLoginService {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", kakaoClientId);
-        body.add("redirect_uri", kakaoRedirectUri);
+        body.add("redirect_uri", redirectUrl);
         body.add("code", code);
 
-
+        // 카카오에 token 요청
         String token = WebClient.create()
                 .post()
                 .uri(kakaoTokenUri)
@@ -59,14 +51,13 @@ public class KakaoLoginService {
                 .body(BodyInserters.fromFormData(body))
                 .retrieve()
                 .bodyToMono(String.class)
-                .timeout(Duration.ofMillis(5000))
+                .timeout(Duration.ofMillis(5000000))
                 .blockOptional().orElseThrow(
                         () -> new RuntimeException("응답 시간을 초과하였습니다.")
                 );
 
+        // 객체로 전환
         KakaoTokenResponseDto kakaoTokenResponseDto = objectMapper.readValue(token, KakaoTokenResponseDto.class);
-
-//        System.out.println("kakaoTokenResponseDto = " + kakaoTokenResponseDto);
 
         return kakaoTokenResponseDto.getAccess_token();
     }
@@ -86,19 +77,18 @@ public class KakaoLoginService {
                 .header("Authorization", "Bearer " + kakaoAccessToken)
                 .retrieve()
                 .bodyToMono(String.class)
-                .timeout(Duration.ofMillis(5000))
+                .timeout(Duration.ofMillis(500000))
                 .blockOptional().orElseThrow(
                         () -> new RuntimeException("응답 시간을 초과하였습니다.")
                 );
 
-        KakaoUserInfoResponseDto kakaoUserInfoResponseDto = objectMapper.readValue(userInfo, KakaoUserInfoResponseDto.class);
-        return kakaoUserInfoResponseDto;
+        return objectMapper.readValue(userInfo, KakaoUserInfoResponseDto.class);
     }
 
 
     // 카카오계정과 함께 로그아웃
-    public void KakaoLogout() throws Exception {
-        String kakaoLogoutUrl = "https://kauth.kakao.com/oauth/logout?client_id=" + kakaoClientId + "&logout_redirect_uri=" + kakaoLogoutRedirectUri;
+    public void KakaoLogout(String redirectUrl) throws Exception {
+        String kakaoLogoutUrl = "https://kauth.kakao.com/oauth/logout?client_id=" + kakaoClientId + "&logout_redirect_uri=" + redirectUrl;
 
         WebClient.create()
                 .get()
