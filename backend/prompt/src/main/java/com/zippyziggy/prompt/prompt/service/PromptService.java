@@ -184,7 +184,7 @@ public class PromptService{
 	}
 
 	public PromptDetailResponse getPromptDetail(UUID promptUuid, @Nullable String crntMemberUuid) {
-		Prompt prompt = promptRepository
+		final Prompt prompt = promptRepository
 				.findByPromptUuidAndStatusCode(promptUuid, StatusCode.OPEN)
 				.orElseThrow(PromptNotFoundException::new);
 		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
@@ -214,12 +214,13 @@ public class PromptService{
 		// 원본 id가 현재 프롬프트 아이디와 같지 않으면 포크된 프롬프트
 		if (prompt.isForked()) {
 			UUID originalMemberUuid = promptRepository
-					.findByPromptUuidAndStatusCode(prompt.getOriginPromptUuid(), StatusCode.OPEN)
+					.findByOriginPromptUuid(prompt.getOriginPromptUuid())
 					.orElseThrow(PromptNotFoundException::new)
 					.getMemberUuid();
 
-			MemberResponse originalMemberInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(originalMemberUuid)
-					.orElseThrow(MemberNotFoundException::new), throwable -> null);
+			// 탈퇴한 사용자일 시에 예외를 던지지 않고, 빈 객체를 보내서 사용자 정보없음으로 표시할 수 있게 한다.
+			MemberResponse originalMemberInfo = circuitBreaker
+					.run(() -> memberClient.getMemberInfo(originalMemberUuid).orElseGet(MemberResponse::new));
 
 			UUID originPromptUuid = prompt.getOriginPromptUuid();
 
@@ -482,7 +483,7 @@ public class PromptService{
 					.orElseThrow(MemberNotFoundException::new);
 
 			List<PromptClick> promptClicks = promptClickRepository
-					.findTop5DistinctByMemberUuidAndPrompt_StatusCodeOrderByRegDtDesc(UUID.fromString(crntMemberUuid), StatusCode.OPEN.ordinal());
+					.findTop5DistinctByMemberUuidAndPrompt_StatusCodeOrderByRegDtDesc(UUID.fromString(crntMemberUuid), StatusCode.OPEN);
 
 			List<Prompt> prompts = new ArrayList<>();
 			for (PromptClick promptClick: promptClicks) {
