@@ -69,7 +69,7 @@ public class MemberController {
     /**
      * 누적 방문자수 조회
      */
-    @Operation(summary = "누적 방문자수 조회", description = "누적 방문자수를 조회해서 보여준다.")
+    @Operation(summary = "누적 방문자수 조회", description = "누적 방문자수를 조회해서 보여준다. 날짜는 0000-00-00으로 정의했다. 1분마다 DB에 저장해주는 Schedule도 포함")
     @GetMapping("/total/visited")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "성공"),
@@ -95,7 +95,7 @@ public class MemberController {
     /**
      * 일일 방문자수 조회
      */
-    @Operation(summary = "일일 방문자수 조회", description = "일일 방문자수를 조회해서 보여준다.")
+    @Operation(summary = "일일 방문자수 조회", description = "일일 방문자수를 조회해서 보여준다. 1분마다 DB에 저장하는 스케쥴 기능 포함")
     @GetMapping("/daily/visited")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "성공"),
@@ -340,13 +340,13 @@ public class MemberController {
             if (!redisUtils.getBitSet(dateTimeDaily, member.getId())) {
                 // 방문한 사람이 아니라면 방문 체크 및 전체 방문 수 1 증가
                 redisUtils.setBitSet(dateTimeDaily, member.getId());
-                redisUtils.setExpireTime(dateTimeDaily, 60 * 60 * 24);
+                redisUtils.setExpireTime(dateTimeDaily, 90);
                 redisUtils.increaseTotalVisitedCount();
             }
         } else {
             // 첫 방문일 경우 일일 방문자수와 누적 방문자수 모두 생성
             redisUtils.setBitSet(dateTimeDaily, member.getId());
-            redisUtils.setExpireTime(dateTimeDaily, 60 * 60 * 24);
+            redisUtils.setExpireTime(dateTimeDaily, 90);
             redisUtils.increaseTotalVisitedCount();
         }
 
@@ -430,13 +430,13 @@ public class MemberController {
             if (!redisUtils.getBitSet(dateTimeDaily, member.getId())) {
                 // 방문한 사람이 아니라면 방문 체크 및 전체 방문 수 1 증가
                 redisUtils.setBitSet(dateTimeDaily, member.getId());
-                redisUtils.setExpireTime(dateTimeDaily, 60 * 60 * 24);
+                redisUtils.setExpireTime(dateTimeDaily, 90);
                 redisUtils.increaseTotalVisitedCount();
             }
         } else {
             // 첫 방문일 경우 일일 방문자수와 누적 방문자수 모두 생성
             redisUtils.setBitSet(dateTimeDaily, member.getId());
-            redisUtils.setExpireTime(dateTimeDaily, 60 * 60 * 24);
+            redisUtils.setExpireTime(dateTimeDaily, 90);
             redisUtils.increaseTotalVisitedCount();
         }
 
@@ -536,13 +536,13 @@ public class MemberController {
                 if (!redisUtils.getBitSet(dateTimeDaily, member.getId())) {
                     // 방문한 사람이 아니라면 방문 체크 및 전체 방문 수 1 증가
                     redisUtils.setBitSet(dateTimeDaily, member.getId());
-                    redisUtils.setExpireTime(dateTimeDaily, 60 * 60 * 24);
+                    redisUtils.setExpireTime(dateTimeDaily, 90);
                     redisUtils.increaseTotalVisitedCount();
                 }
             } else {
                 // 첫 방문일 경우 일일 방문자수와 누적 방문자수 모두 생성
                 redisUtils.setBitSet(dateTimeDaily, member.getId());
-                redisUtils.setExpireTime(dateTimeDaily, 60 * 60 * 24);
+                redisUtils.setExpireTime(dateTimeDaily, 90);
                 redisUtils.increaseTotalVisitedCount();
             }
 

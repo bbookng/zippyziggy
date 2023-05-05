@@ -3,6 +3,7 @@ package com.zippyziggy.member.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zippyziggy.member.dto.response.GoogleTokenResponseDto;
 import com.zippyziggy.member.dto.response.GoogleUserInfoResponseDto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -15,6 +16,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.time.Duration;
 
 @Service
+@Slf4j
 public class GoogleLoginService {
 
     @Value("${google.client.id}")
@@ -58,7 +60,7 @@ public class GoogleLoginService {
 
         String googleProfileUrl = "https://www.googleapis.com/oauth2/v1/userinfo";
 
-        System.out.println("googleAccessToken = " + googleAccessToken);
+        log.info("googleAccessToken = " + googleAccessToken);
 
         String googleProfile = WebClient.create()
                 .get()

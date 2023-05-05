@@ -106,9 +106,9 @@ public class RedisUtils {
             // 최초 방문자일 경우
             VisitedMemberCount visitedMemberCount = visitedMemberCountRepository.findByNowDate("0000-00-00");
             if (visitedMemberCount == null) {
-                put("0000-00-00", 1, 60 * 60L);
+                put("0000-00-00", 1, 90L);
             } else {
-                put("0000-00-00", visitedMemberCount.getVisitedCount() + 1, 60 * 60L);
+                put("0000-00-00", visitedMemberCount.getVisitedCount() + 1, 90L);
             }
         }
     }

@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -65,7 +64,7 @@ public class VisitedMemberCountService {
                     // 있으면 최신 방문자수로 업데이트
                     totalMemberCount.setVisitedCount(totalCount);
                     visitedMemberCountRepository.save(totalMemberCount);
-                    redisUtils.put("0000-00-00", totalMemberCount.getVisitedCount(), 60 * 11L);
+                    redisUtils.put("0000-00-00", totalMemberCount.getVisitedCount(), 90L);
                 }
             } else {
                 // redis에 내용이 없는 경우
@@ -80,7 +79,7 @@ public class VisitedMemberCountService {
                 } else {
                     // DB에 데이터가 있는데 Redis가 다운되었을 경우가 있음
                     // 이때는 DB의 총 조회 수를 업데이트 해준다.
-                    redisUtils.put("0000-00-00", totalMemberCount.getVisitedCount(), 60 * 60 * 24L);
+                    redisUtils.put("0000-00-00", totalMemberCount.getVisitedCount(), 90L);
                 }
             }
             log.info("일일 방문자 수 저장 중...");
