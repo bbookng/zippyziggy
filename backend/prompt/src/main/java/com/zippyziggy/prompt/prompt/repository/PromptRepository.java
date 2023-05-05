@@ -20,6 +20,10 @@ public interface PromptRepository extends JpaRepository<Prompt, Long> {
 
 	Optional<Prompt> findByPromptUuidAndStatusCode(UUID promptUuid, StatusCode statusCode);
 
+	Optional<Prompt> findByOriginPromptUuidAndPromptUuid(UUID originPromptUuid, UUID promptUuid);
+
+	Optional<Prompt> findByPromptUuid(UUID promptUuid);
+
 	Page<Prompt> findAllByOriginPromptUuidAndStatusCode(UUID promptUuid, StatusCode statusCode, Pageable pageable);
 
 	Page<Prompt> findAllByMemberUuidAndStatusCode(UUID memberUuid, StatusCode statusCode, Pageable pageable);

@@ -8,7 +8,7 @@ import lombok.ToString;
 @ToString
 @RequiredArgsConstructor
 public enum StatusCode {
-	OPEN("open"), DELETED("deleted");
+	DELETED("deleted"), OPEN("open");
 
 	private final String description;
 }

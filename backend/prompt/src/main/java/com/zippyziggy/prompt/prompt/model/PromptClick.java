@@ -18,8 +18,6 @@ public class PromptClick {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(nullable = false, columnDefinition = "BINARY(16)")
     private UUID memberUuid;
 
