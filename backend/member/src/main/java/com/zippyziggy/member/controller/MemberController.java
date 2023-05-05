@@ -187,6 +187,7 @@ public class MemberController {
     })
     public ResponseEntity<?> findPromptsRecent(@PathVariable String crntMemberUuid) {
         List<PromptCardResponse> recentPrompts = promptClient.getRecentPrompts(crntMemberUuid);
+        log.info("recentPrompts = " + recentPrompts);
         if (recentPrompts == null) {
             return ResponseEntity.ok("최근 조회한 프롬프트가 존재하지 않습니다.");
         } else {
