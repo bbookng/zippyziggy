@@ -1,6 +1,7 @@
 package com.zippyziggy.search.config;
 
 import com.zippyziggy.search.dto.response.server.PromptCntResponse;
+import com.zippyziggy.search.dto.response.server.TalkCntResponse;
 import javax.transaction.Transactional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -61,11 +62,11 @@ public class KafkaConsumer {
 	}
 
 	@KafkaListener(topics = "sync-prompt-hit")
-	public void modifyHit(String kafkaMessage) {
+	public void modifyPromptHit(String kafkaMessage) {
 		try {
 			final PromptCntResponse promptCntResponse = objectMapper.readValue(kafkaMessage, PromptCntResponse.class);
 			final String promptUuid = promptCntResponse.getPromptUuid();
-			final Integer cnt = promptCntResponse.getCnt();
+			final Long cnt = promptCntResponse.getCnt();
 			esPromptService.updateHit(promptUuid, cnt);
 		} catch (JsonProcessingException ex) {
 			throw new CustomJsonProcessingException();
@@ -73,12 +74,11 @@ public class KafkaConsumer {
 	}
 
 	@KafkaListener(topics = "sync-prompt-like-cnt")
-	public void modifyLikeCnt(String kafkaMessage) {
-		log.info("Kafka Message: ->" + kafkaMessage);
+	public void modifyPromptLikeCnt(String kafkaMessage) {
 		try {
 			final PromptCntResponse promptCntResponse = objectMapper.readValue(kafkaMessage, PromptCntResponse.class);
 			final String promptUuid = promptCntResponse.getPromptUuid();
-			final Integer cnt = promptCntResponse.getCnt();
+			final Long cnt = promptCntResponse.getCnt();
 			esPromptService.updateLikeCnt(promptUuid, cnt);
 		} catch (JsonProcessingException ex) {
 			throw new CustomJsonProcessingException();
@@ -104,7 +104,29 @@ public class KafkaConsumer {
 		esTalkService.deleteDocument(Long.valueOf(kafkaMessage));
 	}
 
-	//TODO Talk 조회수랑 좋아요수 업데이트
+	@KafkaListener(topics = "sync-talk-hit")
+	public void modifyTalkHit(String kafkaMessage) {
+		try {
+			final TalkCntResponse talkCntResponse = objectMapper.readValue(kafkaMessage, TalkCntResponse.class);
+			final Long talkId = talkCntResponse.getTalkId();
+			final Long cnt = talkCntResponse.getCnt();
+			esTalkService.updateHit(talkId, cnt);
+		} catch (JsonProcessingException ex) {
+			throw new CustomJsonProcessingException();
+		}
+	}
+
+	@KafkaListener(topics = "sync-talk-like-cnt")
+	public void modifyTalkLikeCnt(String kafkaMessage) {
+		try {
+			final TalkCntResponse talkCntResponse = objectMapper.readValue(kafkaMessage, TalkCntResponse.class);
+			final Long talkId = talkCntResponse.getTalkId();
+			final Long cnt = talkCntResponse.getCnt();
+			esTalkService.updateLikeCnt(talkId, cnt);
+		} catch (JsonProcessingException ex) {
+			throw new CustomJsonProcessingException();
+		}
+	}
 
 }
 
