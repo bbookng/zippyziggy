@@ -71,12 +71,12 @@ public class JwtValidationService {
 
         } catch (TokenExpiredException e) {
 
-            System.out.println("만료된 토큰입니다." + e);
+            log.error("만료된 토큰입니다." + e);
             throw new TokenExpiredException("만료된 토큰입니다.", Instant.now());
 
         } catch (Exception e) {
 
-            System.out.println("유효하지 않은 토큰입니다" + e);
+            log.error("유효하지 않은 토큰입니다" + e);
             throw new JWTDecodeException(JwtResponse.ACCESS_TOKEN_MISMATCH.getJwtResponse());
 
         }

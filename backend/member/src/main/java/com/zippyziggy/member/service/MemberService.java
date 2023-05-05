@@ -10,6 +10,7 @@ import com.zippyziggy.member.repository.MemberRepository;
 import com.zippyziggy.member.util.RedisUtils;
 import com.zippyziggy.member.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +23,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class MemberService {
 
 
@@ -78,7 +80,7 @@ public class MemberService {
         } catch (NonUniqueResultException error) {
           throw  new NonUniqueResultException("유저가 이미 존재합니다.");
         } catch (Exception e) {
-            System.out.println("e = " + e);
+            log.error("에러발생 = " + e);
             throw new NullPointerException();
         }
 
