@@ -14,6 +14,7 @@ import com.zippyziggy.prompt.talk.repository.TalkRepository;
 import com.zippyziggy.prompt.talk.service.TalkService;
 import io.github.flashvayne.chatgpt.service.ChatgptService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.cloud.client.circuitbreaker.NoFallbackAvailableException;
@@ -36,6 +37,7 @@ import java.util.UUID;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class PromptService{
 
 	private static final String VIEWCOOKIENAME = "alreadyViewCookie";
@@ -457,7 +459,7 @@ public class PromptService{
     최근 조회한 프롬프트 5개 조회
      */
 	public List<PromptCardResponse> recentPrompts(String crntMemberUuid) {
-
+		log.info("crntMemberUuid = " + crntMemberUuid);
 		if (crntMemberUuid.equals("defaultValue")) {
 			return null;
 		} else {
@@ -466,11 +468,15 @@ public class PromptService{
 			List<PromptClick> promptClicks = promptClickRepository
 					.findTop5DistinctByMemberUuidAndPrompt_StatusCodeOrderByRegDtDesc(UUID.fromString(crntMemberUuid), StatusCode.OPEN);
 
+			log.info("promptClicks =>>>" + promptClicks);
+
 			// 해당 프롬프트 내용 가져오기
 			List<Prompt> prompts = new ArrayList<>();
 			for (PromptClick promptClick: promptClicks) {
 				prompts.add(promptClick.getPrompt());
 			}
+
+			log.info("prompts =>>>> " + prompts);
 
 			List<PromptCardResponse> promptCardResponses = new ArrayList<>();
 
@@ -486,7 +492,9 @@ public class PromptService{
 					writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getPromptUuid()))
 							.orElseThrow(MemberNotFoundException::new);
 				} catch (MemberNotFoundException e) {
+					log.error("회원이 존재하지 않습니다.");
 					writerInfo = new MemberResponse();
+					log.info("writerInfo =>> " + writerInfo);
 				}
 
 
@@ -496,9 +504,10 @@ public class PromptService{
 						? true : false;
 
 				PromptCardResponse promptCardResponse = PromptCardResponse.from(writerInfo, prompt, commentCnt, forkCnt, talkCnt, isBookmarded, isLiked);
+				log.info("promptCardResponse =>>> " + promptCardResponse);
 				promptCardResponses.add(promptCardResponse);
 			}
-
+			log.info("promptCardResponses =>>> " + promptCardResponses);
 			return promptCardResponses;
 		}
 	}
