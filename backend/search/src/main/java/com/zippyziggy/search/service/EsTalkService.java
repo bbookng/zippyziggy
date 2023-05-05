@@ -61,7 +61,7 @@ public class EsTalkService {
             final MemberResponse member = circuitBreaker
                     .run(() -> memberClient
                             .getMemberInfo(UUID.fromString(crntMemberUuid))
-                            .orElseThrow(MemberNotFoundException::new));
+                            .orElseGet(MemberResponse::new));
             final WriterResponse writer = member.toWriterResponse();
 
             // PromptClient에 commentCnt 요청
