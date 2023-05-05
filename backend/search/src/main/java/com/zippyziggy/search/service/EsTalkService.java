@@ -8,12 +8,8 @@ import com.zippyziggy.search.dto.response.WriterResponse;
 import com.zippyziggy.search.dto.response.server.MemberResponse;
 import com.zippyziggy.search.dto.response.server.SyncEsTalk;
 import com.zippyziggy.search.exception.EsTalkNotFoundException;
-import com.zippyziggy.search.exception.MemberNotFoundException;
 import com.zippyziggy.search.model.EsTalk;
 import com.zippyziggy.search.repository.EsTalkRepository;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
@@ -24,6 +20,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -59,8 +59,8 @@ public class EsTalkService {
             // MemberClient에 memberUuid로 요청
             final MemberResponse member = circuitBreaker
                     .run(() -> memberClient
-                            .getMemberInfo(UUID.fromString(esTalk.getMemberUuid()))
-                            .orElseThrow(MemberNotFoundException::new));
+                            .getMemberInfo(UUID.fromString(crntMemberUuid))
+                            .orElseGet(MemberResponse::new));
             final WriterResponse writer = member.toWriterResponse();
 
             // PromptClient에 commentCnt 요청

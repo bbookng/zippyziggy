@@ -2,9 +2,9 @@ package com.zippyziggy.search.dto.response.server;
 
 import com.zippyziggy.search.dto.response.OriginerResponse;
 import com.zippyziggy.search.dto.response.WriterResponse;
-import com.zippyziggy.search.exception.MemberNotFoundException;
-import java.util.UUID;
 import lombok.Data;
+
+import java.util.UUID;
 
 @Data
 public class MemberResponse {
@@ -13,11 +13,11 @@ public class MemberResponse {
     private String nickname;
     private String profileImg;
 
-    public OriginerResponse toOriginerResponse() throws MemberNotFoundException {
+    public OriginerResponse toOriginerResponse() {
         return new OriginerResponse(this.userUuid, this.profileImg, this.nickname);
     }
 
-    public WriterResponse toWriterResponse() throws MemberNotFoundException {
+    public WriterResponse toWriterResponse() {
         return new WriterResponse(this.userUuid, this.profileImg, this.nickname);
     }
 }
