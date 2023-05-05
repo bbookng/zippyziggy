@@ -214,7 +214,7 @@ public class PromptService{
 		// 원본 id가 현재 프롬프트 아이디와 같지 않으면 포크된 프롬프트
 		if (prompt.isForked()) {
 			UUID originalMemberUuid = promptRepository
-					.findByOriginPromptUuid(prompt.getOriginPromptUuid())
+					.findByOriginPromptUuidAndPromptUuid(prompt.getOriginPromptUuid(), promptUuid)
 					.orElseThrow(PromptNotFoundException::new)
 					.getMemberUuid();
 
