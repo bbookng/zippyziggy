@@ -3,55 +3,35 @@ package com.zippyziggy.prompt.prompt.service;
 import com.zippyziggy.prompt.common.aws.AwsS3Uploader;
 import com.zippyziggy.prompt.common.kafka.KafkaProducer;
 import com.zippyziggy.prompt.prompt.client.MemberClient;
-import com.zippyziggy.prompt.prompt.dto.request.GptApiRequest;
-import com.zippyziggy.prompt.prompt.dto.request.PromptCntRequest;
-import com.zippyziggy.prompt.prompt.dto.request.PromptModifyRequest;
-import com.zippyziggy.prompt.prompt.dto.request.PromptRatingRequest;
-import com.zippyziggy.prompt.prompt.dto.request.PromptReportRequest;
-import com.zippyziggy.prompt.prompt.dto.request.PromptRequest;
+import com.zippyziggy.prompt.prompt.dto.request.*;
 import com.zippyziggy.prompt.prompt.dto.response.*;
-import com.zippyziggy.prompt.prompt.exception.AwsUploadException;
-import com.zippyziggy.prompt.prompt.exception.ForbiddenMemberException;
-import com.zippyziggy.prompt.prompt.exception.MemberNotFoundException;
-import com.zippyziggy.prompt.prompt.exception.PromptNotFoundException;
-import com.zippyziggy.prompt.prompt.exception.RatingAlreadyExistException;
-import com.zippyziggy.prompt.prompt.exception.ReportAlreadyExistException;
-import com.zippyziggy.prompt.prompt.model.Prompt;
-import com.zippyziggy.prompt.prompt.model.PromptBookmark;
-import com.zippyziggy.prompt.prompt.model.PromptClick;
-import com.zippyziggy.prompt.prompt.model.PromptLike;
-import com.zippyziggy.prompt.prompt.model.PromptReport;
-import com.zippyziggy.prompt.prompt.model.Rating;
-import com.zippyziggy.prompt.prompt.model.StatusCode;
-import com.zippyziggy.prompt.prompt.repository.PromptBookmarkRepository;
-import com.zippyziggy.prompt.prompt.repository.PromptClickRepository;
-import com.zippyziggy.prompt.prompt.repository.PromptCommentRepository;
-import com.zippyziggy.prompt.prompt.repository.PromptLikeRepository;
-import com.zippyziggy.prompt.prompt.repository.PromptReportRepository;
-import com.zippyziggy.prompt.prompt.repository.PromptRepository;
-import com.zippyziggy.prompt.prompt.repository.RatingRepository;
+import com.zippyziggy.prompt.prompt.exception.*;
+import com.zippyziggy.prompt.prompt.model.*;
+import com.zippyziggy.prompt.prompt.repository.*;
 import com.zippyziggy.prompt.talk.dto.response.PromptTalkListResponse;
 import com.zippyziggy.prompt.talk.dto.response.TalkListResponse;
 import com.zippyziggy.prompt.talk.repository.TalkRepository;
 import com.zippyziggy.prompt.talk.service.TalkService;
 import io.github.flashvayne.chatgpt.service.ChatgptService;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
+import org.springframework.cloud.client.circuitbreaker.NoFallbackAvailableException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -206,8 +186,7 @@ public class PromptService{
 
 		PromptDetailResponse promptDetailResponse = prompt.toDetailResponse(isLiked, isBookmarked);
 
-		MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid())
-				.orElseThrow(MemberNotFoundException::new));
+		MemberResponse writerInfo = getWriterInfo(prompt.getMemberUuid());
 
 		promptDetailResponse.setWriter(writerInfo.toWriterResponse());
 
@@ -219,8 +198,15 @@ public class PromptService{
 					.getMemberUuid();
 
 			// 탈퇴한 사용자일 시에 예외를 던지지 않고, 빈 객체를 보내서 사용자 정보 없음으로 표시
-			MemberResponse originalMemberInfo = circuitBreaker
-					.run(() -> memberClient.getMemberInfo(originalMemberUuid).orElseGet(MemberResponse::new));
+			MemberResponse originalMemberInfo;
+			try {
+				originalMemberInfo = circuitBreaker
+						.run(() -> memberClient
+								.getMemberInfo(originalMemberUuid)
+								.orElseGet(MemberResponse::new));
+			} catch (NoFallbackAvailableException e) {
+				originalMemberInfo = new MemberResponse();
+			}
 
 			UUID originPromptUuid = prompt.getOriginPromptUuid();
 
@@ -351,8 +337,7 @@ public class PromptService{
 			long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
 
 			CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
-			MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid()))
-					.orElseThrow(MemberNotFoundException::new);
+			MemberResponse writerInfo = getWriterInfo(prompt.getMemberUuid());
 
 			// 좋아요, 북마크 여부
 			boolean isBookmarked = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid),prompt) != null
@@ -402,8 +387,7 @@ public class PromptService{
 			long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
 
 			CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
-			MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid()))
-					.orElseThrow(MemberNotFoundException::new);
+			MemberResponse writerInfo = getWriterInfo(prompt.getMemberUuid());
 
 
 			boolean isBookmarded = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
@@ -479,8 +463,7 @@ public class PromptService{
 		} else {
 
 			CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
-			MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(UUID.fromString(crntMemberUuid)))
-					.orElseThrow(MemberNotFoundException::new);
+			MemberResponse writerInfo = getWriterInfo(UUID.fromString(crntMemberUuid));
 
 			List<PromptClick> promptClicks = promptClickRepository
 					.findTop5DistinctByMemberUuidAndPrompt_StatusCodeOrderByRegDtDesc(UUID.fromString(crntMemberUuid), StatusCode.OPEN);
@@ -526,8 +509,7 @@ public class PromptService{
 			long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
 
 			CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
-			MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid()))
-					.orElseThrow(MemberNotFoundException::new);
+			MemberResponse writerInfo = getWriterInfo(prompt.getMemberUuid());
 
 			boolean isBookmarded = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
 					? true : false;
@@ -561,4 +543,18 @@ public class PromptService{
 
 		return GptApiResponse.from(chatgptService.sendMessage(apiResult));
     }
+
+	private MemberResponse getWriterInfo(UUID memberUuid) {
+		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
+		MemberResponse writerInfo;
+		try {
+			writerInfo = circuitBreaker
+					.run(() -> memberClient
+							.getMemberInfo(memberUuid)
+							.orElseGet(MemberResponse::new));
+		} catch (NoFallbackAvailableException e) {
+			writerInfo = new MemberResponse();
+		}
+		return writerInfo;
+	}
 }
