@@ -491,7 +491,7 @@ public class PromptService{
 				try {
 					writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getPromptUuid()))
 							.orElseThrow(MemberNotFoundException::new);
-				} catch (MemberNotFoundException e) {
+				} catch (NoFallbackAvailableException e) {
 					log.error("회원이 존재하지 않습니다.");
 					writerInfo = new MemberResponse();
 					log.info("writerInfo =>> " + writerInfo);
