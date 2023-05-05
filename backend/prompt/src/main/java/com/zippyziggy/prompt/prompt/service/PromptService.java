@@ -218,7 +218,7 @@ public class PromptService{
 					.orElseThrow(PromptNotFoundException::new)
 					.getMemberUuid();
 
-			// 탈퇴한 사용자일 시에 예외를 던지지 않고, 빈 객체를 보내서 사용자 정보없음으로 표시할 수 있게 한다.
+			// 탈퇴한 사용자일 시에 예외를 던지지 않고, 빈 객체를 보내서 사용자 정보없음으로 표시
 			MemberResponse originalMemberInfo = circuitBreaker
 					.run(() -> memberClient.getMemberInfo(originalMemberUuid).orElseGet(MemberResponse::new));
 
