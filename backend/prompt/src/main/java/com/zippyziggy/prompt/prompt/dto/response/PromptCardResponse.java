@@ -37,7 +37,6 @@ public class PromptCardResponse {
 										  Boolean isBookmarked, Boolean isLiked) {
 
 		WriterResponse writer = writerInfo.toWriterResponse();
-		System.out.println("writer = " + writer);
 		long regDt = prompt.getRegDt().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
 		long updDt = prompt.getRegDt().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
 
