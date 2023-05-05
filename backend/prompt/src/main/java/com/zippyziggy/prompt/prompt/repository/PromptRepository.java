@@ -12,6 +12,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import com.zippyziggy.prompt.prompt.model.Prompt;
 
+import javax.swing.text.html.Option;
+
 public interface PromptRepository extends JpaRepository<Prompt, Long> {
 
 	@Modifying
@@ -21,6 +23,8 @@ public interface PromptRepository extends JpaRepository<Prompt, Long> {
 	Optional<Prompt> findByPromptUuidAndStatusCode(UUID promptUuid, StatusCode statusCode);
 
 	Optional<Prompt> findByOriginPromptUuid(UUID originPromptUuid);
+
+	Optional<Prompt> findByPromptUuid(UUID promptUuid);
 
 	Page<Prompt> findAllByOriginPromptUuidAndStatusCode(UUID promptUuid, StatusCode statusCode, Pageable pageable);
 
