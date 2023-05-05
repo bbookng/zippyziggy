@@ -340,16 +340,18 @@ public class MemberController {
             if (!redisUtils.getBitSet(dateTimeDaily, member.getId())) {
                 // 방문한 사람이 아니라면 방문 체크 및 전체 방문 수 1 증가
                 redisUtils.setBitSet(dateTimeDaily, member.getId());
+                redisUtils.setExpireTime(dateTimeDaily, 60 * 60 * 24);
                 redisUtils.increaseTotalVisitedCount();
             }
         } else {
             // 첫 방문일 경우 일일 방문자수와 누적 방문자수 모두 생성
             redisUtils.setBitSet(dateTimeDaily, member.getId());
+            redisUtils.setExpireTime(dateTimeDaily, 60 * 60 * 24);
             redisUtils.increaseTotalVisitedCount();
         }
 
         // 기존 redis 정보 삭제
-        redisService.deleteRedisData(member.getUserUuid().toString());
+//        redisService.deleteRedisData(member.getUserUuid().toString());
 
         // redis 설정(1. 유저 정보 저장 -> UUID나 AccessToken으로 회원 조회할 시 활용
         //           2. refreshToken 저장 -> accessToken 만료 시 DB가 아닌 Redis에서 먼저 찾아오기)
@@ -428,16 +430,18 @@ public class MemberController {
             if (!redisUtils.getBitSet(dateTimeDaily, member.getId())) {
                 // 방문한 사람이 아니라면 방문 체크 및 전체 방문 수 1 증가
                 redisUtils.setBitSet(dateTimeDaily, member.getId());
+                redisUtils.setExpireTime(dateTimeDaily, 60 * 60 * 24);
                 redisUtils.increaseTotalVisitedCount();
             }
         } else {
             // 첫 방문일 경우 일일 방문자수와 누적 방문자수 모두 생성
             redisUtils.setBitSet(dateTimeDaily, member.getId());
+            redisUtils.setExpireTime(dateTimeDaily, 60 * 60 * 24);
             redisUtils.increaseTotalVisitedCount();
         }
 
         // 기존 redis 정보 삭제
-        redisService.deleteRedisData(member.getUserUuid().toString());
+//        redisService.deleteRedisData(member.getUserUuid().toString());
 
         // redis 설정(1. 유저 정보 저장 -> UUID나 AccessToken으로 회원 조회할 시 활용
         //           2. refreshToken 저장 -> accessToken 만료 시 DB가 아닌 Redis에서 먼저 찾아오기)
@@ -532,11 +536,13 @@ public class MemberController {
                 if (!redisUtils.getBitSet(dateTimeDaily, member.getId())) {
                     // 방문한 사람이 아니라면 방문 체크 및 전체 방문 수 1 증가
                     redisUtils.setBitSet(dateTimeDaily, member.getId());
+                    redisUtils.setExpireTime(dateTimeDaily, 60 * 60 * 24);
                     redisUtils.increaseTotalVisitedCount();
                 }
             } else {
                 // 첫 방문일 경우 일일 방문자수와 누적 방문자수 모두 생성
                 redisUtils.setBitSet(dateTimeDaily, member.getId());
+                redisUtils.setExpireTime(dateTimeDaily, 60 * 60 * 24);
                 redisUtils.increaseTotalVisitedCount();
             }
 
@@ -654,11 +660,11 @@ public class MemberController {
     public ResponseEntity<MemberInformResponseDto> findMemberByUUID(@RequestParam UUID userUuid) throws Exception {
 
         if (redisUtils.isExists("member" + userUuid)) {
-            log.info("redis 실행");
+            log.info("redis로 회원 조회 중");
             MemberInformResponseDto memberInformResponseDto = redisUtils.get("member" + userUuid, MemberInformResponseDto.class);
             return new ResponseEntity<>(memberInformResponseDto, HttpStatus.OK);
         } else {
-            log.info("DB 실행");
+            log.info("DB로 회원 조회 중");
             Member member = memberRepository.findByUserUuid(userUuid).orElseThrow(MemberNotFoundException::new);
 
             return new ResponseEntity<>(MemberInformResponseDto.from(member), HttpStatus.OK);

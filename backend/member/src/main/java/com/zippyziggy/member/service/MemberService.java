@@ -2,6 +2,7 @@ package com.zippyziggy.member.service;
 
 import com.zippyziggy.member.config.kafka.KafkaProducer;
 import com.zippyziggy.member.dto.request.MemberSignUpRequestDto;
+import com.zippyziggy.member.dto.response.MemberInformResponseDto;
 import com.zippyziggy.member.model.JwtToken;
 import com.zippyziggy.member.model.Member;
 import com.zippyziggy.member.model.Platform;
@@ -26,7 +27,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final JwtProviderService jwtProviderService;
-    private final JwtValidationService jwtValidationService;
+    private final RedisService redisService;
     private final S3Service s3Service;
     private final SecurityUtil securityUtil;
     private final KafkaProducer kafkaProducer;
@@ -155,6 +156,9 @@ public class MemberService {
     public void memberSignOut() throws Exception {
 
         Member member = securityUtil.getCurrentMember();
+
+        redisService.deleteRedisData(member.getUserUuid().toString());
+
         kafkaProducer.send("delete-member-topic", member.getUserUuid());
         memberRepository.delete(member);
 //        member.setActivate(false);
@@ -200,6 +204,10 @@ public class MemberService {
             // 변경점이 없을 경우
             throw new NullPointerException("입력된 값이 없습니다.");
         }
+
+        // redis 내용도 함께 수정
+        redisService.saveRedisData(member.getUserUuid().toString(), MemberInformResponseDto.from(member), member.getRefreshToken());
+
         return member;
     }
 
