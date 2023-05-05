@@ -27,4 +27,7 @@ public interface PromptClient {
     PromptCardListResponse getPrompts(@PathVariable("crntMemberUuid") String crntMemberUuid,
                                                 @RequestParam("page") Integer page,
                                                 @RequestParam("size") Integer size);
+
+    @GetMapping("/prompts/members/recent/prompts/{crntMemberUuid}")
+    List<PromptCardResponse> getRecentPrompts(@PathVariable("crntMemberUuid") String crntMemberUuid);
 }
