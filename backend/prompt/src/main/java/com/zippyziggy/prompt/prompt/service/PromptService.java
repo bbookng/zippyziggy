@@ -35,6 +35,8 @@ import com.zippyziggy.prompt.talk.dto.response.TalkListResponse;
 import com.zippyziggy.prompt.talk.repository.TalkRepository;
 import com.zippyziggy.prompt.talk.service.TalkService;
 import io.github.flashvayne.chatgpt.service.ChatgptService;
+
+import java.lang.reflect.Member;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -47,6 +49,7 @@ import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
+import org.springframework.cloud.client.circuitbreaker.NoFallbackAvailableException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
@@ -206,8 +209,7 @@ public class PromptService{
 
 		PromptDetailResponse promptDetailResponse = prompt.toDetailResponse(isLiked, isBookmarked);
 
-		MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid())
-				.orElseThrow(MemberNotFoundException::new));
+		MemberResponse writerInfo = getWriterInfo(prompt.getMemberUuid());
 
 		promptDetailResponse.setWriter(writerInfo.toWriterResponse());
 
@@ -219,8 +221,15 @@ public class PromptService{
 					.getMemberUuid();
 
 			// 탈퇴한 사용자일 시에 예외를 던지지 않고, 빈 객체를 보내서 사용자 정보 없음으로 표시
-			MemberResponse originalMemberInfo = circuitBreaker
-					.run(() -> memberClient.getMemberInfo(originalMemberUuid).orElseGet(MemberResponse::new));
+			MemberResponse originalMemberInfo;
+			try {
+				originalMemberInfo = circuitBreaker
+						.run(() -> memberClient
+								.getMemberInfo(originalMemberUuid)
+								.orElseGet(MemberResponse::new));
+			} catch (NoFallbackAvailableException e) {
+				originalMemberInfo = new MemberResponse();
+			}
 
 			UUID originPromptUuid = prompt.getOriginPromptUuid();
 
@@ -351,8 +360,7 @@ public class PromptService{
 			long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
 
 			CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
-			MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid()))
-					.orElseThrow(MemberNotFoundException::new);
+			MemberResponse writerInfo = getWriterInfo(prompt.getMemberUuid());
 
 			// 좋아요, 북마크 여부
 			boolean isBookmarked = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid),prompt) != null
@@ -402,8 +410,7 @@ public class PromptService{
 			long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
 
 			CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
-			MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid()))
-					.orElseThrow(MemberNotFoundException::new);
+			MemberResponse writerInfo = getWriterInfo(prompt.getMemberUuid());
 
 
 			boolean isBookmarded = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
@@ -479,8 +486,7 @@ public class PromptService{
 		} else {
 
 			CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
-			MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(UUID.fromString(crntMemberUuid)))
-					.orElseThrow(MemberNotFoundException::new);
+			MemberResponse writerInfo = getWriterInfo(UUID.fromString(crntMemberUuid));
 
 			List<PromptClick> promptClicks = promptClickRepository
 					.findTop5DistinctByMemberUuidAndPrompt_StatusCodeOrderByRegDtDesc(UUID.fromString(crntMemberUuid), StatusCode.OPEN);
@@ -526,8 +532,7 @@ public class PromptService{
 			long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
 
 			CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
-			MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid()))
-					.orElseThrow(MemberNotFoundException::new);
+			MemberResponse writerInfo = getWriterInfo(prompt.getMemberUuid());
 
 			boolean isBookmarded = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
 					? true : false;
@@ -561,4 +566,18 @@ public class PromptService{
 
 		return GptApiResponse.from(chatgptService.sendMessage(apiResult));
     }
+
+	private MemberResponse getWriterInfo(UUID memberUuid) {
+		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
+		MemberResponse writerInfo;
+		try {
+			writerInfo = circuitBreaker
+					.run(() -> memberClient
+							.getMemberInfo(memberUuid)
+							.orElseGet(MemberResponse::new));
+		} catch (NoFallbackAvailableException e) {
+			writerInfo = new MemberResponse();
+		}
+		return writerInfo;
+	}
 }
