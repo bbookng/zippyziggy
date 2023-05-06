@@ -39,7 +39,7 @@ const manifest: chrome.runtime.ManifestV3 = {
       css: ['assets/css/contentStyle<KEY>.chunk.css'],
     },
   ],
-  permissions: ['storage', 'tabs'],
+  permissions: ['storage'],
   web_accessible_resources: [
     {
       resources: [
@@ -51,7 +51,7 @@ const manifest: chrome.runtime.ManifestV3 = {
         'icon128.png',
         'src/pages/inject/*.js',
       ],
-      matches: ['*://*/*'],
+      matches: ['https://chat.openai.com/*', 'https://zippyziggy.kr/*'],
     },
   ],
 };
