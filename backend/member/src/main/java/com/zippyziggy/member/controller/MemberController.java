@@ -105,7 +105,7 @@ public class MemberController {
     public ResponseEntity<?> dailyVisitedCount() {
         String dateTimeDaily = visitedMemberCountService.DateTimeDaily();
         if (redisUtils.isExists(dateTimeDaily)) {
-            Long dailyCount = redisUtils.get(dateTimeDaily, Long.class);
+            long dailyCount = redisUtils.getBitCount(dateTimeDaily);
             return ResponseEntity.ok(DailyVisitedCount.builder()
                     .dailyVisitedCount(dailyCount)
                     .dailyDate(dateTimeDaily).build());
