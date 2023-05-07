@@ -2,7 +2,6 @@ package com.zippyziggy.prompt.talk.dto.response;
 
 import com.zippyziggy.prompt.prompt.dto.response.MemberResponse;
 import com.zippyziggy.prompt.prompt.dto.response.WriterResponse;
-import com.zippyziggy.prompt.talk.model.Talk;
 import lombok.Builder;
 import lombok.Data;
 
