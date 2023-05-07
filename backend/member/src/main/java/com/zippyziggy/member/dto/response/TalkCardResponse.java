@@ -16,25 +16,4 @@ public class TalkCardResponse {
 	private Long commentCnt;
 	private Boolean isLiked;
 
-	public static TalkCardResponse from(
-			Long talkId,
-			String title,
-			String question,
-			String answer,
-			WriterResponse writer,
-			Long likeCnt,
-			Long commentCnt,
-			Boolean isLiked
-	) {
-		return TalkCardResponse.builder()
-				.talkId(talkId)
-				.title(title)
-				.question(question)
-				.answer(answer)
-				.writer(writer)
-				.likeCnt(likeCnt)
-				.commentCnt(commentCnt)
-				.isLiked(isLiked)
-				.build();
-	}
 }
