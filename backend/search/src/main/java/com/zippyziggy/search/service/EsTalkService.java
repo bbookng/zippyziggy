@@ -62,7 +62,7 @@ public class EsTalkService {
             try {
                  member = circuitBreaker
                         .run(() -> memberClient
-                                .getMemberInfo(UUID.fromString(crntMemberUuid))
+                                .getMemberInfo(UUID.fromString(esTalk.getMemberUuid()))
                                 .orElseGet(MemberResponse::new));
             } catch (NoFallbackAvailableException e) {
                 member = new MemberResponse();
