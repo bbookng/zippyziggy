@@ -15,6 +15,7 @@ import com.zippyziggy.prompt.prompt.repository.PromptCommentRepository;
 import com.zippyziggy.prompt.prompt.repository.PromptLikeRepository;
 import com.zippyziggy.prompt.prompt.repository.PromptRepository;
 import com.zippyziggy.prompt.talk.dto.request.TalkRequest;
+import com.zippyziggy.prompt.talk.dto.response.MemberTalkListResponse;
 import com.zippyziggy.prompt.talk.dto.response.TalkDetailResponse;
 import com.zippyziggy.prompt.talk.dto.response.TalkListResponse;
 import com.zippyziggy.prompt.talk.dto.response.TalkResponse;
@@ -27,20 +28,22 @@ import com.zippyziggy.prompt.talk.repository.MessageRepository;
 import com.zippyziggy.prompt.talk.repository.TalkCommentRepository;
 import com.zippyziggy.prompt.talk.repository.TalkLikeRepository;
 import com.zippyziggy.prompt.talk.repository.TalkRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
-import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
-import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
 
 @Service
 @Transactional
@@ -300,5 +303,13 @@ public class TalkService {
 		LocalDateTime now = LocalDateTime.now();
 		LocalDateTime tomorrow = LocalDateTime.now().plusDays(1L).truncatedTo(ChronoUnit.DAYS);
 		return (int) now.until(tomorrow, ChronoUnit.SECONDS);
+	}
+
+    public MemberTalkListResponse findTalksByMemberUuid(String crntMemberUuid, Pageable pageable) {
+		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
+    	final Page<Talk> talks = talkRepository.findTalksByMemberUuid(UUID.fromString(crntMemberUuid), pageable);
+		final List<TalkListResponse> talkListResponses = getTalks(circuitBreaker, talks.toList(), crntMemberUuid);
+
+		return new MemberTalkListResponse(Math.toIntExact(talks.getTotalElements()), talkListResponses);
 	}
 }

@@ -19,6 +19,8 @@ public interface TalkRepository extends JpaRepository<Talk, Long> {
 
 	List<Talk> findAllByMemberUuid(UUID memberUuid);
 
+	Page<Talk> findTalksByMemberUuid(UUID memberUuid, Pageable pageable);
+
 	@Modifying
 	@Query("update Talk set hit = hit + 1 where id = :talkId")
 	int updateHit(@Param(value = "talkId") Long talkId);

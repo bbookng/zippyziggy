@@ -2,19 +2,13 @@ package com.zippyziggy.prompt.talk.controller;
 
 import com.zippyziggy.prompt.talk.dto.request.TalkCommentRequest;
 import com.zippyziggy.prompt.talk.dto.request.TalkRequest;
-import com.zippyziggy.prompt.talk.dto.response.TalkCommentListResponse;
-import com.zippyziggy.prompt.talk.dto.response.TalkCommentResponse;
-import com.zippyziggy.prompt.talk.dto.response.TalkDetailResponse;
-import com.zippyziggy.prompt.talk.dto.response.TalkListResponse;
-import com.zippyziggy.prompt.talk.dto.response.TalkResponse;
+import com.zippyziggy.prompt.talk.dto.response.*;
 import com.zippyziggy.prompt.talk.service.TalkCommentService;
 import com.zippyziggy.prompt.talk.service.TalkService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -22,6 +16,8 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.UUID;
 
@@ -161,5 +157,14 @@ public class TalkController {
 	@GetMapping("/{talkId}/commentCnt")
 	public ResponseEntity<Long> talkCommentCnt(@PathVariable Long talkId) {
 		return ResponseEntity.ok(talkService.findCommentCnt(talkId));
+	}
+
+	@Operation(hidden = true)
+	@GetMapping("/members/profile/{crntMemberUuid}")
+	public ResponseEntity<MemberTalkListResponse> memberPrompts(
+			@PathVariable String crntMemberUuid,
+			@PageableDefault(sort = "regDt",  direction = Sort.Direction.DESC) Pageable pageable
+	) {
+		return ResponseEntity.ok(talkService.findTalksByMemberUuid(crntMemberUuid, pageable));
 	}
 }

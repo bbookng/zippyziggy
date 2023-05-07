@@ -19,14 +19,14 @@ public class TalkListResponse {
 	private Boolean isLiked;
 
 	public static TalkListResponse from(
-		Long talkId,
-		String title,
-		String question,
-		String answer,
-		MemberResponse member,
-		Long likeCnt,
-		Long commentCnt,
-		Boolean isLiked
+			Long talkId,
+			String title,
+			String question,
+			String answer,
+			MemberResponse member,
+			Long likeCnt,
+			Long commentCnt,
+			Boolean isLiked
 	) {
 		return TalkListResponse.builder()
 				.talkId(talkId)
