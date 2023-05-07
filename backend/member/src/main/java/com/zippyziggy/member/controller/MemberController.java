@@ -24,6 +24,7 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.*;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -728,5 +729,22 @@ public class MemberController {
         return new ResponseEntity<>(MemberInformResponseDto.from(updateMember), HttpStatus.OK);
     }
 
+    /**
+     * 멤버가 생성한 톡 조회
+     */
+    @GetMapping("/talks/profile/{crntMemberUuid}")
+    @Operation(summary = "멤버가 생성한 톡 조회", description = "프로필에서 톡을 조회한다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
+    public ResponseEntity<TalkCardListResponse> findTalks(
+            @PathVariable String crntMemberUuid,
+            Pageable pageable
+    ) {
+        final TalkCardListResponse talkCardListResponse = promptClient.getTalks(crntMemberUuid, pageable);
+        return ResponseEntity.ok(talkCardListResponse);
+    }
 
 }
