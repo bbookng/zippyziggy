@@ -32,7 +32,7 @@ export default function TalkCard({ talk, url }: PropsType) {
                 className="img"
               />
             </Link>
-            <div>{talk.writer.writerNickname}</div>
+            <div className="nickname">{talk.writer.writerNickname}</div>
           </div>
           <div className="infoBox">
             <div className="heartBox">
@@ -41,7 +41,7 @@ export default function TalkCard({ talk, url }: PropsType) {
             </div>
             <div className="commentBox">
               <FaComment className="icon" />
-              {talk.likeCnt}
+              {talk.commentCnt}
             </div>
           </div>
         </div>

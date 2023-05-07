@@ -70,7 +70,8 @@ const Infos = styled.div`
 `;
 
 const Footer = styled.div`
-  padding: 0 0.75rem;
+  width: 100%;
+  padding: 0 0.5rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -80,41 +81,73 @@ const Footer = styled.div`
   .user {
     display: flex;
     align-items: center;
+    overflow: hidden;
 
     .profileImg {
+      height: 100%;
       border-radius: 50%;
-      aspect-ratio: calc(1);
     }
-
     .nickname {
-      display: flex;
-      align-items: center;
-      margin-left: 0.5rem;
+      margin-left: 8px;
+      font-size: ${({ theme }) => theme.fonts.body_sm};
+      white-space: pre-wrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
     }
   }
 
   .extraBox {
+    right: 0;
     display: flex;
+    align-items: center;
+
+    .likeItem {
+      height: 2.2rem;
+      padding: 0.5rem 0.7rem 0.5rem 0.5rem;
+      border-radius: 3rem;
+      /* border: 1px solid ${({ theme }) => theme.colors.blackColor05}; */
+      box-shadow: inset 1px 1px 1px ${({ theme }) => theme.colors.blackColor05};
+    }
+
+    .bookmarkItem {
+      width: 2.2rem;
+      height: 2.2rem;
+      padding: 0.5rem;
+      border-radius: 3rem;
+      /* border: 1px solid ${({ theme }) => theme.colors.blackColor05}; */
+      box-shadow: inset 1px 1px 1px ${({ theme }) => theme.colors.blackColor05};
+    }
 
     .item {
       display: flex;
       align-items: center;
-      padding-left: 0.75rem;
-      /* box-shadow: inset 2px 2px 2px rgba(0, 0, 0, 0.03); */
-      /* border-radius: var(--borders-radius-round); */
+      justify-content: center;
+      margin-left: 0.5rem;
+
       .like {
-        margin-right: 0.25rem;
+        width: 1.7rem;
+        height: 2rem;
+        padding: 0.5rem 0.5rem 0.5rem 0.2rem;
         color: var(--colors-heart);
         cursor: pointer;
       }
       .bookmark {
+        width: 1rem;
+        height: 1rem;
         color: var(--colors-bookmark);
         cursor: pointer;
       }
       .play {
-        width: 2rem;
-        height: 2rem;
-        color: rgba(16, 198, 0, 1);
+        width: 2.2rem;
+        height: 2.2rem;
+        padding: 0.5rem;
+        color: ${({ theme }) => theme.colors.whiteColor100};
+        border-radius: 3rem;
+        background: linear-gradient(322.63deg, #5de16a 10.93%, #00e3ae 100%);
+        cursor: pointer;
       }
     }
   }

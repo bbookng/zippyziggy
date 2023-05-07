@@ -1,7 +1,6 @@
 import Button from '@/components/Button/Button';
 import ProfileImage from '@/components/Image/ProfileImage';
 import Title from '@/components/Typography/Title';
-import { getPromptBookmarkAPI } from '@/core/prompt/promptAPI';
 import { deleteUserAPI, getUserAPI, postUserLogoutAPI } from '@/core/user/userAPI';
 import { setIsLogin, setUserReset } from '@/core/user/userSlice';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHook';

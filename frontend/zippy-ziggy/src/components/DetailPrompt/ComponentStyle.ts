@@ -32,6 +32,10 @@ const Container = styled.div`
   .btnNone {
     margin: 1rem auto;
   }
+
+  &.invisible {
+    display: none;
+  }
 `;
 
 const SubContainer = styled.div`

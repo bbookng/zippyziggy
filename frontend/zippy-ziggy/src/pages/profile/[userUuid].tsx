@@ -1,8 +1,13 @@
 import Button from '@/components/Button/Button';
 import ProfileImage from '@/components/Image/ProfileImage';
 import Title from '@/components/Typography/Title';
-import { getPromptBookmarkAPI } from '@/core/prompt/promptAPI';
-import { deleteUserAPI, getUserAPI, postUserLogoutAPI } from '@/core/user/userAPI';
+import {
+  deleteUserAPI,
+  getPromptsBookmarkAPI,
+  getPromptsMemberAPI,
+  getUserAPI,
+  postUserLogoutAPI,
+} from '@/core/user/userAPI';
 import { setIsLogin, setUserReset } from '@/core/user/userSlice';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHook';
 import { httpAuth } from '@/lib/http';
@@ -23,21 +28,29 @@ const ProfileContainer = styled.div`
 
 const ProfileHeaderContainer = styled.div`
   width: 100%;
-  padding: 48px 0px;
+  padding: 48px 48px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   background-color: ${({ theme: { colors } }) => colors.whiteColor100};
-  .authContainer {
-  }
 `;
 
 const ProfilePromptContainer = styled.div`
   width: 100%;
-  height: 480px;
-  padding: 48px 48px;
+  padding: 48px 16px;
   background-color: ${({ theme: { colors } }) => colors.bgColor};
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  .promptBtns {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-bottom: 24px;
+  }
 `;
 
 export default function Index() {
@@ -49,16 +62,13 @@ export default function Index() {
   const { userUuid, mypage } = router.query;
   const paramUserUuid = typeof userUuid === 'string' ? userUuid : '';
   const paramMypage = typeof mypage === 'string' ? mypage : 'false';
+  const [isSelectedBtn, setIsSelectedBtn] = useState<'prompt' | 'bookmark'>('prompt');
 
   const handleUserAPI = async (uuid: string, page: string) => {
     const result = await getUserAPI(uuid);
     if (result?.result === 'SUCCESS') {
       setNickname(result?.nickname);
       setProfileImg(result?.profileImg);
-    }
-    const bookmarkResult = await getPromptBookmarkAPI(uuid, 1);
-    if (bookmarkResult?.result === 'SUCCESS') {
-      bookmarkResult;
     }
     if (result?.result === 'FAIL') {
       if (page === 'true') {
@@ -147,28 +157,44 @@ export default function Index() {
       <ProfilePromptContainer>
         <Title>프롬프트</Title>
         <br />
-        <Button
-          isRound
-          display="inline-block"
-          color="whiteColor100"
-          fontColor="blackColor70"
-          padding="0 24px"
-          width="1"
-        >
-          {nickname}님의 프롬프트
-        </Button>
-        <Button
-          isRound
-          display="inline-block"
-          color="whiteColor100"
-          fontColor="blackColor70"
-          margin="0 0 0 12px"
-          padding="0 32px"
-          width="1"
-        >
-          북마크
-        </Button>
-        <ProfilePromptList userUuid={userUuid} size={4} />
+        <div className="promptBtns">
+          <Button
+            isRound
+            display="inline-block"
+            color="whiteColor100"
+            fontColor="blackColor70"
+            padding="0 24px"
+            width="1"
+            onClick={() => setIsSelectedBtn('prompt')}
+          >
+            작성한 프롬프트
+          </Button>
+          <Button
+            isRound
+            display="inline-block"
+            color="whiteColor100"
+            fontColor="blackColor70"
+            margin="0 0 0 12px"
+            padding="0 32px"
+            width="1"
+            onClick={() => setIsSelectedBtn('bookmark')}
+          >
+            북마크
+          </Button>
+        </div>
+        <ProfilePromptList
+          className={isSelectedBtn === 'bookmark' && 'invisible'}
+          userUuid={userUuid}
+          size={4}
+          getData={getPromptsMemberAPI}
+        />
+
+        <ProfilePromptList
+          className={isSelectedBtn === 'prompt' && 'invisible'}
+          userUuid={userUuid}
+          size={4}
+          getData={getPromptsBookmarkAPI}
+        />
       </ProfilePromptContainer>
     </ProfileContainer>
   );

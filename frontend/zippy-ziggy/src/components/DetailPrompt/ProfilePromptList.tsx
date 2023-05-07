@@ -8,25 +8,27 @@ import Paging from '../Paging/Paging';
 type PropsType = {
   userUuid: string | string[] | number;
   size: number;
+  className?: string;
+  getData: (data: any) => any;
 };
 
-export default function ProfilePromptList({ userUuid, size = 6 }: PropsType) {
-  const [cardList, setCardList] = useState<Array<unknown>>([]);
+export default function ProfilePromptList({ className, userUuid, size = 6, getData }: PropsType) {
+  const [cardList, setCardList] = useState<Array<any>>([]);
   const [totalPromptsCnt, setTotalPromptsCnt] = useState<number>(0);
 
   const page = useRef<number>(0);
 
-  // ForkList 가져오기
-  const handleGetForkedPrompt = async () => {
+  // User가 올린 Prompt 가져오기
+  const handlePromptsMember = async () => {
     const requestData = {
       id: userUuid,
       page: page.current,
       size,
     };
     try {
-      const data = await getPromptsMemberAPI(requestData);
+      const data = await getData(requestData);
       if (data.result === 'SUCCESS') {
-        setCardList(data.data);
+        setCardList(data.data.promptCardResponseList);
         setTotalPromptsCnt(data.data.totalPromptsCnt);
       }
     } catch (err) {
@@ -36,7 +38,7 @@ export default function ProfilePromptList({ userUuid, size = 6 }: PropsType) {
 
   useEffect(() => {
     if (userUuid) {
-      handleGetForkedPrompt();
+      handlePromptsMember();
       return () => {
         page.current = 0;
       };
@@ -47,19 +49,23 @@ export default function ProfilePromptList({ userUuid, size = 6 }: PropsType) {
   // 페이지 이동
   const handlePage = (number: number) => {
     page.current = number - 1;
-    handleGetForkedPrompt();
+    handlePromptsMember();
   };
 
   return (
-    <Container>
+    <Container className={className}>
       <CardList>
-        {cardList?.map((prompt: any) => (
-          <PromptCard
-            key={prompt.promptUuid}
-            prompt={prompt}
-            url={`/prompts/${prompt.promptUuid}`}
-          />
-        ))}
+        {cardList.length > 0 ? (
+          cardList?.map((prompt: any) => (
+            <PromptCard
+              key={prompt.promptUuid}
+              prompt={prompt}
+              url={`/prompts/${prompt.promptUuid}`}
+            />
+          ))
+        ) : (
+          <div style={{ padding: '16px' }}>게시한 프롬프트가 없어요!</div>
+        )}
       </CardList>
       <Paging
         page={page.current}

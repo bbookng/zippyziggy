@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Image from 'next/image';
 import { FaPlayCircle } from 'react-icons/fa';
 import { testPrompt } from '@/core/prompt/promptAPI';
@@ -15,6 +15,7 @@ import {
 import Button from '../Button/Button';
 
 interface PropTypes {
+  guideElementRef?: any;
   prompt1: string | null;
   prompt2: string | null;
   example: string | null;
@@ -27,6 +28,7 @@ interface PropTypes {
 }
 
 export default function CreatePart1({
+  guideElementRef,
   prompt1,
   prompt2,
   example,
@@ -42,7 +44,12 @@ export default function CreatePart1({
       <LeftContainer>
         <div className="row row-1">
           <div className="label">
-            <label className="label" htmlFor="prompt1" style={{ cursor: 'pointer' }}>
+            <label
+              ref={guideElementRef && guideElementRef[1]}
+              className="label"
+              htmlFor="prompt1"
+              style={{ cursor: 'pointer' }}
+            >
               앞 프롬프트
             </label>
           </div>
@@ -58,7 +65,11 @@ export default function CreatePart1({
           <div className="colorBlock " />
           <div className="questionBox">
             <div className="label">
-              <label htmlFor="example" style={{ cursor: 'pointer' }}>
+              <label
+                ref={guideElementRef && guideElementRef[2]}
+                htmlFor="example"
+                style={{ cursor: 'pointer' }}
+              >
                 질문 예시
               </label>
             </div>
@@ -73,7 +84,11 @@ export default function CreatePart1({
         </div>
         <div className="row row-2">
           <div className="label">
-            <label htmlFor="prompt2" style={{ cursor: 'pointer' }}>
+            <label
+              htmlFor="prompt2"
+              ref={guideElementRef && guideElementRef[3]}
+              style={{ cursor: 'pointer' }}
+            >
               뒤 프롬프트
             </label>
           </div>
@@ -89,7 +104,9 @@ export default function CreatePart1({
       <RightContainer>
         <SubContainer>
           <div className="row">
-            <div className="label">제작된 예시 프롬프트</div>
+            <div className="label" ref={guideElementRef && guideElementRef[4]}>
+              제작된 예시 프롬프트
+            </div>
             <div className="sentenceBox">
               <div className="questionMark">Q:</div>
               <div>
@@ -102,7 +119,9 @@ export default function CreatePart1({
           <div className="row">
             <Button className="testBtn" onClick={handleTest}>
               <FaPlayCircle />
-              <div className="text">테스트</div>
+              <div className="text" ref={guideElementRef && guideElementRef[5]}>
+                테스트
+              </div>
             </Button>
           </div>
         </SubContainer>

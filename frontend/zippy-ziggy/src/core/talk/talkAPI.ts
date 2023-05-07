@@ -33,7 +33,7 @@ export const putTalksCommentAPI = async (requestData: {
     });
     if (res.status === 200) {
       Toastify({
-        text: message.CreatePromptSuccess,
+        text: message.UpdateCommentSuccess,
         duration: 1000,
         position: 'center',
         stopOnFocus: true,
@@ -43,6 +43,13 @@ export const putTalksCommentAPI = async (requestData: {
     }
     return { result: 'FAIL', data: res.data };
   } catch (err) {
+    Toastify({
+      text: message.UpdateCommentFail,
+      duration: 1000,
+      position: 'center',
+      stopOnFocus: true,
+      style: toastifyCSS.fail,
+    }).showToast();
     return { result: 'FAIL', data: err };
   }
 };
@@ -58,7 +65,7 @@ export const deleteTalksCommentAPI = async (commentId: string, crntMemberUuid: s
     const res = await httpAuth.delete(`/talks/${commentId}/comments/${crntMemberUuid}`);
     if (res.status === 204) {
       Toastify({
-        text: message.CreatePromptSuccess,
+        text: message.DeleteCommentSuccess,
         duration: 1000,
         position: 'center',
         stopOnFocus: true,
@@ -68,6 +75,13 @@ export const deleteTalksCommentAPI = async (commentId: string, crntMemberUuid: s
     }
     return { result: 'FAIL', data: res.data };
   } catch (err) {
+    Toastify({
+      text: message.DeleteCommentFail,
+      duration: 1000,
+      position: 'center',
+      stopOnFocus: true,
+      style: toastifyCSS.fail,
+    }).showToast();
     return { result: 'FAIL', data: err };
   }
 };
@@ -98,7 +112,7 @@ export const postTalksAPI = async (talkData: PostTalkType) => {
     const res = await httpAuth.post(`/talks`, { talkData });
     if (res.status === 200) {
       Toastify({
-        text: message.CreatePromptSuccess,
+        text: message.CreateTalkSuccess,
         duration: 1000,
         position: 'center',
         stopOnFocus: true,
@@ -108,6 +122,13 @@ export const postTalksAPI = async (talkData: PostTalkType) => {
     }
     return { result: 'FAIL', data: res.data };
   } catch (err) {
+    Toastify({
+      text: message.CreateTalkFail,
+      duration: 1000,
+      position: 'center',
+      stopOnFocus: true,
+      style: toastifyCSS.fail,
+    }).showToast();
     return { result: 'FAIL', data: err };
   }
 };
@@ -136,13 +157,6 @@ export const deleteTalksLikeAPI = async (talkId: string) => {
   try {
     const res = await httpAuth.delete(`/talks/${talkId}/like`);
     if (res.status === 204) {
-      Toastify({
-        text: message.CreatePromptSuccess,
-        duration: 1000,
-        position: 'center',
-        stopOnFocus: true,
-        style: toastifyCSS.success,
-      }).showToast();
       return { result: 'SUCCESS', data: res.data };
     }
     return { result: 'FAIL', data: res.data };
@@ -170,13 +184,6 @@ export const getTalksCommentsAPI = async (requestData: {
   try {
     const res = await http.get(`/talks/${requestData.id}/comments?${queryParams}`);
     if (res.status === 200) {
-      Toastify({
-        text: message.CreatePromptSuccess,
-        duration: 1000,
-        position: 'center',
-        stopOnFocus: true,
-        style: toastifyCSS.success,
-      }).showToast();
       return { result: 'SUCCESS', data: res.data };
     }
     return { result: 'FAIL', data: res.data };
@@ -200,7 +207,7 @@ export const postTalksCommentsAPI = async (requestData: {
     const res = await httpAuth.post(`/talks/${requestData.id}/comments`, { content });
     if (res.status === 200) {
       Toastify({
-        text: message.CreatePromptSuccess,
+        text: message.WriteCommentSuccess,
         duration: 1000,
         position: 'center',
         stopOnFocus: true,
@@ -210,6 +217,13 @@ export const postTalksCommentsAPI = async (requestData: {
     }
     return { result: 'FAIL', data: res.data };
   } catch (err) {
+    Toastify({
+      text: message.WriteCommentFail,
+      duration: 1000,
+      position: 'center',
+      stopOnFocus: true,
+      style: toastifyCSS.fail,
+    }).showToast();
     return { result: 'FAIL', data: err };
   }
 };
@@ -224,13 +238,6 @@ export const getTalksAPI = async (talkId: string) => {
   try {
     const res = await httpAuth.get(`/talks/${talkId}`);
     if (res.status === 200) {
-      Toastify({
-        text: message.CreatePromptSuccess,
-        duration: 1000,
-        position: 'center',
-        stopOnFocus: true,
-        style: toastifyCSS.success,
-      }).showToast();
       return { result: 'SUCCESS', data: res.data };
     }
     return { result: 'FAIL' };
@@ -251,7 +258,7 @@ export const deleteTalksAPI = async (reqeustData: { talkId: string | string[]; r
     router.push(`/prompts`);
     if (res.status === 204) {
       Toastify({
-        text: message.CreatePromptSuccess,
+        text: message.DeleteTalkSuccess,
         duration: 1000,
         position: 'center',
         stopOnFocus: true,
@@ -262,7 +269,7 @@ export const deleteTalksAPI = async (reqeustData: { talkId: string | string[]; r
     return { result: 'FAIL' };
   } catch (err) {
     Toastify({
-      text: message.DeletePromptFail,
+      text: message.DeleteTalkFail,
       duration: 1000,
       position: 'center',
       stopOnFocus: true,

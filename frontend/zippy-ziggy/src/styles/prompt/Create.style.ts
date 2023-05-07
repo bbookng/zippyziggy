@@ -43,12 +43,13 @@ const TitleWrapper = styled.div<TitleProps>`
   }
 
   .help {
+    cursor: pointer;
     display: flex;
     align-items: center;
     color: var(--colors-link);
     margin-left: 0.5rem;
     font-weight: 500;
-    font-size: 0.75rem;
+    font-size: 1rem;
 
     .icon {
       margin-right: 0.2rem;

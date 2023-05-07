@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { getDate } from '@/lib/utils';
 import { FaHeart, FaBookmark, FaPlayCircle, FaRegHeart, FaRegBookmark } from 'react-icons/fa';
 import Link from 'next/link';
+import { BsFillPlayFill, BsPlayFill } from 'react-icons/bs';
 import { useRouter } from 'next/router';
 import { bookmarkPrompt, likePrompt } from '@/core/prompt/promptAPI';
 import { Body, Conatiner, Content, Footer, Infos, Title } from './CardStyle';
@@ -114,14 +115,15 @@ export default function PromptCard({ image, title, description, url, prompt }: P
             priority
             src={prompt?.writer?.writerImg || '/images/noProfile.png'}
             alt="프로필 사진"
-            width={30}
-            height={30}
+            width={24}
+            height={24}
             className="profileImg"
           />
           <div className="nickname">{prompt?.writer?.writerNickname || '닉네임'}</div>
         </div>
+
         <div className="extraBox">
-          <div className="item">
+          <div className="likeItem item">
             {prompt !== undefined ? (
               isLiked ? (
                 <FaHeart className="like" onClick={handleLike} />
@@ -133,7 +135,7 @@ export default function PromptCard({ image, title, description, url, prompt }: P
             )}
             <div>{likeCnt}</div>
           </div>
-          <div className="item">
+          <div className="bookmarkItem item">
             {prompt !== undefined ? (
               isBookmarked ? (
                 <FaBookmark className="bookmark" onClick={handleBookmark} />
@@ -145,7 +147,7 @@ export default function PromptCard({ image, title, description, url, prompt }: P
             )}
           </div>
           <div className="item">
-            <FaPlayCircle className="play" />
+            <BsFillPlayFill className="play" />
           </div>
         </div>
       </Footer>
