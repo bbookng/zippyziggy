@@ -2,6 +2,7 @@ package com.zippyziggy.prompt.talk.dto.response;
 
 import com.zippyziggy.prompt.prompt.dto.response.MemberResponse;
 import com.zippyziggy.prompt.prompt.dto.response.WriterResponse;
+import com.zippyziggy.prompt.talk.model.Talk;
 import lombok.Builder;
 import lombok.Data;
 
@@ -19,14 +20,14 @@ public class TalkListResponse {
 	private Boolean isLiked;
 
 	public static TalkListResponse from(
-		Long talkId,
-		String title,
-		String question,
-		String answer,
-		MemberResponse member,
-		Long likeCnt,
-		Long commentCnt,
-		Boolean isLiked
+			Long talkId,
+			String title,
+			String question,
+			String answer,
+			MemberResponse member,
+			Long likeCnt,
+			Long commentCnt,
+			Boolean isLiked
 	) {
 		return TalkListResponse.builder()
 				.talkId(talkId)
