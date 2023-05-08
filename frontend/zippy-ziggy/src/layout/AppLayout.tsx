@@ -1,3 +1,4 @@
+import Footer from '@/components/Footer/Footer';
 import Navbar from '@/components/Navbar/Navbar';
 import Head from 'next/head';
 import React from 'react';
@@ -59,6 +60,7 @@ function AppLayout({ children, toggleTheme }: AppLayoutProps) {
       </Head>
       <Navbar toggleTheme={toggleTheme} />
       <div>{children}</div>
+      <Footer />
     </>
   );
 }

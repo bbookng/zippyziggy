@@ -18,8 +18,8 @@ export default function Prompt() {
   const [keyword, setKeyword] = useState<string>('');
   const [cardList, setCardList] = useState<Array<unknown>>([]);
   const [totalPromptsCnt, setTotalPromptsCnt] = useState<number>(0);
-  const router = useRouter();
   const page = useRef<number>(0);
+  const router = useRouter();
   const debouncedKeyword = useDebounce(keyword);
 
   // 검색 요청

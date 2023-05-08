@@ -3,6 +3,7 @@ import { http, httpAuth, httpForm, httpAuthForm } from '@/lib/http';
 import Toastify from 'toastify-js';
 import toastifyCSS from '@/assets/toastify.json';
 import message from '@/assets/message.json';
+import { type } from 'os';
 
 // 회원 탈퇴(Authorization 필요)
 export const deleteUserAPI = async () => {
@@ -110,6 +111,22 @@ export const getNicknameAPI = async (nickname: string) => {
 /**
  * 구글로그인
  */
+type TypeGetSocialResponseDTO = {
+  // 항시 오는 데이터
+  isSignUp: boolean;
+  // 아래는 회원가입 할 경우
+  socialSignUpDataResponseDto?: {
+    name: string;
+    platform: string;
+    platformId: string;
+    profileImg: string;
+  };
+  // 아래는 로그인 할 경우
+  nickname?: string;
+  profileImg?: string;
+  userUuid?: string;
+};
+
 export const getGoogleAPI = async (code: string) => {
   const queryParams = new URLSearchParams({
     code,
@@ -117,7 +134,7 @@ export const getGoogleAPI = async (code: string) => {
   }).toString();
   try {
     const res = await http.get(`/members/login/oauth2/code/google?${queryParams}`);
-    const { data } = res;
+    const data = res.data as TypeGetSocialResponseDTO;
     if (data?.isSignUp === true) {
       // 회원가입으로 이동
       return {
@@ -144,7 +161,7 @@ export const getKakaoAPI = async (code: string) => {
   }).toString();
   try {
     const res = await http.get(`/members/auth/kakao/callback?${queryParams}`);
-    const { data } = res;
+    const data = res.data as TypeGetSocialResponseDTO;
     if (data?.isSignUp === true) {
       return {
         result: 'SUCCESS_SIGNUP',
@@ -205,6 +222,36 @@ export const getPromptsBookmarkAPI = async (requestData: {
   }).toString();
   try {
     const res = await http.get(`/members/prompts/bookmark/${requestData.id}?${queryParams}`);
+    if (res.status === 200) {
+      return { result: 'SUCCESS', data: res.data };
+    }
+    return { result: 'FAIL', data: res.data };
+  } catch (err) {
+    return { result: 'FAIL', data: err };
+  }
+};
+
+/**
+ * 맴버가 생성한 톡 조회
+ * @param id
+ * @param page
+ * @param size
+ *
+ * @returns
+ */
+export const getTalksProfileAPI = async (requestData: {
+  id: string | string[] | number;
+  page: number;
+  size: number;
+  sort: string;
+}) => {
+  const queryParams = new URLSearchParams({
+    page: String(requestData.page),
+    size: String(requestData.size),
+    sort: String(requestData.sort),
+  }).toString();
+  try {
+    const res = await http.get(`/members/talks/profile/${requestData.id}?${queryParams}`);
     if (res.status === 200) {
       return { result: 'SUCCESS', data: res.data };
     }
