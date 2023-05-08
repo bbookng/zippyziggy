@@ -15,7 +15,9 @@ const CHAT_GPT_URL = 'https://chat.openai.com/';
 const ENDPOINT_CONVERSATION_URL = 'https://chat.openai.com/backend-api/conversation';
 
 /* HTML ID */
-const ZP_ROOT_ID = 'zp-root';
+const ZP_ROOT_ID = 'ZP-root';
+const ZP_BACKDROP_ID = 'ZP-backdropRoot';
+const ZP_OVERLAY_ID = 'ZP-overlayRoot';
 const ZP_PROMPT_CONTAINER_ID = 'ZP_promptContainerPortals';
 const ZP_INPUT_WRAPPER_ID = 'ZP_inputWrapperPortals';
 const ZP_INPUT_SECTION_ID = 'ZP_inputSection';
@@ -48,6 +50,8 @@ export {
   ENDPOINT_CONVERSATION_URL,
   JSON_SERVER_URL,
   ZP_ROOT_ID,
+  ZP_BACKDROP_ID,
+  ZP_OVERLAY_ID,
   ZP_PROMPT_CONTAINER_ID,
   ZP_INPUT_WRAPPER_ID,
   ZP_INPUT_SECTION_ID,

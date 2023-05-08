@@ -90,7 +90,7 @@ FetchParams): FetchResult<T> => {
 
       try {
         const response: AxiosResponse<T> = await instance.request({
-          url,
+          url: `${instance.defaults.baseURL}${url}`,
           method,
           cancelToken: cancelToken.current?.token,
           params: config?.params || params,

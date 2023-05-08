@@ -95,11 +95,16 @@
       .ZP_prompt-container__profile{
         display: flex;
         align-items: center;
+        width: 40%;
         img {
           width: 1.25rem;
           height: 1.25rem;
           border-radius: var(--borders-radius-round);
           margin-right: 0.25rem;
+        }
+        span{
+          @include ellipsis(1, 1.3rem);
+          width: 100%;
         }
       }
 

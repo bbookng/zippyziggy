@@ -11,7 +11,6 @@ import {
   CHROME_SEARCH_KEY,
   CHROME_SORT_KEY,
   LIMIT,
-  ZIPPY_API_URL,
 } from '@pages/constants';
 import useDebounce from '@pages/hooks/@shared/useDebounce';
 import useChromeStorage from '@pages/hooks/@shared/useChromeStorage';
@@ -68,7 +67,7 @@ const PromptContainer = () => {
     loading,
     error,
   } = useFetch<SearchResult>({
-    url: `${ZIPPY_API_URL}/search/extension`,
+    url: `/search/extension`,
     // url: `${JSON_SERVER_URL}`,
     params: memoizedParams,
   });

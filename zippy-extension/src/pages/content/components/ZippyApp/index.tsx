@@ -1,6 +1,6 @@
 import refreshOnUpdate from 'virtual:reload-on-update-in-view';
 import injectScript from '@pages/content/utils/inject-script';
-import { CHAT_GPT_URL, ZP_ROOT_ID } from '@pages/constants';
+import { CHAT_GPT_URL, ZP_BACKDROP_ID, ZP_OVERLAY_ID, ZP_ROOT_ID } from '@pages/constants';
 import { createRoot } from 'react-dom/client';
 import ContentScript from '@pages/content/components/ZippyApp/ZippyApp';
 
@@ -8,11 +8,21 @@ refreshOnUpdate('pages/content');
 
 const currentUrl = window.location.href;
 
-// 리액트의 root 심기
 const addRoot = () => {
+  // 리액트의 root 심기
   const root = document.createElement('div');
   root.id = ZP_ROOT_ID;
+
+  // 모달을 위한 포탈 root
+  const backdropRoot = document.createElement('div');
+  backdropRoot.id = ZP_BACKDROP_ID;
+
+  const overlayRoot = document.createElement('div');
+  overlayRoot.id = ZP_OVERLAY_ID;
+
   document.body.appendChild(root);
+  document.body.prepend(backdropRoot);
+  document.body.prepend(overlayRoot);
 
   createRoot(root).render(<ContentScript />);
 };

@@ -1,0 +1,23 @@
+.ZP_overlay{
+  & > div {
+    width: 100%;
+    background-color: var(--background-modal);
+  }
+
+  .ZP_modal-content,
+  .ZP_modal-button-wrapper{
+    width: 100%;
+    padding: 0.75rem 1rem;
+  }
+
+  .ZP_modal-content {
+    height: 100%;
+  }
+
+  .ZP_modal-button-wrapper {
+    background-color: blue;
+  }
+}
+
+
+
