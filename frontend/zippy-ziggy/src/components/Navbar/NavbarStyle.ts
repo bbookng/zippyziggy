@@ -38,7 +38,10 @@ const NavList = styled.ul<NavListProps>`
   display: flex;
   align-items: center;
   margin-left: 2rem;
-
+  flex-grow: 1;
+  .right {
+    margin-left: auto;
+  }
   ${media.small`
     display: ${(props) => (props.isOpen ? 'flex' : 'hide')};
     flex-direction: column;

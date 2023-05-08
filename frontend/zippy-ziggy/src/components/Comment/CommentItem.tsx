@@ -123,6 +123,10 @@ export default function CommentItem({ comment, type, id, handleDeleteComment }: 
     };
   }, []);
 
+  const handleImgError = (e) => {
+    e.target.src = '/images/noProfile.png';
+  };
+
   return (
     <>
       {isOpenCommentDeleteModal && (
@@ -143,6 +147,7 @@ export default function CommentItem({ comment, type, id, handleDeleteComment }: 
             width={42}
             height={42}
             className="image"
+            onError={handleImgError}
           />
           <div className="infoBox">
             <div className="nameBox">

@@ -3,6 +3,7 @@ import { getTalkCommentList, getTalksCommentsAPI, postTalksCommentsAPI } from '@
 import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { checkInputFormToast } from '@/lib/utils';
+import checkLogin from '@/utils/checkLogin';
 import { Container, InputBox, Textarea, Title } from './CommentListStyle';
 import Button from '../Button/Button';
 import CommentItem from './CommentItem';
@@ -129,7 +130,12 @@ export default function CommentList({ id, type, size }: PropsType) {
           onChange={(e) => handleChange(e, 'content')}
           placeholder="댓글을 입력해주세요."
         />
-        <Button width="3rem" height="2rem" className="btn" onClick={handleCreateComment}>
+        <Button
+          width="3rem"
+          height="2rem"
+          className="btn"
+          onClick={checkLogin(handleCreateComment)}
+        >
           작성
         </Button>
       </InputBox>

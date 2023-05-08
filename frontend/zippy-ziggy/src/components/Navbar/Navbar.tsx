@@ -9,6 +9,7 @@ import { useRouter } from 'next/router';
 // 유저 정보 가져오기
 import { useAppSelector } from '@/hooks/reduxHook';
 
+import { FiSun } from 'react-icons/fi';
 import { NavWrapper, NavList, NavOption, Logo, NavUser, Overlay } from './NavbarStyle';
 import Button from '../Button/Button';
 import ProfileImage from '../Image/ProfileImage';
@@ -32,7 +33,6 @@ const Navbar = ({ toggleTheme }) => {
     ['프롬프트', '0', '/prompts'],
     ['대화공유', '1', '/talks'],
     ['튜토리얼', '2', '/tutorial'],
-    ['다운로드', '3', '/download'],
   ];
 
   // 선택된 옵션 표시
@@ -49,59 +49,75 @@ const Navbar = ({ toggleTheme }) => {
     router.push('/');
   };
 
+  // 다운로드 페이지로 이동
+  const handleDownloadBtn = (e) => {
+    e.preventDefault();
+    router.push(
+      'https://chrome.google.com/webstore/detail/%EC%A7%80%ED%94%BC%EC%A7%80%EA%B8%B0-chatgpt-%ED%99%95%EC%9E%A5%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%A8/gcinlhaphmofekpjjjcnbiigbgnffokc?hl=ko'
+    );
+  };
+
   return (
     <NavWrapper>
       <FaBars className="toggleBtn" onClick={() => setIsOpen((prev) => !prev)} />
-      <div style={{ display: 'flex' }}>
-        <Logo>
-          {isDark ? (
-            <Image
-              priority
-              src="/images/logos/logo_white_128.png"
-              alt="logo"
-              width={200}
-              height={50}
-              className="LogoImage"
-              onClick={moveMain}
-            />
-          ) : (
-            <Image
-              priority
-              src="/images/logos/logo_black_128.png"
-              alt="logo"
-              width={200}
-              height={50}
-              className="LogoImage"
-              onClick={moveMain}
-            />
-          )}
-        </Logo>
-        <NavList isOpen={isOpen}>
-          {navOptions.map(([navOption, index, link]) => {
-            return (
-              <NavOption
-                key={index}
-                onClick={handleIsSelected}
-                onKeyDown={handleIsSelected}
-                tabIndex={Number(index)}
-                role="button"
-                className={isSelected === navOption ? 'active' : ''}
-              >
-                <Link href={link}>{navOption}</Link>
-              </NavOption>
-            );
-          })}
-          <NavOption
-            onClick={toggleTheme}
-            onKeyDown={toggleTheme}
-            tabIndex={navOptions.length}
-            role="button"
-            className="themeBtn"
-          >
-            테마 바꾸기
-          </NavOption>
-        </NavList>
-      </div>
+      <Logo>
+        {isDark ? (
+          <Image
+            priority
+            src="/images/logos/logo_white_128.png"
+            alt="logo"
+            width={200}
+            height={50}
+            className="LogoImage"
+            onClick={moveMain}
+          />
+        ) : (
+          <Image
+            priority
+            src="/images/logos/logo_black_128.png"
+            alt="logo"
+            width={200}
+            height={50}
+            className="LogoImage"
+            onClick={moveMain}
+          />
+        )}
+      </Logo>
+      <NavList isOpen={isOpen}>
+        {navOptions.map(([navOption, index, link]) => {
+          return (
+            <NavOption
+              key={index}
+              onClick={handleIsSelected}
+              onKeyDown={handleIsSelected}
+              tabIndex={Number(index)}
+              role="button"
+              className={isSelected === navOption ? 'active' : ''}
+            >
+              <Link href={link}>{navOption}</Link>
+            </NavOption>
+          );
+        })}
+        <NavOption
+          onClick={handleDownloadBtn}
+          onKeyDown={handleDownloadBtn}
+          tabIndex={navOptions.length}
+          role="button"
+          className="themeBtn"
+        >
+          다운로드
+        </NavOption>
+        <NavOption
+          onClick={toggleTheme}
+          onKeyDown={toggleTheme}
+          tabIndex={navOptions.length}
+          role="button"
+          className="themeBtn right"
+        >
+          <FiSun />
+        </NavOption>
+      </NavList>
+
       {userState?.isLogin ? (
         <NavUser>
           <FaRegBookmark className="item bookmark" />
