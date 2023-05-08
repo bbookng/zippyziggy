@@ -5,6 +5,7 @@ import Title from '@/components/Typography/Title';
 import { media } from '@/styles/media';
 import Link from 'next/link';
 import { GetStaticProps, NextPage } from 'next';
+import Footer from '@/components/Footer/Footer';
 
 const Container = styled.div`
   display: flex;
@@ -35,26 +36,29 @@ interface HomePageProps {
 
 const Home: NextPage<HomePageProps> = ({ title }) => {
   return (
-    <Container>
-      <LogoContainer>
-        <Title className="title" color="whiteColor" textAlign="center">
-          {title}재밌고 유용한 프롬프트를 찾으시나요?
-          <br /> 지피지기를 사용해보세요
-        </Title>
-      </LogoContainer>
-      <Link href="/prompts">
-        <Paragraph color="linkColor" style={{ cursor: 'pointer' }}>
-          유용한 프롬프트 찾기 →
-        </Paragraph>
-      </Link>
-      <br />
-      <Link href="/download">
-        <Paragraph color="linkColor" style={{ cursor: 'pointer' }}>
-          확장 프로그램으로 쉽게 사용하기 →
-        </Paragraph>
-      </Link>
-      <br />
-    </Container>
+    <>
+      <Container>
+        <LogoContainer>
+          <Title className="title" color="whiteColor" textAlign="center">
+            {title}재밌고 유용한 프롬프트를 찾으시나요?
+            <br /> 지피지기를 사용해보세요
+          </Title>
+        </LogoContainer>
+        <Link href="/prompts">
+          <Paragraph color="linkColor" style={{ cursor: 'pointer' }}>
+            유용한 프롬프트 찾기 →
+          </Paragraph>
+        </Link>
+        <br />
+        <Link href="/download">
+          <Paragraph color="linkColor" style={{ cursor: 'pointer' }}>
+            확장 프로그램으로 쉽게 사용하기 →
+          </Paragraph>
+        </Link>
+        <br />
+      </Container>
+      <Footer />
+    </>
   );
 };
 // 이게 먼저 실행되고 컴포넌트 함수가 실행될 것임

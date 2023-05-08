@@ -19,7 +19,7 @@ import ProfilePromptList from '@/components/DetailPrompt/ProfilePromptList';
 import { CardList } from '@/components/DetailPrompt/ComponentStyle';
 import TalkCard from '@/components/TalkCard/TalkCard';
 import Paging from '@/components/Paging/Paging';
-import { getTalksListAPI } from '@/core/talk/talkAPI';
+import Footer from '@/components/Footer/Footer';
 
 const ProfileContainer = styled.div`
   width: 100%;
@@ -54,7 +54,15 @@ const ProfilePromptContainer = styled.div`
   }
 `;
 
-const ProfileTalkContainer = styled.div``;
+const ProfileTalkContainer = styled.div`
+  width: 100%;
+  padding: 48px 16px;
+  background-color: ${({ theme: { colors } }) => colors.navColor};
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
 
 export default function Index() {
   const userState = useAppSelector((state) => state.user); // 유저정보
@@ -62,30 +70,50 @@ export default function Index() {
   const [nickname, setNickname] = useState('');
   const [profileImg, setProfileImg] = useState('');
   const router = useRouter();
-  const { userUuid, mypage } = router.query;
-  const paramUserUuid = typeof userUuid === 'string' ? userUuid : '';
-  const paramMypage = typeof mypage === 'string' ? mypage : 'false';
+  const { userUuid, mypage } = router.query as { userUuid: string; mypage: string };
   const [isSelectedBtn, setIsSelectedBtn] = useState<'prompt' | 'bookmark'>('prompt');
   const [cardList, setCardList] = useState<Array<unknown>>([]);
   const [totalPromptsCnt, setTotalPromptsCnt] = useState<number>(0);
   const page = useRef<number>(0);
 
-  const handleUserAPI = async (uuid: string, page: string) => {
-    const result = await getUserAPI(uuid);
+  // 1단계 : 유저 정보 받아오기
+  const handleUserAPI = async () => {
+    const result = await getUserAPI(userUuid);
+
+    // 로그인 정보 초기화
+    //    공통 : 마이페이지를 들어간 경우
+    //    1. 유저정보가 없을 경우
+    //    2. 유저정보가 있지만, null로 들어오는 경우 (삭제된 유저)
+    if (
+      (mypage === 'true' && result?.result === 'FAIL') ||
+      (result?.result === 'SUCCESS' && (result?.nickname === null || result?.profileImg === null))
+    ) {
+      localStorage.clear();
+      dispatch(setUserReset());
+      router.replace('/account/login');
+      return false;
+    }
+
+    // 유저정보가 없을 경우 profile 404 페이지로 이동
+    if (result?.result === 'FAIL') {
+      router.replace('/profile');
+      return false;
+    }
+
+    // 유저정보가 있을 경우
     if (result?.result === 'SUCCESS') {
+      // 데이터가 null로 오는 경우 profile 404 페이지로 이동
+      if (result?.nickname === null || result?.profileImg === null) {
+        router.replace('/profile');
+        return false;
+      }
       setNickname(result?.nickname);
       setProfileImg(result?.profileImg);
     }
-    if (result?.result === 'FAIL') {
-      if (page === 'true') {
-        // 로그인 모달 띄우기
-        router.replace('/account/login');
-      }
-      router.replace('/profile');
-    }
+    return true;
   };
 
-  // 페이지 이동
+  // 2단계 : 톡 정보 받아오기 (페이지 변경시에도 호출)
   const handleTalksProfile = async () => {
     // keyword, category로 검색 요청하기
     const requestData = {
@@ -99,31 +127,43 @@ export default function Index() {
       setCardList(data.data.searchTalkList);
       setTotalPromptsCnt(data.data.totalTalksCnt);
     }
+    return true;
   };
 
-  // query undefine 없애기
+  // 프로필 데이터 전체 받아오기
+  const handleProfileData = async () => {
+    // 유저가 없을 시 더이상 데이터를 받아오지 않음
+    if (!(await handleUserAPI())) {
+      return;
+    }
+    await handleTalksProfile();
+  };
+
+  // query를 제대로 받아왔을 경우
   useEffect(() => {
     if (userUuid && mypage) {
-      handleUserAPI(paramUserUuid, paramMypage);
       page.current = 0;
-      handleTalksProfile();
+      handleProfileData();
     }
   }, [userUuid, mypage]);
 
-  // 로그아웃
-  const handleLogout = async () => {
+  // 로그아웃 버튼 클릭
+  const handleLogoutBtn = async () => {
     await postUserLogoutAPI();
     localStorage.clear();
     dispatch(setUserReset());
     router.push('/');
   };
 
+  // 프로필 수정 페이지로 이동
   const handleGoModifyBtn = () => {
     router.push('/account/modify');
   };
 
+  // GPT 연동 버튼 클릭
   const handleGptBtn = () => {};
 
+  // talks 페이지 변경
   const handlePage = (number: number) => {
     page.current = number - 1;
     // 검색 요청
@@ -147,7 +187,7 @@ export default function Index() {
               fontColor="blackColor70"
               padding="0 24px"
               margin="4px 4px 0 0"
-              onClick={handleLogout}
+              onClick={handleLogoutBtn}
             >
               로그아웃
             </Button>
@@ -227,13 +267,16 @@ export default function Index() {
         />
       </ProfilePromptContainer>
       <ProfileTalkContainer>
+        <Title>대화</Title>
         <CardList>
+          {cardList?.length === 0 && <p>게시한 대화가 없어요!</p>}
           {cardList?.map((talk: any) => (
             <TalkCard key={talk.talkId} talk={talk} url={`/talks/${talk.talkId}`} />
           ))}
         </CardList>
         <Paging page={page.current} size={6} totalCnt={totalPromptsCnt || 0} setPage={handlePage} />
       </ProfileTalkContainer>
+      <Footer />
     </ProfileContainer>
   );
 }

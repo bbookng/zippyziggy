@@ -60,7 +60,6 @@ function AppLayout({ children, toggleTheme }: AppLayoutProps) {
       </Head>
       <Navbar toggleTheme={toggleTheme} />
       <div>{children}</div>
-      <Footer />
     </>
   );
 }
