@@ -7,7 +7,6 @@ import com.zippyziggy.prompt.prompt.dto.response.MemberResponse;
 import com.zippyziggy.prompt.prompt.dto.response.PromptCardResponse;
 import com.zippyziggy.prompt.prompt.dto.response.WriterResponse;
 import com.zippyziggy.prompt.prompt.exception.ForbiddenMemberException;
-import com.zippyziggy.prompt.prompt.exception.MemberNotFoundException;
 import com.zippyziggy.prompt.prompt.exception.PromptNotFoundException;
 import com.zippyziggy.prompt.prompt.model.Prompt;
 import com.zippyziggy.prompt.prompt.model.StatusCode;

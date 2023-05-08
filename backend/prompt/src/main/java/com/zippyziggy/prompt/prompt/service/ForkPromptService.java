@@ -1,13 +1,25 @@
 package com.zippyziggy.prompt.prompt.service;
 
+import com.zippyziggy.prompt.common.aws.AwsS3Uploader;
 import com.zippyziggy.prompt.common.kafka.KafkaProducer;
+import com.zippyziggy.prompt.prompt.client.MemberClient;
+import com.zippyziggy.prompt.prompt.dto.request.PromptRequest;
+import com.zippyziggy.prompt.prompt.dto.response.ForkPromptResponse;
+import com.zippyziggy.prompt.prompt.dto.response.ForkedPromptListResponse;
+import com.zippyziggy.prompt.prompt.dto.response.MemberResponse;
+import com.zippyziggy.prompt.prompt.dto.response.PromptCardResponse;
+import com.zippyziggy.prompt.prompt.model.Prompt;
 import com.zippyziggy.prompt.prompt.model.StatusCode;
+import com.zippyziggy.prompt.prompt.repository.PromptBookmarkRepository;
+import com.zippyziggy.prompt.prompt.repository.PromptCommentRepository;
+import com.zippyziggy.prompt.prompt.repository.PromptLikeRepository;
+import com.zippyziggy.prompt.prompt.repository.PromptRepository;
+import com.zippyziggy.prompt.talk.repository.TalkRepository;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
 import javax.transaction.Transactional;
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.data.domain.Page;
@@ -15,23 +27,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.zippyziggy.prompt.common.aws.AwsS3Uploader;
-import com.zippyziggy.prompt.prompt.client.MemberClient;
-import com.zippyziggy.prompt.prompt.dto.request.PromptRequest;
-import com.zippyziggy.prompt.prompt.dto.response.ForkPromptResponse;
-import com.zippyziggy.prompt.prompt.dto.response.ForkedPromptListResponse;
-import com.zippyziggy.prompt.prompt.dto.response.PromptCardResponse;
-import com.zippyziggy.prompt.prompt.dto.response.MemberResponse;
-import com.zippyziggy.prompt.prompt.exception.MemberNotFoundException;
-import com.zippyziggy.prompt.prompt.model.Prompt;
-import com.zippyziggy.prompt.prompt.repository.PromptBookmarkRepository;
-import com.zippyziggy.prompt.prompt.repository.PromptCommentRepository;
-import com.zippyziggy.prompt.prompt.repository.PromptLikeRepository;
-import com.zippyziggy.prompt.prompt.repository.PromptRepository;
-import com.zippyziggy.prompt.talk.repository.TalkRepository;
-
-import lombok.RequiredArgsConstructor;
 
 @Service
 @Transactional
