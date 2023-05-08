@@ -338,7 +338,6 @@ public class PromptService{
 			long forkCnt = promptRepository.countAllByOriginPromptUuidAndStatusCode(prompt.getPromptUuid(), StatusCode.OPEN);
 			long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
 
-			CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 			MemberResponse writerInfo = getWriterInfo(prompt.getMemberUuid());
 
 			// 좋아요, 북마크 여부
@@ -388,7 +387,6 @@ public class PromptService{
 			long forkCnt = promptRepository.countAllByOriginPromptUuidAndStatusCode(prompt.getPromptUuid(), StatusCode.OPEN);
 			long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
 
-			CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 			MemberResponse writerInfo = getWriterInfo(prompt.getMemberUuid());
 
 
@@ -483,7 +481,6 @@ public class PromptService{
 				long forkCnt = promptRepository.countAllByOriginPromptUuidAndStatusCode(prompt.getPromptUuid(), StatusCode.OPEN);
 				long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
 
-				CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 				MemberResponse writerInfo = getWriterInfo(prompt.getMemberUuid());
 
 
@@ -515,7 +512,6 @@ public class PromptService{
 			long forkCnt = promptRepository.countAllByOriginPromptUuidAndStatusCode(prompt.getPromptUuid(), StatusCode.OPEN);
 			long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
 
-			CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 			MemberResponse writerInfo = getWriterInfo(prompt.getMemberUuid());
 
 			boolean isBookmarded = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
