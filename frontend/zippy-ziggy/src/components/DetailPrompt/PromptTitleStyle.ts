@@ -95,6 +95,7 @@ const UserBox = styled.div`
 
   .image {
     width: 3rem;
+    height: 3rem;
     aspect-ratio: calc(1);
     border-radius: 50%;
   }

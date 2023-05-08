@@ -312,22 +312,3 @@ export const getPromptRecentAPI = async () => {
     return { result: 'FAIL', data: err };
   }
 };
-
-/**
- * 북마크한 프롬프트 조회
- * @returns
- */
-export const getPromptBookmarkAPI = async (crntMemberUuid: string, page: number, size = 4) => {
-  try {
-    const res = await http.get(
-      `/prompts/members/bookmark/${crntMemberUuid}?page=${page}&size=${size}`
-    );
-    const { data } = res;
-    if (res.status === 200) {
-      return { result: 'SUCCESS', data };
-    }
-    return { result: 'FAIL' };
-  } catch (err) {
-    return { result: 'FAIL', data: err };
-  }
-};

@@ -6,9 +6,11 @@ import SideBar from '@/components/DetailPrompt/SideBar';
 import Tab from '@/components/DetailPrompt/Tab';
 import TalkComponent from '@/components/DetailPrompt/TalkComponent';
 import TalkIntroduction from '@/components/DetailPrompt/TalkIntroduction';
+import TalkThisPromptComponent from '@/components/DetailPrompt/TalkThisPromptComponent';
 import Modal from '@/components/Modal/Modal';
+import PromptCard from '@/components/PromptCard/PromptCard';
 import { bookmarkPrompt, deletePrompt, getPromptDetail, likePrompt } from '@/core/prompt/promptAPI';
-import { getTalksAPI } from '@/core/talk/talkAPI';
+import { deleteTalksAPI, getTalksAPI, postTalksLikeAPI } from '@/core/talk/talkAPI';
 import { useAppSelector } from '@/hooks/reduxHook';
 import {
   Container,
@@ -58,9 +60,9 @@ export default function DetailPrompt() {
   // Tab 리스트
   const itemList = [
     ['대화내용', 0],
-    [`프롬프트 정보`, 1],
-    ['다른 대화', 2],
-    ['댓글', 3],
+    [`댓글`, 1],
+    ['프롬프트 정보', 2],
+    ['다른 대화', 3],
   ];
 
   // 선택된 옵션 표시
@@ -101,7 +103,7 @@ export default function DetailPrompt() {
 
   // 좋아요
   const handleLike = async () => {
-    const res = await likePrompt({ promptUuid });
+    const res = await postTalksLikeAPI({ talkId });
     if (res.result === 'SUCCESS') {
       setIsLiked((prev) => !prev);
       isLiked ? setLikeCnt((prev) => prev - 1) : setLikeCnt((prev) => prev + 1);
@@ -111,7 +113,7 @@ export default function DetailPrompt() {
   // 프롬프트 삭제
   const handleDeletePrompt = async () => {
     if (nickname === data?.data?.writer?.writerNickname) {
-      deletePrompt({ promptUuid, router });
+      deleteTalksAPI({ talkId, router });
     }
   };
 
@@ -144,6 +146,7 @@ export default function DetailPrompt() {
             <LeftContainer>
               <TopBox>
                 <PromptTitle
+                  type="talk"
                   prompt={data.data}
                   isLiked={isLiked}
                   isBookmarked={isBookmarked}
@@ -159,28 +162,26 @@ export default function DetailPrompt() {
                 <TalkIntroduction talk={data.data} />
               </section>
               <section id="1">
-                <TalkComponent promptUuid={promptUuid} size={4} />
-              </section>
-              <section id="2">
                 <CommentList id={talkId} type="talk" size={5} />
               </section>
+              <section id="2">
+                <TalkThisPromptComponent originPrompt={data.data.originPrompt} />
+              </section>
               <section id="3">
-                <ForkedPromptList promptUuid={promptUuid} size={4} />
+                <TalkComponent promptUuid={data?.data?.originPrompt?.promptUuid} size={4} />
               </section>
             </LeftContainer>
-            {/* <RightContainer>
+            <RightContainer>
               <SideBar
                 isLiked={isLiked}
                 isBookmarked={isBookmarked}
                 likeCnt={likeCnt}
                 isMe={isMe}
                 handleLike={handleLike}
-                handleBookmark={handleBookmark}
                 handleOpenDeleteModal={() => setIsOpenPromptDeleteModal(true)}
-                handleMoveToUpdatePromptPage={handleMoveToUpdatePromptPage}
-                handleMoveToCreatePromptForkPage={handleMoveToCreatePromptForkPage}
+                type="talk"
               />
-            </RightContainer> */}
+            </RightContainer>
             <MoveTopBtn scrollTop={!!scrollTop}>
               <FaAngleUp className="icon" onClick={handleButtonClick} />
             </MoveTopBtn>

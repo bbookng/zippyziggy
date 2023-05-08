@@ -6,10 +6,14 @@ const ColorBox = styled.div`
   justify-content: space-between;
   background-color: ${({ theme }) => theme.colors.whiteColor100};
   /* background-color: var(--colors-primary-10); */
+  min-width: 280px;
+
+  max-width: 400px;
   padding: 1rem 1.25rem;
   width: 100%;
   height: 8rem;
   border-radius: var(--borders-radius-base);
+  border: 1px solid ${({ theme }) => theme.colors.blackColor10};
   cursor: pointer;
   transition: all 0.2s ease-out;
   &:hover {
@@ -21,6 +25,7 @@ const ColorBox = styled.div`
   }
 
   .title {
+    word-wrap: break-word;
     font-weight: var(--fonts-heading);
   }
 
@@ -30,8 +35,21 @@ const ColorBox = styled.div`
     .userBox {
       display: flex;
       align-items: center;
+      overflow: hidden;
+
       .img {
         margin-right: 0.25rem;
+      }
+      .nickname {
+        margin-left: 8px;
+        max-width: 100px;
+        font-size: ${({ theme }) => theme.fonts.body_sm};
+        white-space: pre-wrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
       }
     }
 

@@ -9,6 +9,12 @@
   "DeletePromptSuccess": "✅ 프롬프트를 삭제하셨습니다",
   "DeletePromptFail": "❌ 프롬프트 삭제에 실패하셨습니다",
 
+  "CreateTalkSuccess": "✅ 톡을 생성하셨습니다",
+  "CreateTalkFail": "❌ 톡 생성에 실패하셨습니다",
+
+  "DeleteTalkSuccess": "✅ 톡을 삭제하셨습니다",
+  "DeleteTalkFail": "❌ 톡 삭제에 실패하셨습니다",
+
   "WriteCommentSuccess": "✅ 댓글을 생성하셨습니다",
   "WriteCommentFail": "❌ 댓글 생성에 실패하셨습니다",
 

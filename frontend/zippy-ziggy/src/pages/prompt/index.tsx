@@ -1,14 +1,19 @@
+import Button from '@/components/Button/Button';
 import CreateFooter from '@/components/CreatePrompt/CreateFooter';
 import CreatePart1 from '@/components/CreatePrompt/CreatePrompt_1';
 import CreatePart2 from '@/components/CreatePrompt/CreatePrompt_2';
+import GuideBalloon from '@/components/CreatePrompt/GuideBallon';
+import Paragraph from '@/components/Typography/Paragraph';
 import { createPrompt, testPrompt } from '@/core/prompt/promptAPI';
 import { useAppSelector } from '@/hooks/reduxHook';
 import { checkInputFormToast } from '@/lib/utils';
 import { ContainerTitle, TitleInfoWrapper, TitleWrapper } from '@/styles/prompt/Create.style';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import React, { HTMLAttributes, useEffect, useRef, useState } from 'react';
+import ReactDOM from 'react-dom';
+import { set, useForm } from 'react-hook-form';
 import { AiFillQuestionCircle } from 'react-icons/ai';
+import { FiArrowLeft, FiArrowRight } from 'react-icons/fi';
 import styled from 'styled-components';
 
 const FooterBox = styled.div`
@@ -40,6 +45,45 @@ export default function PromptCreate() {
     '최대 1분 이상 소요될 수 있습니다',
   ];
   const [text, setText] = useState<string>(textList[0]);
+
+  // 가이드 순서 설정
+  const [guideSequence, setGuideSequence] = useState<number>(0);
+  const [isShowGuide, setIsShowGuide] = useState<boolean>(false);
+  const guideElementRef = [
+    useRef(null),
+    useRef(null),
+    useRef(null),
+    useRef(null),
+    useRef(null),
+    useRef(null),
+  ];
+
+  const sequenceText = [
+    {
+      title: '가이드 1/6',
+      content: '프롬프트는 질문을 쉽고 정확하게 할 수 있는 질문표현방법입니다.',
+    },
+    {
+      title: '가이드 2/6',
+      content: '앞 프롬프트에는 질문의 앞에 붙을 프롬프트입니다.',
+    },
+    {
+      title: '가이드 3/6',
+      content: '질문 예시는 Chat-gpt에게 물어볼 질문을 작성하면 됩니다.',
+    },
+    {
+      title: '가이드 4/6',
+      content: '뒤 프롬프트에는 질문의 뒤에 붙을 프롬프트입니다.',
+    },
+    {
+      title: '가이드 5/6',
+      content: '앞 프롬프트, 질문, 뒤 프롬프트가 합쳐져서 다음과 같이 GPT에게 질문하게 됩니다!',
+    },
+    {
+      title: '가이드 6/6',
+      content: '테스트 버튼을 눌러 Chat-gpt가 대답을 잘 하는지 확인해보세요!',
+    },
+  ];
 
   // react-hook-form 설정
   const { setValue, getValues, watch } = useForm({
@@ -149,10 +193,15 @@ export default function PromptCreate() {
       <ContainerTitle>
         <TitleWrapper isNext={isNext}>
           <div className="title">프롬프트 작성</div>
-          <div className="help">
-            <AiFillQuestionCircle className="icon" />
-            <div>작성이 처음이신가요?</div>
-          </div>
+          {!isNext && (
+            <div className="help">
+              <AiFillQuestionCircle className="icon" />
+
+              <div ref={guideElementRef[0]} onClick={() => setIsShowGuide(true)}>
+                작성이 처음이신가요?
+              </div>
+            </div>
+          )}
         </TitleWrapper>
         <TitleInfoWrapper>
           <div className="userName">작성자 : {nickname}</div>
@@ -171,6 +220,7 @@ export default function PromptCreate() {
         />
       ) : (
         <CreatePart1
+          guideElementRef={guideElementRef}
           prompt1={prompt1}
           prompt2={prompt2}
           example={example}
@@ -188,6 +238,32 @@ export default function PromptCreate() {
         isNew
         handleNext={handleNext}
         handlePrompt={handleCreatePrompt}
+      />
+
+      <GuideBalloon
+        isShow={isShowGuide}
+        sequenceText={sequenceText}
+        handleNextBtn={() => {
+          if (sequenceText.length - 1 === guideSequence) {
+            setGuideSequence(0);
+            setIsShowGuide(false);
+            return;
+          }
+          setGuideSequence(guideSequence + 1);
+        }}
+        handlePrevBtn={() => {
+          if (guideSequence === 0) {
+            setGuideSequence(0);
+            return;
+          }
+          setGuideSequence(guideSequence - 1);
+        }}
+        handleSkipBtn={() => {
+          setGuideSequence(0);
+          setIsShowGuide(false);
+        }}
+        sequence={guideSequence}
+        targetElementRef={guideElementRef[guideSequence]}
       />
     </>
   );

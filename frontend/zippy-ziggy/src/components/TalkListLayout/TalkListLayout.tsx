@@ -37,7 +37,7 @@ export default function TalkListLayout({ talkList, columnList }: PropsType) {
         return (
           // ************************* 고쳐야됨 ***************************
           // eslint-disable-next-line react/no-array-index-key
-          <TalkCard key={index} talk={talk} url="" />
+          <TalkCard key={index} talk={talk} url={`/talks/${talk.talkId}`} />
         );
       })}
     </TalkBox>
