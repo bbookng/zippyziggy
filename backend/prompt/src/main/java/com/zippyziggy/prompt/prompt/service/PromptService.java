@@ -559,8 +559,10 @@ public class PromptService{
 					.run(() -> memberClient
 							.getMemberInfo(memberUuid)
 							.orElseGet(MemberResponse::new));
+			log.info("member에서 예외 처리 없이 찾아왔지만 null임");
 		} catch (NoFallbackAvailableException e) {
 			writerInfo = new MemberResponse();
+			log.info("member에서 예외 떴음");
 		}
 		return writerInfo;
 	}
