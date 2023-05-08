@@ -2,19 +2,42 @@ import { useEffect, useRef, useState } from 'react';
 import Lottie from 'react-lottie-player';
 import styled from 'styled-components';
 import TypeIt from 'typeit-react';
-import lottieJson from '@/assets/lottieJson/gradient-background.json';
+import lottieJson from '@/assets/lottieJson/background-pattern.json';
+import TestCompo from './test';
 
-const Container = styled.div``;
+const Container = styled.div`
+  width: 100%;
+  height: 1024px;
+`;
 
-const Wrap = styled.div``;
+const Wrap = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 24px;
+`;
 
-const Test = styled.div`
-  .container img {
+const Logo = styled.div`
+  display: flex;
+  .container {
+    width: 400px;
+    aspect-ratio: 4.98;
+    object-fit: cover;
+    -webkit-mask-image: url('/images/Zippy Ziggy.svg');
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+    /* mask-image: url('/images/Zippy Ziggy.svg'); */
+  }
+  .img {
     height: 100%;
     width: 100%;
     object-fit: cover;
-    -webkit-mask-image: url('/images/Zippy Ziggy.svg');
-    mask-image: url('/images/Zippy Ziggy.svg');
+    /* mask-image: url('/images/Zippy Ziggy.svg'); */
+  }
+  .lottie {
+    width: 400px;
   }
 `;
 
@@ -24,11 +47,14 @@ export default function Tutorial() {
   return (
     <Container>
       <Wrap>
-        <Test>
+        <Logo>
           <div className="container">
-            <img src="/images/ChatGPT_logo.png" alt="Balloons" />
+            <div className="img">
+              <Lottie className="lottie" loop animationData={lottieJson} play />
+            </div>
+            {/* <img src="/images/ChatGPT_logo.png" alt="Balloons" /> */}
           </div>
-        </Test>
+        </Logo>
         <div>
           <div>Chat-GPT야 아래는 사이트 소개야</div>
           <div>

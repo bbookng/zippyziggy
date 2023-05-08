@@ -129,7 +129,7 @@ const Footer = () => {
             </ul>
           </div>
           <div className="footer-col">
-            <h4>팀 소개</h4>
+            <h4>팀 든든</h4>
             <ul>
               <li>
                 <Link href="https://github.com/bbookng">김보경</Link>

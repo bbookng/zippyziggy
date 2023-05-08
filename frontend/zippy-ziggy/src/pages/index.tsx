@@ -4,6 +4,7 @@ import Paragraph from '@/components/Typography/Paragraph';
 import Title from '@/components/Typography/Title';
 import { media } from '@/styles/media';
 import Link from 'next/link';
+import { GetStaticProps, NextPage } from 'next';
 
 const Container = styled.div`
   display: flex;
@@ -28,13 +29,16 @@ const LogoContainer = styled.div`
   justify-content: center;
   margin-bottom: 2rem;
 `;
+interface HomePageProps {
+  title: string;
+}
 
-export default function Home() {
+const Home: NextPage<HomePageProps> = ({ title }) => {
   return (
     <Container>
       <LogoContainer>
         <Title className="title" color="whiteColor" textAlign="center">
-          재밌고 유용한 프롬프트를 찾으시나요?
+          {title}재밌고 유용한 프롬프트를 찾으시나요?
           <br /> 지피지기를 사용해보세요
         </Title>
       </LogoContainer>
@@ -52,4 +56,14 @@ export default function Home() {
       <br />
     </Container>
   );
-}
+};
+// 이게 먼저 실행되고 컴포넌트 함수가 실행될 것임
+export const getStaticProps: GetStaticProps = async () => {
+  // Client side에서는 실행되지 않음
+  return {
+    props: {
+      title: '메롱이다',
+    },
+  }; // props키가 있는 객체를 반환
+};
+export default Home;
