@@ -10,13 +10,8 @@ public class ExtensionSearchPrompt {
 
     public static ExtensionSearchPrompt of(
             EsPrompt esPrompt,
-            PromptDetailResponse promptDetailResponse,
-            Integer talkCnt,
-            Integer commentCnt,
-            Long likeCnt,
-            Boolean isLiked,
-            Boolean isBookmarked,
-            WriterResponse writerResponse
+            SearchFromPromptResponse fromPrompt,
+            WriterResponse writer
     ) {
 
         return ExtensionSearchPrompt.builder()
@@ -28,18 +23,17 @@ public class ExtensionSearchPrompt {
                 .suffix(esPrompt.getSuffix())
                 .example(esPrompt.getExample())
                 .originalPromptUuid(esPrompt.getOriginalPromptUuid())
+                .regDt(esPrompt.getRegDt())
+                .likeCnt(esPrompt.getLikeCnt().longValue())
 
-                .thumbnail(promptDetailResponse.getThumbnail())
-                .regDt(promptDetailResponse.getRegDt())
-                .updDt(promptDetailResponse.getUpdDt())
+                .updDt(fromPrompt.getUpdDt())
+                .thumbnail(fromPrompt.getThumbnail())
+                .talkCnt(fromPrompt.getTalkCnt().intValue())
+                .commentCnt(fromPrompt.getCommentCnt().intValue())
+                .isLiked(fromPrompt.getIsLiked())
+                .isBookmarked(fromPrompt.getIsBookmarked())
 
-                .talkCnt(talkCnt)
-                .commentCnt(commentCnt)
-                .likeCnt(likeCnt)
-                .isLiked(isLiked)
-                .isBookmarked(isBookmarked)
-
-                .writerResponse(writerResponse)
+                .writerResponse(writer)
                 .build();
     }
 
