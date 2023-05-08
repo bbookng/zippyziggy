@@ -146,7 +146,9 @@ const Footer = styled.div`
         padding: 0.5rem;
         color: ${({ theme }) => theme.colors.whiteColor100};
         border-radius: 3rem;
-        background: linear-gradient(322.63deg, #5de16a 10.93%, #00e3ae 100%);
+        background: ${({ theme }) =>
+          `linear-gradient(322.63deg, ${theme.colors.primaryColor} 10.93%, ${theme.colors.primaryColor} 100%)`};
+        /* linear-gradient(322.63deg, #5de16a 10.93%, #00e3ae 100%);*/
         cursor: pointer;
       }
     }
