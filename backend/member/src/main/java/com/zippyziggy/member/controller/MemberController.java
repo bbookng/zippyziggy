@@ -670,7 +670,7 @@ public class MemberController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
-    public ResponseEntity<MemberInformResponseDto> findMemberByUUID(@RequestParam UUID userUuid) throws Exception {
+    public ResponseEntity<?> findMemberByUUID(@RequestParam UUID userUuid) throws Exception {
 
         if (redisUtils.isExists("member" + userUuid)) {
             log.info("redis로 회원 조회 중");
@@ -679,10 +679,12 @@ public class MemberController {
         } else {
             log.info("DB로 회원 조회 중");
             log.info("userUuid = " + userUuid);
-            Member member = memberRepository.findByUserUuid(userUuid).orElseThrow(MemberNotFoundException::new);
+            Member member = memberRepository.findByUserUuid(userUuid);
             log.info("member = " + member);
 
-            return new ResponseEntity<>(MemberInformResponseDto.from(member), HttpStatus.OK);
+            MemberResponse memberResponse = (null == member) ? new MemberResponse() : MemberResponse.from(member);
+
+            return new ResponseEntity<>(memberResponse, HttpStatus.OK);
         }
         }
 
