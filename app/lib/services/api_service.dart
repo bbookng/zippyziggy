@@ -4,7 +4,7 @@ import "package:flutter_dotenv/flutter_dotenv.dart";
 import "package:http/http.dart" as http;
 
 class APIService {
-  final String _baseUrl = dotenv.env["BASE_URL"] as String;
+  late final String _baseUrl = dotenv.env["BASE_URL"]!;
   final Map<String, String> _headers = {
     "content-type": "application/json",
     "accept": "application/json",
@@ -26,7 +26,7 @@ class APIService {
     }
   }
 
-  Future<http.Response> post(String url, Map<String, dynamic> body) async {
+  Future<http.Response> post(String url, Map<String, dynamic>? body) async {
     try {
       Uri uri = Uri.parse(_baseUrl + url);
       String bodyString = jsonEncode(body);

@@ -1,4 +1,6 @@
+import 'package:app/ui/account/login_page.dart';
 import 'package:app/ui/main_page.dart';
+import 'package:app/ui/prompt/prompt_page.dart';
 import 'package:app/utils/routes/route_name.dart';
 import 'package:flutter/material.dart';
 
@@ -8,6 +10,12 @@ class Routes {
       case RoutesName.main:
         return MaterialPageRoute(
             builder: (BuildContext context) => const MainPage());
+      case RoutesName.login:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const LogInPage());
+      case RoutesName.prompt:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const PromptPage());
       default:
         return MaterialPageRoute(
           builder: (_) {

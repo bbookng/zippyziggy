@@ -3,17 +3,16 @@ import 'package:flutter/material.dart';
 class AppTheme {
   AppTheme._();
 
-  static const Color notWhite = Color(0xFFEDF0F2);
-  static const Color nearlyWhite = Color(0xFFFEFEFE);
-  static const Color white = Color(0xFFFFFFFF);
-  static const Color nearlyBlack = Color(0xFF213333);
-  static const Color grey = Color(0xFF3A5160);
-  static const Color darkGrey = Color(0xFF313A44);
+  static const Color white = Color.fromARGB(255, 255, 255, 255);
+  static const Color black = Color.fromARGB(255, 0, 0, 0);
+  static const Color grey = Color.fromARGB(255, 148, 148, 148);
+  static const Color darkGrey = Color.fromARGB(255, 34, 34, 34);
   static const Color primary = Color(0x004cc857);
 
-  static const Color darkText = Color(0xFF253840);
-  static const Color darkerText = Color(0xFF17262A);
-  static const Color lightText = Color(0xFF4A6572);
+  static const Color darkText = Color.fromARGB(255, 0, 0, 0);
+  static const Color darkerText = Color.fromARGB(255, 70, 70, 70);
+  static const Color lightText = Color.fromARGB(255, 255, 255, 255);
+  static const Color lighterText = Color.fromARGB(255, 192, 192, 192);
   static const Color deactivatedText = Color(0xFF767676);
   static const Color dismissibleBackground = Color(0xFF364A54);
   static const Color chipBackground = Color(0xFFEEF1F3);
@@ -37,7 +36,7 @@ class AppTheme {
     fontSize: 36,
     letterSpacing: 0.4,
     height: 0.9,
-    color: darkerText,
+    color: lightText,
   );
 
   static const TextStyle headline = TextStyle(
@@ -46,7 +45,7 @@ class AppTheme {
     fontWeight: FontWeight.bold,
     fontSize: 24,
     letterSpacing: 0.27,
-    color: darkerText,
+    color: lightText,
   );
 
   static const TextStyle title = TextStyle(
@@ -55,7 +54,7 @@ class AppTheme {
     fontWeight: FontWeight.bold,
     fontSize: 16,
     letterSpacing: 0.18,
-    color: darkerText,
+    color: lightText,
   );
 
   static const TextStyle subtitle = TextStyle(
@@ -64,7 +63,7 @@ class AppTheme {
     fontWeight: FontWeight.w400,
     fontSize: 14,
     letterSpacing: -0.04,
-    color: darkText,
+    color: lightText,
   );
 
   static const TextStyle body2 = TextStyle(
@@ -73,7 +72,7 @@ class AppTheme {
     fontWeight: FontWeight.w400,
     fontSize: 14,
     letterSpacing: 0.2,
-    color: darkText,
+    color: lighterText,
   );
 
   static const TextStyle body1 = TextStyle(
@@ -82,7 +81,7 @@ class AppTheme {
     fontWeight: FontWeight.w400,
     fontSize: 16,
     letterSpacing: -0.05,
-    color: darkText,
+    color: lighterText,
   );
 
   static const TextStyle caption = TextStyle(
@@ -91,70 +90,6 @@ class AppTheme {
     fontWeight: FontWeight.w400,
     fontSize: 12,
     letterSpacing: 0.2,
-    color: lightText, // was lightText
-  );
-
-  static const TextStyle darkDisplay1 = TextStyle(
-    // h4 -> display1
-    fontFamily: fontName,
-    fontWeight: FontWeight.bold,
-    fontSize: 36,
-    letterSpacing: 0.4,
-    height: 0.9,
-    color: lightText,
-  );
-
-  static const TextStyle darkHeadline = TextStyle(
-    // h5 -> headline
-    fontFamily: fontName,
-    fontWeight: FontWeight.bold,
-    fontSize: 24,
-    letterSpacing: 0.27,
-    color: lightText,
-  );
-
-  static const TextStyle darkTitle = TextStyle(
-    // h6 -> title
-    fontFamily: fontName,
-    fontWeight: FontWeight.bold,
-    fontSize: 16,
-    letterSpacing: 0.18,
-    color: lightText,
-  );
-
-  static const TextStyle darkSubtitle = TextStyle(
-    // subtitle2 -> subtitle
-    fontFamily: fontName,
-    fontWeight: FontWeight.w400,
-    fontSize: 14,
-    letterSpacing: -0.04,
-    color: lightText,
-  );
-
-  static const TextStyle darkBody2 = TextStyle(
-    // body1 -> body2
-    fontFamily: fontName,
-    fontWeight: FontWeight.w400,
-    fontSize: 14,
-    letterSpacing: 0.2,
-    color: lightText,
-  );
-
-  static const TextStyle darkBody1 = TextStyle(
-    // body2 -> body1
-    fontFamily: fontName,
-    fontWeight: FontWeight.w400,
-    fontSize: 16,
-    letterSpacing: -0.05,
-    color: lightText,
-  );
-
-  static const TextStyle darkCaption = TextStyle(
-    // Caption -> caption
-    fontFamily: fontName,
-    fontWeight: FontWeight.w400,
-    fontSize: 12,
-    letterSpacing: 0.2,
-    color: lightText, // was lightText
+    color: lighterText, // was lighterText
   );
 }
