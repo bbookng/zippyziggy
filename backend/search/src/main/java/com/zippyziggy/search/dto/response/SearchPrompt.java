@@ -1,6 +1,7 @@
 package com.zippyziggy.search.dto.response;
 
 import com.zippyziggy.search.dto.response.server.PromptDetailResponse;
+import com.zippyziggy.search.dto.response.server.SearchFromPromptResponse;
 import com.zippyziggy.search.model.EsPrompt;
 import lombok.Builder;
 import lombok.Data;
@@ -10,12 +11,7 @@ public class SearchPrompt {
 
     public static SearchPrompt of(
             EsPrompt esPrompt,
-            PromptDetailResponse promptDetailResponse,
-            Integer talkCnt,
-            Integer commentCnt,
-            Long likeCnt,
-            Boolean isLiked,
-            Boolean isBookmarked,
+            SearchFromPromptResponse fromPrompt,
             WriterResponse writer
     ) {
 
@@ -25,16 +21,15 @@ public class SearchPrompt {
                 .description(esPrompt.getDescription())
                 .category(esPrompt.getCategory())
                 .originalPromptUuid(esPrompt.getOriginalPromptUuid())
+                .regDt(esPrompt.getRegDt())
+                .likeCnt(esPrompt.getLikeCnt().longValue())
 
-                .thumbnail(promptDetailResponse.getThumbnail())
-                .regDt(promptDetailResponse.getRegDt())
-                .updDt(promptDetailResponse.getUpdDt())
-
-                .talkCnt(talkCnt)
-                .commentCnt(commentCnt)
-                .likeCnt(likeCnt)
-                .isLiked(isLiked)
-                .isBookmarked(isBookmarked)
+                .updDt(fromPrompt.getUpdDt())
+                .thumbnail(fromPrompt.getThumbnail())
+                .talkCnt(fromPrompt.getTalkCnt().intValue())
+                .commentCnt(fromPrompt.getCommentCnt().intValue())
+                .isLiked(fromPrompt.getIsLiked())
+                .isBookmarked(fromPrompt.getIsBookmarked())
 
                 .writer(writer)
                 .build();

@@ -1,8 +1,8 @@
 package com.zippyziggy.search.client;
 
-import com.zippyziggy.search.dto.response.server.CntResponse;
 import com.zippyziggy.search.dto.response.server.PromptDetailResponse;
 import com.zippyziggy.search.dto.response.server.PromptComment;
+import com.zippyziggy.search.dto.response.server.SearchFromPromptResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,10 +29,13 @@ public interface PromptClient {
         @RequestHeader String crntMemberUuid
     );
 
-    @GetMapping("/prompts/{promptUuid}/cnt")
-    CntResponse getCntOfPrompt( @PathVariable UUID promptUuid );
+    @GetMapping("/prompts/search/{promptUuid}")
+    SearchFromPromptResponse searchFromPrompt(
+        @PathVariable UUID promptUuid,
+        @RequestHeader String crntMemberUuid
+    );
 
     @GetMapping("/talks/{talkId}/commentCnt")
-    Long getTalkCommentCnt( @PathVariable Long talkId );
+    Long getTalkCommentCnt(@PathVariable Long talkId);
 
 }

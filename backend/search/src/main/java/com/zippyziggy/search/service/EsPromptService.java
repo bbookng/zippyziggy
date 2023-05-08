@@ -9,9 +9,12 @@ import com.zippyziggy.search.dto.response.SearchPromptList;
 import com.zippyziggy.search.dto.response.WriterResponse;
 import com.zippyziggy.search.dto.response.server.CntResponse;
 import com.zippyziggy.search.dto.response.server.ExtensionSearchPrompt;
+import com.zippyziggy.search.dto.response.server.MemberResponse;
 import com.zippyziggy.search.dto.response.server.PromptDetailResponse;
+import com.zippyziggy.search.dto.response.server.SearchFromPromptResponse;
 import com.zippyziggy.search.dto.response.server.SyncEsPrompt;
 import com.zippyziggy.search.exception.EsPromptNotFoundException;
+import com.zippyziggy.search.exception.MemberNotFoundException;
 import com.zippyziggy.search.exception.PromptNotFoundException;
 import com.zippyziggy.search.model.EsPrompt;
 import com.zippyziggy.search.repository.EsPromptRepository;
@@ -40,7 +43,6 @@ public class EsPromptService {
     private final CircuitBreakerFactory circuitBreakerFactory;
     private final PromptClient promptClient;
     private final MemberClient memberClient;
-    private final ElasticsearchClient elasticsearchClient;
 
     public SearchPromptList searchPrompts(
         String crntMemberUuid,
@@ -61,37 +63,24 @@ public class EsPromptService {
 
         final List<SearchPrompt> searchPrompts = new ArrayList<>();
         for (EsPrompt esPrompt : pagedEsPrompt) {
-            // promptDetailResponse 조회
+            // prompt 서버에서 필요한 정보 조회
             final UUID promptUuid = UUID.fromString(esPrompt.getPromptUuid());
-            final PromptDetailResponse promptDetailResponse = circuitBreaker
-                .run(() -> promptClient
-                    .getPromptDetail(promptUuid, crntMemberUuid)
-                    .orElseThrow(PromptNotFoundException::new));
+            final SearchFromPromptResponse fromPrompt = circuitBreaker
+                .run(() -> promptClient.searchFromPrompt(promptUuid, crntMemberUuid));
 
             // 사용자 조회
-            //TODO server to server api 만든 후 Member application에서 호출하는 방식으로 변경해야함
-            final WriterResponse writerResponse = promptDetailResponse.getWriter();
-
-            final CntResponse cntResponse = circuitBreaker
-                .run(() -> promptClient
-                    .getCntOfPrompt(promptUuid));
-
-            // 로그인 여부에 따른 좋아요/북마크 여부
-            final Boolean isLiked =
-                !crntMemberUuid.equals("defaultValue") && promptDetailResponse.getIsLiked();
-            final Boolean isBookmarked =
-                !(crntMemberUuid.equals("defaultValue")) && promptDetailResponse.getIsBookmarked();
+            final MemberResponse member = circuitBreaker
+                .run(() -> memberClient
+                    .getMemberInfo(UUID.fromString(esPrompt.getUserId()))
+                    .orElseThrow(MemberNotFoundException::new));
+            final WriterResponse writer = member.toWriterResponse();
 
             // dto로 변환하기
             searchPrompts.add(SearchPrompt.of(
                 esPrompt,
-                promptDetailResponse,
-                cntResponse.getTalkCnt(),
-                cntResponse.getCommentCnt(),
-                promptDetailResponse.getLikeCnt(),
-                isLiked,
-                isBookmarked,
-                writerResponse));
+                fromPrompt,
+                writer
+            ));
 
         }
         return SearchPromptList.of(totalPromptsCnt, totalPageCnt, searchPrompts);
@@ -116,37 +105,23 @@ public class EsPromptService {
 
         final List<ExtensionSearchPrompt> searchPrompts = new ArrayList<>();
         for (EsPrompt esPrompt : pagedEsPrompt) {
-            // promptDetailResponse 조회
+            // prompt 서버에서 필요한 정보 조회
             final UUID promptUuid = UUID.fromString(esPrompt.getPromptUuid());
-            final PromptDetailResponse promptDetailResponse = circuitBreaker
-                .run(() -> promptClient
-                    .getPromptDetail(promptUuid, crntMemberUuid)
-                    .orElseThrow(PromptNotFoundException::new));
+            final SearchFromPromptResponse fromPrompt = circuitBreaker
+                .run(() -> promptClient.searchFromPrompt(promptUuid, crntMemberUuid));
 
             // 사용자 조회
-            //TODO server to server api 만든 후 Member application에서 호출하는 방식으로 변경해야함
-            WriterResponse writerResponse = promptDetailResponse.getWriter();
-
-            final CntResponse cntResponse = circuitBreaker
-                .run(() -> promptClient
-                    .getCntOfPrompt(promptUuid));
-
-            // 로그인 여부에 따른 좋아요/북마크 여부
-            final Boolean isLiked =
-                !crntMemberUuid.equals("defaultValue") && promptDetailResponse.getIsLiked();
-            final Boolean isBookmarked =
-                !(crntMemberUuid.equals("defaultValue")) && promptDetailResponse.getIsBookmarked();
+            final MemberResponse member = circuitBreaker
+                .run(() -> memberClient
+                    .getMemberInfo(UUID.fromString(esPrompt.getUserId()))
+                    .orElseThrow(MemberNotFoundException::new));
+            final WriterResponse writer = member.toWriterResponse();
 
             // dto로 변환하기
             searchPrompts.add(ExtensionSearchPrompt.of(
                 esPrompt,
-                promptDetailResponse,
-                cntResponse.getTalkCnt(),
-                cntResponse.getCommentCnt(),
-                promptDetailResponse.getLikeCnt(),
-                isLiked,
-                isBookmarked,
-                writerResponse));
+                fromPrompt,
+                writer));
 
         }
         return ExtensionSearchPromptList.of(totalPromptsCnt, totalPageCnt, searchPrompts);
