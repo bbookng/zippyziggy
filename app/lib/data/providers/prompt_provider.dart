@@ -23,6 +23,7 @@ class PromptProvider extends ChangeNotifier {
       totalPromptsCnt = data["totalPromptsCnt"];
     } catch (e) {
       error = "error";
+      print('에러다 $e');
     } finally {
       isLoading = false;
       notifyListeners();
@@ -31,6 +32,16 @@ class PromptProvider extends ChangeNotifier {
 
   // 프롬프트 북마크
   Future<bool> promptBookmark({promptUuid}) async {
+    try {
+      bool data = await _promptRepository.promptBookmarkAPI(promptUuid);
+      return data;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  // 프롬프트 북마크
+  Future<bool> promptLike({promptUuid}) async {
     try {
       bool data = await _promptRepository.promptBookmarkAPI(promptUuid);
       return data;

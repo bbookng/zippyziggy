@@ -34,10 +34,21 @@ class PromptRepository {
     return returnData;
   }
 
+  // 프롬프트 북마크
   Future<bool> promptBookmarkAPI(String promptUuid) async {
     http.Response response =
         await _apiService.post("/prompts/$promptUuid/bookmark", null);
-    dynamic responseJson = jsonDecode(utf8.decode(response.bodyBytes));
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  // 프롬프트 좋아요
+  Future<bool> promptLikeAPI(String promptUuid) async {
+    http.Response response =
+        await _apiService.post("/prompts/$promptUuid/like", null);
     if (response.statusCode == 200) {
       return true;
     } else {

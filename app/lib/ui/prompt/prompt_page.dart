@@ -16,11 +16,7 @@ class PromptPage extends StatelessWidget {
       body: PageView(
         children: [
           Center(
-            child: PromptList(
-              category: 'ALL',
-              sort: 'likeCnt',
-              keyword: '',
-            ),
+            child: PromptList(),
           )
         ],
       ),

@@ -6,15 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class PromptList extends StatefulWidget {
-  String keyword;
-  String category;
-  String sort;
+  String? keyword;
+  String? category;
+  String? sort;
 
   PromptList({
     super.key,
-    required this.keyword,
-    required this.category,
-    required this.sort,
+    this.keyword,
+    this.category,
+    this.sort,
   });
 
   @override
@@ -25,9 +25,10 @@ class _PromptListState extends State<PromptList> {
   late String _keyword;
   late String _category;
   late String _sort;
+  late var scrollController = ScrollController();
 
   int page = 0;
-  int size = 2;
+  int size = 8;
 
   // 카테고리 리스트
   List<List<String>> categoryList = [
@@ -86,11 +87,23 @@ class _PromptListState extends State<PromptList> {
     _keyword = '';
     _category = 'ALL';
     _sort = 'likeCnt';
+    scrollController = ScrollController();
     // build가 다 되고 나서 콜백함수 실행
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<PromptProvider>(context, listen: false).initProvider();
+      scrollController.addListener(pagination);
     });
     handleGetPrompt(true);
+  }
+
+  // 페이지네이션
+  void pagination() {
+    if ((scrollController.position.pixels ==
+            scrollController.position.maxScrollExtent) &&
+        page <
+            Provider.of<PromptProvider>(context, listen: false).totalPageCnt) {
+      handleGetPrompt(false);
+    }
   }
 
   @override
@@ -151,26 +164,12 @@ class _PromptListState extends State<PromptList> {
             ),
           ),
 
-          // 프롬프트 검색 버튼
-          // ButtonBar(
-          //   children: <Widget>[
-          //     IconButton(
-          //       onPressed: () {
-          //         handleGetPrompt(false);
-          //       },
-          //       icon: const Icon(
-          //         Icons.add,
-          //       ),
-          //     ),
-          //   ],
-          // ),
-
           // 프롬프트 목록들
           Consumer<PromptProvider>(
             builder: (context, provider, widget) {
               {
                 if (provider.promptList.isNotEmpty) {
-                  return promptListView(provider.promptList);
+                  return promptListView(provider.promptList, scrollController);
                 } else if (provider.isLoading) {
                   return const Center(
                     child: Column(
@@ -202,17 +201,20 @@ class _PromptListState extends State<PromptList> {
   }
 
   // 프롬프트 목록들
-  Expanded promptListView(promptList) {
+  Expanded promptListView(promptList, scrollController) {
     return Expanded(
-      child: ListView.separated(
+      child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-        itemCount: promptList.length,
-        itemBuilder: (context, index) {
-          var prompt = promptList[index];
-          return PromptListItem(prompt: prompt);
-        },
-        separatorBuilder: (context, index) => const Divider(
-          height: 5,
+        child: ListView.separated(
+          controller: scrollController,
+          itemCount: promptList.length,
+          itemBuilder: (context, index) {
+            var prompt = promptList[index];
+            return PromptListItem(prompt: prompt);
+          },
+          separatorBuilder: (context, index) => const Divider(
+            height: 5,
+          ),
         ),
       ),
     );
