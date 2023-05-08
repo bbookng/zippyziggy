@@ -12,11 +12,11 @@ import {
   CHROME_SORT_KEY,
   LIMIT,
 } from '@pages/constants';
-import useDebounce from '@pages/hooks/@shared/useDebounce';
 import useChromeStorage from '@pages/hooks/@shared/useChromeStorage';
 import Pagination from '@pages/content/components/PromptContainer/Pagination';
 import PromptCard from '@pages/content/components/PromptContainer/PromptCard';
 import useFetch from '@pages/hooks/@shared/useFetch';
+import useDebounce from '@pages/hooks/@shared/useDebounce';
 
 export const category: Array<Category> = [
   { id: 'all', text: '전체', value: 'ALL' },
@@ -68,8 +68,8 @@ const PromptContainer = () => {
     error,
   } = useFetch<SearchResult>({
     url: `/search/extension`,
-    // url: `${JSON_SERVER_URL}`,
     params: memoizedParams,
+    autoFetch: true,
   });
 
   const isNewChatPage = !window.location.href.includes('/c/');

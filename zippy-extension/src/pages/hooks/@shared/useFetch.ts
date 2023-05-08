@@ -16,6 +16,7 @@ interface FetchParams {
   auth?: boolean;
   params?: Record<string, string | number>;
   body?: Record<string, string | number>;
+  autoFetch?: boolean;
 }
 interface FetchResult<T> {
   data: T | null;
@@ -73,6 +74,7 @@ const useFetch = <T>({
   auth = false,
   params,
   body,
+  autoFetch = true,
 }: // cacheKey,
 FetchParams): FetchResult<T> => {
   const [data, setData] = useState<T | null>(null);
@@ -135,8 +137,9 @@ FetchParams): FetchResult<T> => {
         }
       }
     };
-
-    fetchData();
+    if (autoFetch) {
+      fetchData();
+    }
 
     return () => {
       isMounted = false;
@@ -144,7 +147,7 @@ FetchParams): FetchResult<T> => {
         cancelToken.current.cancel();
       }
     };
-  }, [method, request]);
+  }, [autoFetch, method, request]);
 
   return { data, loading, error, request };
 };

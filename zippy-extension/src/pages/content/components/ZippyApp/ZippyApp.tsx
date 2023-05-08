@@ -3,23 +3,34 @@ import useInputContainerPortal from '@pages/hooks/content/useInputContainerPorta
 import usePromptListPortal from '@pages/hooks/content/usePromptContainerPortal';
 import PromptContainer from '@pages/content/components/PromptContainer';
 import InputWrapper from '@pages/content/components/InputWrapper';
-import { ZP_TO_TOP_BUTTON_ID } from '@pages/constants';
+import { CHAT_GPT_URL, ZP_TO_TOP_BUTTON_ID } from '@pages/constants';
 import useScrollToTopButton from '@pages/hooks/content/useScrollToTopButton';
 import { ModalProvider, useModalContext } from '@pages/content/context/ModalContext';
 import Modal from '@pages/content/components/Modal';
+import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
+import { checkAuth } from '@pages/content/apis/auth';
 
+const queryClient = new QueryClient();
 const App = () => {
   const promptContainerPortal = usePromptListPortal();
   const inputWrapperPortal = useInputContainerPortal();
   useScrollToTopButton(promptContainerPortal, inputWrapperPortal, ZP_TO_TOP_BUTTON_ID);
-
   const { openModal, closeModal } = useModalContext();
-  // useFetch({url: })
+
   const url = new URL(window.location.href);
   const { searchParams } = url;
   const code = searchParams.get('code');
 
-  console.log(searchParams.get('code'));
+  const params = {
+    code,
+    redirect: CHAT_GPT_URL,
+  };
+
+  const { data } = useQuery({
+    queryKey: ['checkAuth'],
+    queryFn: () => checkAuth(params),
+    enabled: !!code,
+  });
 
   return (
     <>
@@ -30,8 +41,10 @@ const App = () => {
       <Modal>
         <div className="ZP_modal-content">123</div>
         <div className="ZP_modal-button-wrapper">
-          <button>확인</button>
-          <button onClick={closeModal}>취소</button>
+          <button type="button">확인</button>
+          <button type="button" onClick={closeModal}>
+            취소
+          </button>
         </div>
       </Modal>
     </>
@@ -40,7 +53,9 @@ const App = () => {
 
 // eslint-disable-next-line react/display-name
 export default () => (
-  <ModalProvider>
-    <App />
-  </ModalProvider>
+  <QueryClientProvider client={queryClient}>
+    <ModalProvider>
+      <App />
+    </ModalProvider>
+  </QueryClientProvider>
 );
