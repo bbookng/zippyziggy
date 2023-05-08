@@ -6,24 +6,22 @@ import com.zippyziggy.prompt.talk.dto.request.TalkCommentRequest;
 import com.zippyziggy.prompt.talk.dto.response.TalkCommentListResponse;
 import com.zippyziggy.prompt.talk.dto.response.TalkCommentResponse;
 import com.zippyziggy.prompt.talk.exception.ForbiddenMemberException;
-import com.zippyziggy.prompt.talk.exception.MemberNotFoundException;
 import com.zippyziggy.prompt.talk.exception.TalkCommentNotFoundException;
 import com.zippyziggy.prompt.talk.exception.TalkNotFoundException;
 import com.zippyziggy.prompt.talk.model.Talk;
 import com.zippyziggy.prompt.talk.model.TalkComment;
 import com.zippyziggy.prompt.talk.repository.TalkCommentRepository;
 import com.zippyziggy.prompt.talk.repository.TalkRepository;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -42,8 +40,7 @@ public class TalkCommentService {
 		final List<TalkCommentResponse> talkCommentResponseList = commentList.stream().map(comment -> {
 			MemberResponse writerInfo = circuitBreaker
 					.run(() -> memberClient
-							.getMemberInfo(comment.getMemberUuid())
-							.orElseThrow(MemberNotFoundException::new));
+							.getMemberInfo(comment.getMemberUuid()));
 			return TalkCommentResponse.from(comment, writerInfo);
 		}).collect(Collectors.toList());
 
@@ -61,8 +58,7 @@ public class TalkCommentService {
 
 		final CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 		final MemberResponse talkCommentMember = circuitBreaker
-				.run(() -> memberClient.getMemberInfo(talkComment.getMemberUuid())
-				.orElseThrow(MemberNotFoundException::new));
+				.run(() -> memberClient.getMemberInfo(talkComment.getMemberUuid()));
 
 		return TalkCommentResponse.from(talkComment, talkCommentMember);
 	}
@@ -80,8 +76,7 @@ public class TalkCommentService {
 
 		final CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 		final MemberResponse talkCommentMember = circuitBreaker
-				.run(() -> memberClient.getMemberInfo(comment.getMemberUuid())
-						.orElseThrow(MemberNotFoundException::new));
+				.run(() -> memberClient.getMemberInfo(comment.getMemberUuid()));
 
 		comment.setContent(data.getContent());
 		return TalkCommentResponse.from(comment, talkCommentMember);

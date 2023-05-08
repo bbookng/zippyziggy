@@ -23,7 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -288,10 +287,18 @@ public class PromptController {
 		return ResponseEntity.ok(promptService.reports(pageRequest));
 	}
 
-	@Operation(summary = "프롬프트의 톡과 댓글 개수", description = "promptUuid를 pathvariable로 전달 필요")
-	@GetMapping("/{promptUuid}/cnt")
-	public ResponseEntity<PromptTalkCommentCntResponse> cntPrompt(@PathVariable UUID promptUuid) {
-		return ResponseEntity.ok(promptService.cntPrompt(promptUuid));
+	/**
+	 * 프롬프트 검색 결과에 필요한 정보를 보낸다.
+	 * @param promptUuid
+	 * @return
+	 */
+	@Operation(hidden = true)
+	@GetMapping("/search/{promptUuid}")
+	public ResponseEntity<SearchPromptResponse> cntPrompt(
+		@PathVariable UUID promptUuid,
+		@RequestHeader String crntMemberUuid
+	) {
+		return ResponseEntity.ok(promptService.searchPrompt(promptUuid, UUID.fromString(crntMemberUuid)));
 	}
 
 

@@ -13,4 +13,9 @@ public interface PromptBookmarkRepository extends JpaRepository<PromptBookmark, 
 	PromptBookmark findByMemberUuidAndPrompt(UUID crntMemberUuid, Prompt originPrompt);
 
 	List<PromptBookmark> findAllByMemberUuid(UUID memberUuid);
+
+	boolean existsByMemberUuidAndPrompt_PromptUuid(
+		UUID memberUuid, UUID promptUuid);
+
+
 }
