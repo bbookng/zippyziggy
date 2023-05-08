@@ -739,12 +739,12 @@ public class MemberController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
-    public ResponseEntity<TalkCardListResponse> findTalks(
+    public ResponseEntity<MemberTalkList> findTalks(
             @PathVariable String crntMemberUuid,
             Pageable pageable
     ) {
-        final TalkCardListResponse talkCardListResponse = promptClient.getTalks(crntMemberUuid, pageable);
-        return ResponseEntity.ok(talkCardListResponse);
+        final MemberTalkList memberTalkList = promptClient.getTalks(crntMemberUuid, pageable);
+        return ResponseEntity.ok(memberTalkList);
     }
 
 }
