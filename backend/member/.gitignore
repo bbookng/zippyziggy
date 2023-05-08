@@ -41,3 +41,6 @@ out/
 #*.yml
 ### index.html ###
 /src/main/resources/static/index.html
+
+### FCM key ###
+/src/main/resources/zippyziggy-ea134-firebase-adminsdk-ecadz-3ac9615365.json
