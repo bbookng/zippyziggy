@@ -5,6 +5,7 @@ import com.zippyziggy.prompt.prompt.client.MemberClient;
 import com.zippyziggy.prompt.prompt.dto.request.TalkCntRequest;
 import com.zippyziggy.prompt.prompt.dto.response.MemberResponse;
 import com.zippyziggy.prompt.prompt.dto.response.PromptCardResponse;
+import com.zippyziggy.prompt.prompt.dto.response.WriterResponse;
 import com.zippyziggy.prompt.prompt.exception.ForbiddenMemberException;
 import com.zippyziggy.prompt.prompt.exception.MemberNotFoundException;
 import com.zippyziggy.prompt.prompt.exception.PromptNotFoundException;
@@ -15,7 +16,8 @@ import com.zippyziggy.prompt.prompt.repository.PromptCommentRepository;
 import com.zippyziggy.prompt.prompt.repository.PromptLikeRepository;
 import com.zippyziggy.prompt.prompt.repository.PromptRepository;
 import com.zippyziggy.prompt.talk.dto.request.TalkRequest;
-import com.zippyziggy.prompt.talk.dto.response.MemberTalkListResponse;
+import com.zippyziggy.prompt.talk.dto.response.MemberTalk;
+import com.zippyziggy.prompt.talk.dto.response.MemberTalkList;
 import com.zippyziggy.prompt.talk.dto.response.TalkDetailResponse;
 import com.zippyziggy.prompt.talk.dto.response.TalkListResponse;
 import com.zippyziggy.prompt.talk.dto.response.TalkResponse;
@@ -28,22 +30,24 @@ import com.zippyziggy.prompt.talk.repository.MessageRepository;
 import com.zippyziggy.prompt.talk.repository.TalkCommentRepository;
 import com.zippyziggy.prompt.talk.repository.TalkLikeRepository;
 import com.zippyziggy.prompt.talk.repository.TalkRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
-import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
 @Service
 @Transactional
@@ -305,11 +309,36 @@ public class TalkService {
 		return (int) now.until(tomorrow, ChronoUnit.SECONDS);
 	}
 
-    public MemberTalkListResponse findTalksByMemberUuid(String crntMemberUuid, Pageable pageable) {
-		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
-    	final Page<Talk> talks = talkRepository.findTalksByMemberUuid(UUID.fromString(crntMemberUuid), pageable);
-		final List<TalkListResponse> talkListResponses = getTalks(circuitBreaker, talks.toList(), crntMemberUuid);
+    public MemberTalkList findTalksByMemberUuid(
+		String crntMemberUuid,
+		int page,
+		int size,
+		String sort
+	) {
+		final Sort sortBy = Sort.by(Sort.Direction.DESC, sort);
+		final Pageable pageable = PageRequest.of(page, size, sortBy);
 
-		return new MemberTalkListResponse(Math.toIntExact(talks.getTotalElements()), talkListResponses);
+		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
+
+		final Page<Talk> pagedTalk = talkRepository.findTalksByMemberUuid(UUID.fromString(crntMemberUuid), pageable);
+		final long totalTalksCnt = pagedTalk.getTotalElements();
+		final int totalPageCnt = pagedTalk.getTotalPages();
+
+		final List<MemberTalk> memberTalkList = new ArrayList<>();
+		for (Talk talk : pagedTalk) {
+			final Long talkId = talk.getId();
+
+			// MemberClient에 memberUuid로 요청
+			final MemberResponse member = circuitBreaker
+				.run(() -> memberClient
+					.getMemberInfo(talk.getMemberUuid())
+					.orElseThrow(MemberNotFoundException::new));
+			final WriterResponse writer = member.toWriterResponse();
+
+			final Long commentCnt = findCommentCnt(talkId);
+
+			memberTalkList.add(MemberTalk.of(writer, talk, commentCnt));
+		}
+		return new MemberTalkList(totalTalksCnt, totalPageCnt, memberTalkList);
 	}
 }
