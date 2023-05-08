@@ -204,9 +204,8 @@ public class PromptService{
 			try {
 				originalMemberInfo = circuitBreaker
 						.run(() -> memberClient
-								.getMemberInfo(originalMemberUuid)
-								.orElseGet(MemberResponse::new));
-			} catch (NoFallbackAvailableException e) {
+								.getMemberInfo(originalMemberUuid));
+			} catch (RuntimeException e) {
 				originalMemberInfo = new MemberResponse();
 			}
 
@@ -389,7 +388,6 @@ public class PromptService{
 
 			MemberResponse writerInfo = getWriterInfo(prompt.getMemberUuid());
 
-
 			boolean isBookmarded = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
 					? true : false;
 			boolean isLiked = promptLikeRepository.findByPromptAndMemberUuid(prompt, UUID.fromString(crntMemberUuid)) != null
@@ -422,10 +420,22 @@ public class PromptService{
 	/*
     프롬프트 톡 및 댓글 개수 조회
      */
-	public PromptTalkCommentCntResponse cntPrompt(UUID promptUuid) {
+	public SearchPromptResponse searchPrompt(UUID promptUuid, UUID crntMemberUuid) {
+
+		final Prompt prompt = promptRepository
+			.findByPromptUuid(promptUuid)
+			.orElseThrow(PromptNotFoundException::new);
+
 		long talkCnt = talkRepository.countAllByPromptPromptUuid(promptUuid);
-		long commentCnt = promptCommentRepository.countAllByPromptPromptUuid(promptUuid);
-		return PromptTalkCommentCntResponse.from(talkCnt, commentCnt);
+		long commentCnt = promptCommentRepository
+			.countAllByPromptPromptUuid(promptUuid);
+
+		boolean isLiked = promptLikeRepository
+			.existsByMemberUuidAndPrompt_PromptUuid(crntMemberUuid, promptUuid);
+		boolean isBookmarked = promptBookmarkRepository
+			.existsByMemberUuidAndPrompt_PromptUuid(crntMemberUuid, promptUuid);
+
+		return SearchPromptResponse.from(prompt, talkCnt, commentCnt, isLiked, isBookmarked);
 	}
 
 	/*
@@ -461,10 +471,8 @@ public class PromptService{
 			return null;
 		} else {
 
-
 			List<PromptClick> promptClicks = promptClickRepository
 					.findTop5DistinctByMemberUuidAndPrompt_StatusCodeOrderByRegDtDesc(UUID.fromString(crntMemberUuid), StatusCode.OPEN);
-
 
 			// 해당 프롬프트 내용 가져오기
 			List<Prompt> prompts = new ArrayList<>();
@@ -482,7 +490,6 @@ public class PromptService{
 				long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
 
 				MemberResponse writerInfo = getWriterInfo(prompt.getMemberUuid());
-
 
 				boolean isBookmarded = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
 						? true : false;
@@ -553,10 +560,9 @@ public class PromptService{
 		try {
 			writerInfo = circuitBreaker
 					.run(() -> memberClient
-							.getMemberInfo(memberUuid)
-							.orElseGet(MemberResponse::new));
+							.getMemberInfo(memberUuid));
 			log.info("member에서 예외 처리 없이 찾아왔지만 null임");
-		} catch (NoFallbackAvailableException e) {
+		} catch (RuntimeException e) {
 			writerInfo = new MemberResponse();
 			log.info("member에서 예외 떴음");
 		}

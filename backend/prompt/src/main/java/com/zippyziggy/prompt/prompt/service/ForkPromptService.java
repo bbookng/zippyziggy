@@ -78,8 +78,7 @@ public class ForkPromptService {
 		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 
 		List<PromptCardResponse> promptDtoList = forkedPrompts.stream().map(prompt -> {
-			MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid())
-				.orElseThrow(MemberNotFoundException::new), throwable -> null);
+			MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid()));
 
 			// 댓글, 포크 프롬프트의 포크 수, 대화 수 가져오기
 			long commentCnt = promptCommentRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());

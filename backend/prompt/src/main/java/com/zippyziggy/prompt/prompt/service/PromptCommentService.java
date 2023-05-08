@@ -46,8 +46,7 @@ public class PromptCommentService {
 		Page<PromptComment> commentList = promptCommentRepository.findAllByPromptPromptUuid(promptUuid, pageable);
 
 		List<PromptCommentResponse> promptCommentResponseList = commentList.stream().map(comment -> {
-			MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(comment.getMemberUuid())
-				.orElseThrow(MemberNotFoundException::new));
+			MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(comment.getMemberUuid()));
 			PromptCommentResponse promptcommentList = PromptCommentResponse.from(comment);
 			promptcommentList.setMember(writerInfo);
 

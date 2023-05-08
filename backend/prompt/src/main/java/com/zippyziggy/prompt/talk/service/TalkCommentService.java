@@ -42,8 +42,7 @@ public class TalkCommentService {
 		final List<TalkCommentResponse> talkCommentResponseList = commentList.stream().map(comment -> {
 			MemberResponse writerInfo = circuitBreaker
 					.run(() -> memberClient
-							.getMemberInfo(comment.getMemberUuid())
-							.orElseThrow(MemberNotFoundException::new));
+							.getMemberInfo(comment.getMemberUuid()));
 			return TalkCommentResponse.from(comment, writerInfo);
 		}).collect(Collectors.toList());
 
@@ -61,8 +60,7 @@ public class TalkCommentService {
 
 		final CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 		final MemberResponse talkCommentMember = circuitBreaker
-				.run(() -> memberClient.getMemberInfo(talkComment.getMemberUuid())
-				.orElseThrow(MemberNotFoundException::new));
+				.run(() -> memberClient.getMemberInfo(talkComment.getMemberUuid()));
 
 		return TalkCommentResponse.from(talkComment, talkCommentMember);
 	}
@@ -80,8 +78,7 @@ public class TalkCommentService {
 
 		final CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 		final MemberResponse talkCommentMember = circuitBreaker
-				.run(() -> memberClient.getMemberInfo(comment.getMemberUuid())
-						.orElseThrow(MemberNotFoundException::new));
+				.run(() -> memberClient.getMemberInfo(comment.getMemberUuid()));
 
 		comment.setContent(data.getContent());
 		return TalkCommentResponse.from(comment, talkCommentMember);

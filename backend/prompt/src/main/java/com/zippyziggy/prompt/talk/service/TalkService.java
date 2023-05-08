@@ -108,8 +108,7 @@ public class TalkService {
 
 		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 
-		MemberResponse memberResponse = circuitBreaker.run(() -> memberClient.getMemberInfo(talk.getMemberUuid())
-				.orElseThrow(MemberNotFoundException::new));
+		MemberResponse memberResponse = circuitBreaker.run(() -> memberClient.getMemberInfo(talk.getMemberUuid()));
 
 		TalkDetailResponse response = talk.toDetailResponse(isLiked, likeCnt, memberResponse);
 
@@ -117,8 +116,7 @@ public class TalkService {
 			Prompt originPrompt = talk.getPrompt();
 
 			MemberResponse originMember = circuitBreaker.run(() -> memberClient
-					.getMemberInfo(originPrompt.getMemberUuid())
-					.orElseThrow(MemberNotFoundException::new));
+					.getMemberInfo(originPrompt.getMemberUuid()));
 
 			PromptCardResponse promptCardResponse = getPromptCardResponse(crntMemberUuid, originPrompt, originMember);
 
@@ -183,8 +181,7 @@ public class TalkService {
 			Long talkCommentCnt = talkCommentRepository.countAllByTalk_Id(t.getId());
 			String question = messageRepository.findFirstByTalkIdAndRole(t.getId(), Role.USER).getContent().toString();
 			String answer = messageRepository.findFirstByTalkIdAndRole(t.getId(), Role.ASSISTANT).getContent().toString();
-			MemberResponse memberResponse = circuitBreaker.run(() -> memberClient.getMemberInfo(t.getMemberUuid())
-					.orElseThrow(MemberNotFoundException::new));
+			MemberResponse memberResponse = circuitBreaker.run(() -> memberClient.getMemberInfo(t.getMemberUuid()));
 
 			return TalkListResponse.from(
 				t.getId(),
@@ -331,8 +328,7 @@ public class TalkService {
 			// MemberClient에 memberUuid로 요청
 			final MemberResponse member = circuitBreaker
 				.run(() -> memberClient
-					.getMemberInfo(talk.getMemberUuid())
-					.orElseThrow(MemberNotFoundException::new));
+					.getMemberInfo(talk.getMemberUuid()));
 			final WriterResponse writer = member.toWriterResponse();
 
 			final Long commentCnt = findCommentCnt(talkId);

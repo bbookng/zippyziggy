@@ -20,4 +20,9 @@ public interface PromptLikeRepository extends JpaRepository<PromptLike, Long>, P
     PromptLike findByPromptAndMemberUuid(Prompt prompt, UUID memberUuid);
 
     List<PromptLike> findAllByMemberUuid(UUID memberUuid);
+
+    boolean existsByMemberUuidAndPrompt_PromptUuid(
+        UUID memberUuid, UUID promptUuid);
+
+
 }
