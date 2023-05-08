@@ -678,7 +678,9 @@ public class MemberController {
             return new ResponseEntity<>(memberInformResponseDto, HttpStatus.OK);
         } else {
             log.info("DB로 회원 조회 중");
+            log.info("userUuid = " + userUuid);
             Member member = memberRepository.findByUserUuid(userUuid).orElseThrow(MemberNotFoundException::new);
+            log.info("member = " + member);
 
             return new ResponseEntity<>(MemberInformResponseDto.from(member), HttpStatus.OK);
         }
