@@ -70,6 +70,9 @@ export default function PromptCard({ image, title, description, url, prompt }: P
     }
   };
 
+  // 해당 카드 play
+  const handlePlay = () => {};
+
   return (
     <Conatiner>
       {url || prompt?.promptUuid ? (
@@ -146,8 +149,10 @@ export default function PromptCard({ image, title, description, url, prompt }: P
               <FaRegBookmark className="bookmark" />
             )}
           </div>
-          <div className="item">
-            <BsFillPlayFill className="play" />
+          <div className="item" onClick={handlePlay}>
+            <Link href="https://chat.openai.com/" target="_blank">
+              <BsFillPlayFill className="play" />
+            </Link>
           </div>
         </div>
       </Footer>

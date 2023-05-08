@@ -2,23 +2,24 @@ import Button from '@/components/Button/Button';
 import ProfileImage from '@/components/Image/ProfileImage';
 import Title from '@/components/Typography/Title';
 import {
-  deleteUserAPI,
   getPromptsBookmarkAPI,
   getPromptsMemberAPI,
+  getTalksProfileAPI,
   getUserAPI,
   postUserLogoutAPI,
 } from '@/core/user/userAPI';
-import { setIsLogin, setUserReset } from '@/core/user/userSlice';
+import { setUserReset } from '@/core/user/userSlice';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHook';
-import { httpAuth } from '@/lib/http';
-import { useQuery } from '@tanstack/react-query';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { FiLink2 } from 'react-icons/fi';
 import IconButton from '@/components/Button/IconButton';
 import ProfilePromptList from '@/components/DetailPrompt/ProfilePromptList';
+import { CardList } from '@/components/DetailPrompt/ComponentStyle';
+import TalkCard from '@/components/TalkCard/TalkCard';
+import Paging from '@/components/Paging/Paging';
+import { getTalksListAPI } from '@/core/talk/talkAPI';
 
 const ProfileContainer = styled.div`
   width: 100%;
@@ -53,6 +54,8 @@ const ProfilePromptContainer = styled.div`
   }
 `;
 
+const ProfileTalkContainer = styled.div``;
+
 export default function Index() {
   const userState = useAppSelector((state) => state.user); // 유저정보
   const dispatch = useAppDispatch();
@@ -63,6 +66,9 @@ export default function Index() {
   const paramUserUuid = typeof userUuid === 'string' ? userUuid : '';
   const paramMypage = typeof mypage === 'string' ? mypage : 'false';
   const [isSelectedBtn, setIsSelectedBtn] = useState<'prompt' | 'bookmark'>('prompt');
+  const [cardList, setCardList] = useState<Array<unknown>>([]);
+  const [totalPromptsCnt, setTotalPromptsCnt] = useState<number>(0);
+  const page = useRef<number>(0);
 
   const handleUserAPI = async (uuid: string, page: string) => {
     const result = await getUserAPI(uuid);
@@ -79,10 +85,28 @@ export default function Index() {
     }
   };
 
+  // 페이지 이동
+  const handleTalksProfile = async () => {
+    // keyword, category로 검색 요청하기
+    const requestData = {
+      page: page.current,
+      size: 6,
+      sort: 'regDt',
+      id: userUuid,
+    };
+    const data = await getTalksProfileAPI(requestData);
+    if (data.result === 'SUCCESS') {
+      setCardList(data.data.searchTalkList);
+      setTotalPromptsCnt(data.data.totalTalksCnt);
+    }
+  };
+
   // query undefine 없애기
   useEffect(() => {
     if (userUuid && mypage) {
       handleUserAPI(paramUserUuid, paramMypage);
+      page.current = 0;
+      handleTalksProfile();
     }
   }, [userUuid, mypage]);
 
@@ -99,6 +123,12 @@ export default function Index() {
   };
 
   const handleGptBtn = () => {};
+
+  const handlePage = (number: number) => {
+    page.current = number - 1;
+    // 검색 요청
+    handleTalksProfile();
+  };
 
   return (
     <ProfileContainer>
@@ -196,6 +226,14 @@ export default function Index() {
           getData={getPromptsBookmarkAPI}
         />
       </ProfilePromptContainer>
+      <ProfileTalkContainer>
+        <CardList>
+          {cardList?.map((talk: any) => (
+            <TalkCard key={talk.talkId} talk={talk} url={`/talks/${talk.talkId}`} />
+          ))}
+        </CardList>
+        <Paging page={page.current} size={6} totalCnt={totalPromptsCnt || 0} setPage={handlePage} />
+      </ProfileTalkContainer>
     </ProfileContainer>
   );
 }
