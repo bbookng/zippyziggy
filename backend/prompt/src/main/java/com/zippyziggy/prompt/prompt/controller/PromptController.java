@@ -298,7 +298,7 @@ public class PromptController {
 		@PathVariable UUID promptUuid,
 		@RequestHeader String crntMemberUuid
 	) {
-		return ResponseEntity.ok(promptService.searchPrompt(promptUuid, UUID.fromString(crntMemberUuid)));
+		return ResponseEntity.ok(promptService.searchPrompt(promptUuid, crntMemberUuid));
 	}
 
 

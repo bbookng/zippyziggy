@@ -446,7 +446,7 @@ public class PromptService{
 	/*
     프롬프트 톡 및 댓글 개수 조회
      */
-	public SearchPromptResponse searchPrompt(UUID promptUuid, UUID crntMemberUuid) {
+	public SearchPromptResponse searchPrompt(UUID promptUuid, String crntMemberUuid) {
 
 		final Prompt prompt = promptRepository
 			.findByPromptUuid(promptUuid)
@@ -456,10 +456,18 @@ public class PromptService{
 		long commentCnt = promptCommentRepository
 			.countAllByPromptPromptUuid(promptUuid);
 
-		boolean isLiked = promptLikeRepository
-			.existsByMemberUuidAndPrompt_PromptUuid(crntMemberUuid, promptUuid);
-		boolean isBookmarked = promptBookmarkRepository
-			.existsByMemberUuidAndPrompt_PromptUuid(crntMemberUuid, promptUuid);
+		boolean isLiked;
+		boolean isBookmarked;
+		if (crntMemberUuid.equals("defaultValue")) {
+			isLiked = false;
+			isBookmarked = false;
+		} else {
+			UUID memberUuid = UUID.fromString(crntMemberUuid);
+			isLiked = promptLikeRepository
+				.existsByMemberUuidAndPrompt_PromptUuid(memberUuid, promptUuid);
+			isBookmarked = promptBookmarkRepository
+				.existsByMemberUuidAndPrompt_PromptUuid(memberUuid, promptUuid);
+		}
 
 		return SearchPromptResponse.from(prompt, talkCnt, commentCnt, isLiked, isBookmarked);
 	}
