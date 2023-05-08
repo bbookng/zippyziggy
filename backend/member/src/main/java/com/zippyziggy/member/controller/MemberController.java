@@ -304,26 +304,20 @@ public class MemberController {
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
     public ResponseEntity<?> kakaoCallback(String code, @RequestParam(value = "redirect") String redirectUrl,HttpServletRequest request, HttpServletResponse response) throws Exception {
-        log.info("11111111111111111111111111111111");
         // kakao Token 가져오기(권한)
         String kakaoAccessToken = kakaoLoginService.kakaoGetToken(code, redirectUrl);
-        log.info("22222222222222222222222222222222");
         // Token으로 사용자 정보 가져오기
         KakaoUserInfoResponseDto kakaoUserInfo = kakaoLoginService.kakaoGetProfile(kakaoAccessToken);
-        log.info("33333333333333333333333333333333");
         // 기존 회원인지 검증
         String platformId = kakaoUserInfo.getId();
         Member member = memberService.memberCheck(Platform.KAKAO, platformId);
-        log.info("9999999999999999999999999999999");
         // DB에 해당 유저가 없다면 회원가입 진행, 없으면 로그인 진행
         // 회원가입을 위해서 일단 프런트로 회원 정보를 넘기고 회원가입 페이지로 넘어가게 해야 할 듯
         if (member == null || member.getActivate().equals(false)) {
-            log.info("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
             // 회원가입 요청 메세지
             SocialSignUpDataResponseDto socialSignUpDataResponseDto = SocialSignUpDataResponseDto.fromKakao(kakaoUserInfo);
             return new ResponseEntity<>(SocialSignUpResponseDto.from(socialSignUpDataResponseDto), HttpStatus.OK);
         }
-        log.info("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
         // Jwt 토큰 생성
         JwtToken jwtToken = jwtProviderService.createJwtToken(member.getUserUuid());
 
@@ -377,7 +371,6 @@ public class MemberController {
         //           2. refreshToken 저장 -> accessToken 만료 시 DB가 아닌 Redis에서 먼저 찾아오기)
         redisService.saveRedisData(member.getUserUuid().toString(), memberInformResponseDto, jwtToken.getRefreshToken());
         ///////////////////////////////레디스/////////////////////////////////
-        log.info("ccccccccccccccccccccccccccccc");
         return ResponseEntity.ok()
                 .headers(headers)
                 .body(memberInformResponseDto);
