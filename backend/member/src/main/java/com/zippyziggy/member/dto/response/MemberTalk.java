@@ -1,6 +1,5 @@
 package com.zippyziggy.member.dto.response;
 
-import java.time.ZoneId;
 import lombok.Builder;
 import lombok.Data;
 
