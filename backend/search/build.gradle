@@ -60,10 +60,15 @@ dependencies {
 	// AWS
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
 
+	// swagger
 	implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
 
 	// kafka
 	implementation 'org.springframework.kafka:spring-kafka'
+
+	// kubernetes
+	implementation "org.springframework.cloud:spring-cloud-starter-kubernetes-client-all"
+
 
 }
 
