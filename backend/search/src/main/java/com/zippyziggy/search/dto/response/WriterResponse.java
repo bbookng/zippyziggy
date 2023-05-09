@@ -1,6 +1,5 @@
 package com.zippyziggy.search.dto.response;
 
-import java.util.UUID;
 import lombok.Data;
 
 @Data
