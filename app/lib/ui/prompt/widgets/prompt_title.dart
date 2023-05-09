@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class PromptTitle extends StatelessWidget {
-  final PromptModel prompt;
+  final PromptDetailModel prompt;
   const PromptTitle({
     super.key,
     required this.prompt,
@@ -14,7 +14,12 @@ class PromptTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int likeCnt = prompt.likeCnt!;
+    int likeCnt;
+    if (prompt.likeCnt != null) {
+      likeCnt = prompt.likeCnt!;
+    } else {
+      likeCnt = 0;
+    }
     bool isLiked = prompt.isLiked!;
     bool isBookmarked = prompt.isBookmarked!;
     Map<String, String> categoryMap = {
@@ -113,16 +118,20 @@ class PromptTitle extends StatelessWidget {
           ),
           Row(
             children: [
-              const Text('마지막 업데이트: '),
+              const Text(
+                '마지막 업데이트: ',
+                style: AppTheme.caption,
+              ),
               Text(
                 DateFormat('yyyy.MM.dd').format(
                   DateTime.fromMillisecondsSinceEpoch(prompt.updDt! * 1000),
                 ),
+                style: AppTheme.caption,
               ),
             ],
           ),
           const SizedBox(
-            height: 10,
+            height: 20,
           ),
           if (prompt.writer?.writerImg != null)
             Row(
@@ -132,8 +141,8 @@ class PromptTitle extends StatelessWidget {
                   borderRadius: BorderRadius.circular(30),
                   child: Image.network(
                     prompt.writer!.writerImg!,
-                    width: 50,
-                    height: 50,
+                    width: 40,
+                    height: 40,
                     fit: BoxFit.cover,
                   ),
                 ),

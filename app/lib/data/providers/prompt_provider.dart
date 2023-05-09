@@ -6,6 +6,7 @@ class PromptProvider extends ChangeNotifier {
   final PromptRepository _promptRepository = PromptRepository();
   List<PromptModel> _promptList = [];
   List<PromptModel> get promptList => _promptList;
+  PromptDetailModel prompt = PromptDetailModel();
   int totalPageCnt = 0;
   int totalPromptsCnt = 0;
   String error = "";
@@ -23,10 +24,23 @@ class PromptProvider extends ChangeNotifier {
       totalPromptsCnt = data["totalPromptsCnt"];
     } catch (e) {
       error = "error";
-      print('에러다 $e');
+      print('프롬프트 목록 조회 실패 $e');
     } finally {
       isLoading = false;
       notifyListeners();
+    }
+  }
+
+  // 프롬프트 상세 조회
+  Future<void> getPromptDetail({promptUuid}) async {
+    try {
+      Map<String, dynamic> data =
+          await _promptRepository.getPromptDetailAPI(promptUuid);
+      prompt = data['prompt'];
+      notifyListeners();
+    } catch (e) {
+      error = "error";
+      print('프롬프트 상세 조회 실패 $e');
     }
   }
 
@@ -40,7 +54,7 @@ class PromptProvider extends ChangeNotifier {
     }
   }
 
-  // 프롬프트 북마크
+  // 프롬프트 좋아요
   Future<bool> promptLike({promptUuid}) async {
     try {
       bool data = await _promptRepository.promptBookmarkAPI(promptUuid);
@@ -56,6 +70,7 @@ class PromptProvider extends ChangeNotifier {
     totalPromptsCnt = 0;
     isLoading = false;
     error = "";
+    prompt = PromptDetailModel();
     notifyListeners();
   }
 }

@@ -37,7 +37,7 @@ class PromptListItem extends StatelessWidget {
             child: ListTile(
               onTap: () {
                 Navigator.pushNamed(context, RoutesName.promptDetail,
-                    arguments: prompt);
+                    arguments: prompt.promptUuid);
               },
               // leading: const Icon(
               //   Icons.ads_click,

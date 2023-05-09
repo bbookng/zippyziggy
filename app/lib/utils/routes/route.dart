@@ -1,4 +1,3 @@
-import 'package:app/data/model/prompt_model.dart';
 import 'package:app/ui/account/login_page.dart';
 import 'package:app/ui/main_page.dart';
 import 'package:app/ui/prompt/prompt_detail_page.dart';
@@ -19,10 +18,10 @@ class Routes {
         return MaterialPageRoute(
             builder: (BuildContext context) => const PromptPage());
       case RoutesName.promptDetail:
-        var prompt = settings.arguments;
+        var promptUuid = settings.arguments;
         return MaterialPageRoute(
           builder: (BuildContext context) => PromptDetail(
-            prompt: prompt as PromptModel,
+            promptUuid: promptUuid as String,
           ),
         );
       default:

@@ -7,8 +7,9 @@ class AppTheme {
   static const Color black = Color.fromARGB(255, 0, 0, 0);
   static const Color grey = Color.fromARGB(255, 148, 148, 148);
   static const Color darkGrey = Color.fromARGB(255, 34, 34, 34);
-  static const Color primary = Color(0x004cc857);
+  static const Color primary = Color.fromARGB(0, 34, 49, 33);
 
+  static const Color primaryText = Color.fromARGB(0, 36, 214, 24);
   static const Color darkText = Color.fromARGB(255, 0, 0, 0);
   static const Color darkerText = Color.fromARGB(255, 70, 70, 70);
   static const Color lightText = Color.fromARGB(255, 255, 255, 255);
@@ -60,7 +61,7 @@ class AppTheme {
   static const TextStyle subtitle = TextStyle(
     // subtitle2 -> subtitle
     fontFamily: fontName,
-    fontWeight: FontWeight.w400,
+    fontWeight: FontWeight.w600,
     fontSize: 14,
     letterSpacing: -0.04,
     color: lightText,
@@ -69,7 +70,7 @@ class AppTheme {
   static const TextStyle body2 = TextStyle(
     // body1 -> body2
     fontFamily: fontName,
-    fontWeight: FontWeight.w400,
+    fontWeight: FontWeight.w600,
     fontSize: 14,
     letterSpacing: 0.2,
     color: lighterText,
@@ -78,7 +79,7 @@ class AppTheme {
   static const TextStyle body1 = TextStyle(
     // body2 -> body1
     fontFamily: fontName,
-    fontWeight: FontWeight.w400,
+    fontWeight: FontWeight.w600,
     fontSize: 16,
     letterSpacing: -0.05,
     color: lighterText,
@@ -87,7 +88,7 @@ class AppTheme {
   static const TextStyle caption = TextStyle(
     // Caption -> caption
     fontFamily: fontName,
-    fontWeight: FontWeight.w400,
+    fontWeight: FontWeight.w600,
     fontSize: 12,
     letterSpacing: 0.2,
     color: lighterText, // was lighterText
