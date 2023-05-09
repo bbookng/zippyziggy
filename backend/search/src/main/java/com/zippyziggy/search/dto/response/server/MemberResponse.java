@@ -4,8 +4,6 @@ import com.zippyziggy.search.dto.response.OriginerResponse;
 import com.zippyziggy.search.dto.response.WriterResponse;
 import lombok.Data;
 
-import java.util.UUID;
-
 @Data
 public class MemberResponse {
 
