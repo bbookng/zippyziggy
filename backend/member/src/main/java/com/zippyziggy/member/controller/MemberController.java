@@ -3,15 +3,32 @@ package com.zippyziggy.member.controller;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.zippyziggy.member.client.PromptClient;
 import com.zippyziggy.member.dto.request.MemberSignUpRequestDto;
-import com.zippyziggy.member.dto.response.*;
-import com.zippyziggy.member.exception.MemberNotFoundException;
+import com.zippyziggy.member.dto.response.DailyVisitedCount;
+import com.zippyziggy.member.dto.response.GoogleTokenResponseDto;
+import com.zippyziggy.member.dto.response.GoogleUserInfoResponseDto;
+import com.zippyziggy.member.dto.response.KakaoUserInfoResponseDto;
+import com.zippyziggy.member.dto.response.MemberInformResponseDto;
+import com.zippyziggy.member.dto.response.MemberResponse;
+import com.zippyziggy.member.dto.response.MemberSignUpResponseDto;
+import com.zippyziggy.member.dto.response.MemberTalkList;
+import com.zippyziggy.member.dto.response.PromptCardListResponse;
+import com.zippyziggy.member.dto.response.PromptCardResponse;
+import com.zippyziggy.member.dto.response.SocialSignUpDataResponseDto;
+import com.zippyziggy.member.dto.response.SocialSignUpResponseDto;
+import com.zippyziggy.member.dto.response.TotalVisitedCount;
 import com.zippyziggy.member.model.JwtToken;
 import com.zippyziggy.member.model.Member;
 import com.zippyziggy.member.model.Platform;
 import com.zippyziggy.member.model.VisitedMemberCount;
 import com.zippyziggy.member.repository.MemberRepository;
 import com.zippyziggy.member.repository.VisitedMemberCountRepository;
-import com.zippyziggy.member.service.*;
+import com.zippyziggy.member.service.GoogleLoginService;
+import com.zippyziggy.member.service.JwtProviderService;
+import com.zippyziggy.member.service.JwtValidationService;
+import com.zippyziggy.member.service.KakaoLoginService;
+import com.zippyziggy.member.service.MemberService;
+import com.zippyziggy.member.service.RedisService;
+import com.zippyziggy.member.service.VisitedMemberCountService;
 import com.zippyziggy.member.util.CookieUtils;
 import com.zippyziggy.member.util.RedisUtils;
 import com.zippyziggy.member.util.SecurityUtil;
@@ -21,20 +38,29 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import java.util.List;
+import java.util.UUID;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
-import java.util.UUID;
 
 
 @RestController
@@ -133,7 +159,7 @@ public class MemberController {
         try {
             // 기존 쿠키 확인해서 refreshToken 검증진행
             Cookie[] myCookies = request.getCookies();
-            String refreshToken = null;
+            String refreshToken;
             if (myCookies != null) {
                 for (Cookie myCookie : myCookies) {
                     if (myCookie.getName().equals("refreshToken")) {
@@ -682,11 +708,13 @@ public class MemberController {
             Member member = memberRepository.findByUserUuid(userUuid);
             log.info("member = " + member);
 
-            MemberResponse memberResponse = (null == member) ? new MemberResponse() : MemberResponse.from(member);
+            MemberResponse memberResponse = (null == member)
+                ? new MemberResponse("", "", UUID.fromString(""))
+                : MemberResponse.from(member);
 
             return new ResponseEntity<>(memberResponse, HttpStatus.OK);
         }
-        }
+    }
 
 
 
