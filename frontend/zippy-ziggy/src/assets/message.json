@@ -4,8 +4,10 @@
   "500Error": "500: 서버에서 에러가 났습니다. \n네트워크 상태를 다시 한번 확인해주세요.",
   "404Error": "404: 서버에서 에러가 났습니다. \n네트워크 상태를 다시 한번 확인해주세요.",
 
+  "CheckNicknameError": "❌닉네임이 중복됩니다. \n다른 닉네임을 입력해주세요",
+
   "CheckLoginRequired": "🐾로그인이 필요합니다",
-  "CheckImageFile": "❌ 썸네일은 PNG와 JPEG 파일만 가능합니다",
+  "CheckImageFile": "❌ 이미지 파일은 PNG와 JPEG 파일만 가능합니다",
   "CheckImageSize": "❌ 이미지 크기가 5mb를 초과하였습니다",
 
   "CheckInputForm": "👇 입력된 폼을 다시 확인해주세요",

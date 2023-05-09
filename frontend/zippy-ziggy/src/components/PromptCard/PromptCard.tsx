@@ -73,6 +73,11 @@ export default function PromptCard({ image, title, description, url, prompt }: P
   // 해당 카드 play
   const handlePlay = () => {};
 
+  // 해당 카드 클릭
+  const handleClickCard = () => {
+    router.push(url || prompt.promptUuid);
+  };
+
   return (
     <Conatiner>
       {url || prompt?.promptUuid ? (
@@ -96,7 +101,7 @@ export default function PromptCard({ image, title, description, url, prompt }: P
           alt="썸네일"
         />
       )}
-      <Body>
+      <Body onClick={handleClickCard}>
         <Title>
           <div className="title">{title || prompt?.title || '제목을 입력해주세요.'}</div>
           {prompt?.forkCnt !== 0 && <div className="caption">{prompt?.forkCnt}</div>}

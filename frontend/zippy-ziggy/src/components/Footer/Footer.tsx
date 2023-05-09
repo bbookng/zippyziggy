@@ -155,6 +155,11 @@ const Footer = () => {
             <h4>고객센터</h4>
             <ul>
               <li>
+                <Link href="https://uncovered-runner-74a.notion.site/043dd9c85a434f039d8a05abb997e32a">
+                  공지사항
+                </Link>
+              </li>
+              <li>
                 <Link href="https://forms.gle/Lk4aTW94MNmam2my7">문의사항</Link>
               </li>
               <li>

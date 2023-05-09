@@ -24,6 +24,7 @@ const Conatiner = styled.div`
 `;
 
 const Body = styled.div`
+  cursor: pointer;
   padding: 1rem;
   width: 100%;
   display: flex;
