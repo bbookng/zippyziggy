@@ -25,6 +25,7 @@ public class ExtensionSearchPrompt {
                 .originalPromptUuid(esPrompt.getOriginalPromptUuid())
                 .regDt(esPrompt.getRegDt())
                 .likeCnt(esPrompt.getLikeCnt().longValue())
+                .hit(esPrompt.getHit())
 
                 .updDt(fromPrompt.getUpdDt())
                 .thumbnail(fromPrompt.getThumbnail())
