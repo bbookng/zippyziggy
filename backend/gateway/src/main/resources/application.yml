@@ -1,16 +1,11 @@
-server:
-  port: 8000
-
-eureka:
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    service-url:
-      defaultZone: http://zippyziggy.kr:8761/eureka
-
 spring:
   application:
     name: gateway
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://zippyziggy.cmme5aoanean.ap-northeast-2.rds.amazonaws.com:3306/member?serverTimezone=Asia/Seoul&useSSL=false
+    username: deundeun
+    password: ssafyE205!
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     open-in-view: false
@@ -241,3 +236,14 @@ springdoc:
       name: search
       url: http://zippyziggy.kr:${server.port}/v3/api-docs/search
 
+jwt:
+  secret:
+    key: zippyziggy1234567890zippyziggy1234567890zippyziggy1234567890e205
+  access:
+    token:
+      expiration:
+        time: 1800000
+  refresh:
+    token:
+      expiration:
+        time: 1209600000
