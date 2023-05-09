@@ -45,6 +45,10 @@ const UserBox = styled.div`
 const ContentBox = styled.div`
   display: flex;
   margin-top: 1rem;
+  p {
+    width: 100%;
+    overflow-wrap: anywhere;
+  }
 `;
 
 const EditPopUp = styled.div`

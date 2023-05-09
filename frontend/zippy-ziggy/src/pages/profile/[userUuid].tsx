@@ -218,8 +218,7 @@ export default function Index() {
             >
               <FiLink2 className="icon" size="20" style={{ marginLeft: '8px' }} />
               <span className="flex1" style={{ marginLeft: '8px' }}>
-                {' '}
-                GPT 계정 연동하기{' '}
+                GPT 계정 연동하기
               </span>
             </IconButton>
           </div>

@@ -205,9 +205,9 @@ export default function DetailPrompt() {
                 handleMoveToCreatePromptForkPage={handleMoveToCreatePromptForkPage}
               />
             </RightContainer>
-            <MoveTopBtn scrollTop={!!scrollTop}>
+            {/* <MoveTopBtn scrollTop={!!scrollTop}>
               <FaAngleUp className="icon" onClick={handleButtonClick} />
-            </MoveTopBtn>
+            </MoveTopBtn> */}
           </>
         )}
       </Container>

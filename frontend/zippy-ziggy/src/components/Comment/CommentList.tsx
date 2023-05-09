@@ -69,34 +69,40 @@ export default function CommentList({ id, type, size }: PropsType) {
   };
 
   // 댓글 생성
-  const handleCreateComment = async () => {
-    if (content === '') {
-      checkInputFormToast();
-      return;
-    }
-
-    const requestData = { id, content };
-
-    if (type === 'prompt') {
-      const data = await createPromptComment(requestData);
-
-      if (data.result === 'SUCCESS') {
-        isStop.current = false;
-        setValue('content', '');
-        page.current = 0;
-        setCommentList([]);
-        handleGetCommentList();
+  const handleCreateComment = async (isLogin: boolean) => {
+    // 로그인 여부 판단
+    if (isLogin) {
+      if (content === '') {
+        checkInputFormToast();
+        return;
       }
-    }
-    if (type === 'talk') {
-      const data = await postTalksCommentsAPI(requestData);
 
-      if (data.result === 'SUCCESS') {
-        isStop.current = false;
-        setValue('content', '');
-        page.current = 0;
-        setCommentList([]);
-        handleGetCommentList();
+      const requestData = { id, content };
+
+      // 프롬프트 일 경우
+      if (type === 'prompt') {
+        const data = await createPromptComment(requestData);
+
+        if (data.result === 'SUCCESS') {
+          isStop.current = false;
+          setValue('content', '');
+          page.current = 0;
+          setCommentList([]);
+          handleGetCommentList();
+        }
+      }
+
+      // 톡일 경우
+      if (type === 'talk') {
+        const data = await postTalksCommentsAPI(requestData);
+
+        if (data.result === 'SUCCESS') {
+          isStop.current = false;
+          setValue('content', '');
+          page.current = 0;
+          setCommentList([]);
+          handleGetCommentList();
+        }
       }
     }
   };
@@ -133,7 +139,7 @@ export default function CommentList({ id, type, size }: PropsType) {
           width="3rem"
           height="2rem"
           className="btn"
-          onClick={checkLogin(handleCreateComment)}
+          onClick={() => handleCreateComment(checkLogin())}
         >
           작성
         </Button>

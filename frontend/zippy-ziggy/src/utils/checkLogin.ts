@@ -2,19 +2,19 @@ import toastifyCSS from '@/assets/toastify.json';
 import message from '@/assets/message.json';
 import Toastify from 'toastify-js';
 
-const checkLogin = (func: any, ...res) => {
+const checkLogin = () => {
   const token = localStorage.getItem('accessToken');
   if (!token) {
     Toastify({
-      text: message.UpdateCommentSuccess,
+      text: message.CheckLoginRequired,
       duration: 1000,
       position: 'center',
       stopOnFocus: true,
-      style: toastifyCSS.success,
+      style: toastifyCSS.fail,
     }).showToast();
-    return () => {};
+    return false;
   }
-  return func(...res);
+  return true;
 };
 
 export default checkLogin;

@@ -122,7 +122,7 @@ const Footer = () => {
                 <Link href="/talks">대화 공유</Link>
               </li>
               <li>
-                <Link href="https://forms.gle/Lk4aTW94MNmam2my7">
+                <Link href="https://zippyziggy.canny.io">
                   <span className="proposal">기능제안</span>
                 </Link>
               </li>
