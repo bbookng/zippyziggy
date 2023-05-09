@@ -1,10 +1,14 @@
 package com.zippyziggy.prompt.prompt.dto.request;
 
 import java.util.List;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@Getter
+@NoArgsConstructor
 public class ChatGptRequest {
-    private final String model;
-    private final List<ChatGptMessage> messages;
+    private String model;
+    private List<ChatGptMessage> messages;
 
     public ChatGptRequest(String model, AppChatGptRequest data) {
         this.model = model;
