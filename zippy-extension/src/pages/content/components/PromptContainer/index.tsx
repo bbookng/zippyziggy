@@ -2,13 +2,15 @@ import '../../style.scss';
 import CategoryFilter from '@pages/content/components/PromptContainer/CategoryFilter';
 import SearchBar from '@pages/content/components/PromptContainer/SearchBar';
 import SortFilter from '@pages/content/components/PromptContainer/SortFilter';
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Category, SearchResult, Sort } from '@pages/content/types';
 import {
+  CHAT_GPT_URL,
   CHROME_CATEGORY_KEY,
   CHROME_PAGE_KEY,
   CHROME_SEARCH_KEY,
   CHROME_SORT_KEY,
+  CHROME_USERINFO_KEY,
   LIMIT,
 } from '@pages/constants';
 import useChromeStorage from '@pages/hooks/@shared/useChromeStorage';
@@ -36,6 +38,8 @@ const defaultCategory = category[0].value;
 const defaultSort = sort[0].value;
 
 const PromptContainer = () => {
+  const [userData, setUserData] = useState<any>();
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedCategory, setCategory] = useChromeStorage<Category['value']>(
     CHROME_CATEGORY_KEY,
     defaultCategory
@@ -72,6 +76,22 @@ const PromptContainer = () => {
     autoFetch: true,
   });
 
+  const getData = useCallback(() => {
+    return new Promise<void>((resolve) => {
+      chrome.storage.sync.get(CHROME_USERINFO_KEY, (result) => {
+        const userData = result.ZP_userData || {};
+        setUserData(userData);
+        setIsLoading(false);
+        resolve();
+      });
+    });
+  }, []);
+
+  useEffect(() => {
+    setIsLoading(true);
+    getData();
+  }, [getData]);
+
   const isNewChatPage = !window.location.href.includes('/c/');
 
   if (isNewChatPage) {
@@ -86,13 +106,18 @@ const PromptContainer = () => {
             setSelectedCategory={setCategory}
           />
           {/* <UserInfo /> */}
+          {!!userData && (
+            <div>
+              <p>{userData.nickname}</p>
+            </div>
+          )}
         </section>
         <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-        {/* <a */}
-        {/*   href={`https://kauth.kakao.com/oauth/authorize?client_id=caeb5575d99036003c187adfadea9863&redirect_uri=${CHAT_GPT_URL}&response_type=code`} */}
-        {/* > */}
-        {/*   테스트 */}
-        {/* </a> */}
+        <a
+          href={`https://kauth.kakao.com/oauth/authorize?client_id=caeb5575d99036003c187adfadea9863&redirect_uri=${CHAT_GPT_URL}&response_type=code`}
+        >
+          테스트
+        </a>
         <section className="ZP_prompt-container__main">
           <div className="ZP_prompt-container__category-wrapper">
             <h2 className="ZP_prompt-container__search-info">

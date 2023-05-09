@@ -7,7 +7,7 @@ import axios, {
 } from 'axios';
 /* eslint-disable no-useless-concat */
 import { ZIPPY_API_URL } from '@pages/constants';
-import logOnDev from '@pages/content/utils/logging';
+import logOnDev from '@pages/content/utils/@shared/logging';
 import { api } from './axios-instance';
 
 const tokenInterceptor = (instance: AxiosInstance) => {

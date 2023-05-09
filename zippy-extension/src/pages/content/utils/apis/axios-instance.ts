@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { ZIPPY_API_URL } from '@pages/constants';
-import { setupInterceptorsTo, tokenInterceptor } from '@pages/content/utils/interceptors';
+import { setupInterceptorsTo, tokenInterceptor } from '@pages/content/utils/apis/interceptors';
 
 // 토큰이 필요없는 axios
 const axiosApi = (url: string, options: AxiosRequestConfig = {}) => {

@@ -11,8 +11,11 @@ import {
   createPortalContainer,
   removeFormParentClasses,
   setInputWrapperStyle,
-} from '@pages/content/utils/add-ui-to-input-portals';
-import { findRegenerateButton, hideEmptyDiv } from '@pages/content/utils/add-ui-to-prompt-portals';
+} from '@pages/content/utils/extension/add-ui-to-input-portals';
+import {
+  findRegenerateButton,
+  hideEmptyDiv,
+} from '@pages/content/utils/extension/add-ui-to-prompt-portals';
 
 const useInputContainerPortal = () => {
   const [portalContainer, setPortalContainer] = useState<HTMLDivElement | null>(null);

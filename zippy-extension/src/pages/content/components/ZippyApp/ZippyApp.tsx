@@ -9,8 +9,15 @@ import { ModalProvider, useModalContext } from '@pages/content/context/ModalCont
 import Modal from '@pages/content/components/Modal';
 import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
 import { checkAuth } from '@pages/content/apis/auth';
+import { CheckAuthResult } from '@pages/content/apis/auth/models';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false, // default: true
+    },
+  },
+});
 const App = () => {
   const promptContainerPortal = usePromptListPortal();
   const inputWrapperPortal = useInputContainerPortal();
@@ -26,11 +33,36 @@ const App = () => {
     redirect: CHAT_GPT_URL,
   };
 
-  useQuery({
+  useQuery<CheckAuthResult>({
     queryKey: ['checkAuth'],
     queryFn: () => checkAuth(params),
     enabled: !!code,
-    onSuccess: (data) => {},
+    onSuccess: (data) => {
+      // 주소창에 있는 code 제거
+      if (window.location.href.includes('?code=')) {
+        const newUrl = window.location.href.replace(/\?code=.*/, '');
+        window.history.replaceState(null, '', newUrl);
+      }
+
+      // 로그인일경우
+      if (data.type === 'signIn') {
+        const {
+          userData: { profileImg, userUuid, nickname },
+        } = data;
+        chrome.storage.sync.set({
+          ZP_userData: {
+            userUuid,
+            nickname,
+            profileImg,
+          },
+        });
+      }
+
+      // 회원가입일경우
+      if (data.type === 'signUp') {
+        console.log(data);
+      }
+    },
   });
 
   return (

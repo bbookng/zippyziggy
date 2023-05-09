@@ -6,7 +6,7 @@ import {
   PROMPT_PLACEHOLDER,
   TARGET_LANGUAGE_PLACEHOLDER,
 } from "@pages/constants";
-import logOnDev from "@pages/content/utils/logging";
+import logOnDev from "@pages/content/utils/@shared/logging";
 import { sanitizeInput } from "@src/utils";
 
 const ZIPPY = (window.ZIPPYZIGGY = {
