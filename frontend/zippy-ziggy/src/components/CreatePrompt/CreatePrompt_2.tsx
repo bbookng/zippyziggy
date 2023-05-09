@@ -2,6 +2,7 @@ import React from 'react';
 import Toastify from 'toastify-js';
 import message from '@/assets/message.json';
 import toastifyCSS from '@/assets/toastify.json';
+import checkImageFile from '@/utils/checkImageFile';
 import {
   Container,
   LeftContainer,
@@ -46,37 +47,13 @@ export default function CreatePart2({
   };
 
   // 이미지 등록
-  const registerImage = (e) => {
+  const registerImage = async (e) => {
     if (e.target.files.length) {
       const file = e.target.files[0];
-      const fileType = file.type;
-      const fileSize = file.size;
-
-      // 파일 타입 확인
-      if (fileType === 'image/png' || fileType === 'image/jpeg') {
-        // 파일 용량 체크 // 500MB
-        if (fileSize <= 3 * 1024 * 1024) {
-          setImage(e);
-          handlePreview(e);
-        } else {
-          // 파일 용량이 너무 큰 경우 체크
-          Toastify({
-            text: message.CheckImageSize,
-            duration: 1000,
-            position: 'center',
-            stopOnFocus: true,
-            style: toastifyCSS.fail,
-          }).showToast();
-        }
-      } else {
-        // 파일 타입이 png 또는 jpeg가 아닌 경우에 대한 처리
-        Toastify({
-          text: message.CheckImageFile,
-          duration: 1000,
-          position: 'center',
-          stopOnFocus: true,
-          style: toastifyCSS.fail,
-        }).showToast();
+      const result = await checkImageFile(file);
+      if (result.result === true) {
+        setImage(e);
+        handlePreview(e);
       }
     }
   };

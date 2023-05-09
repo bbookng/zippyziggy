@@ -42,7 +42,7 @@ export const LoginWarp = styled.div`
 `;
 
 export default function Login() {
-  const HandleKokaoLogin = () => {
+  const HandleKakaoLogin = () => {
     const redirectUri = `${window.location.origin}/account/oauth/kakao`;
     router.push(
       `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID}&redirect_uri=${redirectUri}&response_type=code`
@@ -70,7 +70,7 @@ export default function Login() {
         </Title>
         <br />
         <br />
-        <IconButton isRound className="kakao" onClick={HandleKokaoLogin}>
+        <IconButton isRound className="kakao" onClick={HandleKakaoLogin}>
           <RiKakaoTalkFill className="icon" fill="#3B1A1F" size="30" />
           <span className="flex1"> 카카오로 시작하기 </span>
         </IconButton>

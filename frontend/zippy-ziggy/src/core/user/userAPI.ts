@@ -101,10 +101,13 @@ export const getUserAPI = async (uuid: string) => {
  */
 export const getNicknameAPI = async (nickname: string) => {
   try {
-    const { data } = await http.post(`/members/nickname/${nickname}`);
-    return data;
+    const { data } = await http.get(`/members/nickname/${nickname}`);
+    if (data) {
+      return { result: 'FAIL' };
+    }
+    return { result: 'SUCCESS' };
   } catch (err) {
-    return err;
+    return { result: 'FAIL' };
   }
 };
 
@@ -112,8 +115,6 @@ export const getNicknameAPI = async (nickname: string) => {
  * 구글로그인
  */
 type TypeGetSocialLoginResponseDTO = {
-  // 항시 오는 데이터
-  isSignUp: boolean;
   // 아래는 로그인 할 경우
   nickname?: string;
   profileImg?: string;
@@ -121,7 +122,6 @@ type TypeGetSocialLoginResponseDTO = {
 };
 
 type TypeGetSocialSignupResponseDTO = {
-  // 항시 오는 데이터
   isSignUp: boolean;
   // 아래는 회원가입 할 경우
   socialSignUpDataResponseDto?: {

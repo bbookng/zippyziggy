@@ -11,6 +11,14 @@ import styled from 'styled-components';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHook';
 import { setIsLogin, setNickname, setProfileImg, setUserUuid } from '@/core/user/userSlice';
 import ProfileImage from '@/components/Image/ProfileImage';
+import { getNicknameAPI } from '@/core/user/userAPI';
+
+import Toastify from 'toastify-js';
+import message from '@/assets/message.json';
+import toastifyCSS from '@/assets/toastify.json';
+import checkImageFile from '@/utils/checkImageFile';
+
+import Link from 'next/link';
 
 const LoginContainer = styled.div`
   width: 100%;
@@ -38,6 +46,12 @@ const LoginWarp = styled.div`
     width: 100%;
     height: 48px;
     border: 1px solid ${({ theme: { colors } }) => colors.blackColor05};
+  }
+
+  .legal {
+    margin: 0 0 12px 0;
+    padding: 16px;
+    background-color: ${({ theme: { colors } }) => colors.bgColor};
   }
 `;
 
@@ -71,8 +85,12 @@ export default function SignUp() {
   const inputRef = useRef(null); // useRef를 사용하여 input element를 참조합니다
 
   // 파일 선택
-  const registerImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFile(e.target.files[0]); // 파일 이미지 변경
+  const registerImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const imgFile = e.target.files[0];
+    const result = await checkImageFile(imgFile);
+    if (result.result) {
+      setFile(imgFile); // 파일 이미지 변경
+    }
   };
 
   // 회원가입 버튼 클릭
@@ -80,21 +98,22 @@ export default function SignUp() {
     inputRef.current.click();
   };
 
-  // 닉네임 변경 버튼 클릭
-  const handleNicknameBtnClick = () => {
-    http
-      .get(`/members/nickname/${nickname}`)
-      .then(() => {
-        setStatusNickname('success');
-      })
-      .catch(() => {
-        setStatusNickname('error');
-      });
-  };
-
   // 회원가입 버튼 클릭
   const handleSignupBtnClick = async (event) => {
     event.preventDefault();
+    const resultNickname = await getNicknameAPI(nickname);
+    if (resultNickname.result === 'FAIL') {
+      setStatusNickname('error');
+      Toastify({
+        text: message.CheckNicknameError,
+        duration: 1000,
+        position: 'center',
+        stopOnFocus: true,
+        style: toastifyCSS.error,
+      }).showToast();
+      return;
+    }
+
     const formData = new FormData();
     const value = {
       nickname,
@@ -182,14 +201,26 @@ export default function SignUp() {
             {statusMessages[statusNickname].text}
           </Paragraph>
 
-          <Button margin="0 0 6px 0" onClick={handleNicknameBtnClick}>
-            중복 확인
-          </Button>
+          {/* <Button margin="0 0 6px 0" onClick={handleNicknameBtnClick}>
+            닉네임 중복 확인
+          </Button> */}
+          <div className="legal">
+            <Paragraph sizeType="sm" textAlign="left">
+              회원가입을 하시면{' '}
+              <Link className="link" href="/legal#termsOfUse">
+                이용약관
+              </Link>{' '}
+              및{' '}
+              <Link className="link" href="/legal#privacyPolicy">
+                개인정보처리방침
+              </Link>
+              에 동의하시게 됩니다.
+            </Paragraph>
+          </div>
           <Button
             onClick={handleSignupBtnClick}
-            color={statusNickname === 'success' ? 'primaryColor' : 'blackColor05'}
-            fontColor={statusNickname === 'success' ? 'whiteColor' : 'blackColor50'}
-            disabled={statusNickname !== 'success'}
+            color={nickname.length > 0 ? 'primaryColor' : 'blackColor05'}
+            fontColor={nickname.length > 0 ? 'whiteColor' : 'blackColor50'}
           >
             회원가입
           </Button>

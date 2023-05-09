@@ -57,6 +57,14 @@ function AppLayout({ children, toggleTheme }: AppLayoutProps) {
         <meta name="msapplication-TileColor" content="#ffffff" />
         <meta name="msapplication-TileImage" content="/ms-icon-144x144.png" />
         <meta name="theme-color" content="#ffffff" />
+        <meta property="og:url" content="https://zippyziggy.kr/" />
+        <meta property="og:title" content="지피지기- Chat-GPT 프롬프트 공유" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="/images/zippy_metaimage.png" />
+        <meta
+          property="og:description"
+          content="지피티를 알면 질문도 잘할 수 있다! GPT 프롬프트 및 대화 공유사이트 ZippyZiggy"
+        />
       </Head>
       <Navbar toggleTheme={toggleTheme} />
       <div>{children}</div>
