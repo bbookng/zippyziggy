@@ -30,7 +30,7 @@ public class SecurityUtil {
         String userUuid = principal.getUsername();
         UUID uuid = UUID.fromString(userUuid);
 
-        return memberRepository.findByUserUuid(uuid).get();
+        return memberRepository.findByUserUuid(uuid);
     }
 
     // SecurityContext에 저장된 유저 정보 가져오기
@@ -50,7 +50,7 @@ public class SecurityUtil {
         } else {
             // Redis 캐쉬에 존재하지 않는 경우
             UUID uuid = UUID.fromString(userUuid);
-            Member member = memberRepository.findByUserUuid(uuid).get();
+            Member member = memberRepository.findByUserUuid(uuid);
 
             return MemberInformResponseDto.builder()
                     .nickname(member.getNickname())

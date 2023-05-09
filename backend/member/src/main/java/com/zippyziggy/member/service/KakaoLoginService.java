@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zippyziggy.member.dto.response.KakaoTokenResponseDto;
 import com.zippyziggy.member.dto.response.KakaoUserInfoResponseDto;
 import com.zippyziggy.member.repository.MemberRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
@@ -15,6 +16,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.Duration;
 
+@Slf4j
 @Service
 public class KakaoLoginService {
 
@@ -31,17 +33,14 @@ public class KakaoLoginService {
 
     // code를 이용해 kakaoToken 가져오기
     public String kakaoGetToken(String code, String redirectUrl) throws Exception {
-
         // 요청 URL
         String kakaoTokenUri = "https://kauth.kakao.com/oauth/token";
-
         // body
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", kakaoClientId);
         body.add("redirect_uri", redirectUrl);
         body.add("code", code);
-
         // 카카오에 token 요청
         String token = WebClient.create()
                 .post()
@@ -55,10 +54,8 @@ public class KakaoLoginService {
                 .blockOptional().orElseThrow(
                         () -> new RuntimeException("응답 시간을 초과하였습니다.")
                 );
-
         // 객체로 전환
         KakaoTokenResponseDto kakaoTokenResponseDto = objectMapper.readValue(token, KakaoTokenResponseDto.class);
-
         return kakaoTokenResponseDto.getAccess_token();
     }
 

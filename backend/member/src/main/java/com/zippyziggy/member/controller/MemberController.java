@@ -24,6 +24,7 @@ import io.swagger.v3.oas.models.security.SecurityScheme;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.*;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -105,7 +106,7 @@ public class MemberController {
     public ResponseEntity<?> dailyVisitedCount() {
         String dateTimeDaily = visitedMemberCountService.DateTimeDaily();
         if (redisUtils.isExists(dateTimeDaily)) {
-            Long dailyCount = redisUtils.get(dateTimeDaily, Long.class);
+            long dailyCount = redisUtils.getBitCount(dateTimeDaily);
             return ResponseEntity.ok(DailyVisitedCount.builder()
                     .dailyVisitedCount(dailyCount)
                     .dailyDate(dateTimeDaily).build());
@@ -187,6 +188,7 @@ public class MemberController {
     })
     public ResponseEntity<?> findPromptsRecent(@PathVariable String crntMemberUuid) {
         List<PromptCardResponse> recentPrompts = promptClient.getRecentPrompts(crntMemberUuid);
+        log.info("recentPrompts = " + recentPrompts);
         if (recentPrompts == null) {
             return ResponseEntity.ok("최근 조회한 프롬프트가 존재하지 않습니다.");
         } else {
@@ -302,17 +304,13 @@ public class MemberController {
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
     public ResponseEntity<?> kakaoCallback(String code, @RequestParam(value = "redirect") String redirectUrl,HttpServletRequest request, HttpServletResponse response) throws Exception {
-
         // kakao Token 가져오기(권한)
         String kakaoAccessToken = kakaoLoginService.kakaoGetToken(code, redirectUrl);
-
         // Token으로 사용자 정보 가져오기
         KakaoUserInfoResponseDto kakaoUserInfo = kakaoLoginService.kakaoGetProfile(kakaoAccessToken);
-
         // 기존 회원인지 검증
         String platformId = kakaoUserInfo.getId();
         Member member = memberService.memberCheck(Platform.KAKAO, platformId);
-
         // DB에 해당 유저가 없다면 회원가입 진행, 없으면 로그인 진행
         // 회원가입을 위해서 일단 프런트로 회원 정보를 넘기고 회원가입 페이지로 넘어가게 해야 할 듯
         if (member == null || member.getActivate().equals(false)) {
@@ -320,7 +318,6 @@ public class MemberController {
             SocialSignUpDataResponseDto socialSignUpDataResponseDto = SocialSignUpDataResponseDto.fromKakao(kakaoUserInfo);
             return new ResponseEntity<>(SocialSignUpResponseDto.from(socialSignUpDataResponseDto), HttpStatus.OK);
         }
-
         // Jwt 토큰 생성
         JwtToken jwtToken = jwtProviderService.createJwtToken(member.getUserUuid());
 
@@ -374,7 +371,6 @@ public class MemberController {
         //           2. refreshToken 저장 -> accessToken 만료 시 DB가 아닌 Redis에서 먼저 찾아오기)
         redisService.saveRedisData(member.getUserUuid().toString(), memberInformResponseDto, jwtToken.getRefreshToken());
         ///////////////////////////////레디스/////////////////////////////////
-
         return ResponseEntity.ok()
                 .headers(headers)
                 .body(memberInformResponseDto);
@@ -674,7 +670,7 @@ public class MemberController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
-    public ResponseEntity<MemberInformResponseDto> findMemberByUUID(@RequestParam UUID userUuid) throws Exception {
+    public ResponseEntity<?> findMemberByUUID(@RequestParam UUID userUuid) throws Exception {
 
         if (redisUtils.isExists("member" + userUuid)) {
             log.info("redis로 회원 조회 중");
@@ -682,9 +678,13 @@ public class MemberController {
             return new ResponseEntity<>(memberInformResponseDto, HttpStatus.OK);
         } else {
             log.info("DB로 회원 조회 중");
-            Member member = memberRepository.findByUserUuid(userUuid).orElseThrow(MemberNotFoundException::new);
+            log.info("userUuid = " + userUuid);
+            Member member = memberRepository.findByUserUuid(userUuid);
+            log.info("member = " + member);
 
-            return new ResponseEntity<>(MemberInformResponseDto.from(member), HttpStatus.OK);
+            MemberResponse memberResponse = (null == member) ? new MemberResponse() : MemberResponse.from(member);
+
+            return new ResponseEntity<>(memberResponse, HttpStatus.OK);
         }
         }
 
@@ -727,5 +727,22 @@ public class MemberController {
         return new ResponseEntity<>(MemberInformResponseDto.from(updateMember), HttpStatus.OK);
     }
 
+    /**
+     * 멤버가 생성한 톡 조회
+     */
+    @GetMapping("/talks/profile/{crntMemberUuid}")
+    @Operation(summary = "멤버가 생성한 톡 조회", description = "프로필에서 톡을 조회한다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
+    public ResponseEntity<MemberTalkList> findTalks(
+            @PathVariable String crntMemberUuid,
+            Pageable pageable
+    ) {
+        final MemberTalkList memberTalkList = promptClient.getTalks(crntMemberUuid, pageable);
+        return ResponseEntity.ok(memberTalkList);
+    }
 
 }

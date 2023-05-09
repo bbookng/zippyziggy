@@ -16,6 +16,6 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByNicknameEquals(String nickname);
 
     // UUID와 일차하는 유저 찾기
-    Optional<Member> findByUserUuid(UUID userUuid);
+    Member findByUserUuid(UUID userUuid);
 
 }
