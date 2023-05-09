@@ -193,15 +193,20 @@ export default function PromptCreate() {
       <ContainerTitle>
         <TitleWrapper isNext={isNext}>
           <div className="title">프롬프트 작성</div>
-          {!isNext && (
-            <div className="help">
-              <AiFillQuestionCircle className="icon" />
 
-              <div ref={guideElementRef[0]} onClick={() => setIsShowGuide(true)}>
-                작성이 처음이신가요?
-              </div>
+          <div className="help">
+            <AiFillQuestionCircle className="icon" />
+
+            <div
+              ref={guideElementRef[0]}
+              onClick={() => {
+                setIsNext(false);
+                setIsShowGuide(true);
+              }}
+            >
+              작성이 처음이신가요?
             </div>
-          )}
+          </div>
         </TitleWrapper>
         <TitleInfoWrapper>
           <div className="userName">작성자 : {nickname}</div>

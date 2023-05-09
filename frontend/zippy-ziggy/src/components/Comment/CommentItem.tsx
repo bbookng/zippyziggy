@@ -186,7 +186,9 @@ export default function CommentItem({ comment, type, id, handleDeleteComment }: 
             </div>
           </TextareaBox>
         ) : (
-          <ContentBox>{content}</ContentBox>
+          <ContentBox>
+            <p>{content}</p>
+          </ContentBox>
         )}
       </Container>
     </>

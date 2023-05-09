@@ -56,6 +56,7 @@ export default function CreatePart1({
           <Textarea
             id="prompt1"
             value={prompt1}
+            maxLength={6000}
             onChange={(e) => handleChange(e, 'prompt1')}
             placeholder="질문의 앞에 붙을 프롬프트를 작성해주세요."
             disabled={!possible}
@@ -76,6 +77,7 @@ export default function CreatePart1({
             <Textarea
               value={example}
               placeholder="예시를 작성해주세요"
+              maxLength={6000}
               onChange={(e) => handleChange(e, 'example')}
               id="example"
               disabled={!possible}
@@ -94,6 +96,7 @@ export default function CreatePart1({
           </div>
           <Textarea
             value={prompt2}
+            maxLength={6000}
             onChange={(e) => handleChange(e, 'prompt2')}
             placeholder="질문의 뒤에 붙을 프롬프트를 작성해주세요."
             id="prompt2"
