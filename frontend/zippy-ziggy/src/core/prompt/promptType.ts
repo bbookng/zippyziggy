@@ -70,3 +70,8 @@ export type TestPromptType = {
   example: string | null;
   suffix: string | null;
 };
+
+export type PostPromptReportType = {
+  id: string | string[] | number;
+  content: string;
+};

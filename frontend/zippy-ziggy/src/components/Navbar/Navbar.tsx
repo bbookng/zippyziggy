@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 
 // 유저 정보 가져오기
 import { useAppSelector } from '@/hooks/reduxHook';
+import { downloadLink, links } from '@/utils/links';
 
 import { FiBell, FiBookmark, FiSun } from 'react-icons/fi';
 import { NavWrapper, NavList, NavOption, Logo, NavUser, Overlay } from './NavbarStyle';
@@ -32,7 +33,7 @@ const Navbar = ({ toggleTheme }) => {
   const navOptions: Array<Array<string>> = [
     ['프롬프트', '0', '/prompts'],
     ['대화공유', '1', '/talks'],
-    ['튜토리얼', '2', '/tutorial'],
+    // ['튜토리얼', '2', '/tutorial'],
   ];
 
   // 선택된 옵션 표시
@@ -52,9 +53,7 @@ const Navbar = ({ toggleTheme }) => {
   // 다운로드 페이지로 이동
   const handleDownloadBtn = (e) => {
     e.preventDefault();
-    router.push(
-      'https://chrome.google.com/webstore/detail/%EC%A7%80%ED%94%BC%EC%A7%80%EA%B8%B0-chatgpt-%ED%99%95%EC%9E%A5%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%A8/gcinlhaphmofekpjjjcnbiigbgnffokc?hl=ko'
-    );
+    router.push(links.downloadLink);
   };
 
   return (

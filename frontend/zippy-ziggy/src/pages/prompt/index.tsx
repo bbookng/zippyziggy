@@ -3,6 +3,7 @@ import CreateFooter from '@/components/CreatePrompt/CreateFooter';
 import CreatePart1 from '@/components/CreatePrompt/CreatePrompt_1';
 import CreatePart2 from '@/components/CreatePrompt/CreatePrompt_2';
 import GuideBalloon from '@/components/CreatePrompt/GuideBallon';
+import withLoginModal from '@/components/HOC/withLoginModal';
 import Paragraph from '@/components/Typography/Paragraph';
 import { createPrompt, testPrompt } from '@/core/prompt/promptAPI';
 import { useAppSelector } from '@/hooks/reduxHook';
@@ -31,7 +32,7 @@ const initialState = {
   category: '',
 };
 
-export default function PromptCreate() {
+function PromptCreate() {
   // isForked 인지 확인하면 로직 짜기!!!!!!!
   const [isNext, setIsNext] = useState<boolean>(false);
   const [preview, setPreview] = useState<string | null>(null);
@@ -273,3 +274,5 @@ export default function PromptCreate() {
     </>
   );
 }
+
+export default withLoginModal(PromptCreate);

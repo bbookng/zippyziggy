@@ -6,11 +6,13 @@ import SideBar from '@/components/DetailPrompt/SideBar';
 import Tab from '@/components/DetailPrompt/Tab';
 import TalkComponent from '@/components/DetailPrompt/TalkComponent';
 import Modal from '@/components/Modal/Modal';
+import ReportModal from '@/components/Modal/ReportModal';
 import { bookmarkPrompt, deletePrompt, getPromptDetail, likePrompt } from '@/core/prompt/promptAPI';
 import { useAppSelector } from '@/hooks/reduxHook';
 import {
   Container,
   LeftContainer,
+  MobileTopContainer,
   MoveTopBtn,
   RightContainer,
   TopBox,
@@ -32,6 +34,11 @@ export default function DetailPrompt() {
   const [scrollTop, setScrollTop] = useState<boolean>(false);
   const [isMe, setIsMe] = useState<boolean>(false);
   const [isOpenPromptDeleteModal, setIsOpenPromptDeleteModal] = useState<boolean>(false);
+  const [isReportModal, setIsReportModal] = useState(false);
+
+  const handleCloseModal = () => {
+    setIsReportModal(false);
+  };
 
   const handleScroll = () => {
     const scrollPos = document.documentElement.scrollTop;
@@ -130,6 +137,13 @@ export default function DetailPrompt() {
     }
   };
 
+  // 프롬프트 신고
+  const handleRepotPrompt = async () => {
+    if (nickname === data?.data?.writer?.writerNickname) {
+      deletePrompt({ promptUuid, router });
+    }
+  };
+
   useEffect(() => {
     if (!isLoading && data.result === 'SUCCESS') {
       window.addEventListener('scroll', handleScroll);
@@ -170,6 +184,20 @@ export default function DetailPrompt() {
                   handleMoveToUpdatePromptPage={handleMoveToUpdatePromptPage}
                 />
               </TopBox>
+              <MobileTopContainer>
+                <SideBar
+                  isLiked={isLiked}
+                  isBookmarked={isBookmarked}
+                  likeCnt={likeCnt}
+                  isMe={isMe}
+                  handleLike={handleLike}
+                  handleBookmark={handleBookmark}
+                  handleOpenReportModal={() => setIsReportModal(true)}
+                  handleOpenDeleteModal={() => setIsOpenPromptDeleteModal(true)}
+                  handleMoveToUpdatePromptPage={handleMoveToUpdatePromptPage}
+                  handleMoveToCreatePromptForkPage={handleMoveToCreatePromptForkPage}
+                />
+              </MobileTopContainer>
               <Tab itemList={itemList} tab={tab} handleIsSelected={handleIsSelectedTab} />
               <Image
                 priority
@@ -200,6 +228,7 @@ export default function DetailPrompt() {
                 isMe={isMe}
                 handleLike={handleLike}
                 handleBookmark={handleBookmark}
+                handleOpenReportModal={() => setIsReportModal(true)}
                 handleOpenDeleteModal={() => setIsOpenPromptDeleteModal(true)}
                 handleMoveToUpdatePromptPage={handleMoveToUpdatePromptPage}
                 handleMoveToCreatePromptForkPage={handleMoveToCreatePromptForkPage}
@@ -211,6 +240,13 @@ export default function DetailPrompt() {
           </>
         )}
       </Container>
+      {isReportModal ? (
+        <ReportModal
+          reportType="prompt"
+          id={promptUuid}
+          handleModalClose={() => handleCloseModal()}
+        />
+      ) : null}
     </>
   );
 }

@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 const NavWrapper = styled.div`
   position: relative;
-  width: 100vw;
+  width: 100%;
   display: flex;
   align-items: center;
   min-height: 4rem;

@@ -117,8 +117,12 @@ export default function PromptTitle({
         <div className="title">{prompt?.title}</div>
       </TitleBox>
       <div className="time">
-        마지막 업데이트:{' '}
-        {prompt?.updDt ? getDateTime(new Date(prompt.updDt * 1000)) : getDateTime(new Date())}
+        마지막 업데이트{' '}
+        <span>
+          {prompt?.updDt ? getDateTime(new Date(prompt.updDt * 1000)) : getDateTime(new Date())}
+        </span>
+        <span>·</span>
+        <span>조회수 {prompt?.hit ? prompt?.hit : '0'}</span>
       </div>
       <UserBox>
         <Image

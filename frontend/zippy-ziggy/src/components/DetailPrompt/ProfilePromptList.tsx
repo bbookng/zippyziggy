@@ -55,20 +55,21 @@ export default function ProfilePromptList({ className, userUuid, size = 6, getDa
 
   return (
     <Container className={className}>
+      {cardList.length === 0 && (
+        <Paragraph textAlign="center" style={{ padding: '16px' }}>
+          게시한 프롬프트가 없어요!
+        </Paragraph>
+      )}
       <CardList>
-        {cardList.length > 0 ? (
-          cardList?.map((prompt: any) => (
-            <PromptCard
-              key={prompt.promptUuid}
-              prompt={prompt}
-              url={`/prompts/${prompt.promptUuid}`}
-            />
-          ))
-        ) : (
-          <Paragraph textAlign="center" style={{ padding: '16px' }}>
-            게시한 프롬프트가 없어요!
-          </Paragraph>
-        )}
+        {cardList.length > 0
+          ? cardList?.map((prompt: any) => (
+              <PromptCard
+                key={prompt.promptUuid}
+                prompt={prompt}
+                url={`/prompts/${prompt.promptUuid}`}
+              />
+            ))
+          : null}
       </CardList>
       <Paging
         page={page.current}
