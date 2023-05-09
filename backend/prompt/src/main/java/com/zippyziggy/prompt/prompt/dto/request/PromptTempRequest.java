@@ -15,5 +15,5 @@ public class PromptTempRequest {
 
 	private String category;
 
-	private MessageRequest message;
+	private PromptMessageRequest message;
 }

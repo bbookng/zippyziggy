@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MessageResponse {
+public class PromptMessageResponse {
 	private String prefix;
 	private String example;
 	private String suffix;

@@ -1,7 +1,5 @@
 package com.zippyziggy.prompt.talk.model;
 
-import java.time.LocalDateTime;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,6 +9,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+
+import com.zippyziggy.prompt.prompt.dto.request.PromptMessageRequest;
+import com.zippyziggy.prompt.talk.dto.request.MessageRequest;
+import com.zippyziggy.prompt.talk.dto.response.MessageResponse;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -38,4 +40,17 @@ public class Message {
 	@Lob
 	@Column(nullable = false)
 	private String content;
+
+	public static Message from(MessageRequest data, Talk talk) {
+		return  Message.builder()
+			.talk(talk)
+			.role(data.getRole())
+			.content(data.getContent())
+			.build();
+	}
+
+	public MessageResponse toMessageResponse() {
+		return new MessageResponse(this.getRole().getDescription().toUpperCase(), this.getContent());
+	}
+
 }

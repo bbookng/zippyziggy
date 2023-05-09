@@ -4,17 +4,20 @@ import lombok.Data;
 
 import java.util.UUID;
 
+import com.zippyziggy.prompt.prompt.exception.MemberNotFoundException;
+
 @Data
 public class MemberResponse {
-    private UUID memberUuid;
-    private String nickname;
-    private String memberImg;
 
-    public OriginerResponse toOriginerResponse() {
-        return new OriginerResponse(this.memberUuid, this.memberImg, this.nickname);
+    private String nickname;
+    private String profileImg;
+    private UUID userUuid;
+
+    public OriginerResponse toOriginerResponse() throws MemberNotFoundException {
+        return new OriginerResponse(this.userUuid, this.profileImg, this.nickname);
     }
 
-    public WriterResponse toWriterResponse() {
-        return new WriterResponse(this.memberUuid, this.memberImg, this.nickname);
+    public WriterResponse toWriterResponse() throws MemberNotFoundException {
+        return new WriterResponse(this.userUuid, this.profileImg, this.nickname);
     }
 }

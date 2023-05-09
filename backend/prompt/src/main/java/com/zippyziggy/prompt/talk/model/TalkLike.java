@@ -1,23 +1,10 @@
 package com.zippyziggy.prompt.talk.model;
 
+import lombok.*;
+
+import javax.persistence.*;
 import java.time.LocalDateTime;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-
-import com.zippyziggy.prompt.prompt.model.Prompt;
-
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import java.util.UUID;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -29,8 +16,8 @@ public class TalkLike {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false)
-	private Long memberId;
+	@Column(nullable = false, columnDefinition = "BINARY(16)")
+	private UUID memberUuid;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "talk_id", nullable = false)
@@ -38,4 +25,12 @@ public class TalkLike {
 
 	@Column(nullable = false)
 	private LocalDateTime regDt;
+
+	public static TalkLike from(Talk talk, UUID memberUuid) {
+		return TalkLike.builder()
+				.memberUuid(memberUuid)
+				.talk(talk)
+				.regDt(LocalDateTime.now())
+				.build();
+	}
 }

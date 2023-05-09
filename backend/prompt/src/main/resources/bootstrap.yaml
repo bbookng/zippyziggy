@@ -1,7 +1,7 @@
 spring:
   cloud:
     config:
-      uri: http://k8e205.p.ssafy.io:8888
-      name: common
+      uri: http://zippyziggy.kr:8888
+      name: prompt
   profiles:
     active: default
