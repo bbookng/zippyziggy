@@ -16,12 +16,13 @@ public class MemberResponse {
 
     private String nickname;
     private String profileImg;
-    private UUID userUuid;
+    private String userUuid;
 
     public static MemberResponse from(Member member) {
         return MemberResponse.builder()
                 .nickname(member.getNickname())
                 .profileImg(member.getProfileImg())
-                .userUuid(member.getUserUuid()).build();
+                .userUuid(member.getUserUuid().toString())
+                .build();
     }
 }
