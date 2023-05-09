@@ -3,36 +3,62 @@ package com.zippyziggy.prompt.prompt.service;
 import com.zippyziggy.prompt.common.aws.AwsS3Uploader;
 import com.zippyziggy.prompt.common.kafka.KafkaProducer;
 import com.zippyziggy.prompt.prompt.client.MemberClient;
-import com.zippyziggy.prompt.prompt.dto.request.*;
-import com.zippyziggy.prompt.prompt.dto.response.*;
-import com.zippyziggy.prompt.prompt.exception.*;
-import com.zippyziggy.prompt.prompt.model.*;
-import com.zippyziggy.prompt.prompt.repository.*;
+import com.zippyziggy.prompt.prompt.dto.request.GptApiRequest;
+import com.zippyziggy.prompt.prompt.dto.request.PromptCntRequest;
+import com.zippyziggy.prompt.prompt.dto.request.PromptModifyRequest;
+import com.zippyziggy.prompt.prompt.dto.request.PromptRatingRequest;
+import com.zippyziggy.prompt.prompt.dto.request.PromptReportRequest;
+import com.zippyziggy.prompt.prompt.dto.request.PromptRequest;
+import com.zippyziggy.prompt.prompt.dto.response.GptApiResponse;
+import com.zippyziggy.prompt.prompt.dto.response.MemberResponse;
+import com.zippyziggy.prompt.prompt.dto.response.PromptCardListResponse;
+import com.zippyziggy.prompt.prompt.dto.response.PromptCardResponse;
+import com.zippyziggy.prompt.prompt.dto.response.PromptDetailResponse;
+import com.zippyziggy.prompt.prompt.dto.response.PromptReportResponse;
+import com.zippyziggy.prompt.prompt.dto.response.PromptResponse;
+import com.zippyziggy.prompt.prompt.dto.response.SearchPromptResponse;
+import com.zippyziggy.prompt.prompt.exception.AwsUploadException;
+import com.zippyziggy.prompt.prompt.exception.ForbiddenMemberException;
+import com.zippyziggy.prompt.prompt.exception.PromptNotFoundException;
+import com.zippyziggy.prompt.prompt.exception.RatingAlreadyExistException;
+import com.zippyziggy.prompt.prompt.exception.ReportAlreadyExistException;
+import com.zippyziggy.prompt.prompt.model.Prompt;
+import com.zippyziggy.prompt.prompt.model.PromptBookmark;
+import com.zippyziggy.prompt.prompt.model.PromptClick;
+import com.zippyziggy.prompt.prompt.model.PromptLike;
+import com.zippyziggy.prompt.prompt.model.PromptReport;
+import com.zippyziggy.prompt.prompt.model.Rating;
+import com.zippyziggy.prompt.prompt.model.StatusCode;
+import com.zippyziggy.prompt.prompt.repository.PromptBookmarkRepository;
+import com.zippyziggy.prompt.prompt.repository.PromptClickRepository;
+import com.zippyziggy.prompt.prompt.repository.PromptCommentRepository;
+import com.zippyziggy.prompt.prompt.repository.PromptLikeRepository;
+import com.zippyziggy.prompt.prompt.repository.PromptReportRepository;
+import com.zippyziggy.prompt.prompt.repository.PromptRepository;
+import com.zippyziggy.prompt.prompt.repository.RatingRepository;
 import com.zippyziggy.prompt.talk.dto.response.PromptTalkListResponse;
 import com.zippyziggy.prompt.talk.dto.response.TalkListResponse;
 import com.zippyziggy.prompt.talk.repository.TalkRepository;
 import com.zippyziggy.prompt.talk.service.TalkService;
 import io.github.flashvayne.chatgpt.service.ChatgptService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
-import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
-import org.springframework.cloud.client.circuitbreaker.NoFallbackAvailableException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.lang.Nullable;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.lang.Nullable;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Transactional
@@ -204,9 +230,8 @@ public class PromptService{
 			try {
 				originalMemberInfo = circuitBreaker
 						.run(() -> memberClient
-								.getMemberInfo(originalMemberUuid)
-								.orElseGet(MemberResponse::new));
-			} catch (NoFallbackAvailableException e) {
+								.getMemberInfo(originalMemberUuid));
+			} catch (RuntimeException e) {
 				originalMemberInfo = new MemberResponse();
 			}
 
@@ -389,7 +414,6 @@ public class PromptService{
 
 			MemberResponse writerInfo = getWriterInfo(prompt.getMemberUuid());
 
-
 			boolean isBookmarded = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
 					? true : false;
 			boolean isLiked = promptLikeRepository.findByPromptAndMemberUuid(prompt, UUID.fromString(crntMemberUuid)) != null
@@ -422,10 +446,30 @@ public class PromptService{
 	/*
     프롬프트 톡 및 댓글 개수 조회
      */
-	public PromptTalkCommentCntResponse cntPrompt(UUID promptUuid) {
+	public SearchPromptResponse searchPrompt(UUID promptUuid, String crntMemberUuid) {
+
+		final Prompt prompt = promptRepository
+			.findByPromptUuid(promptUuid)
+			.orElseThrow(PromptNotFoundException::new);
+
 		long talkCnt = talkRepository.countAllByPromptPromptUuid(promptUuid);
-		long commentCnt = promptCommentRepository.countAllByPromptPromptUuid(promptUuid);
-		return PromptTalkCommentCntResponse.from(talkCnt, commentCnt);
+		long commentCnt = promptCommentRepository
+			.countAllByPromptPromptUuid(promptUuid);
+
+		boolean isLiked;
+		boolean isBookmarked;
+		if (crntMemberUuid.equals("defaultValue")) {
+			isLiked = false;
+			isBookmarked = false;
+		} else {
+			UUID memberUuid = UUID.fromString(crntMemberUuid);
+			isLiked = promptLikeRepository
+				.existsByMemberUuidAndPrompt_PromptUuid(memberUuid, promptUuid);
+			isBookmarked = promptBookmarkRepository
+				.existsByMemberUuidAndPrompt_PromptUuid(memberUuid, promptUuid);
+		}
+
+		return SearchPromptResponse.from(prompt, talkCnt, commentCnt, isLiked, isBookmarked);
 	}
 
 	/*
@@ -461,10 +505,8 @@ public class PromptService{
 			return null;
 		} else {
 
-
 			List<PromptClick> promptClicks = promptClickRepository
 					.findTop5DistinctByMemberUuidAndPrompt_StatusCodeOrderByRegDtDesc(UUID.fromString(crntMemberUuid), StatusCode.OPEN);
-
 
 			// 해당 프롬프트 내용 가져오기
 			List<Prompt> prompts = new ArrayList<>();
@@ -482,7 +524,6 @@ public class PromptService{
 				long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
 
 				MemberResponse writerInfo = getWriterInfo(prompt.getMemberUuid());
-
 
 				boolean isBookmarded = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
 						? true : false;
@@ -553,10 +594,9 @@ public class PromptService{
 		try {
 			writerInfo = circuitBreaker
 					.run(() -> memberClient
-							.getMemberInfo(memberUuid)
-							.orElseGet(MemberResponse::new));
+							.getMemberInfo(memberUuid));
 			log.info("member에서 예외 처리 없이 찾아왔지만 null임");
-		} catch (NoFallbackAvailableException e) {
+		} catch (RuntimeException e) {
 			writerInfo = new MemberResponse();
 			log.info("member에서 예외 떴음");
 		}

@@ -1,35 +1,29 @@
 package com.zippyziggy.prompt.prompt.service;
 
+import com.zippyziggy.prompt.prompt.client.MemberClient;
+import com.zippyziggy.prompt.prompt.dto.request.PromptCommentRequest;
+import com.zippyziggy.prompt.prompt.dto.response.MemberResponse;
+import com.zippyziggy.prompt.prompt.dto.response.PromptCommentListResponse;
+import com.zippyziggy.prompt.prompt.dto.response.PromptCommentResponse;
+import com.zippyziggy.prompt.prompt.exception.ForbiddenMemberException;
+import com.zippyziggy.prompt.prompt.exception.PromptCommentNotFoundException;
+import com.zippyziggy.prompt.prompt.exception.PromptNotFoundException;
+import com.zippyziggy.prompt.prompt.model.Prompt;
+import com.zippyziggy.prompt.prompt.model.PromptComment;
 import com.zippyziggy.prompt.prompt.model.StatusCode;
+import com.zippyziggy.prompt.prompt.repository.PromptCommentRepository;
+import com.zippyziggy.prompt.prompt.repository.PromptRepository;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
 import javax.transaction.Transactional;
-
-import com.zippyziggy.prompt.prompt.client.MemberClient;
-import com.zippyziggy.prompt.prompt.dto.response.MemberResponse;
-import com.zippyziggy.prompt.prompt.exception.ForbiddenMemberException;
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import com.zippyziggy.prompt.prompt.dto.request.PromptCommentRequest;
-import com.zippyziggy.prompt.prompt.dto.response.PromptCommentListResponse;
-import com.zippyziggy.prompt.prompt.dto.response.PromptCommentResponse;
-import com.zippyziggy.prompt.prompt.exception.MemberNotFoundException;
-import com.zippyziggy.prompt.prompt.exception.PromptCommentNotFoundException;
-import com.zippyziggy.prompt.prompt.exception.PromptNotFoundException;
-import com.zippyziggy.prompt.prompt.model.Prompt;
-import com.zippyziggy.prompt.prompt.model.PromptComment;
-import com.zippyziggy.prompt.prompt.repository.PromptCommentRepository;
-import com.zippyziggy.prompt.prompt.repository.PromptRepository;
-
-import lombok.RequiredArgsConstructor;
 
 @Service
 @Transactional
@@ -46,8 +40,7 @@ public class PromptCommentService {
 		Page<PromptComment> commentList = promptCommentRepository.findAllByPromptPromptUuid(promptUuid, pageable);
 
 		List<PromptCommentResponse> promptCommentResponseList = commentList.stream().map(comment -> {
-			MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(comment.getMemberUuid())
-				.orElseThrow(MemberNotFoundException::new));
+			MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(comment.getMemberUuid()));
 			PromptCommentResponse promptcommentList = PromptCommentResponse.from(comment);
 			promptcommentList.setMember(writerInfo);
 

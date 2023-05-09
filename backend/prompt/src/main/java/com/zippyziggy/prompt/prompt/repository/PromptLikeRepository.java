@@ -2,12 +2,10 @@ package com.zippyziggy.prompt.prompt.repository;
 
 import com.zippyziggy.prompt.prompt.model.Prompt;
 import com.zippyziggy.prompt.prompt.model.PromptLike;
+import java.util.List;
+import java.util.UUID;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 
 
 public interface PromptLikeRepository extends JpaRepository<PromptLike, Long>, PromptLikeCustomRepository {
@@ -20,4 +18,9 @@ public interface PromptLikeRepository extends JpaRepository<PromptLike, Long>, P
     PromptLike findByPromptAndMemberUuid(Prompt prompt, UUID memberUuid);
 
     List<PromptLike> findAllByMemberUuid(UUID memberUuid);
+
+    boolean existsByMemberUuidAndPrompt_PromptUuid(
+        UUID memberUuid, UUID promptUuid);
+
+
 }
