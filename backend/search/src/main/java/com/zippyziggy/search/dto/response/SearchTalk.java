@@ -21,6 +21,7 @@ public class SearchTalk {
             .likeCnt(esTalk.getLikeCnt())
             .question(esTalk.getEsMessages().get(0).getContent())
             .answer(esTalk.getEsMessages().get(1).getContent())
+            .hit(esTalk.getHit().intValue())
             .build();
     }
 
