@@ -4,8 +4,8 @@ import { ZP_INPUT_WRAPPER_ID, ZP_PROMPT_CONTAINER_ID } from '@pages/constants';
 const addRootWrapperToTargetElement = ($target: HTMLElement) => {
   const rootWrapper = document.createElement('div');
   rootWrapper.className = 'px-2 py-10 relative w-full flex flex-col h-full';
-  $target.parentElement.style.display = 'none';
-  $target = $target.parentElement.parentElement;
+  ($target.parentElement.querySelector('div:first-of-type') as HTMLElement).style.display = 'none';
+  $target = $target.parentElement;
   $target.appendChild(rootWrapper);
   return rootWrapper;
 };
@@ -23,7 +23,9 @@ export const findTargetElement = ($parent: Element, isPlus: boolean) => {
       'div.text-gray-800.w-full.md\\:max-w-2xl.lg\\:max-w-3xl.md\\:h-full.md\\:flex.md\\:flex-col.px-6.dark\\:text-gray-100'
     ) as HTMLElement;
 
-    if ($target) $target = addRootWrapperToTargetElement($target);
+    if ($target) {
+      $target = addRootWrapperToTargetElement($target);
+    }
   }
 
   return $target;
@@ -57,6 +59,7 @@ export const shouldCreatePromptContainerPortal = (
   isNewChatPageRef: React.MutableRefObject<boolean>
 ): boolean => {
   const isNewChatPage = isNewChatPageRef.current;
+
   return (
     targetElement.className === 'flex flex-col items-center text-sm dark:bg-gray-800' ||
     targetElement.className === 'relative flex h-full max-w-full flex-1' ||

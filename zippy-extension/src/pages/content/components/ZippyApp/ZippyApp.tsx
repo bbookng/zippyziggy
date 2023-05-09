@@ -26,10 +26,11 @@ const App = () => {
     redirect: CHAT_GPT_URL,
   };
 
-  const { data } = useQuery({
+  useQuery({
     queryKey: ['checkAuth'],
     queryFn: () => checkAuth(params),
     enabled: !!code,
+    onSuccess: (data) => {},
   });
 
   return (

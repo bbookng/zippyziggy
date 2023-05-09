@@ -3,6 +3,10 @@
 @import '@pages/content/components/PromptContainer/index.styles.scss';
 @import '@pages/content/components/Modal/index.styles.scss';
 
+* {
+  box-sizing: border-box;
+}
+
 @keyframes slideUp {
   0% {
     height: 0;

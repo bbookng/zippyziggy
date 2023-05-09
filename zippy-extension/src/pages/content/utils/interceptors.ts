@@ -7,6 +7,7 @@ import axios, {
 } from 'axios';
 /* eslint-disable no-useless-concat */
 import { ZIPPY_API_URL } from '@pages/constants';
+import logOnDev from '@pages/content/utils/logging';
 import { api } from './axios-instance';
 
 const tokenInterceptor = (instance: AxiosInstance) => {
@@ -58,42 +59,42 @@ const tokenInterceptor = (instance: AxiosInstance) => {
 };
 
 const onRequest = (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
-  console.info(
+  logOnDev.info(
     `🙏 %c[API] ${config.method?.toUpperCase()} ${config.url} | [::request::]`,
     'color: #229910'
   );
-  console.dir(config);
-  console.log('', '');
+  logOnDev.dir(config);
+  logOnDev.log('', '');
   return config;
 };
 
 const onRequestError = (error: AxiosError): Promise<AxiosError> => {
-  console.error(
+  logOnDev.error(
     `💥 [API] ${error.config?.method?.toUpperCase()} ${error.config?.url} | [::request error::]`
   );
-  console.dir(error);
-  console.log('', '');
+  logOnDev.dir(error);
+  logOnDev.log('', '');
   return Promise.reject(error);
 };
 
 const onResponse = (response: AxiosResponse): AxiosResponse => {
-  console.info(
+  logOnDev.info(
     `👌 %c [API] ${response.config.method?.toUpperCase()} ${response.config.url} | [::response::] ${
       response.status
     }`,
     'color: #13ce29'
   );
-  console.dir(response);
-  console.log('', '');
+  logOnDev.dir(response);
+  logOnDev.log('', '');
   return response;
 };
 
 const onResponseError = (error: AxiosError): Promise<AxiosError> => {
-  console.error(
+  logOnDev.error(
     `💥 [API] ${error.config?.method?.toUpperCase()} ${error.config?.url} | [::response error::]`
   );
-  console.dir(error);
-  console.log('', '');
+  logOnDev.dir(error);
+  logOnDev.log('', '');
   return Promise.reject(error);
 };
 

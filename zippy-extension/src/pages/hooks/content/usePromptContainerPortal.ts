@@ -7,6 +7,7 @@ import {
   hideEmptyDiv,
   shouldCreatePromptContainerPortal,
 } from '@pages/content/utils/add-ui-to-prompt-portals';
+import { ZP_PROMPT_CONTAINER_ID } from '@pages/constants';
 
 const usePromptListPortal = () => {
   const [portalContainer, setPortalContainer] = useState(null); // 포탈 컨테이너를 저장하는 state
@@ -55,6 +56,12 @@ const usePromptListPortal = () => {
       const observer = new MutationObserver((mutations) => {
         for (const mutation of mutations) {
           const targetElement = mutation.target as Element;
+          if (!document.querySelector('h1.text-4xl')) {
+            if (targetElement.className === 'flex flex-col items-center text-sm dark:bg-gray-800') {
+              (document.querySelector(`#${ZP_PROMPT_CONTAINER_ID}`) as HTMLElement).style.display =
+                'none';
+            }
+          }
           // 대상 요소가 포탈을 생성해야 하는지 판단
           if (shouldCreatePromptContainerPortal(targetElement, isNewChatPageRef)) {
             createPromptContainerPortal();

@@ -124,7 +124,9 @@ const PromptCard = ({ prompt }: PromptCardProps) => {
           </div>
           <div className="ZP_prompt-container__profile-wrapper">
             <div className="ZP_prompt-container__profile caption">
-              <img src={writerResponse?.writerImg} alt={writerResponse?.writerNickname} />
+              <span>
+                <img src={writerResponse?.writerImg} alt={writerResponse?.writerNickname} />
+              </span>
               <span>{writerResponse?.writerNickname}</span>
             </div>
             <div className="ZP_prompt-container__actions-wrapper">
