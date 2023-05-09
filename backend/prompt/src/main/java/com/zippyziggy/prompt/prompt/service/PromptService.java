@@ -12,7 +12,6 @@ import com.zippyziggy.prompt.prompt.dto.request.PromptRatingRequest;
 import com.zippyziggy.prompt.prompt.dto.request.PromptReportRequest;
 import com.zippyziggy.prompt.prompt.dto.request.PromptRequest;
 import com.zippyziggy.prompt.prompt.dto.response.ChatGptResponse;
-import com.zippyziggy.prompt.prompt.dto.response.ChatGptResponse.Choice;
 import com.zippyziggy.prompt.prompt.dto.response.GptApiResponse;
 import com.zippyziggy.prompt.prompt.dto.response.MemberResponse;
 import com.zippyziggy.prompt.prompt.dto.response.PromptCardListResponse;
