@@ -9,7 +9,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class OriginerResponse {
-	private UUID originerUuid;
+	private String originerUuid;
 	private String originerImg;
 	private String originerNickname;
 }

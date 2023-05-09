@@ -9,7 +9,7 @@ import java.util.UUID;
 @Data
 public class MemberResponse {
 
-    private UUID userUuid;
+    private String userUuid;
     private String nickname;
     private String profileImg;
 
