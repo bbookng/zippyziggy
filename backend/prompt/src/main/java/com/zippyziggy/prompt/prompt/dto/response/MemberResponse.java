@@ -11,7 +11,7 @@ public class MemberResponse {
 
     private String nickname;
     private String profileImg;
-    private UUID userUuid;
+    private String userUuid;
 
     public OriginerResponse toOriginerResponse() throws MemberNotFoundException {
         return new OriginerResponse(this.userUuid, this.profileImg, this.nickname);

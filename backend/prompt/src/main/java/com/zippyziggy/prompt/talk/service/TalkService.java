@@ -114,8 +114,7 @@ public class TalkService {
 		if (talk.getPrompt() != null) {
 			Prompt originPrompt = talk.getPrompt();
 
-			MemberResponse originMember = circuitBreaker.run(() -> memberClient
-					.getMemberInfo(originPrompt.getMemberUuid()));
+			MemberResponse originMember = circuitBreaker.run(() -> memberClient.getMemberInfo(originPrompt.getMemberUuid()));
 
 			PromptCardResponse promptCardResponse = getPromptCardResponse(crntMemberUuid, originPrompt, originMember);
 
@@ -325,9 +324,7 @@ public class TalkService {
 			final Long talkId = talk.getId();
 
 			// MemberClient에 memberUuid로 요청
-			final MemberResponse member = circuitBreaker
-				.run(() -> memberClient
-					.getMemberInfo(talk.getMemberUuid()));
+			final MemberResponse member = circuitBreaker.run(() -> memberClient.getMemberInfo(talk.getMemberUuid()));
 			final WriterResponse writer = member.toWriterResponse();
 
 			final Long commentCnt = findCommentCnt(talkId);

@@ -10,7 +10,7 @@ import java.util.UUID;
 @Getter
 @AllArgsConstructor
 public class OriginerResponse {
-	private UUID originerUuid;
+	private String originerUuid;
 	private String originerImg;
 	private String originerNickname;
 }

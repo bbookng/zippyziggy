@@ -38,9 +38,7 @@ public class TalkCommentService {
 		final Page<TalkComment> commentList = talkCommentRepository.findAllByTalk_Id(talkId, pageable);
 
 		final List<TalkCommentResponse> talkCommentResponseList = commentList.stream().map(comment -> {
-			MemberResponse writerInfo = circuitBreaker
-					.run(() -> memberClient
-							.getMemberInfo(comment.getMemberUuid()));
+			MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(comment.getMemberUuid()));
 			return TalkCommentResponse.from(comment, writerInfo);
 		}).collect(Collectors.toList());
 
@@ -57,8 +55,7 @@ public class TalkCommentService {
 		talkCommentRepository.save(talkComment);
 
 		final CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
-		final MemberResponse talkCommentMember = circuitBreaker
-				.run(() -> memberClient.getMemberInfo(talkComment.getMemberUuid()));
+		final MemberResponse talkCommentMember = circuitBreaker.run(() -> memberClient.getMemberInfo(talkComment.getMemberUuid()));
 
 		return TalkCommentResponse.from(talkComment, talkCommentMember);
 	}
@@ -75,8 +72,7 @@ public class TalkCommentService {
 		}
 
 		final CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
-		final MemberResponse talkCommentMember = circuitBreaker
-				.run(() -> memberClient.getMemberInfo(comment.getMemberUuid()));
+		final MemberResponse talkCommentMember = circuitBreaker.run(() -> memberClient.getMemberInfo(comment.getMemberUuid()));
 
 		comment.setContent(data.getContent());
 		return TalkCommentResponse.from(comment, talkCommentMember);

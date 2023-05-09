@@ -12,7 +12,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 public class WriterResponse {
-	private UUID writerUuid;
+	private String writerUuid;
 	private String writerImg;
 	private String writerNickname;
 }
