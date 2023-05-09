@@ -61,12 +61,13 @@ const Home: NextPage<HomePageProps> = ({ title }) => {
     </>
   );
 };
+
 // 이게 먼저 실행되고 컴포넌트 함수가 실행될 것임
 export const getStaticProps: GetStaticProps = async () => {
   // Client side에서는 실행되지 않음
   return {
     props: {
-      title: '메롱이다',
+      title: '',
     },
   }; // props키가 있는 객체를 반환
 };

@@ -39,8 +39,12 @@ const NavList = styled.ul<NavListProps>`
   align-items: center;
   margin-left: 2rem;
   flex-grow: 1;
-  .right {
+  .iconSet {
+    display: flex;
     margin-left: auto;
+    ${media.small`
+      margin-left: 0;
+    `}
   }
   ${media.small`
     display: ${(props) => (props.isOpen ? 'flex' : 'hide')};
@@ -57,6 +61,7 @@ const NavList = styled.ul<NavListProps>`
     padding: 2rem 0;
     transition: transform 0.3s ease-in-out;
     transform: ${(props) => (props.isOpen ? 'translateX(120%)' : 'translateX(0)')};
+    
   `}
 `;
 
@@ -108,13 +113,7 @@ const NavUser = styled.div`
   align-items: center;
   padding: 0;
 
-  .item {
-    margin-right: 0.8rem;
-    font-size: 1.25rem;
-  }
-
-  .bookmark {
-    display: block;
+  .mobileNone {
     ${media.small`
       display: none;
     `}

@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 // 유저 정보 가져오기
 import { useAppSelector } from '@/hooks/reduxHook';
 
-import { FiSun } from 'react-icons/fi';
+import { FiBell, FiBookmark, FiSun } from 'react-icons/fi';
 import { NavWrapper, NavList, NavOption, Logo, NavUser, Overlay } from './NavbarStyle';
 import Button from '../Button/Button';
 import ProfileImage from '../Image/ProfileImage';
@@ -107,21 +107,39 @@ const Navbar = ({ toggleTheme }) => {
         >
           다운로드
         </NavOption>
-        <NavOption
-          onClick={toggleTheme}
-          onKeyDown={toggleTheme}
-          tabIndex={navOptions.length}
-          role="button"
-          className="themeBtn right"
-        >
-          <FiSun />
-        </NavOption>
+        <div className="iconSet">
+          <NavOption
+            onClick={toggleTheme}
+            onKeyDown={toggleTheme}
+            tabIndex={navOptions.length}
+            role="button"
+            className="themeBtn"
+          >
+            <FiSun />
+          </NavOption>
+          {/* <NavOption
+            onClick={toggleTheme}
+            onKeyDown={toggleTheme}
+            tabIndex={navOptions.length}
+            role="button"
+            className="themeBtn mobileNone"
+          >
+            <FiBookmark />
+          </NavOption> */}
+          {/* <NavOption
+            onClick={toggleTheme}
+            onKeyDown={toggleTheme}
+            tabIndex={navOptions.length}
+            role="button"
+            className="themeBtn mobileNone"
+          >
+            <FiBell />
+          </NavOption> */}
+        </div>
       </NavList>
 
       {userState?.isLogin ? (
         <NavUser>
-          <FaRegBookmark className="item bookmark" />
-          <FaRegBell className="item" />
           <Link
             href={{ pathname: `/profile/${userState.userUuid}`, query: { mypage: true } }}
             style={{ display: 'flex' }}

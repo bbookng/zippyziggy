@@ -69,8 +69,7 @@ export default function CommentList({ id, type, size }: PropsType) {
   };
 
   // 댓글 생성
-  const handleCreateComment = async (e: any) => {
-    e.preventDefault();
+  const handleCreateComment = async () => {
     if (content === '') {
       checkInputFormToast();
       return;

@@ -20,6 +20,7 @@ import { CardList } from '@/components/DetailPrompt/ComponentStyle';
 import TalkCard from '@/components/TalkCard/TalkCard';
 import Paging from '@/components/Paging/Paging';
 import Footer from '@/components/Footer/Footer';
+import Paragraph from '@/components/Typography/Paragraph';
 
 const ProfileContainer = styled.div`
   width: 100%;
@@ -269,11 +270,11 @@ export default function Index() {
       <ProfileTalkContainer>
         <Title>대화</Title>
         <CardList>
-          {cardList?.length === 0 && <p>게시한 대화가 없어요!</p>}
           {cardList?.map((talk: any) => (
             <TalkCard key={talk.talkId} talk={talk} url={`/talks/${talk.talkId}`} />
           ))}
         </CardList>
+        {cardList?.length === 0 && <Paragraph textAlign="center">게시한 대화가 없어요!</Paragraph>}
         <Paging page={page.current} size={6} totalCnt={totalPromptsCnt || 0} setPage={handlePage} />
       </ProfileTalkContainer>
       <Footer />
