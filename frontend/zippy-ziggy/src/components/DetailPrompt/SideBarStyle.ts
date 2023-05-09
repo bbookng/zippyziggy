@@ -1,3 +1,4 @@
+import { media } from '@/styles/media';
 import styled from 'styled-components';
 
 const Container = styled.div`
@@ -11,6 +12,16 @@ const Container = styled.div`
   border-radius: var(--borders-radius-base);
   box-shadow: ${({ theme }) => theme.shadows.boxShadowLarge};
   transition: all 0.3s ease-in;
+
+  ${media.small`
+    display: flex;
+    position: relative;
+    top: 0;
+    padding: 0;
+    width: fit-content;
+    flex-direction: column;
+    box-shadow: none;
+  `}
 `;
 
 const ActionBox = styled.div`
@@ -66,6 +77,9 @@ const ActionBox = styled.div`
     display: flex;
     align-items: center;
   }
+  ${media.small`
+    display:none;
+  `}
 `;
 
 const ButtonBox = styled.div`
@@ -92,6 +106,21 @@ const ButtonBox = styled.div`
     color: ${({ theme }) => theme.colors.blackColor30};
     border-color: ${({ theme }) => theme.colors.blackColor30};
   }
+
+  ${media.small`
+    display: flex;
+    position: relative;
+    flex-direction: row;
+    flex-wrap: wrap;
+    .btn {
+      width: fit-content;
+      padding: 0.5rem 2rem;
+      margin : 0.25rem 0.5rem 0.25rem 0;
+    }
+    .btn:last-child {
+      margin-right: 0px; /* 원하는 마진 값 설정 */
+    }
+  `}
 `;
 
 const EditBox = styled.div`
@@ -103,9 +132,9 @@ const EditBox = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 80px;
+    width: fit-content;
     height: 2rem;
-    padding: 0.2rem 0;
+    padding: 0.2rem 0.3rem;
     margin-top: 0.5rem;
     background-color: ${({ theme }) => theme.colors.blackColor03};
     border-radius: 4px;
@@ -115,8 +144,10 @@ const EditBox = styled.div`
       margin-right: 0.25rem;
     }
 
-    :nth-child(1) {
-      margin-right: 0.5rem;
+    margin-right: 0.5rem;
+
+    :last-child {
+      margin-right: 0px; /* 원하는 마진 값 설정 */
     }
 
     transition: all 0.2s ease-out;
@@ -128,6 +159,9 @@ const EditBox = styled.div`
       transform: scale(0.95);
     }
   }
+  ${media.small`
+    display: none;
+  `}
 `;
 
 export { Container, ActionBox, ButtonBox, EditBox };

@@ -9,6 +9,7 @@ import Link from 'next/dist/client/link';
 import Button from '@/components/Button/Button';
 import IconButton from '@/components/Button/IconButton';
 import { FiLink2 } from 'react-icons/fi';
+import { downloadLink, links } from '@/utils/links';
 
 const LoginContainer = styled.div`
   width: 100%;
@@ -68,9 +69,7 @@ export default function Index() {
   const { nickname } = router.query;
 
   const handleGptBtn = () => {
-    router.push(
-      'https://chrome.google.com/webstore/detail/%EC%A7%80%ED%94%BC%EC%A7%80%EA%B8%B0-chatgpt-%ED%99%95%EC%9E%A5%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%A8/gcinlhaphmofekpjjjcnbiigbgnffokc?hl=ko'
-    );
+    router.push(links.downloadLink);
   };
 
   return (

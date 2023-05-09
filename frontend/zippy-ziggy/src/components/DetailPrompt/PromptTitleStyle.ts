@@ -8,8 +8,11 @@ const Container = styled.div`
   .time {
     font-size: var(--fonts-body-sm);
     margin: 8px 0 12px 0;
-    color: ${({ theme }) => theme.colors.blackColor30};
-
+    color: ${({ theme }) => theme.colors.blackColor50};
+    span {
+      display: inline-block;
+      margin-right: 0.5rem;
+    }
     ${media.small`
       font-size: var(--fonts-body-xm);
     `}

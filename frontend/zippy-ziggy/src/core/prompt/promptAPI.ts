@@ -14,6 +14,7 @@ import {
   GetPromptListType,
   GetTalkListUsePromptType,
   LikePromptType,
+  PostPromptReportType,
   TestPromptType,
   UpdatePromptCommentType,
 } from './promptType';
@@ -295,20 +296,28 @@ export const testPrompt = async (requestData: TestPromptType) => {
   }
 };
 
-// ******* mypage 관련 prompt API  ******/
-/**
- * 최근 조회한 프롬프트 조회
- * @returns
- */
-export const getPromptRecentAPI = async () => {
+// 프롬프트 신고
+export const postPromptReport = async (reqeustData: PostPromptReportType) => {
   try {
-    const res = await httpAuth.get(`/prompts/members/recent/prompts`);
-    const { data } = res;
-    if (res.status === 200) {
-      return { result: 'SUCCESS', data };
-    }
-    return { result: 'FAIL' };
+    const { data } = await httpAuth.post(`/prompts/${reqeustData.id}/report`, {
+      content: reqeustData.content,
+    });
+    Toastify({
+      text: message.ReportPromptSuccess,
+      duration: 1000,
+      position: 'center',
+      stopOnFocus: true,
+      style: toastifyCSS.success,
+    }).showToast();
+    return { result: 'SUCCESS', data };
   } catch (err) {
+    Toastify({
+      text: message.ReportPromptFail,
+      duration: 1000,
+      position: 'center',
+      stopOnFocus: true,
+      style: toastifyCSS.fail,
+    }).showToast();
     return { result: 'FAIL', data: err };
   }
 };
