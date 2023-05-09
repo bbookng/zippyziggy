@@ -111,7 +111,16 @@ export const getNicknameAPI = async (nickname: string) => {
 /**
  * 구글로그인
  */
-type TypeGetSocialResponseDTO = {
+type TypeGetSocialLoginResponseDTO = {
+  // 항시 오는 데이터
+  isSignUp: boolean;
+  // 아래는 로그인 할 경우
+  nickname?: string;
+  profileImg?: string;
+  userUuid?: string;
+};
+
+type TypeGetSocialSignupResponseDTO = {
   // 항시 오는 데이터
   isSignUp: boolean;
   // 아래는 회원가입 할 경우
@@ -121,10 +130,6 @@ type TypeGetSocialResponseDTO = {
     platformId: string;
     profileImg: string;
   };
-  // 아래는 로그인 할 경우
-  nickname?: string;
-  profileImg?: string;
-  userUuid?: string;
 };
 
 export const getGoogleAPI = async (code: string) => {
@@ -134,7 +139,7 @@ export const getGoogleAPI = async (code: string) => {
   }).toString();
   try {
     const res = await http.get(`/members/login/oauth2/code/google?${queryParams}`);
-    const data = res.data as TypeGetSocialResponseDTO;
+    const { data } = res;
     if (data?.isSignUp === true) {
       // 회원가입으로 이동
       return {
@@ -161,7 +166,7 @@ export const getKakaoAPI = async (code: string) => {
   }).toString();
   try {
     const res = await http.get(`/members/auth/kakao/callback?${queryParams}`);
-    const data = res.data as TypeGetSocialResponseDTO;
+    const { data } = res;
     if (data?.isSignUp === true) {
       return {
         result: 'SUCCESS_SIGNUP',

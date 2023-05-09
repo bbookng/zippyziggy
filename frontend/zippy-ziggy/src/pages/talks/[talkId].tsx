@@ -120,9 +120,9 @@ export default function DetailPrompt() {
   useEffect(() => {
     if (!isLoading && data.result === 'SUCCESS') {
       window.addEventListener('scroll', handleScroll);
-      setIsLiked(data.data.isLiked);
-      setIsBookmarked(data.data.isBookmarked);
-      setLikeCnt(data.data.likeCnt);
+      setIsLiked(data?.data?.isLiked);
+      setIsBookmarked(data?.data?.isBookmarked);
+      setLikeCnt(data?.data?.likeCnt);
     }
     return () => {
       window.removeEventListener('scroll', handleScroll);
@@ -141,13 +141,13 @@ export default function DetailPrompt() {
         />
       )}
       <Container>
-        {!isLoading && data.result === 'SUCCESS' && (
+        {!isLoading && data?.result === 'SUCCESS' && (
           <>
             <LeftContainer>
               <TopBox>
                 <PromptTitle
                   type="talk"
-                  prompt={data.data}
+                  prompt={data?.data}
                   isLiked={isLiked}
                   isBookmarked={isBookmarked}
                   likeCnt={likeCnt}
@@ -159,13 +159,13 @@ export default function DetailPrompt() {
               <Tab itemList={itemList} tab={tab} handleIsSelected={handleIsSelectedTab} />
 
               <section id="0">
-                <TalkIntroduction talk={data.data} />
+                <TalkIntroduction talk={data?.data} />
               </section>
               <section id="1">
                 <CommentList id={talkId} type="talk" size={5} />
               </section>
               <section id="2">
-                <TalkThisPromptComponent originPrompt={data.data.originPrompt} />
+                <TalkThisPromptComponent originPrompt={data?.data?.originPrompt} />
               </section>
               <section id="3">
                 <TalkComponent promptUuid={data?.data?.originPrompt?.promptUuid} size={4} />

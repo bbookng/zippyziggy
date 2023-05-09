@@ -4,6 +4,7 @@ import { getPromptsMemberAPI } from '@/core/user/userAPI';
 import { CardList, Container } from './ComponentStyle';
 import PromptCard from '../PromptCard/PromptCard';
 import Paging from '../Paging/Paging';
+import Paragraph from '../Typography/Paragraph';
 
 type PropsType = {
   userUuid: string | string[] | number;
@@ -64,7 +65,9 @@ export default function ProfilePromptList({ className, userUuid, size = 6, getDa
             />
           ))
         ) : (
-          <div style={{ padding: '16px' }}>게시한 프롬프트가 없어요!</div>
+          <Paragraph textAlign="center" style={{ padding: '16px' }}>
+            게시한 프롬프트가 없어요!
+          </Paragraph>
         )}
       </CardList>
       <Paging
