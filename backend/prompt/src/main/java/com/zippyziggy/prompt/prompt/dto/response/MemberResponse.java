@@ -1,10 +1,7 @@
 package com.zippyziggy.prompt.prompt.dto.response;
 
-import lombok.Data;
-
-import java.util.UUID;
-
 import com.zippyziggy.prompt.prompt.exception.MemberNotFoundException;
+import lombok.Data;
 
 @Data
 public class MemberResponse {
