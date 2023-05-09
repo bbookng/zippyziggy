@@ -15,6 +15,7 @@ import {
   RightContainer,
   TopBox,
 } from '@/styles/prompt/Detail.style';
+import { checkLoginCuring } from '@/utils/checkLogin';
 import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -205,9 +206,9 @@ export default function DetailPrompt() {
                 handleMoveToCreatePromptForkPage={handleMoveToCreatePromptForkPage}
               />
             </RightContainer>
-            {/* <MoveTopBtn scrollTop={!!scrollTop}>
+            <MoveTopBtn scrollTop={!!scrollTop}>
               <FaAngleUp className="icon" onClick={handleButtonClick} />
-            </MoveTopBtn> */}
+            </MoveTopBtn>
           </>
         )}
       </Container>
