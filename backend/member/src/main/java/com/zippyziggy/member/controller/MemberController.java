@@ -682,11 +682,13 @@ public class MemberController {
             Member member = memberRepository.findByUserUuid(userUuid);
             log.info("member = " + member);
 
-            MemberResponse memberResponse = (null == member) ? new MemberResponse() : MemberResponse.from(member);
+            MemberResponse memberResponse = (null == member)
+                ? new MemberResponse("", "", UUID.fromString(""))
+                : MemberResponse.from(member);
 
             return new ResponseEntity<>(memberResponse, HttpStatus.OK);
         }
-        }
+    }
 
 
 
