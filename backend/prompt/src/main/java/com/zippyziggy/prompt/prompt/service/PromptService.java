@@ -101,7 +101,7 @@ public class PromptService{
 		String thumbnailUrl;
 
 		if (thumbnail == null) {
-			thumbnailUrl = "default thumbnail image";
+			thumbnailUrl = "https://zippyziggy.s3.ap-northeast-2.amazonaws.com/default/noCardImg.png";
 		} else {
 			thumbnailUrl = awsS3Uploader.upload(thumbnail, "thumbnails");
 		}
@@ -152,10 +152,10 @@ public class PromptService{
 
 	public int updateHit(UUID promptUuid, HttpServletRequest request, HttpServletResponse response) {
 
-		final Prompt prompt = promptRepository
+		Prompt prompt = promptRepository
 			.findByPromptUuidAndStatusCode(promptUuid, StatusCode.OPEN)
 			.orElseThrow(PromptNotFoundException::new);
-		final Long promptId = prompt.getId();
+		Long promptId = prompt.getId();
 
 		Cookie[] cookies = request.getCookies();
 		boolean checkCookie = false;
@@ -178,7 +178,7 @@ public class PromptService{
 		}
 
 		// Elasticsearch에 조회수 반영
-		final PromptCntRequest promptCntRequest = prompt.toPromptHitRequest();
+		PromptCntRequest promptCntRequest = prompt.toPromptHitRequest();
 		kafkaProducer.sendPromptCnt("sync-prompt-hit", promptCntRequest);
 
 		return result;
@@ -251,7 +251,7 @@ public class PromptService{
 
 		if (!crntMemberUuid.equals("defaultValue")) {
 			// 프롬프트 조회 시 최근 조회 테이블에 추가
-			final PromptClick promptClick = PromptClick.from(prompt, UUID.fromString(crntMemberUuid));
+			PromptClick promptClick = PromptClick.from(prompt, UUID.fromString(crntMemberUuid));
 			promptClickRepository.save(promptClick);
 		}
 
@@ -331,7 +331,7 @@ public class PromptService{
 		}
 
 		// Elasticsearch에 좋아요 수 반영
-		final PromptCntRequest promptCntRequest = prompt.toPromptLikeCntRequest();
+		PromptCntRequest promptCntRequest = prompt.toPromptLikeCntRequest();
 		kafkaProducer.sendPromptCnt("sync-prompt-like-cnt", promptCntRequest);
 	}
 
@@ -359,8 +359,8 @@ public class PromptService{
 		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 
 		Page<Prompt> prompts = promptLikeRepository.findAllPromptsByMemberUuid(UUID.fromString(crntMemberUuid), pageable);
-		final long totalPromptsCnt = prompts.getTotalElements();
-		final int totalPageCnt = prompts.getTotalPages();
+		long totalPromptsCnt = prompts.getTotalElements();
+		int totalPageCnt = prompts.getTotalPages();
 		List<PromptCardResponse> promptCardResponses = new ArrayList<>();
 
 		for (Prompt prompt: prompts) {
@@ -409,8 +409,8 @@ public class PromptService{
 		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 
 		Page<Prompt> prompts = promptBookmarkRepository.findAllPromptsByMemberUuid(UUID.fromString(crntMemberUuid), pageable);
-		final long totalPromptsCnt = prompts.getTotalElements();
-		final int totalPageCnt = prompts.getTotalPages();
+		long totalPromptsCnt = prompts.getTotalElements();
+		int totalPageCnt = prompts.getTotalPages();
 		List<PromptCardResponse> promptCardResponses = new ArrayList<>();
 
 		for (Prompt prompt : prompts) {
@@ -550,8 +550,8 @@ public class PromptService{
 		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 
 		Page<Prompt> prompts = promptRepository.findAllByMemberUuidAndStatusCode(UUID.fromString(crntMemberUuid), StatusCode.OPEN, pageable);
-		final long totalPromptsCnt = prompts.getTotalElements();
-		final int totalPageCnt = prompts.getTotalPages();
+		long totalPromptsCnt = prompts.getTotalElements();
+		int totalPageCnt = prompts.getTotalPages();
 
 		List<PromptCardResponse> promptCardResponses = new ArrayList<>();
 		MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(UUID.fromString(crntMemberUuid)));
