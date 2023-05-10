@@ -330,10 +330,19 @@ public class MemberController {
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
     public ResponseEntity<?> kakaoCallback(String code, @RequestParam(value = "redirect") String redirectUrl,HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // kakao Token 가져오기(권한)
-        String kakaoAccessToken = kakaoLoginService.kakaoGetToken(code, redirectUrl);
-        // Token으로 사용자 정보 가져오기
-        KakaoUserInfoResponseDto kakaoUserInfo = kakaoLoginService.kakaoGetProfile(kakaoAccessToken);
+
+        KakaoUserInfoResponseDto kakaoUserInfo;
+
+        if (redirectUrl == null) {
+            // 앱용
+            kakaoUserInfo = kakaoLoginService.kakaoGetProfile(code);
+        } else {
+            // kakao Token 가져오기(권한)
+            String kakaoAccessToken = kakaoLoginService.kakaoGetToken(code, redirectUrl);
+            // Token으로 사용자 정보 가져오기
+            kakaoUserInfo = kakaoLoginService.kakaoGetProfile(kakaoAccessToken);
+        }
+
         // 기존 회원인지 검증
         String platformId = kakaoUserInfo.getId();
         Member member = memberService.memberCheck(Platform.KAKAO, platformId);
@@ -696,12 +705,12 @@ public class MemberController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
-    public ResponseEntity<?> findMemberByUUID(@RequestParam UUID userUuid) throws Exception {
+    public ResponseEntity<MemberResponse> findMemberByUUID(@RequestParam UUID userUuid) throws Exception {
 
         if (redisUtils.isExists("member" + userUuid)) {
             log.info("redis로 회원 조회 중");
-            MemberInformResponseDto memberInformResponseDto = redisUtils.get("member" + userUuid, MemberInformResponseDto.class);
-            return new ResponseEntity<>(memberInformResponseDto, HttpStatus.OK);
+            MemberResponse memberResponse = redisUtils.get("member" + userUuid, MemberResponse.class);
+            return new ResponseEntity<>(memberResponse, HttpStatus.OK);
         } else {
             log.info("DB로 회원 조회 중");
             log.info("userUuid = " + userUuid);

@@ -79,5 +79,4 @@ public class Member {
 		this.activate = this.activate == null ? true : this.activate;
 		this.role = this.role == null ? RoleType.USER : this.role;
 	}
-
 }

@@ -24,4 +24,5 @@ public class MemberInformResponseDto {
                 .profileImg(member.getProfileImg())
                 .userUuid(member.getUserUuid()).build();
     }
+
 }
