@@ -409,12 +409,7 @@ public class MemberController {
             return ResponseEntity.ok(appMemberResponse);
 
 
-
-
-
         } else {
-
-
 
 
             // kakao Token 가져오기(권한)
@@ -570,9 +565,6 @@ public class MemberController {
             redisUtils.increaseTotalVisitedCount();
         }
 
-        // 기존 redis 정보 삭제
-//        redisService.deleteRedisData(member.getUserUuid().toString());
-
         // redis 설정(1. 유저 정보 저장 -> UUID나 AccessToken으로 회원 조회할 시 활용
         //           2. refreshToken 저장 -> accessToken 만료 시 DB가 아닌 Redis에서 먼저 찾아오기)
         redisService.saveRedisData(member.getUserUuid().toString(), memberInformResponseDto, jwtToken.getRefreshToken());
@@ -630,58 +622,98 @@ public class MemberController {
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
     public ResponseEntity<?> memberSignUp(@RequestPart(value = "user") MemberSignUpRequestDto memberSignUpRequestDto,
-                                          @RequestPart(value = "file", required = false) MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                          @RequestPart(value = "file", required = false) MultipartFile file,
+                                          @RequestPart(value = "type", required = false) String type,
+                                          HttpServletRequest request, HttpServletResponse response) throws Exception {
         try {
-            JwtToken jwtToken = memberService.memberSignUp(memberSignUpRequestDto, file);
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Authorization", jwtToken.getAccessToken());
-            headers.add("Access-Control-Expose-Headers", "Authorization");
 
+            if (type.equals("app")) {
+                // Flutter로 회원가입 할 경우
+                JwtToken jwtToken = memberService.memberSignUp(memberSignUpRequestDto, file);
 
-            // 기존 쿠키 제거
-            Cookie myCookie = cookieUtils.findRefreshTokenCookie(request);
-            if (myCookie != null) {
-                myCookie.setMaxAge(0);
-                response.addCookie(myCookie);
-            }
+                Member member = jwtValidationService.findMemberByJWT(jwtToken.getAccessToken());
+                MemberInformResponseDto memberInformResponseDto = MemberInformResponseDto.from(member);
 
-            // 쿠키 설정
-            ResponseCookie cookie = jwtProviderService.createSetCookie(jwtToken.getRefreshToken());
+                AppMemberResponse appMemberResponse = AppMemberResponse.builder()
+                        .memberInformResponseDto(memberInformResponseDto)
+                        .jwtToken(jwtToken).build();
 
-            response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
-            response.setHeader("Access-Control-Allow-Credentials", "true");
-            response.addHeader("Set-Cookie", cookie.toString());
-
-            Member member = jwtValidationService.findMemberByJWT(jwtToken.getAccessToken());
-            MemberInformResponseDto memberInformResponseDto = MemberInformResponseDto.from(member);
-
-            MemberSignUpResponseDto memberSignUpResponseDto = MemberSignUpResponseDto.builder()
-                    .isSignUp(false)
-                    .memberInformResponseDto(memberInformResponseDto).build();
-
-            String dateTimeDaily = visitedMemberCountService.DateTimeDaily();
-            // 방문한 사람이 있는지 확인
-            if (redisUtils.isExists(dateTimeDaily)) {
-                // 로그인한 유저가 오늘 방문했는지 확인
-                if (!redisUtils.getBitSet(dateTimeDaily, member.getId())) {
-                    // 방문한 사람이 아니라면 방문 체크 및 전체 방문 수 1 증가
+                String dateTimeDaily = visitedMemberCountService.DateTimeDaily();
+                // 방문한 사람이 있는지 확인
+                if (redisUtils.isExists(dateTimeDaily)) {
+                    // 로그인한 유저가 오늘 방문했는지 확인
+                    if (!redisUtils.getBitSet(dateTimeDaily, member.getId())) {
+                        // 방문한 사람이 아니라면 방문 체크 및 전체 방문 수 1 증가
+                        redisUtils.setBitSet(dateTimeDaily, member.getId());
+                        redisUtils.setExpireTime(dateTimeDaily, 60 * 60 * 24);
+                        redisUtils.increaseTotalVisitedCount();
+                    }
+                } else {
+                    // 첫 방문일 경우 일일 방문자수와 누적 방문자수 모두 생성
                     redisUtils.setBitSet(dateTimeDaily, member.getId());
                     redisUtils.setExpireTime(dateTimeDaily, 60 * 60 * 24);
                     redisUtils.increaseTotalVisitedCount();
                 }
+
+                // Redis에 refreshToken과 유저 정보 저장
+                redisService.saveRedisData(member.getUserUuid().toString(), memberInformResponseDto, jwtToken.getRefreshToken());
+
+                return ResponseEntity.ok(appMemberResponse);
+
             } else {
-                // 첫 방문일 경우 일일 방문자수와 누적 방문자수 모두 생성
-                redisUtils.setBitSet(dateTimeDaily, member.getId());
-                redisUtils.setExpireTime(dateTimeDaily, 60 * 60 * 24);
-                redisUtils.increaseTotalVisitedCount();
+
+                JwtToken jwtToken = memberService.memberSignUp(memberSignUpRequestDto, file);
+                HttpHeaders headers = new HttpHeaders();
+                headers.add("Authorization", jwtToken.getAccessToken());
+                headers.add("Access-Control-Expose-Headers", "Authorization");
+
+
+                // 기존 쿠키 제거
+                Cookie myCookie = cookieUtils.findRefreshTokenCookie(request);
+                if (myCookie != null) {
+                    myCookie.setMaxAge(0);
+                    response.addCookie(myCookie);
+                }
+
+                // 쿠키 설정
+                ResponseCookie cookie = jwtProviderService.createSetCookie(jwtToken.getRefreshToken());
+
+                response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+                response.setHeader("Access-Control-Allow-Credentials", "true");
+                response.addHeader("Set-Cookie", cookie.toString());
+
+                Member member = jwtValidationService.findMemberByJWT(jwtToken.getAccessToken());
+                MemberInformResponseDto memberInformResponseDto = MemberInformResponseDto.from(member);
+
+                MemberSignUpResponseDto memberSignUpResponseDto = MemberSignUpResponseDto.builder()
+                        .isSignUp(false)
+                        .memberInformResponseDto(memberInformResponseDto).build();
+
+                String dateTimeDaily = visitedMemberCountService.DateTimeDaily();
+                // 방문한 사람이 있는지 확인
+                if (redisUtils.isExists(dateTimeDaily)) {
+                    // 로그인한 유저가 오늘 방문했는지 확인
+                    if (!redisUtils.getBitSet(dateTimeDaily, member.getId())) {
+                        // 방문한 사람이 아니라면 방문 체크 및 전체 방문 수 1 증가
+                        redisUtils.setBitSet(dateTimeDaily, member.getId());
+                        redisUtils.setExpireTime(dateTimeDaily, 60 * 60 * 24);
+                        redisUtils.increaseTotalVisitedCount();
+                    }
+                } else {
+                    // 첫 방문일 경우 일일 방문자수와 누적 방문자수 모두 생성
+                    redisUtils.setBitSet(dateTimeDaily, member.getId());
+                    redisUtils.setExpireTime(dateTimeDaily, 60 * 60 * 24);
+                    redisUtils.increaseTotalVisitedCount();
+                }
+
+                // Redis에 refreshToken과 유저 정보 저장
+                redisService.saveRedisData(member.getUserUuid().toString(), memberInformResponseDto, jwtToken.getRefreshToken());
+
+                return ResponseEntity.ok()
+                        .headers(headers)
+                        .body(memberSignUpResponseDto);
+
             }
-
-            // Redis에 refreshToken과 유저 정보 저장
-            redisService.saveRedisData(member.getUserUuid().toString(), memberInformResponseDto, jwtToken.getRefreshToken());
-
-            return ResponseEntity.ok()
-                    .headers(headers)
-                    .body(memberSignUpResponseDto);
 
         } catch (Exception e) {
 
