@@ -18,6 +18,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -51,7 +52,7 @@ public class PromptController {
 			@ApiResponse(responseCode = "500", description = "서버 에러")
 	})
 	public ResponseEntity<PromptResponse> createPrompt(@RequestPart PromptRequest data,
-													   @RequestPart MultipartFile thumbnail,
+													   @RequestPart @Nullable MultipartFile thumbnail,
 													   @RequestHeader String crntMemberUuid) {
 		return ResponseEntity.ok(promptService.createPrompt(data, UUID.fromString(crntMemberUuid), thumbnail));
 	}

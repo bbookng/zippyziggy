@@ -96,7 +96,7 @@ public class PromptService{
 	private RestTemplate restTemplate;
 
 	// Exception 처리 필요
-	public PromptResponse createPrompt(PromptRequest data, UUID crntMemberUuid, MultipartFile thumbnail) {
+	public PromptResponse createPrompt(PromptRequest data, UUID crntMemberUuid, @Nullable MultipartFile thumbnail) {
 
 		String thumbnailUrl;
 
@@ -205,7 +205,7 @@ public class PromptService{
 	}
 
 	public PromptDetailResponse getPromptDetail(UUID promptUuid, @Nullable String crntMemberUuid) {
-		final Prompt prompt = promptRepository
+		Prompt prompt = promptRepository
 			.findByPromptUuidAndStatusCode(promptUuid, StatusCode.OPEN)
 			.orElseThrow(PromptNotFoundException::new);
 		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
