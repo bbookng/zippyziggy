@@ -65,6 +65,10 @@ dependencies {
 	// kafka
 	implementation 'org.springframework.kafka:spring-kafka'
 
+	// zipkin, sleuth
+	implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+	implementation 'org.springframework.cloud:spring-cloud-starter-zipkin:2.2.8.RELEASE'
+
 }
 
 dependencyManagement {
