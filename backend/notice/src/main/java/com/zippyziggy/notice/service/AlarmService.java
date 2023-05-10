@@ -6,23 +6,28 @@ import com.zippyziggy.notice.repository.AlarmEntityRepository;
 import com.zippyziggy.notice.repository.AlarmRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
-import java.util.UUID;
+import java.util.Optional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AlarmService {
 
     private static final Long DEFAULT_TIMEOUT = 60L * 1000 * 60;
     private final AlarmRepository alarmRepository;
     private final AlarmEntityRepository alarmEntityRepository;
 
+    @Transactional
     public SseEmitter subscribe(String memberUuid, String lastEventId) {
 
         String emitterId = makeTimeIncludeId(memberUuid);
@@ -61,6 +66,7 @@ public class AlarmService {
         return emitter;
     }
 
+
     // 단순 알림 전송
     private void sendNotification(SseEmitter emitter, String emitterId, Object data) {
 
@@ -98,6 +104,7 @@ public class AlarmService {
 
     }
 
+    @Transactional
     public void send(String receiver, String content, String urlValue) {
 
         Alarm notification = createNotification(receiver, content, urlValue);
@@ -137,6 +144,7 @@ public class AlarmService {
                 .isRead(false).build();
     }
 
+
     // 알림 전송
     private void sendToClient(SseEmitter emitter, String emitterId, Object data) {
         try {
@@ -154,5 +162,47 @@ public class AlarmService {
             emitter.completeWithError(exception);
         }
     }
+
+
+    @Transactional
+    // alarmId로 알림 삭제
+    public void deleteAlarmById(Long alarmId) {
+        alarmEntityRepository.deleteById(alarmId);
+    }
+
+    @Transactional
+    // 해당 유저의 알림 모두 삭제
+    public void deleteAlarmByMemberUuid(String memberUuid) {
+        alarmEntityRepository.deleteAllByMemberUuid(memberUuid);
+    }
+
+    // 해당 알람 읽기
+    public void readAlarmById(Long alarmId) {
+        Optional<AlarmEntity> alarm = alarmEntityRepository.findById(alarmId);
+        AlarmEntity alarmEntity = alarm.get();
+
+        alarmEntity.setRead(true);
+    }
+
+    // 해당 유저의 알람 모두 가져오기
+    public List<AlarmEntity> findMemberAlarmList(String memberUuid, Integer page, Integer size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        return alarmEntityRepository.findAllByMemberUuidOrderByIdDesc(memberUuid, pageRequest);
+
+    }
+
+    // 해당 유저의 읽지 않은 알람 개수 가져오기
+    public Long countUnReadAlarmByMemberUuid(String memberUuid) {
+        return alarmEntityRepository.countByMemberUuidAndIsReadFalse(memberUuid);
+    }
+
+    @Transactional
+    public void readAlarmAllByMemberUuid(String memberUuid) {
+        List<AlarmEntity> alarms = alarmEntityRepository.findAllByMemberUuidAndIsReadFalse(memberUuid);
+        for (AlarmEntity alarm : alarms) {
+            alarm.setRead(true);
+        }
+    }
+
 
 }
