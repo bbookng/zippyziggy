@@ -43,9 +43,15 @@ public class ForkPromptService {
 	private final CircuitBreakerFactory circuitBreakerFactory;
 	private final KafkaProducer kafkaProducer;
 
-	public ForkPromptResponse createForkPrompt(UUID promptUuid, PromptRequest data, MultipartFile thumbnail, UUID crntMemberUuid) {
+	public ForkPromptResponse createForkPrompt(UUID promptUuid, PromptRequest data, @Nullable MultipartFile thumbnail, UUID crntMemberUuid) {
 
-		String thumbnailUrl = awsS3Uploader.upload(thumbnail, "thumbnails");
+		String thumbnailUrl;
+
+		if (thumbnail == null) {
+			thumbnailUrl = "https://zippyziggy.s3.ap-northeast-2.amazonaws.com/default/noCardImg.png";
+		} else {
+			thumbnailUrl = awsS3Uploader.upload(thumbnail, "thumbnails");
+		}
 
 		Prompt prompt = Prompt.from(data, crntMemberUuid, thumbnailUrl);
 		prompt.setOriginPromptUuid(promptUuid);

@@ -127,7 +127,7 @@ public class PromptController {
 	})
 	public ResponseEntity<ForkPromptResponse> createForkPrompt(@PathVariable String promptUuid,
 															   @RequestPart PromptRequest data,
-															   @RequestPart MultipartFile thumbnail,
+															   @RequestPart @Nullable MultipartFile thumbnail,
 															   @RequestHeader String crntMemberUuid) {
 		ForkPromptResponse forkPrompt = forkPromptService.createForkPrompt(UUID.fromString(promptUuid), data, thumbnail, UUID.fromString(crntMemberUuid));
 		return ResponseEntity.ok(forkPrompt);
