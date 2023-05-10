@@ -614,7 +614,7 @@ public class MemberController {
      * 추후에 사진도 같이 업로드 필요
      */
     @PostMapping("/signup")
-    @Operation(summary = "회원가입", description = "추후 사진 파일 업로드 적용 예정, 현재는 nickname, profileImg, name, platform, platformId 입력 필요" +
+    @Operation(summary = "웹 전용 회원가입", description = "추후 사진 파일 업로드 적용 예정, 현재는 nickname, profileImg, name, platform, platformId 입력 필요" +
             "중복된 유저일 경우 400 상태 코드와 함께 문구가 반환된다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "성공"),
@@ -623,44 +623,8 @@ public class MemberController {
     })
     public ResponseEntity<?> memberSignUp(@RequestPart(value = "user") MemberSignUpRequestDto memberSignUpRequestDto,
                                           @RequestPart(value = "file", required = false) MultipartFile file,
-                                          @RequestPart(value = "type", required = false) String type,
                                           HttpServletRequest request, HttpServletResponse response) throws Exception {
         try {
-
-            if (type.equals("app")) {
-                // Flutter로 회원가입 할 경우
-                JwtToken jwtToken = memberService.memberSignUp(memberSignUpRequestDto, file);
-
-                Member member = jwtValidationService.findMemberByJWT(jwtToken.getAccessToken());
-                MemberInformResponseDto memberInformResponseDto = MemberInformResponseDto.from(member);
-
-                AppMemberResponse appMemberResponse = AppMemberResponse.builder()
-                        .memberInformResponseDto(memberInformResponseDto)
-                        .jwtToken(jwtToken).build();
-
-                String dateTimeDaily = visitedMemberCountService.DateTimeDaily();
-                // 방문한 사람이 있는지 확인
-                if (redisUtils.isExists(dateTimeDaily)) {
-                    // 로그인한 유저가 오늘 방문했는지 확인
-                    if (!redisUtils.getBitSet(dateTimeDaily, member.getId())) {
-                        // 방문한 사람이 아니라면 방문 체크 및 전체 방문 수 1 증가
-                        redisUtils.setBitSet(dateTimeDaily, member.getId());
-                        redisUtils.setExpireTime(dateTimeDaily, 60 * 60 * 24);
-                        redisUtils.increaseTotalVisitedCount();
-                    }
-                } else {
-                    // 첫 방문일 경우 일일 방문자수와 누적 방문자수 모두 생성
-                    redisUtils.setBitSet(dateTimeDaily, member.getId());
-                    redisUtils.setExpireTime(dateTimeDaily, 60 * 60 * 24);
-                    redisUtils.increaseTotalVisitedCount();
-                }
-
-                // Redis에 refreshToken과 유저 정보 저장
-                redisService.saveRedisData(member.getUserUuid().toString(), memberInformResponseDto, jwtToken.getRefreshToken());
-
-                return ResponseEntity.ok(appMemberResponse);
-
-            } else {
 
                 JwtToken jwtToken = memberService.memberSignUp(memberSignUpRequestDto, file);
                 HttpHeaders headers = new HttpHeaders();
@@ -713,13 +677,64 @@ public class MemberController {
                         .headers(headers)
                         .body(memberSignUpResponseDto);
 
-            }
-
         } catch (Exception e) {
 
             return new ResponseEntity<>("회원가입 도중 오류가 발생했습니다 => " + e, HttpStatus.BAD_REQUEST);
         }
     }
+
+    /**
+     * 앱용 회원가입
+     * 추후에 사진도 같이 업로드 필요
+     */
+    @PostMapping("/signup/app")
+    @Operation(summary = "앱 전용 회원가입", description = "추후 사진 파일 업로드 적용 예정, 현재는 nickname, profileImg, name, platform, platformId 입력 필요" +
+            "중복된 유저일 경우 400 상태 코드와 함께 문구가 반환된다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
+    public ResponseEntity<?> memberSignUpByApp(@RequestPart(value = "user") MemberSignUpRequestDto memberSignUpRequestDto,
+                                          @RequestPart(value = "file", required = false) MultipartFile file,
+                                          HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+
+        // Flutter로 회원가입 할 경우
+        JwtToken jwtToken = memberService.memberSignUp(memberSignUpRequestDto, file);
+
+        Member member = jwtValidationService.findMemberByJWT(jwtToken.getAccessToken());
+        MemberInformResponseDto memberInformResponseDto = MemberInformResponseDto.from(member);
+
+        AppMemberResponse appMemberResponse = AppMemberResponse.builder()
+                .memberInformResponseDto(memberInformResponseDto)
+                .jwtToken(jwtToken).build();
+
+        String dateTimeDaily = visitedMemberCountService.DateTimeDaily();
+        // 방문한 사람이 있는지 확인
+        if (redisUtils.isExists(dateTimeDaily)) {
+            // 로그인한 유저가 오늘 방문했는지 확인
+            if (!redisUtils.getBitSet(dateTimeDaily, member.getId())) {
+                // 방문한 사람이 아니라면 방문 체크 및 전체 방문 수 1 증가
+                redisUtils.setBitSet(dateTimeDaily, member.getId());
+                redisUtils.setExpireTime(dateTimeDaily, 60 * 60 * 24);
+                redisUtils.increaseTotalVisitedCount();
+            }
+        } else {
+            // 첫 방문일 경우 일일 방문자수와 누적 방문자수 모두 생성
+            redisUtils.setBitSet(dateTimeDaily, member.getId());
+            redisUtils.setExpireTime(dateTimeDaily, 60 * 60 * 24);
+            redisUtils.increaseTotalVisitedCount();
+        }
+
+        // Redis에 refreshToken과 유저 정보 저장
+        redisService.saveRedisData(member.getUserUuid().toString(), memberInformResponseDto, jwtToken.getRefreshToken());
+
+        return ResponseEntity.ok(appMemberResponse);
+
+    }
+
+
 
     /**
      * 회원탈퇴
