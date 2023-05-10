@@ -26,6 +26,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import javax.servlet.http.Cookie;
@@ -142,12 +144,13 @@ public class MemberController {
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
     public ResponseEntity<?> monthlyVisitedCount(@PathVariable String dateTime) {
-        log.info(dateTime);
-        List<VisitedMemberCount> visitedMemberCount = visitedMemberCountRepository.findAllByNowDateContains(dateTime);
-        log.info("visitedMemberCount = " + visitedMemberCount);
-        return ResponseEntity.ok(visitedMemberCount);
+        List<VisitedMemberCount> visitedMemberCounts = visitedMemberCountRepository.findAllByNowDateContains(dateTime);
+        List<MonthlyVisitedCount> monthlyVisitedCountList = new ArrayList<>();
+        for (VisitedMemberCount visitedMemberCount : visitedMemberCounts) {
+            monthlyVisitedCountList.add(MonthlyVisitedCount.from(visitedMemberCount));
+        }
+        return ResponseEntity.ok(monthlyVisitedCountList);
     }
-
 
     /**
      * refreshToken이 있는지 확인
