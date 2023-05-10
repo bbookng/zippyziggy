@@ -70,12 +70,12 @@ public class ForkPromptService {
 		Page<Prompt> forkedPrompts = promptRepository.findAllByOriginPromptUuidAndStatusCode(promptUuid, StatusCode.OPEN, pageable);
 
 		// fork 프롬프트들 카드 정보 가져오는 메서드
-		List<PromptCardResponse> prompts = getForkedPromptResponses(forkedPrompts, UUID.fromString(crntMemberUuid));
+		List<PromptCardResponse> prompts = getForkedPromptResponses(forkedPrompts, crntMemberUuid);
 
 		return new ForkedPromptListResponse(forkPromptCnt, prompts);
 	}
 
-	private List<PromptCardResponse> getForkedPromptResponses(Page<Prompt> forkedPrompts, @Nullable UUID crntMemberUuid) {
+	private List<PromptCardResponse> getForkedPromptResponses(Page<Prompt> forkedPrompts, @Nullable String crntMemberUuid) {
 		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 
 		List<PromptCardResponse> promptDtoList = forkedPrompts.stream().map(prompt -> {
@@ -95,9 +95,9 @@ public class ForkPromptService {
 				isBookmarked = false;
 				isLiked = false;
 			} else {
-				isBookmarked = promptBookmarkRepository.findByMemberUuidAndPrompt(crntMemberUuid, prompt) != null
+				isBookmarked = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
 					? true : false;
-				isLiked =  promptLikeRepository.findByPromptAndMemberUuid(prompt, crntMemberUuid) != null
+				isLiked =  promptLikeRepository.findByPromptAndMemberUuid(prompt, UUID.fromString(crntMemberUuid)) != null
 					? true : false;
 			}
 
