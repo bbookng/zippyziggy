@@ -110,26 +110,42 @@ public class MemberController {
     /**
      * 일일 방문자수 조회
      */
-    @Operation(summary = "일일 방문자수 조회", description = "일일 방문자수를 조회해서 보여준다. 1분마다 DB에 저장하는 스케쥴 기능 포함")
-    @GetMapping("/daily/visited")
+    @Operation(summary = "일일 방문자수 조회", description = "일일 방문자수를 조회해서 보여준다. 단 yyyy-mm-dd 형식으로 dateTime을 pathvariable로 넣어줘야한다. 1분마다 DB에 저장하는 스케쥴 기능 포함")
+    @GetMapping("/daily/visited/{dateTime}")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
-    public ResponseEntity<?> dailyVisitedCount() {
-        String dateTimeDaily = visitedMemberCountService.DateTimeDaily();
-        if (redisUtils.isExists(dateTimeDaily)) {
-            long dailyCount = redisUtils.getBitCount(dateTimeDaily);
+    public ResponseEntity<?> dailyVisitedCount(@PathVariable String dateTime) {
+        if (redisUtils.isExists(dateTime)) {
+            long dailyCount = redisUtils.getBitCount(dateTime);
             return ResponseEntity.ok(DailyVisitedCount.builder()
                     .dailyVisitedCount(dailyCount)
-                    .dailyDate(dateTimeDaily).build());
+                    .dailyDate(dateTime).build());
         } else {
-            VisitedMemberCount visitedMemberCount = visitedMemberCountRepository.findByNowDate(dateTimeDaily);
+            VisitedMemberCount visitedMemberCount = visitedMemberCountRepository.findByNowDate(dateTime);
             return ResponseEntity.ok(DailyVisitedCount.builder()
                     .dailyVisitedCount(visitedMemberCount.getVisitedCount())
-                    .dailyDate(dateTimeDaily).build());
+                    .dailyDate(dateTime).build());
         }
+    }
+
+    /**
+     * 해당 월의 총 일일 방문자 수 조회
+     */
+    @Operation(summary = "해당 월의 총 일일 방문자수 조회", description = "월에 해당하는 일일 방문자수를 조회해서 보여준다. 단 yyyy-mm 형식으로 dateTime을 pathvariable로 넣어줘야한다.")
+    @GetMapping("/monthly/visited/{dateTime}")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
+    public ResponseEntity<?> monthlyVisitedCount(@PathVariable String dateTime) {
+        log.info(dateTime);
+        List<VisitedMemberCount> visitedMemberCount = visitedMemberCountRepository.findAllByNowDateContains(dateTime);
+        log.info("visitedMemberCount = " + visitedMemberCount);
+        return ResponseEntity.ok(visitedMemberCount);
     }
 
 
