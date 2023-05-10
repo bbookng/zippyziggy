@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { BsFillPlayFill, BsPlayFill } from 'react-icons/bs';
 import { useRouter } from 'next/router';
 import { bookmarkPrompt, likePrompt } from '@/core/prompt/promptAPI';
+import toastDevelop from '@/utils/toastDevelop';
 import { Body, Conatiner, Content, Footer, Infos, Title } from './CardStyle';
 
 interface PromptType {
@@ -24,7 +25,7 @@ interface PromptType {
   isBookmarked: boolean;
   thumbnail: string;
   updDt: string;
-  hitCnt: number;
+  hit: number;
   talkCnt: number;
   commentCnt: number;
   forkCnt: number;
@@ -112,9 +113,11 @@ export default function PromptCard({ image, title, description, url, prompt }: P
             {prompt?.updDt ? getDate(new Date(Number(prompt?.updDt) * 1000)) : getDate(new Date())}
           </div>
           <div className="divider caption">·</div>
-          <div className="caption">{prompt?.commentCnt ? prompt?.commentCnt : '0'}개의 댓글</div>
+          <div className="caption">{prompt?.commentCnt ? prompt?.commentCnt : '0'} 댓글</div>
           <div className="divider caption">·</div>
-          <div className="caption">{prompt?.talkCnt ? prompt?.talkCnt : '0'}개의 Talk</div>
+          <div className="caption">{prompt?.talkCnt ? prompt?.talkCnt : '0'} 대화</div>
+          <div className="divider caption">·</div>
+          <div className="caption">{prompt?.hit ? prompt?.hit : '0'} 조회수</div>
         </Infos>
       </Body>
       <Footer>
@@ -154,7 +157,14 @@ export default function PromptCard({ image, title, description, url, prompt }: P
               <FaRegBookmark className="bookmark" />
             )}
           </div>
-          <div className="item" onClick={handlePlay}>
+          <div
+            className="item"
+            onClick={(e) => {
+              e.preventDefault();
+              toastDevelop('DevelopUseAdd');
+              // handlePlay();
+            }}
+          >
             <Link href="https://chat.openai.com/" target="_blank">
               <BsFillPlayFill className="play" />
             </Link>

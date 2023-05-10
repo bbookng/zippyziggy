@@ -20,7 +20,7 @@ const Container = styled.div`
 
   .lottieBackground {
     position: absolute;
-    width: 100vw;
+    width: 100%;
     z-index: -1;
     background-color: ${({ theme: { colors } }) => colors.bgColor};
   }
@@ -53,7 +53,7 @@ const Wrap = styled.div`
   }
 
   .fullComponent {
-    width: 100vw;
+    width: 100%;
     height: 100vh;
     padding: 16px;
 

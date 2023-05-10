@@ -66,7 +66,7 @@ export default function LoginModal({ title, content, handleModalClose }: PropsTy
           </div>
         </LoginModalContent>
       </LoginModalContainer>
-      <LoginModalBackground />
+      <LoginModalBackground onClick={handleModalClose} />
     </div>,
     document.getElementById('portal-root')
   );

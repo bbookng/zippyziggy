@@ -8,6 +8,8 @@ import {
   FaRegHeart,
   FaTrash,
 } from 'react-icons/fa';
+import { FiFlag } from 'react-icons/fi';
+import toastDevelop from '@/utils/toastDevelop';
 import Button from '../Button/Button';
 import { ActionBox, ButtonBox, Container, EditBox } from './SideBarStyle';
 
@@ -20,6 +22,7 @@ interface PropsType {
   handleLike?: () => void;
   handleBookmark?: () => void;
   handleOpenDeleteModal?: () => void;
+  handleOpenReportModal?: () => void;
   handleMoveToUpdatePromptPage?: () => void;
   handleMoveToCreatePromptForkPage?: () => void;
 }
@@ -33,6 +36,7 @@ export default function SideBar({
   handleLike,
   handleBookmark,
   handleOpenDeleteModal,
+  handleOpenReportModal,
   handleMoveToUpdatePromptPage,
   handleMoveToCreatePromptForkPage,
 }: PropsType) {
@@ -60,38 +64,54 @@ export default function SideBar({
       </ActionBox>
       {type === 'prompt' ? (
         <ButtonBox>
-          <Button className="btn btn1">
+          <Button
+            className="btn btn1"
+            onClick={(e) => {
+              e.preventDefault();
+              toastDevelop('DevelopUseAdd');
+              // handlePlay();
+            }}
+          >
             사용하기
             <FaArrowRight className="icon" />
           </Button>
           <Button
             buttonType="outline"
             className="btn btn2"
-            onClick={handleMoveToCreatePromptForkPage}
+            onClick={(e) => {
+              e.preventDefault();
+              toastDevelop('DevelopNone');
+              // handleMoveToCreatePromptForkPage();
+            }}
           >
             수정해서 사용하기
             <FaArrowRight className="icon" />
           </Button>
-          <Button buttonType="outline" className="btn btn3">
+          {/* <Button buttonType="outline" className="btn btn3">
             사용하는 법
-          </Button>
+          </Button> */}
         </ButtonBox>
       ) : null}
-
-      {isMe && (
-        <EditBox>
-          {type === 'prompt' ? (
-            <div className="editBtnBox" onClick={handleMoveToUpdatePromptPage}>
-              <FaPencilAlt className="icon" />
-              수정
+      <EditBox>
+        {isMe && (
+          <>
+            {type === 'prompt' ? (
+              <div className="editBtnBox" onClick={handleMoveToUpdatePromptPage}>
+                <FaPencilAlt className="icon" />
+                수정
+              </div>
+            ) : null}
+            <div className="editBtnBox" onClick={handleOpenDeleteModal}>
+              <FaTrash className="icon" />
+              삭제
             </div>
-          ) : null}
-          <div className="editBtnBox" onClick={handleOpenDeleteModal}>
-            <FaTrash className="icon" />
-            삭제
-          </div>
-        </EditBox>
-      )}
+          </>
+        )}
+        <div className="editBtnBox" onClick={handleOpenReportModal}>
+          <FiFlag className="icon" />
+          신고하기
+        </div>
+      </EditBox>
     </Container>
   );
 }

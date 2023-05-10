@@ -62,9 +62,10 @@ const LoginModalContent = styled.div`
 `;
 
 const LoginModalBackground = styled.div`
+  cursor: pointer;
   position: fixed;
   z-index: 90;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   left: 50%;
   top: 50%;

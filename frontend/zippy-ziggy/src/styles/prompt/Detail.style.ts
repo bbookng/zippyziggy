@@ -44,6 +44,17 @@ const RightContainer = styled.div`
   `}
 `;
 
+const MobileTopContainer = styled.div`
+  display: none;
+
+  // TODO : 작은 사이즈 웹에도 자연스럽게 반영 할 것
+  ${media.small`
+    display: block;
+    justify-content: center;
+    position: relative;
+  `}
+`;
+
 const TopBox = styled.div`
   display: flex;
   flex-direction: column;
@@ -80,4 +91,4 @@ const MoveTopBtn = styled.button<MoveTopBtnType>`
   }
 `;
 
-export { Container, LeftContainer, RightContainer, TopBox, MoveTopBtn };
+export { Container, LeftContainer, RightContainer, TopBox, MoveTopBtn, MobileTopContainer };

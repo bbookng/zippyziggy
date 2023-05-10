@@ -11,8 +11,9 @@ import { getPromptList } from '@/core/prompt/promptAPI';
 import { FiPlus } from 'react-icons/fi';
 import TalkCard from '@/components/TalkCard/TalkCard';
 import { getTalksListAPI } from '@/core/talk/talkAPI';
+import withDevelopModal from '@/components/HOC/withDevelopModal';
 
-export default function Prompt() {
+function Prompt() {
   const [category, setCategory] = useState<string>('ALL');
   const [sort, setSort] = useState<string>('likeCnt');
   const [keyword, setKeyword] = useState<string>('');
@@ -112,3 +113,5 @@ export default function Prompt() {
     </Container>
   );
 }
+
+export default withDevelopModal(Prompt);

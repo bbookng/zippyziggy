@@ -25,8 +25,8 @@ interface KakaoApiResult {
   // 반환되는 값에 따라 필드를 추가할 수 있음
 }
 
+// 우리 서버로 카카오 로그인 요청을 보냄
 function KakaoLoginRedirect() {
-  const modalState = useAppSelector((state) => state.modal); // 유저정보
   const dispatch = useAppDispatch();
 
   const router = useRouter();
@@ -49,18 +49,13 @@ function KakaoLoginRedirect() {
       dispatch(setNickname(nickname));
       dispatch(setProfileImg(profileImg));
       dispatch(setUserUuid(userUuid));
-      if (modalState.beforeUrl) {
-        router.push({
-          pathname: modalState.beforeUrl,
-        });
-      } else {
-        router.push({
-          pathname: '/',
-        });
-      }
+      router.push({
+        pathname: '/',
+      });
     }
   };
 
+  // 우리 서버로 구글 로그인 요청을 보냄
   const HandleGetGoogleAPI = async () => {
     const result: KakaoApiResult = await getGoogleAPI(token);
     if (result?.result === 'SUCCESS_SIGNUP') {

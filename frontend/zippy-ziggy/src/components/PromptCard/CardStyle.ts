@@ -19,7 +19,7 @@ const Conatiner = styled.div`
 
   .caption {
     font-size: var(--fonts-body-xm);
-    color: ${({ theme }) => theme.colors.blackColor30};
+    color: ${({ theme }) => theme.colors.blackColor50};
   }
 `;
 
