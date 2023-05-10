@@ -136,7 +136,9 @@ export default function CommentList({ id, type, size }: PropsType) {
           width="3rem"
           height="2rem"
           className="btn"
-          onClick={() => checkLoginCuring(handleCreateComment)()}
+          onClick={() => {
+            checkLoginCuring(handleCreateComment)();
+          }}
         >
           작성
         </Button>

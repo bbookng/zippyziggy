@@ -210,6 +210,7 @@ export default function PromptUpdate() {
         },
       };
       const formData = new FormData();
+
       formData.append('thumbnail', image ? image[0] : null);
       formData.append('data', new Blob([JSON.stringify(tmpData)], { type: 'application/json' }));
       const requestData = {

@@ -26,9 +26,7 @@ const checkLogin = () => {
  * @param f 다음에 실행할 함수
  * @returns
  */
-export const checkLoginCuring = (f: (...args: any[]) => any, e, ...res) => {
-  console.log(e);
-  console.log(res);
+export const checkLoginCuring = (f: (...args: any[]) => any, ...res) => {
   const token = localStorage.getItem('accessToken');
   if (!token) {
     Toastify({

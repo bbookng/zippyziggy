@@ -10,6 +10,7 @@ import {
 } from 'react-icons/fa';
 import { FiFlag } from 'react-icons/fi';
 import toastDevelop from '@/utils/toastDevelop';
+import { checkLoginCuring } from '@/utils/checkLogin';
 import Button from '../Button/Button';
 import { ActionBox, ButtonBox, Container, EditBox } from './SideBarStyle';
 
@@ -45,18 +46,21 @@ export default function SideBar({
       <ActionBox>
         <div className="heartBox">
           {isLiked ? (
-            <FaHeart className="heart" onClick={handleLike} />
+            <FaHeart className="heart" onClick={() => checkLoginCuring(handleLike)()} />
           ) : (
-            <FaRegHeart className="heart" onClick={handleLike} />
+            <FaRegHeart className="heart" onClick={() => checkLoginCuring(handleLike)()} />
           )}
           <div className="text">{likeCnt}</div>
         </div>
         {type === 'prompt' ? (
           <div className="bookmarkBox">
             {isBookmarked ? (
-              <FaBookmark className="bookmark" onClick={handleBookmark} />
+              <FaBookmark className="bookmark" onClick={() => checkLoginCuring(handleBookmark)()} />
             ) : (
-              <FaRegBookmark className="bookmark" onClick={handleBookmark} />
+              <FaRegBookmark
+                className="bookmark"
+                onClick={() => checkLoginCuring(handleBookmark)()}
+              />
             )}
             <div className="text">{isBookmarked ? '북마크 취소' : '북마크 추가'}</div>
           </div>
@@ -65,6 +69,7 @@ export default function SideBar({
       {type === 'prompt' ? (
         <ButtonBox>
           <Button
+            id="promptPlay"
             className="btn btn1"
             onClick={(e) => {
               e.preventDefault();
@@ -78,11 +83,7 @@ export default function SideBar({
           <Button
             buttonType="outline"
             className="btn btn2"
-            onClick={(e) => {
-              e.preventDefault();
-              toastDevelop('DevelopNone');
-              // handleMoveToCreatePromptForkPage();
-            }}
+            onClick={handleMoveToCreatePromptForkPage}
           >
             수정해서 사용하기
             <FaArrowRight className="icon" />
@@ -107,7 +108,7 @@ export default function SideBar({
             </div>
           </>
         )}
-        <div className="editBtnBox" onClick={handleOpenReportModal}>
+        <div className="editBtnBox" onClick={() => checkLoginCuring(handleOpenReportModal)()}>
           <FiFlag className="icon" />
           신고하기
         </div>

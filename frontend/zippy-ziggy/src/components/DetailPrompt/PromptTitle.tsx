@@ -71,18 +71,18 @@ export default function PromptTitle({
           <ActionBox>
             <div className="heartBox">
               {isLiked ? (
-                <FaHeart className="heart" onClick={checkLoginCuring(handleLike)} />
+                <FaHeart className="heart" onClick={() => checkLoginCuring(handleLike)()} />
               ) : (
-                <FaRegHeart className="heart" onClick={checkLoginCuring(handleLike)} />
+                <FaRegHeart className="heart" onClick={() => checkLoginCuring(handleLike)()} />
               )}
               <div className="likeCnt">{likeCnt}</div>
             </div>
             {type === 'prompt' ? (
               <div className="bookmark">
                 {isBookmarked ? (
-                  <FaBookmark onClick={handleBookmark} />
+                  <FaBookmark onClick={() => checkLoginCuring(handleBookmark)()} />
                 ) : (
-                  <FaRegBookmark onClick={handleBookmark} />
+                  <FaRegBookmark onClick={() => checkLoginCuring(handleBookmark)()} />
                 )}
               </div>
             ) : null}
