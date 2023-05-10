@@ -184,6 +184,7 @@ export default function SignUp() {
               accept="image/*"
               onChange={registerImage}
               ref={inputRef}
+              maxLength={10}
               style={{ display: 'none' }}
             />
           </label>

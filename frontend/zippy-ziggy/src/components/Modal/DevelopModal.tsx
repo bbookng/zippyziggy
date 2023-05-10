@@ -16,11 +16,7 @@ type PropsType = {
 };
 
 export default function DevelopModal({ title, handleModalClose }: PropsType) {
-  // createPortal
-  // ,
-  //   document.getElementById('portal-root')
-  // );
-  return (
+  return createPortal(
     <div>
       <LoginModalContainer>
         {/* 모달 컨텐츠 */}
@@ -40,6 +36,7 @@ export default function DevelopModal({ title, handleModalClose }: PropsType) {
         </LoginModalContent>
       </LoginModalContainer>
       <LoginModalBackground onClick={handleModalClose} />
-    </div>
+    </div>,
+    document.getElementById('portal-root')
   );
 }

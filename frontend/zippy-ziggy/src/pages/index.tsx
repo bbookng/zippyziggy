@@ -205,6 +205,9 @@ const Home: NextPage<HomePageProps> = ({ title }) => {
         <Logo>
           <div
             className="container t4 cursor"
+            onClick={() => {
+              Router.push(links.downloadLink);
+            }}
             onMouseEnter={() => {
               setIsPlaying4(true);
             }}
@@ -228,7 +231,8 @@ const Home: NextPage<HomePageProps> = ({ title }) => {
             </Paragraph>
           </Link>
           <Paragraph margin="48px 0 0 0" color="blackColor90" textAlign="center" sizeType="xm">
-            누적 가입자 : {totalViewCnt} &nbsp;&nbsp;|&nbsp;&nbsp; 오늘 가입 이용자 : {todayViewCnt}
+            누적 방문자 수 : {totalViewCnt} &nbsp;&nbsp;|&nbsp;&nbsp; 오늘 이용자 수 :{' '}
+            {todayViewCnt}
           </Paragraph>
         </LogoContainer>
       </Container>
