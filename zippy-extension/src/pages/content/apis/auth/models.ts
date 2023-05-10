@@ -1,3 +1,4 @@
+/* 소셜버튼 최초 클릭 타입들 시작 */
 export interface CheckAuthParams {
   code: string;
   redirect: string;
@@ -42,3 +43,16 @@ export interface CheckSignInResult {
 
 export type CheckAuthResponse = CheckSignUpResponse | CheckSignInResponse;
 export type CheckAuthResult = CheckSignUpResult | CheckSignInResult;
+/* 소셜버튼 최초 클릭 타입들 끝 */
+
+/* 회원가입 */
+export interface SignUpResponse {
+  isSignUp: boolean;
+  memberInformResponseDto: CheckSignInResponse;
+}
+
+export interface SignUpResult {
+  nickname: string;
+  profileImg: string;
+  userUuid: string;
+}

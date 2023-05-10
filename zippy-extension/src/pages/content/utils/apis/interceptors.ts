@@ -6,7 +6,7 @@ import axios, {
   InternalAxiosRequestConfig,
 } from 'axios';
 /* eslint-disable no-useless-concat */
-import { ZIPPY_API_URL } from '@pages/constants';
+import { CHROME_USERINFO_KEY, ZIPPY_API_URL } from '@pages/constants';
 import logOnDev from '@pages/content/utils/@shared/logging';
 import { api } from './axios-instance';
 
@@ -38,20 +38,28 @@ const tokenInterceptor = (instance: AxiosInstance) => {
       if (status === 401) {
         const originalRequest = config;
 
-        // 토큰 refresh 요청
-        const data = await axios.get(`${ZIPPY_API_URL}/users/refresh`);
+        try {
+          // 토큰 refresh 요청
+          const data = await axios.get(`${ZIPPY_API_URL}/users/refresh`);
 
-        // 요청 후 새롭게 받은 accToken을 저장
-        const {
-          data: {
-            data: { accessToken },
-          },
-        } = data;
+          // 요청 후 새롭게 받은 accToken을 저장
+          const {
+            data: {
+              data: { accessToken },
+            },
+          } = data;
 
-        localStorage.setItem('accessToken', accessToken);
-        originalRequest.headers.Authorization = accessToken;
-        return api(originalRequest);
+          localStorage.setItem('accessToken', accessToken);
+          originalRequest.headers.Authorization = accessToken;
+          return await api(originalRequest);
+        } catch (err) {
+          if (err.config.url === `${ZIPPY_API_URL}/users/refresh`) {
+            localStorage.removeItem('accessToken');
+            await chrome.storage.sync.remove(CHROME_USERINFO_KEY);
+          }
+        }
       }
+
       return Promise.reject(error);
     }
   );

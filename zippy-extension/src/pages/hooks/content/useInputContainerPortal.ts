@@ -24,7 +24,7 @@ const useInputContainerPortal = () => {
     const existingPortal = document.getElementById(ZP_INPUT_WRAPPER_ID);
     if (existingPortal) return;
 
-    const $formParent = document.querySelector('form')?.parentElement;
+    const $formParent = document.querySelector('form:not(.signup__form)')?.parentElement;
     if (!$formParent) return;
 
     // 클래스 제거

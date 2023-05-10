@@ -2,7 +2,7 @@ import '../../style.scss';
 import CategoryFilter from '@pages/content/components/PromptContainer/CategoryFilter';
 import SearchBar from '@pages/content/components/PromptContainer/SearchBar';
 import SortFilter from '@pages/content/components/PromptContainer/SortFilter';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Category, SearchResult, Sort } from '@pages/content/types';
 import {
   CHAT_GPT_URL,
@@ -18,6 +18,7 @@ import Pagination from '@pages/content/components/PromptContainer/Pagination';
 import PromptCard from '@pages/content/components/PromptContainer/PromptCard';
 import useFetch from '@pages/hooks/@shared/useFetch';
 import useDebounce from '@pages/hooks/@shared/useDebounce';
+import { SignUpResult } from '@pages/content/apis/auth/models';
 
 export const category: Array<Category> = [
   { id: 'all', text: '전체', value: 'ALL' },
@@ -38,7 +39,15 @@ const defaultCategory = category[0].value;
 const defaultSort = sort[0].value;
 
 const PromptContainer = () => {
-  const [userData, setUserData] = useState<any>();
+  const [userData, setUserData] = useChromeStorage<SignUpResult>(
+    CHROME_USERINFO_KEY,
+    {
+      userUuid: '',
+      profileImg: '',
+      nickname: '',
+    },
+    'sync'
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [selectedCategory, setCategory] = useChromeStorage<Category['value']>(
     CHROME_CATEGORY_KEY,
@@ -76,21 +85,20 @@ const PromptContainer = () => {
     autoFetch: true,
   });
 
-  const getData = useCallback(() => {
-    return new Promise<void>((resolve) => {
-      chrome.storage.sync.get(CHROME_USERINFO_KEY, (result) => {
-        const userData = result.ZP_userData || {};
-        setUserData(userData);
-        setIsLoading(false);
-        resolve();
-      });
-    });
-  }, []);
-
-  useEffect(() => {
-    setIsLoading(true);
-    getData();
-  }, [getData]);
+  // const getData = useCallback((key) => {
+  //   return new Promise<void>((resolve) => {
+  //     chrome.storage.sync.get(key, (result) => {
+  //       const userData = result.ZP_userData || {};
+  //       setUserData(userData);
+  //       setIsLoading(false);
+  //       resolve();
+  //     });
+  //   });
+  // }, []);
+  //
+  // useEffect(() => {
+  //   setIsLoading(true);
+  // }, [getData]);
 
   const isNewChatPage = !window.location.href.includes('/c/');
 

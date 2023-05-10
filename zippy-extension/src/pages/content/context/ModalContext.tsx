@@ -5,12 +5,16 @@ interface ModalContextType {
   isModalOpen: boolean;
   openModal: () => void;
   closeModal: () => void;
+  modalContent: any;
+  setModalContent: (content: ReactNode | null) => void;
 }
 
 const ModalContext = createContext<ModalContextType>({
   isModalOpen: false,
   openModal: () => {},
   closeModal: () => {},
+  modalContent: null,
+  setModalContent: () => {},
 });
 
 /* 모달 프로바이더 */
@@ -20,6 +24,7 @@ interface ModalProviderProps {
 
 const ModalProvider = ({ children }: ModalProviderProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState<ReactNode | null>(null);
 
   const openModal = useCallback(() => {
     setIsModalOpen(true);
@@ -34,8 +39,10 @@ const ModalProvider = ({ children }: ModalProviderProps) => {
       isModalOpen,
       openModal,
       closeModal,
+      modalContent,
+      setModalContent,
     }),
-    [isModalOpen, openModal, closeModal]
+    [isModalOpen, openModal, closeModal, modalContent, setModalContent]
   );
 
   return <ModalContext.Provider value={modalContextValue}>{children}</ModalContext.Provider>;
