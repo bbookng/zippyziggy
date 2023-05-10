@@ -27,7 +27,8 @@ public class RedisConfig {
         redisSentinelConfiguration.master("mymaster")
                 .sentinel("zippyziggy.kr", 5000)
                 .sentinel("zippyziggy.kr", 5001)
-                .sentinel("zippyziggy.kr", 5002);
+                .sentinel("zippyziggy.kr", 5002)
+                .setPassword("ssafyE205!");
 
         return new LettuceConnectionFactory(redisSentinelConfiguration);
     }
