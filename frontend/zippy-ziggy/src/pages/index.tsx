@@ -9,6 +9,8 @@ import Footer from '@/components/Footer/Footer';
 import Lottie from 'react-lottie-player';
 import lottieJson from '@/assets/lottieJson/background-pattern.json';
 import { links } from '@/utils/links';
+import Router from 'next/router';
+import { getDailyVisited, getTotalVisited } from '@/core/user/userAPI';
 
 const Container = styled.div`
   width: 100%;
@@ -28,8 +30,9 @@ const Container = styled.div`
     font-weight: 300;
     line-height: 2;
     margin-top: 2rem;
+
+    font-size: ${({ theme }) => theme.fonts.body_lg};
     color: ${({ theme }) => theme.colors.blackColor70};
-    font-size: ${({ theme }) => theme.fonts.desktop_h_2xl};
   }
   .sub {
     margin-top: 1rem;
@@ -38,7 +41,7 @@ const Container = styled.div`
   ${media.small`
     padding: 48px 20px 48px 20px;
     .title {
-      font-size: ${({ theme }) => theme.fonts.body_lg};
+      font-size: ${({ theme }) => theme.fonts.body_base};
     }
   `}
   .cursor {
@@ -49,6 +52,7 @@ const Container = styled.div`
 const LogoContainer = styled.div`
   margin-bottom: 2rem;
 `;
+
 interface HomePageProps {
   title: string;
 }
@@ -136,6 +140,20 @@ const Home: NextPage<HomePageProps> = ({ title }) => {
   const [isPlaying3, setIsPlaying3] = useState(false);
   const [isPlaying4, setIsPlaying4] = useState(false);
 
+  const [totalViewCnt, setTotalViewCnt] = useState(0);
+  const [todayViewCnt, setTodayViewCnt] = useState(0);
+
+  const getVisitedwCnt = async () => {
+    const totalCnt = await getTotalVisited();
+    setTotalViewCnt(totalCnt?.data?.totalVisitedCount);
+    const todayCnt = await getDailyVisited();
+    setTodayViewCnt(todayCnt?.data?.dailyVisitedCount);
+  };
+
+  useEffect(() => {
+    getVisitedwCnt();
+  }, []);
+
   return (
     <>
       <Container>
@@ -154,6 +172,9 @@ const Home: NextPage<HomePageProps> = ({ title }) => {
           </div>
           <div
             className="container t2 cursor"
+            onClick={() => {
+              Router.push(links.prompts);
+            }}
             onMouseEnter={() => {
               setIsPlaying2(true);
             }}
@@ -166,6 +187,9 @@ const Home: NextPage<HomePageProps> = ({ title }) => {
           </div>
           <div
             className="container t3 cursor"
+            onClick={() => {
+              Router.push(links.talks);
+            }}
             onMouseEnter={() => {
               setIsPlaying3(true);
             }}
@@ -203,19 +227,10 @@ const Home: NextPage<HomePageProps> = ({ title }) => {
               베타버전 0.1.4 release
             </Paragraph>
           </Link>
+          <Paragraph margin="48px 0 0 0" color="blackColor90" textAlign="center" sizeType="xm">
+            누적 가입자 : {totalViewCnt} &nbsp;&nbsp;|&nbsp;&nbsp; 오늘 가입 이용자 : {todayViewCnt}
+          </Paragraph>
         </LogoContainer>
-        {/* <Link href="/prompts">
-          <Paragraph color="linkColor" style={{ cursor: 'pointer' }}>
-            유용한 프롬프트 찾기 →
-          </Paragraph>
-        </Link>
-        <br />
-        <Link href="/download">
-          <Paragraph color="linkColor" style={{ cursor: 'pointer' }}>
-            확장 프로그램으로 쉽게 사용하기 →
-          </Paragraph>
-        </Link>
-        <br /> */}
       </Container>
       <Footer />
     </>

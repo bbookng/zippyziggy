@@ -4,7 +4,7 @@ import toastifyCSS from '@/assets/toastify.json';
 
 function getDate(data: Date = new Date()) {
   const year = Number(data.getFullYear()); // 년도
-  let month: string | number = Number(data.getMonth()); // 월
+  let month: string | number = Number(data.getMonth() + 1); // 월
   let day: string | number = data.getDate(); // 날짜
   // const day = today.getDay(); // 요일
 
@@ -18,8 +18,10 @@ function getDate(data: Date = new Date()) {
 }
 
 function getDateTime(data: Date = new Date()) {
+  console.log(data.toISOString());
+
   const year = Number(data.getFullYear()); // 년도
-  let month: string | number = Number(data.getMonth()); // 월
+  let month: string | number = Number(data.getMonth() + 1); // 월
   let day: string | number = data.getDate(); // 날짜
   let hours: string | number = data.getHours(); // 시간
   let minutes: string | number = data.getMinutes(); // 분

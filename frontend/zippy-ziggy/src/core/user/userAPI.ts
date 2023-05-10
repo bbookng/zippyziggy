@@ -271,3 +271,27 @@ export const getTalksProfileAPI = async (requestData: {
     return { result: 'FAIL', data: err };
   }
 };
+
+export const getTotalVisited = async () => {
+  try {
+    const res = await http.get(`/members/total/visited`);
+    if (res.status === 200) {
+      return { result: 'SUCCESS', data: res.data };
+    }
+    return { result: 'FAIL', data: res.data };
+  } catch (err) {
+    return { result: 'FAIL', data: err };
+  }
+};
+
+export const getDailyVisited = async () => {
+  try {
+    const res = await http.get(`/members/daily/visited`);
+    if (res.status === 200) {
+      return { result: 'SUCCESS', data: res.data };
+    }
+    return { result: 'FAIL', data: res.data };
+  } catch (err) {
+    return { result: 'FAIL', data: err };
+  }
+};

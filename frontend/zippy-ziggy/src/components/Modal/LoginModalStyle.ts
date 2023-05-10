@@ -20,7 +20,7 @@ const LoginModalContent = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  height: 100%;
+  /* height: ; */
 
   .modalTitle {
     margin: 8px 0 0 0;

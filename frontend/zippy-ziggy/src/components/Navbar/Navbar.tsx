@@ -31,8 +31,8 @@ const Navbar = ({ toggleTheme }) => {
 
   // 네비게이션바 목록[내용, 인덱스, 라우팅]
   const navOptions: Array<Array<string>> = [
-    ['프롬프트', '0', '/prompts'],
-    ['대화공유', '1', '/talks'],
+    ['프롬프트', '0', links.prompts],
+    ['대화공유', '1', links.talks],
     // ['튜토리얼', '2', '/tutorial'],
   ];
 
