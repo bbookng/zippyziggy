@@ -4,6 +4,8 @@ export const downloadLink =
 const noticeLink = 'https://uncovered-runner-74a.notion.site/043dd9c85a434f039d8a05abb997e32a';
 
 export const links = {
+  prompts: '/prompts',
+  talks: '/talks',
   downloadLink,
   noticeLink,
 };
