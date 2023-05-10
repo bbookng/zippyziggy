@@ -3,19 +3,7 @@ package com.zippyziggy.member.controller;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.zippyziggy.member.client.PromptClient;
 import com.zippyziggy.member.dto.request.MemberSignUpRequestDto;
-import com.zippyziggy.member.dto.response.DailyVisitedCount;
-import com.zippyziggy.member.dto.response.GoogleTokenResponseDto;
-import com.zippyziggy.member.dto.response.GoogleUserInfoResponseDto;
-import com.zippyziggy.member.dto.response.KakaoUserInfoResponseDto;
-import com.zippyziggy.member.dto.response.MemberInformResponseDto;
-import com.zippyziggy.member.dto.response.MemberResponse;
-import com.zippyziggy.member.dto.response.MemberSignUpResponseDto;
-import com.zippyziggy.member.dto.response.MemberTalkList;
-import com.zippyziggy.member.dto.response.PromptCardListResponse;
-import com.zippyziggy.member.dto.response.PromptCardResponse;
-import com.zippyziggy.member.dto.response.SocialSignUpDataResponseDto;
-import com.zippyziggy.member.dto.response.SocialSignUpResponseDto;
-import com.zippyziggy.member.dto.response.TotalVisitedCount;
+import com.zippyziggy.member.dto.response.*;
 import com.zippyziggy.member.model.JwtToken;
 import com.zippyziggy.member.model.Member;
 import com.zippyziggy.member.model.Platform;
@@ -332,83 +320,155 @@ public class MemberController {
     public ResponseEntity<?> kakaoCallback(String code, @RequestParam(value = "redirect") String redirectUrl,HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         KakaoUserInfoResponseDto kakaoUserInfo;
+        Member member;
 
         if (redirectUrl == null) {
+            log.info("앱용 로그인 진행");
+            log.info(code);
             // 앱용
             kakaoUserInfo = kakaoLoginService.kakaoGetProfile(code);
-        } else {
-            // kakao Token 가져오기(권한)
-            String kakaoAccessToken = kakaoLoginService.kakaoGetToken(code, redirectUrl);
-            // Token으로 사용자 정보 가져오기
-            kakaoUserInfo = kakaoLoginService.kakaoGetProfile(kakaoAccessToken);
-        }
+            log.info("카카오 유저 정보" + kakaoUserInfo);
+            // 기존 회원인지 검증
+            String platformId = kakaoUserInfo.getId();
+            member = memberService.memberCheck(Platform.KAKAO, platformId);
 
-        // 기존 회원인지 검증
-        String platformId = kakaoUserInfo.getId();
-        Member member = memberService.memberCheck(Platform.KAKAO, platformId);
-        // DB에 해당 유저가 없다면 회원가입 진행, 없으면 로그인 진행
-        // 회원가입을 위해서 일단 프런트로 회원 정보를 넘기고 회원가입 페이지로 넘어가게 해야 할 듯
-        if (member == null || member.getActivate().equals(false)) {
-            // 회원가입 요청 메세지
-            SocialSignUpDataResponseDto socialSignUpDataResponseDto = SocialSignUpDataResponseDto.fromKakao(kakaoUserInfo);
-            return new ResponseEntity<>(SocialSignUpResponseDto.from(socialSignUpDataResponseDto), HttpStatus.OK);
-        }
-        // Jwt 토큰 생성
-        JwtToken jwtToken = jwtProviderService.createJwtToken(member.getUserUuid());
+            log.info("기존 회원 검증");
+            log.info("platformId = " + platformId);
+            log.info("member = " + member);
 
-        member.setRefreshToken(jwtToken.getRefreshToken());
+            // DB에 해당 유저가 없다면 회원가입 진행, 없으면 로그인 진행
+            // 회원가입을 위해서 일단 프런트로 회원 정보를 넘기고 회원가입 페이지로 넘어가게 해야 할 듯
+            if (member == null || member.getActivate().equals(false)) {
+                log.info("회원가입 필요");
+                // 회원가입 요청 메세지
+                SocialSignUpDataResponseDto socialSignUpDataResponseDto = SocialSignUpDataResponseDto.fromKakao(kakaoUserInfo);
+                log.info("회원 가입 정보 = " + socialSignUpDataResponseDto);
+                return new ResponseEntity<>(SocialSignUpResponseDto.from(socialSignUpDataResponseDto), HttpStatus.OK);
+            }
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", jwtToken.getAccessToken());
-        headers.add("Access-Control-Expose-Headers", "Authorization");
+            // Jwt 토큰 생성
+            JwtToken jwtToken = jwtProviderService.createJwtToken(member.getUserUuid());
+
+            member.setRefreshToken(jwtToken.getRefreshToken());
 
 
-        // 기존 쿠키 제거
-        Cookie myCookie = cookieUtils.findRefreshTokenCookie(request);
-        if (myCookie != null) {
-            myCookie.setMaxAge(0);
-            response.addCookie(myCookie);
-        }
-
-        // 쿠키 설정
-        ResponseCookie cookie = jwtProviderService.createSetCookie(jwtToken.getRefreshToken());
-
-        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
-        response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.addHeader("Set-Cookie", cookie.toString());
-
-
-        // 로그인 시 최소한의 유저 정보 전달
-        MemberInformResponseDto memberInformResponseDto = MemberInformResponseDto.from(member);
-
-        ///////////////////////////////레디스/////////////////////////////////
-        String dateTimeDaily = visitedMemberCountService.DateTimeDaily();
-        // 방문한 사람이 있는지 확인
-        if (redisUtils.isExists(dateTimeDaily)) {
-            // 로그인한 유저가 오늘 방문했는지 확인
-            if (!redisUtils.getBitSet(dateTimeDaily, member.getId())) {
-                // 방문한 사람이 아니라면 방문 체크 및 전체 방문 수 1 증가
+            ///////////////////////////////레디스/////////////////////////////////
+            String dateTimeDaily = visitedMemberCountService.DateTimeDaily();
+            // 방문한 사람이 있는지 확인
+            if (redisUtils.isExists(dateTimeDaily)) {
+                // 로그인한 유저가 오늘 방문했는지 확인
+                if (!redisUtils.getBitSet(dateTimeDaily, member.getId())) {
+                    // 방문한 사람이 아니라면 방문 체크 및 전체 방문 수 1 증가
+                    redisUtils.setBitSet(dateTimeDaily, member.getId());
+                    redisUtils.setExpireTime(dateTimeDaily, 60 * 60 * 24);
+                    redisUtils.increaseTotalVisitedCount();
+                }
+            } else {
+                // 첫 방문일 경우 일일 방문자수와 누적 방문자수 모두 생성
                 redisUtils.setBitSet(dateTimeDaily, member.getId());
                 redisUtils.setExpireTime(dateTimeDaily, 60 * 60 * 24);
                 redisUtils.increaseTotalVisitedCount();
             }
-        } else {
-            // 첫 방문일 경우 일일 방문자수와 누적 방문자수 모두 생성
-            redisUtils.setBitSet(dateTimeDaily, member.getId());
-            redisUtils.setExpireTime(dateTimeDaily, 60 * 60 * 24);
-            redisUtils.increaseTotalVisitedCount();
-        }
 
-        // 기존 redis 정보 삭제
+            // 로그인 시 최소한의 유저 정보 전달
+            MemberInformResponseDto memberInformResponseDto = MemberInformResponseDto.from(member);
+            log.info("memberInformResponseDto = " + memberInformResponseDto);
+
+            redisService.saveRedisData(member.getUserUuid().toString(), memberInformResponseDto, jwtToken.getRefreshToken());
+
+            ///////////////////////////////레디스/////////////////////////////////
+
+            AppMemberResponse appMemberResponse = AppMemberResponse.builder()
+                    .memberInformResponseDto(memberInformResponseDto)
+                    .jwtToken(jwtToken).build();
+
+            log.info("appMemberResponse" + appMemberResponse);
+
+            return ResponseEntity.ok(appMemberResponse);
+
+
+
+
+
+        } else {
+
+
+
+
+            // kakao Token 가져오기(권한)
+            String kakaoAccessToken = kakaoLoginService.kakaoGetToken(code, redirectUrl);
+            // Token으로 사용자 정보 가져오기
+            kakaoUserInfo = kakaoLoginService.kakaoGetProfile(kakaoAccessToken);
+
+            // 기존 회원인지 검증
+            String platformId = kakaoUserInfo.getId();
+            member = memberService.memberCheck(Platform.KAKAO, platformId);
+            // DB에 해당 유저가 없다면 회원가입 진행, 없으면 로그인 진행
+            // 회원가입을 위해서 일단 프런트로 회원 정보를 넘기고 회원가입 페이지로 넘어가게 해야 할 듯
+            if (member == null || member.getActivate().equals(false)) {
+                // 회원가입 요청 메세지
+                SocialSignUpDataResponseDto socialSignUpDataResponseDto = SocialSignUpDataResponseDto.fromKakao(kakaoUserInfo);
+                return new ResponseEntity<>(SocialSignUpResponseDto.from(socialSignUpDataResponseDto), HttpStatus.OK);
+            }
+
+            // Jwt 토큰 생성
+            JwtToken jwtToken = jwtProviderService.createJwtToken(member.getUserUuid());
+
+            member.setRefreshToken(jwtToken.getRefreshToken());
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Authorization", jwtToken.getAccessToken());
+            headers.add("Access-Control-Expose-Headers", "Authorization");
+
+
+            // 기존 쿠키 제거
+            Cookie myCookie = cookieUtils.findRefreshTokenCookie(request);
+            if (myCookie != null) {
+                myCookie.setMaxAge(0);
+                response.addCookie(myCookie);
+            }
+
+            // 쿠키 설정
+            ResponseCookie cookie = jwtProviderService.createSetCookie(jwtToken.getRefreshToken());
+
+            response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+            response.setHeader("Access-Control-Allow-Credentials", "true");
+            response.addHeader("Set-Cookie", cookie.toString());
+
+            // 로그인 시 최소한의 유저 정보 전달
+            MemberInformResponseDto memberInformResponseDto = MemberInformResponseDto.from(member);
+
+            ///////////////////////////////레디스/////////////////////////////////
+            String dateTimeDaily = visitedMemberCountService.DateTimeDaily();
+            // 방문한 사람이 있는지 확인
+            if (redisUtils.isExists(dateTimeDaily)) {
+                // 로그인한 유저가 오늘 방문했는지 확인
+                if (!redisUtils.getBitSet(dateTimeDaily, member.getId())) {
+                    // 방문한 사람이 아니라면 방문 체크 및 전체 방문 수 1 증가
+                    redisUtils.setBitSet(dateTimeDaily, member.getId());
+                    redisUtils.setExpireTime(dateTimeDaily, 60 * 60 * 24);
+                    redisUtils.increaseTotalVisitedCount();
+                }
+            } else {
+                // 첫 방문일 경우 일일 방문자수와 누적 방문자수 모두 생성
+                redisUtils.setBitSet(dateTimeDaily, member.getId());
+                redisUtils.setExpireTime(dateTimeDaily, 60 * 60 * 24);
+                redisUtils.increaseTotalVisitedCount();
+            }
+
+            // 기존 redis 정보 삭제
 //        redisService.deleteRedisData(member.getUserUuid().toString());
 
-        // redis 설정(1. 유저 정보 저장 -> UUID나 AccessToken으로 회원 조회할 시 활용
-        //           2. refreshToken 저장 -> accessToken 만료 시 DB가 아닌 Redis에서 먼저 찾아오기)
-        redisService.saveRedisData(member.getUserUuid().toString(), memberInformResponseDto, jwtToken.getRefreshToken());
-        ///////////////////////////////레디스/////////////////////////////////
-        return ResponseEntity.ok()
-                .headers(headers)
-                .body(memberInformResponseDto);
+            // redis 설정(1. 유저 정보 저장 -> UUID나 AccessToken으로 회원 조회할 시 활용
+            //           2. refreshToken 저장 -> accessToken 만료 시 DB가 아닌 Redis에서 먼저 찾아오기)
+            redisService.saveRedisData(member.getUserUuid().toString(), memberInformResponseDto, jwtToken.getRefreshToken());
+            ///////////////////////////////레디스/////////////////////////////////
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(memberInformResponseDto);
+
+        }
+
     }
 
     /**
@@ -718,7 +778,7 @@ public class MemberController {
             log.info("member = " + member);
 
             MemberResponse memberResponse = (null == member)
-                ? new MemberResponse("알 수 없음", "", "")
+                ? new MemberResponse("알 수 없음", "https://zippyziggy.s3.ap-northeast-2.amazonaws.com/default/noProfile.png", "")
                 : MemberResponse.from(member);
 
             return new ResponseEntity<>(memberResponse, HttpStatus.OK);
