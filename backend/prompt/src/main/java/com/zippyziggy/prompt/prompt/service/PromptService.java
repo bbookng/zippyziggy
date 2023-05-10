@@ -100,7 +100,7 @@ public class PromptService{
 
 		String thumbnailUrl;
 
-		if (thumbnail.equals(null)) {
+		if (thumbnail == null) {
 			thumbnailUrl = "default thumbnail image";
 		} else {
 			thumbnailUrl = awsS3Uploader.upload(thumbnail, "thumbnails");
