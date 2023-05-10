@@ -1,4 +1,5 @@
 import React from 'react';
+import Paragraph from '../Typography/Paragraph';
 import { Container, SubContainer } from './ComponentStyle';
 
 interface PropsType {
@@ -17,7 +18,9 @@ export default function Introduction({ prompt }: PropsType) {
         <div className="colorBlock" />
         <div className="colorBox">
           <div className="exampleLabel">질문 예시</div>
-          <div className="example">{prompt.messageResponse.example}</div>
+          <div className="example">
+            <Paragraph>{prompt.messageResponse.example}</Paragraph>
+          </div>
         </div>
       </SubContainer>
       <SubContainer>

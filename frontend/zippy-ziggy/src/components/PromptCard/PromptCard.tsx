@@ -158,6 +158,7 @@ export default function PromptCard({ image, title, description, url, prompt }: P
             )}
           </div>
           <div
+            id="promptCardPlay"
             className="item"
             onClick={(e) => {
               e.preventDefault();

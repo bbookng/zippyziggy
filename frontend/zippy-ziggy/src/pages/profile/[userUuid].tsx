@@ -134,7 +134,8 @@ export default function Index() {
   // 프로필 데이터 전체 받아오기
   const handleProfileData = async () => {
     // 유저가 없을 시 더이상 데이터를 받아오지 않음
-    if (!(await handleUserAPI())) {
+    const result = await handleUserAPI();
+    if (result) {
       return;
     }
     await handleTalksProfile();
@@ -142,11 +143,11 @@ export default function Index() {
 
   // query를 제대로 받아왔을 경우
   useEffect(() => {
-    if (userUuid && mypage) {
+    if (userUuid) {
       page.current = 0;
       handleProfileData();
     }
-  }, [userUuid, mypage]);
+  }, [userUuid]);
 
   // 로그아웃 버튼 클릭
   const handleLogoutBtn = async () => {

@@ -11,6 +11,7 @@ import {
   FaTrash,
 } from 'react-icons/fa';
 import { getDateTime } from '@/lib/utils';
+import { checkLoginCuring } from '@/utils/checkLogin';
 import { ActionBox, Container, PopUp, TitleBox, UserBox } from './PromptTitleStyle';
 
 interface PropsType {
@@ -70,18 +71,18 @@ export default function PromptTitle({
           <ActionBox>
             <div className="heartBox">
               {isLiked ? (
-                <FaHeart className="heart" onClick={handleLike} />
+                <FaHeart className="heart" onClick={() => checkLoginCuring(handleLike)()} />
               ) : (
-                <FaRegHeart className="heart" onClick={handleLike} />
+                <FaRegHeart className="heart" onClick={() => checkLoginCuring(handleLike)()} />
               )}
               <div className="likeCnt">{likeCnt}</div>
             </div>
             {type === 'prompt' ? (
               <div className="bookmark">
                 {isBookmarked ? (
-                  <FaBookmark onClick={handleBookmark} />
+                  <FaBookmark onClick={() => checkLoginCuring(handleBookmark)()} />
                 ) : (
-                  <FaRegBookmark onClick={handleBookmark} />
+                  <FaRegBookmark onClick={() => checkLoginCuring(handleBookmark)()} />
                 )}
               </div>
             ) : null}

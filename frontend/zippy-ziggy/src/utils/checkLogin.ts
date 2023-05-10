@@ -21,4 +21,24 @@ const checkLogin = () => {
   return true;
 };
 
+/**
+ * 로그인 여부를 액세스 토큰이 들어있는지로 판단
+ * @param f 다음에 실행할 함수
+ * @returns
+ */
+export const checkLoginCuring = (f: (...args: any[]) => any, ...res) => {
+  const token = localStorage.getItem('accessToken');
+  if (!token) {
+    Toastify({
+      text: message.CheckLoginRequired,
+      duration: 1000,
+      position: 'center',
+      stopOnFocus: true,
+      style: toastifyCSS.fail,
+    }).showToast();
+    return () => {};
+  }
+  return f;
+};
+
 export default checkLogin;

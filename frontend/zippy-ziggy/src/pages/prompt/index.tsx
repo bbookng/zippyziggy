@@ -155,7 +155,8 @@ function PromptCreate() {
       checkInputFormToast();
       return false;
     }
-    if (title === '' || content === '' || category === '' || image === null) {
+    if (title === '' || content === '' || category === '') {
+      // || image === null
       checkInputFormToast();
       return false;
     }
@@ -177,7 +178,10 @@ function PromptCreate() {
         },
       };
       const formData = new FormData();
-      formData.append('thumbnail', image[0]);
+      if (image) {
+        formData.append('thumbnail', image); //
+      }
+
       formData.append('data', new Blob([JSON.stringify(data)], { type: 'application/json' }));
       const requestData = {
         data: formData,

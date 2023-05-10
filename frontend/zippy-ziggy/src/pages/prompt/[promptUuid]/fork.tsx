@@ -155,7 +155,7 @@ export default function PromptUpdate() {
       checkInputFormToast();
       return false;
     }
-    if (title === '' || content === '' || category === '' || image === null) {
+    if (title === '' || content === '' || category === '') {
       checkInputFormToast();
       return false;
     }
@@ -177,7 +177,9 @@ export default function PromptUpdate() {
         },
       };
       const formData = new FormData();
-      formData.append('thumbnail', image ? image[0] : null);
+      if (image) {
+        formData.append('thumbnail', image ? image[0] : null);
+      }
       formData.append('data', new Blob([JSON.stringify(tmpData)], { type: 'application/json' }));
       const requestData = {
         id: promptUuid,

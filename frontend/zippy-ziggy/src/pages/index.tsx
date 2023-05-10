@@ -136,22 +136,6 @@ const Home: NextPage<HomePageProps> = ({ title }) => {
   const [isPlaying3, setIsPlaying3] = useState(false);
   const [isPlaying4, setIsPlaying4] = useState(false);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setIsPlaying1(true);
-    }, 1000);
-
-    // 2초 후에 인터벌 종료
-    setTimeout(() => {
-      setIsPlaying1(false);
-      clearInterval(interval);
-    }, 2000);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
-
   return (
     <>
       <Container>
@@ -174,11 +158,11 @@ const Home: NextPage<HomePageProps> = ({ title }) => {
               setIsPlaying2(true);
             }}
             onMouseLeave={() => {
-              setIsPlaying2(false);
+              setIsPlaying2(true);
             }}
           >
-            <div className="guard" />
-            <Lottie className="lottie" loop animationData={lottieJson} play={isPlaying2} />
+            {/* <div className="guard" /> */}
+            <Lottie className="lottie" loop animationData={lottieJson} play />
           </div>
           <div
             className="container t3 cursor"

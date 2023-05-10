@@ -201,6 +201,9 @@ export const getPromptsMemberAPI = async (requestData: {
   try {
     const res = await http.get(`/members/prompts/profile/${requestData.id}?${queryParams}`);
     if (res.status === 200) {
+      if (res.data === '북마크를 누른 프롬프트가 존재하지 않습니다.') {
+        return { result: 'FAIL', data: res.data };
+      }
       return { result: 'SUCCESS', data: res.data };
     }
     return { result: 'FAIL', data: res.data };
@@ -228,6 +231,9 @@ export const getPromptsBookmarkAPI = async (requestData: {
   try {
     const res = await http.get(`/members/prompts/bookmark/${requestData.id}?${queryParams}`);
     if (res.status === 200) {
+      if (res.data === '생성한 프롬프트가 존재하지 않습니다.') {
+        return { result: 'FAIL', data: res.data };
+      }
       return { result: 'SUCCESS', data: res.data };
     }
     return { result: 'FAIL', data: res.data };

@@ -210,6 +210,7 @@ export default function Modify() {
           </Button>
           <Hr color="blackColor10" margin="12px auto" width="90%" />
           <Button
+            id="signout"
             color="dangerColor"
             margin="0 0 0 0"
             onClick={() => {
