@@ -282,6 +282,9 @@ public class MemberController {
             return ResponseEntity.ok("생성한 프롬프트가 존재하지 않습니다.");
         }
     }
+
+
+
 //
 //    /**
 //     * 유저 자동 저장
@@ -317,11 +320,11 @@ public class MemberController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
-    public ResponseEntity<?> kakaoCallback(String code, @RequestParam(value = "redirect") String redirectUrl,HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public ResponseEntity<?> kakaoCallback(String code, @RequestParam(value = "redirect", required = false) String redirectUrl,HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         KakaoUserInfoResponseDto kakaoUserInfo;
         Member member;
-
+        log.info("redorect = " + redirectUrl);
         if (redirectUrl == null) {
             log.info("앱용 로그인 진행");
             log.info(code);
