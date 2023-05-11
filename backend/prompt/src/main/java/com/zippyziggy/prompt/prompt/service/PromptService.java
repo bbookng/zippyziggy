@@ -205,7 +205,7 @@ public class PromptService{
 	 * @return
 	 * */
 	private Cookie createCookieForForNotOverlap(Long promptId) {
-		Cookie cookie = new Cookie(VIEWCOOKIENAME, String.valueOf(promptId));
+		Cookie cookie = new Cookie(VIEWCOOKIENAME+ promptId, String.valueOf(promptId));
 		cookie.setComment("조회수 중복 증가 방지 쿠키");    // 쿠키 용도 설명 기재
 		cookie.setMaxAge(getRemainSecondForTomorrow());     // 하루를 준다.
 		cookie.setHttpOnly(true);                // 서버에서만 조작 가능
