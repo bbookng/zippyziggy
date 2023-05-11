@@ -97,6 +97,7 @@ public class PromptService{
 
 	// Exception 처리 필요
 	public PromptResponse createPrompt(PromptRequest data, UUID crntMemberUuid, @Nullable MultipartFile thumbnail) {
+		log.info("thumnbnail -> ", thumbnail);
 
 		String thumbnailUrl;
 
