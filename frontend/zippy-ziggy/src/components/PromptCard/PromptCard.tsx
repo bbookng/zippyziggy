@@ -166,9 +166,9 @@ export default function PromptCard({ image, title, description, url, prompt }: P
               // handlePlay();
             }}
           >
-            <Link href="https://chat.openai.com/" target="_blank">
-              <BsFillPlayFill className="play" />
-            </Link>
+            <BsFillPlayFill className="play" />
+            {/* <Link href="https://chat.openai.com/" target="_blank">
+            </Link> */}
           </div>
         </div>
       </Footer>

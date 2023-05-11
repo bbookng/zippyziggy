@@ -150,6 +150,26 @@ const SubContainer = styled.div`
       margin-left: 0.25rem;
     }
   }
+
+  .noticeIcon {
+    position: relative;
+
+    .noticeText {
+      display: none;
+      position: absolute;
+      width: 120px;
+      left: -60px;
+      background-color: ${({ theme }) => theme.colors.whiteColor90};
+
+      padding: 4px;
+      top: 0;
+    }
+    :hover {
+      .noticeText {
+        display: inline;
+      }
+    }
+  }
 `;
 
 const Textarea = styled.textarea`

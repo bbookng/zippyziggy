@@ -178,7 +178,7 @@ export default function PromptUpdate() {
       };
       const formData = new FormData();
       if (image) {
-        formData.append('thumbnail', image ? image[0] : null);
+        formData.append('thumbnail', image[0]);
       }
       formData.append('data', new Blob([JSON.stringify(tmpData)], { type: 'application/json' }));
       const requestData = {
@@ -188,7 +188,7 @@ export default function PromptUpdate() {
       };
       createPromptFork(requestData);
     } catch (err) {
-      console.log(err);
+      err;
     }
   };
 

@@ -85,6 +85,7 @@ const Footer = styled.div`
     overflow: hidden;
 
     .profileImg {
+      aspect-ratio: 1;
       height: 100%;
       border-radius: 50%;
     }

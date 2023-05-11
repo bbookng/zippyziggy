@@ -22,26 +22,50 @@ export default function CreateFooter({ isNext, isNew, fork, handleNext, handlePr
     <Footer>
       {isNext ? (
         <>
-          <Button width="6rem" className="prev testBtn" onClick={handleNext}>
+          <Button
+            color="navColor"
+            fontColor="blackColor90"
+            width="6rem"
+            className="prev testBtn"
+            onClick={handleNext}
+          >
             이전
           </Button>
           {isNew ? (
-            <Button width="7rem" className="testBtn" onClick={handlePrompt}>
+            <Button color="primaryColor" width="7rem" className="testBtn" onClick={handlePrompt}>
               게시글 작성
             </Button>
           ) : fork ? (
-            <Button width="7rem" className="testBtn" onClick={handlePrompt}>
+            <Button
+              color="primaryColor"
+              fontColor="blackColor90"
+              width="7rem"
+              className="testBtn"
+              onClick={handlePrompt}
+            >
               포크 생성
             </Button>
           ) : (
-            <Button width="7rem" className="testBtn" onClick={handlePrompt}>
+            <Button
+              color="navColor"
+              fontColor="blackColor90"
+              width="7rem"
+              className="testBtn"
+              onClick={handlePrompt}
+            >
               게시글 수정
             </Button>
           )}
         </>
       ) : (
         <>
-          <Button width="6rem" color="primaryColor" onClick={handleGoBack} className="testBtn">
+          <Button
+            color="navColor"
+            fontColor="blackColor90"
+            width="6rem"
+            onClick={handleGoBack}
+            className="testBtn"
+          >
             <FaArrowLeft />
             <div className="text">나가기</div>
           </Button>

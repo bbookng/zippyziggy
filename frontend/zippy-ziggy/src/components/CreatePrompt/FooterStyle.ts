@@ -19,10 +19,7 @@ const Footer = styled.div`
 
   .testBtn {
     font-weight: var(--fonts-heading);
-    background-color: ${({ theme }) => theme.colors.navColor};
-    color: ${({ theme }) => theme.colors.blackColor90};
     /* color: black; */
-    border-radius: var(--borders-radius-base);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -30,6 +27,7 @@ const Footer = styled.div`
     /* margin-block: 1rem; */
 
     &:hover {
+      color: ${({ theme }) => theme.colors.blackColor90};
       background-color: var(--colors-primary-30);
     }
 

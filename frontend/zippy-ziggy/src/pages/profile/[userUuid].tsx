@@ -182,6 +182,7 @@ export default function Index() {
         {userState.userUuid === userUuid ? (
           <div className="authContainer">
             <Button
+              id="logout"
               isRound
               display="inline-block"
               color="blackColor05"

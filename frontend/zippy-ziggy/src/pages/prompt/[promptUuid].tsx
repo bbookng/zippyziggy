@@ -210,8 +210,9 @@ export default function PromptUpdate() {
         },
       };
       const formData = new FormData();
-
-      formData.append('thumbnail', image ? image[0] : null);
+      if (image) {
+        formData.append('thumbnail', image[0]);
+      }
       formData.append('data', new Blob([JSON.stringify(tmpData)], { type: 'application/json' }));
       const requestData = {
         id: promptUuid,
@@ -220,7 +221,7 @@ export default function PromptUpdate() {
       };
       updatePrompt(requestData);
     } catch (err) {
-      console.log(err);
+      err;
     }
   };
 

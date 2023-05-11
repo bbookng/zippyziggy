@@ -57,7 +57,7 @@ export default function ProfilePromptList({ className, userUuid, size = 6, getDa
     <Container className={className}>
       {cardList.length === 0 && (
         <Paragraph textAlign="center" style={{ padding: '16px' }}>
-          게시한 프롬프트가 없어요!
+          비어있어요!
         </Paragraph>
       )}
       <CardList>

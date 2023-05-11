@@ -5,7 +5,9 @@ const Container = styled.div`
   display: flex;
   padding: 4rem 0 4rem 4rem;
   background-color: ${({ theme }) => theme.colors.navColor};
+
   ${media.small`
+    justify-content: center;
     padding: 2rem 1rem;
   `}
 `;
@@ -13,23 +15,38 @@ const Container = styled.div`
 const LeftContainer = styled.div`
   display: flex;
   flex-direction: column;
+  max-width: 768px;
   width: 70%;
 
   ${media.small`
     width: 100%;
   `}
 
+  .promptImageContainer {
+    position: relative;
+
+    .fullBtn {
+      position: absolute;
+      margin-top: 0.5rem;
+      padding: 0.5rem;
+      background-color: ${({ theme }) => theme.colors.whiteColor80};
+      border-radius: 8px;
+      cursor: pointer;
+      top: 4px;
+      right: 4px;
+      width: 2rem;
+      height: 2rem;
+    }
+  }
   .promptImage {
     margin-top: 0.5rem;
     width: 100%;
-    height: 300px;
-    object-fit: contain;
+    object-fit: cover;
     background-color: ${({ theme }) => theme.colors.grayColor};
+  }
 
-    ${media.small`
-      height: 150px;
-      /* object-fit: cover; */
-    `}
+  .heightFull {
+    height: 150px;
   }
 `;
 

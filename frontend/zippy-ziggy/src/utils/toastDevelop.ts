@@ -10,10 +10,10 @@ import { downloadLink, links } from './links';
  * @param messageType 'DevelopUseAdd' 확장에서 사용 | 'DevelopNone' 개발중
  */
 const toastDevelop = (messageType: 'DevelopUseAdd' | 'DevelopNone') => {
-  let remainingSeconds = 3;
+  let remainingSeconds = 1;
   Toastify({
     text: message[messageType],
-    duration: 3600,
+    duration: 3000,
     position: 'center',
     stopOnFocus: true,
     style: toastifyCSS.fail,
@@ -22,8 +22,8 @@ const toastDevelop = (messageType: 'DevelopUseAdd' | 'DevelopNone') => {
   const countdownInterval = setInterval(() => {
     remainingSeconds--;
     Toastify({
-      text: `${remainingSeconds + 1}초 후 이동..`,
-      duration: 1200,
+      text: `다운로드 탭을 클릭하여 확장을 다운로드 해보세요!`,
+      duration: 2000,
       position: 'center',
       stopOnFocus: true,
       style: toastifyCSS.fail,
@@ -31,9 +31,9 @@ const toastDevelop = (messageType: 'DevelopUseAdd' | 'DevelopNone') => {
 
     if (remainingSeconds === 0) {
       clearInterval(countdownInterval);
-      Router.push(links.downloadLink); // '/' 페이지로 이동
+      // Router.push(links.downloadLink); // '/' 페이지로 이동
     }
-  }, 1200);
+  }, 3200);
 
   return () => {
     clearInterval(countdownInterval);
