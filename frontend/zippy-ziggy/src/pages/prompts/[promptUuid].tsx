@@ -194,6 +194,7 @@ export default function DetailPrompt() {
                   isBookmarked={isBookmarked}
                   likeCnt={likeCnt}
                   isMe={isMe}
+                  isMobile
                   handleLike={handleLike}
                   handleBookmark={handleBookmark}
                   handleOpenReportModal={() => setIsReportModal(true)}

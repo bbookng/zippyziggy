@@ -21,6 +21,7 @@ interface PropsType {
   likeCnt: number;
   isMe: boolean;
   type?: 'prompt' | 'talk';
+  isMobile?: boolean;
   handleLike?: () => void;
   handleBookmark?: () => void;
   handleOpenDeleteModal?: () => void;
@@ -36,6 +37,7 @@ export default function SideBar({
   likeCnt,
   isMe,
   type = 'prompt',
+  isMobile = false,
   handleLike,
   handleBookmark,
   handleOpenDeleteModal,
@@ -72,7 +74,7 @@ export default function SideBar({
         <ButtonBox>
           <Button
             data-uuid={uuid}
-            id="promptPlay"
+            id={isMobile === true ? 'promptPlayMobile' : 'promptPlayDesktop'}
             className="btn btn1"
             onClick={(e) => {
               e.preventDefault();
