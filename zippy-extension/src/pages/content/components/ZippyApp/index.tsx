@@ -9,6 +9,7 @@ import {
 } from '@pages/constants';
 import { createRoot } from 'react-dom/client';
 import ContentScript from '@pages/content/components/ZippyApp/ZippyApp';
+import { api } from '@pages/content/utils/apis/axios-instance';
 
 refreshOnUpdate('pages/content');
 
@@ -50,6 +51,8 @@ if (currentUrl.startsWith(CHAT_GPT_URL)) {
 
 if (currentUrl.startsWith(ZIPPY_SITE_URL)) {
   console.log('지피지기 kr 로직');
+
+  // 로그아웃 연동
   const intervalForBackgroundChange = setInterval(() => {
     const $authContainer = document.querySelector('.authContainer');
     const authContainerLoaded = !!$authContainer;
@@ -57,15 +60,26 @@ if (currentUrl.startsWith(ZIPPY_SITE_URL)) {
       clearInterval(intervalForBackgroundChange);
       const $signOutButton = $authContainer.querySelector('button');
       $signOutButton.addEventListener('click', () => {
-        chrome.runtime.sendMessage(
-          {
-            type: 'signOut',
-          },
-          () => {
-            console.log('signOut from zippyziggy');
-          }
-        );
+        chrome.runtime.sendMessage({ type: 'signOut' });
       });
     }
   });
+
+  const observer = new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      for (const node of [...mutation.addedNodes]) {
+        const $targetElement = node as HTMLElement;
+        if ($targetElement.className.startsWith('CardStyle__Conatiner')) {
+          const promptUuid = $targetElement.querySelector('a').href.split('/').at(-1);
+          const $playButton = $targetElement.querySelector('#promptCardPlay');
+          $playButton.addEventListener('click', () => {
+            api.get(`/prompts/${promptUuid}`).then((data) => {});
+          });
+        }
+      }
+    }
+  });
+
+  const nextJSElement = document.getElementById('__next');
+  if (nextJSElement) observer.observe(nextJSElement, { subtree: true, childList: true });
 }
