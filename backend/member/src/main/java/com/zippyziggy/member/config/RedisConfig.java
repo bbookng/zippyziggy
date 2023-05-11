@@ -13,22 +13,21 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 public class RedisConfig {
 
+    @Value("${spring.redis.password}")
+    private String redisPassword;
+
+    @Value("${spring.redis.host}")
+    private String redisHost;
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
 
-//        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
-//        redisStandaloneConfiguration.setHostName(host);
-//        redisStandaloneConfiguration.setPort(port);
-//        redisStandaloneConfiguration.setPassword(password);
-//        return new LettuceConnectionFactory(redisStandaloneConfiguration);
-
         RedisSentinelConfiguration redisSentinelConfiguration = new RedisSentinelConfiguration();
         redisSentinelConfiguration.master("mymaster")
-                .sentinel("zippyziggy.kr", 5000)
-                .sentinel("zippyziggy.kr", 5001)
-                .sentinel("zippyziggy.kr", 5002)
-                .setPassword("ssafyE205!");
+                .sentinel(redisHost, 5000)
+                .sentinel(redisHost, 5001)
+                .sentinel(redisHost, 5002)
+                .setPassword(redisPassword);
 
         return new LettuceConnectionFactory(redisSentinelConfiguration);
     }
