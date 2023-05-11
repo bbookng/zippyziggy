@@ -104,7 +104,7 @@ export default function CommentItem({ comment, type, id, handleDeleteComment }: 
         }
       }
     } catch (err) {
-      console.log(err);
+      err;
     }
   };
 

@@ -107,14 +107,14 @@ const Logo = styled.div`
       aspect-ratio: 7.91;
       mask-image: url('/images/index/download.svg');
       .guard {
-        background: linear-gradient(322.63deg, #5de16a55 10.93%, #00e3ae55 100%);
+        /* background: linear-gradient(322.63deg, #5de16a55 10.93%, #00e3ae55 100%); */
+        background: linear-gradient(322.63deg, #5de16aaa 10.93%, #00e3aeaa 100%);
         background-color: ${({ theme }) => theme.colors.primaryColor80};
-        /* background-color: ${({ theme }) => theme.colors.primaryColor}; */
       }
       :hover {
         .guard {
-          background: linear-gradient(322.63deg, #5de16aaa 10.93%, #00e3aeaa 100%);
-          background-color: ${({ theme }) => theme.colors.primaryColor80};
+          background: none;
+          background-color: ${({ theme }) => theme.colors.whiteColor00};
         }
       }
     }
@@ -217,7 +217,7 @@ const Home: NextPage<HomePageProps> = ({ title }) => {
             }}
           >
             <div className="guard" />
-            <Lottie className="lottie" loop animationData={lottieJson} play={isPlaying4} />
+            <Lottie className="lottie" loop animationData={lottieJson} play />
           </div>
         </Logo>
         <LogoContainer>
