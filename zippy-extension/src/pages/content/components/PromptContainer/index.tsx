@@ -69,6 +69,7 @@ const PromptContainer = () => {
     url: `/search/extension`,
     params: memoizedParams,
     autoFetch: true,
+    auth: true,
   });
 
   const isNewChatPage = !window.location.href.includes('/c/');

@@ -1,24 +1,31 @@
-import axios, {
-  AxiosError,
-  AxiosHeaders,
-  AxiosInstance,
-  AxiosResponse,
-  InternalAxiosRequestConfig,
-} from 'axios';
+import axios, { AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 /* eslint-disable no-useless-concat */
 import { CHROME_USERINFO_KEY, ZIPPY_API_URL } from '@pages/constants';
 import logOnDev from '@pages/content/utils/@shared/logging';
 import { api } from './axios-instance';
 
+const getAccessToken = () => {
+  return new Promise((resolve, reject) => {
+    chrome.storage.sync.get('accessToken', (result) => {
+      if (chrome.runtime.lastError) {
+        reject(chrome.runtime.lastError);
+      } else {
+        resolve(result.accessToken);
+      }
+    });
+  });
+};
+
 const tokenInterceptor = (instance: AxiosInstance) => {
   instance.interceptors.request.use(
-    (config) => {
+    async (config) => {
       const axiosConfig = config;
       // 토큰을 얻어오는 함수
-      const token = localStorage.getItem('accessToken');
-      axiosConfig.headers = new AxiosHeaders({
-        Authorization: token,
-      });
+      // const token = localStorage.getItem('accessToken');
+      const token = await getAccessToken();
+      if (token) {
+        axiosConfig.headers.Authorization = `Bearer ${token}`;
+      }
       return axiosConfig;
     },
     (error: AxiosError) => Promise.reject(error.response)

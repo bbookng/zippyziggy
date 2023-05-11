@@ -2,4 +2,31 @@
 .ZP_prompt-container__auth-wrapper{
   position: absolute;
   inset: 0 0 auto auto;
+  .user-wrapper{
+    color: var(--black-color-50);
+    transition: color 0.5s ease;
+    &:hover{
+      color: var(--GPT-color);
+    }
+    & > p {
+      text-align: right;
+    }
+  }
+  .user-info{
+    display: flex;
+    align-items: center;
+    span {
+      display: block;
+      width: 0.875rem;
+      height: 0.875rem;
+      margin-right: 0.125rem;
+      border-radius: var(--borders-radius-round);
+      overflow: hidden;
+
+      img {
+        width: 100%;
+        aspect-ratio: 1/1;
+      }
+    }
+  }
 }

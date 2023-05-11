@@ -1,6 +1,12 @@
 import refreshOnUpdate from 'virtual:reload-on-update-in-view';
 import injectScript from '@pages/content/utils/extension/inject-script';
-import { CHAT_GPT_URL, ZP_BACKDROP_ID, ZP_OVERLAY_ID, ZP_ROOT_ID } from '@pages/constants';
+import {
+  CHAT_GPT_URL,
+  ZIPPY_SITE_URL,
+  ZP_BACKDROP_ID,
+  ZP_OVERLAY_ID,
+  ZP_ROOT_ID,
+} from '@pages/constants';
 import { createRoot } from 'react-dom/client';
 import ContentScript from '@pages/content/components/ZippyApp/ZippyApp';
 
@@ -36,23 +42,30 @@ if (currentUrl.startsWith(CHAT_GPT_URL)) {
   injectScript();
 
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message.type === 'test') {
+    if (message.type === 'signOut') {
       console.log(message);
     }
   });
 }
 
-// if (currentUrl.startsWith(ZIPPY_SITE_URL)) {
-//   console.log('지피지기 kr 로직');
-//   const a = document.querySelector('h1');
-//   a.addEventListener('click', () => {
-//     console.log(1111);
-//     const token = localStorage.getItem('accessToken');
-//     chrome.runtime.sendMessage({
-//       type: 'test',
-//       data: {
-//         token,
-//       },
-//     });
-//   });
-// }
+if (currentUrl.startsWith(ZIPPY_SITE_URL)) {
+  console.log('지피지기 kr 로직');
+  const intervalForBackgroundChange = setInterval(() => {
+    const $authContainer = document.querySelector('.authContainer');
+    const authContainerLoaded = !!$authContainer;
+    if (authContainerLoaded) {
+      clearInterval(intervalForBackgroundChange);
+      const $signOutButton = $authContainer.querySelector('button');
+      $signOutButton.addEventListener('click', () => {
+        chrome.runtime.sendMessage(
+          {
+            type: 'signOut',
+          },
+          () => {
+            console.log('signOut from zippyziggy');
+          }
+        );
+      });
+    }
+  });
+}

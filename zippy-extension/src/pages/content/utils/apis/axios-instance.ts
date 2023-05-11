@@ -10,7 +10,8 @@ const axiosApi = (url: string, options: AxiosRequestConfig = {}) => {
       // 토큰이 있는 경우 저장
       if (response.headers.authorization) {
         const accessToken = response.headers.authorization;
-        localStorage.setItem('accessToken', accessToken);
+        chrome.storage.sync.set({ accessToken });
+        // localStorage.setItem('accessToken', accessToken);
       }
       return response;
     },

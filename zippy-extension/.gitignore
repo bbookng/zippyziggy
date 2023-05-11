@@ -11,6 +11,7 @@
 .DS_Store
 .env.local
 .idea
+.env
 
 # compiled
 utils/reload/*.js
