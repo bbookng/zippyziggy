@@ -104,7 +104,7 @@ const Navbar = ({ toggleTheme }) => {
           role="button"
           className="themeBtn"
         >
-          다운로드
+          <span>🐣다운로드🐣</span>
         </NavOption>
         <div className="iconSet">
           <NavOption

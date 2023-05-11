@@ -32,10 +32,10 @@ const tokenInterceptor = (instance: AxiosInstance) => {
 
     async (error) => {
       const { config } = error;
-      console.log(error);
+      // console.log(error);
       const originalRequest = config;
       if (error.response.status === 401) {
-        console.log('토큰 재발급 요청');
+        // console.log('토큰 재발급 요청');
         const res = await httpToken.post(`${serverUrl}/api/members/refresh/token`);
         if (res.status) {
           localStorage.setItem('accessToken', res?.headers?.authorization);
@@ -68,10 +68,10 @@ const tokenFormInterceptor = (instance: AxiosInstance) => {
 
     async (error) => {
       const { config } = error;
-      console.log(error);
+      // console.log(error);
       const originalRequest = config;
       if (error.response.status === 401) {
-        console.log('토큰 재발급 요청');
+        // console.log('토큰 재발급 요청');
         const res = await httpToken.post(`${serverUrl}/api/members/refresh/token`);
         if (res.status) {
           localStorage.setItem('accessToken', res?.headers?.authorization);

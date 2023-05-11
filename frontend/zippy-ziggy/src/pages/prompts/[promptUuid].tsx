@@ -100,7 +100,7 @@ export default function DetailPrompt() {
       setIsMe(res?.data?.writer?.writerNickname === nickname);
     },
     onError: (err) => {
-      console.log(err);
+      // console.log(err);
     },
   });
 
@@ -194,6 +194,7 @@ export default function DetailPrompt() {
                   isBookmarked={isBookmarked}
                   likeCnt={likeCnt}
                   isMe={isMe}
+                  isMobile
                   handleLike={handleLike}
                   handleBookmark={handleBookmark}
                   handleOpenReportModal={() => setIsReportModal(true)}

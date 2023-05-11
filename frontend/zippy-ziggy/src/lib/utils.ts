@@ -18,8 +18,6 @@ function getDate(data: Date = new Date()) {
 }
 
 function getDateTime(data: Date = new Date()) {
-  console.log(data.toISOString());
-
   const year = Number(data.getFullYear()); // 년도
   let month: string | number = Number(data.getMonth() + 1); // 월
   let day: string | number = data.getDate(); // 날짜

@@ -97,7 +97,7 @@ export default function DetailPrompt() {
       setIsMe(res?.data?.writer?.writerNickname === nickname);
     },
     onError: (err) => {
-      console.log(err);
+      // console.log(err);
     },
   });
 
