@@ -4,6 +4,7 @@ import com.zippyziggy.prompt.common.aws.AwsS3Uploader;
 import com.zippyziggy.prompt.common.kafka.KafkaProducer;
 import com.zippyziggy.prompt.prompt.client.MemberClient;
 import com.zippyziggy.prompt.prompt.dto.request.AppChatGptRequest;
+import com.zippyziggy.prompt.prompt.dto.request.ChatGptMessage;
 import com.zippyziggy.prompt.prompt.dto.request.ChatGptRequest;
 import com.zippyziggy.prompt.prompt.dto.request.GptApiRequest;
 import com.zippyziggy.prompt.prompt.dto.request.PromptCntRequest;
@@ -608,19 +609,34 @@ public class PromptService{
 		String example = data.getExample();
 		String suffix = data.getSuffix();
 
-		String apiResult = "";
+		String content = "";
 
 		if (prefix != null) {
-			apiResult += prefix;
+			content += prefix;
 		}
 		if (example != null) {
-			apiResult += example;
+			content += example;
 		}
 		if (suffix != null) {
-			apiResult += suffix;
+			content += suffix;
 		}
 
-		return GptApiResponse.from(chatgptService.sendMessage(apiResult));
+		// create a request
+		List<ChatGptMessage> chatGptMessages = new ArrayList<>();
+		ChatGptMessage chatGptMessage = new ChatGptMessage("user", content);
+		chatGptMessages.add(chatGptMessage);
+		ChatGptRequest request = new ChatGptRequest(MODEL, chatGptMessages);
+
+		// call the API
+		ChatGptResponse response = restTemplate.postForObject(URL, request, ChatGptResponse.class);
+
+		if (response == null || response.getChoices() == null || response.getChoices().isEmpty()) {
+			return new GptApiResponse("No response");
+		}
+
+		// return the first response
+		final String answer = response.getChoices().get(0).getMessage().getContent();
+		return new GptApiResponse(answer);
     }
 
     public GptApiResponse getChatGptAnswer(AppChatGptRequest data) {
