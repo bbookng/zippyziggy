@@ -174,6 +174,9 @@ public class PromptService{
 		int result = 0;
 		if(cookies != null){
 			for (Cookie cookie : cookies) {
+				log.info("cookie.getName " + cookie.getName());
+				log.info("cookie.getValue " + cookie.getValue());
+
 				// 이미 조회를 한 경우 체크
 				if (cookie.getName().equals(VIEWCOOKIENAME+promptId)) checkCookie = true;
 
@@ -202,7 +205,7 @@ public class PromptService{
 	 * @return
 	 * */
 	private Cookie createCookieForForNotOverlap(Long promptId) {
-		Cookie cookie = new Cookie(VIEWCOOKIENAME+promptId, String.valueOf(promptId));
+		Cookie cookie = new Cookie(VIEWCOOKIENAME, String.valueOf(promptId));
 		cookie.setComment("조회수 중복 증가 방지 쿠키");    // 쿠키 용도 설명 기재
 		cookie.setMaxAge(getRemainSecondForTomorrow());     // 하루를 준다.
 		cookie.setHttpOnly(true);                // 서버에서만 조작 가능
