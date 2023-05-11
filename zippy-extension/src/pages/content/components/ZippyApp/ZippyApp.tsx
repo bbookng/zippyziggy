@@ -10,9 +10,9 @@ import Modal from '@pages/content/components/Modal';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { getMyInfo } from '@pages/content/apis/auth';
 import { useEffect } from 'react';
-import useCheckAuth from '@pages/hooks/queries/useCheckAuth';
 import useChromeStorage from '@pages/hooks/@shared/useChromeStorage';
 import { SignUpResult } from '@pages/content/apis/auth/models';
+import useCheckAuth from '@pages/hooks/queries/useCheckAuth';
 
 const queryClient = new QueryClient({
   defaultOptions: {
