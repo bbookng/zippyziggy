@@ -5,9 +5,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -72,5 +76,18 @@ public class RedisUtils {
             throw new NullPointerException("만료 시간이 설정되어 있지 않습니다.");
         }
     }
+
+    // sorted set(opsForZSet)
+    public void setSortedSetOps(String key, List<ZSetOperations.TypedTuple<String>> values) {
+        for (ZSetOperations.TypedTuple<String> v: values) {
+            redisTemplate.opsForZSet().add(key, v.getValue(), v.getScore());
+        }
+    }
+
+    public Set getSortedSetOps(String key) {
+        Long len = redisTemplate.opsForZSet().size(key);
+        return len == 0 ? new HashSet<String>() : redisTemplate.opsForZSet().range(key,0, len-1);
+    }
+
 
 }
