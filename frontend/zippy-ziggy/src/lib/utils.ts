@@ -49,4 +49,14 @@ function checkInputFormToast() {
   }).showToast();
 }
 
-export { getDate, getDateTime, checkInputFormToast };
+function checkInputFormCategoryToast() {
+  Toastify({
+    text: message.CheckInputForm,
+    duration: 1500,
+    position: 'center',
+    stopOnFocus: true,
+    style: toastifyCSS.fail,
+  }).showToast();
+}
+
+export { getDate, getDateTime, checkInputFormToast, checkInputFormCategoryToast };

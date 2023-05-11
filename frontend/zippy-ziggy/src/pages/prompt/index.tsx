@@ -7,7 +7,7 @@ import withLoginModal from '@/components/HOC/withLoginModal';
 import Paragraph from '@/components/Typography/Paragraph';
 import { createPrompt, testPrompt } from '@/core/prompt/promptAPI';
 import { useAppSelector } from '@/hooks/reduxHook';
-import { checkInputFormToast } from '@/lib/utils';
+import { checkInputFormCategoryToast, checkInputFormToast } from '@/lib/utils';
 import { ContainerTitle, TitleInfoWrapper, TitleWrapper } from '@/styles/prompt/Create.style';
 import { useRouter } from 'next/router';
 import React, { HTMLAttributes, useEffect, useRef, useState } from 'react';
@@ -155,9 +155,13 @@ function PromptCreate() {
       checkInputFormToast();
       return false;
     }
-    if (title === '' || content === '' || category === '') {
+    if (title === '' || content === '') {
       // || image === null
       checkInputFormToast();
+      return false;
+    }
+    if (category === '') {
+      checkInputFormCategoryToast();
       return false;
     }
     return true;
