@@ -84,7 +84,6 @@ public class PromptService{
 	private final PromptReportRepository promptReportRepository;
 	private final KafkaProducer kafkaProducer;
 	private final PromptClickRepository promptClickRepository;
-	private final ChatgptService chatgptService;
 
 	private final RedisUtils redisUtils;
 	private final RedisTemplate redisTemplate;
