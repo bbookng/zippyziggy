@@ -545,7 +545,7 @@ public class PromptService{
 
 			if (redisUtils.isExists(key)) {
 				log.info("redis 최근 프롬프트 조회");
-				Set<ZSetOperations.TypedTuple<String>> set = redisTemplate.opsForZSet().rangeWithScores(key, 0, -1);
+				Set<ZSetOperations.TypedTuple<String>> set = redisTemplate.opsForZSet().reverseRangeWithScores(key, 0, -1);
 
 				List<PromptCardResponse> promptCardResponses = new ArrayList<>();
 
@@ -553,20 +553,17 @@ public class PromptService{
 					String value = tuple.getValue();
 					double score = tuple.getScore();
 					PromptCardResponse promptCardResponse = null;
-					log.info("Value: " + value + ", Score: " + score);
 					try {
 						promptCardResponse = objectMapper.readValue(value, PromptCardResponse.class);
 					} catch (Exception e) {
 						log.error("Json 파싱 에러");
 					}
-					log.info("PromptCardResponse = " + promptCardResponse);
 					promptCardResponses.add(promptCardResponse);
 				}
-				log.info("최근 목록 조회 = " + promptCardResponses);
 				return promptCardResponses;
 
 			} else {
-
+				log.info("최근 조회한 프롬프트가 존재하지 않음");
 				return null;
 			}
 //			} else {
