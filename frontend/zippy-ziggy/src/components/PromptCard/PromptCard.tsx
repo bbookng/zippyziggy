@@ -80,18 +80,96 @@ export default function PromptCard({ image, title, description, url, prompt }: P
   };
 
   return (
-    <Conatiner>
+    <Conatiner data-uuid={prompt?.promptUuid}>
       {url || prompt?.promptUuid ? (
-        <Link href={`${url || prompt.promptUuid}`}>
-          <Image
-            priority
-            src={`${image || prompt?.thumbnail || '/images/noCardImg.png'}`}
-            width={100}
-            height={160}
-            className="image"
-            alt="썸네일"
-          />
-        </Link>
+        <>
+          <Link href={`${url || prompt.promptUuid}`}>
+            <Image
+              priority
+              src={`${image || prompt?.thumbnail || '/images/noCardImg.png'}`}
+              width={100}
+              height={160}
+              className="image"
+              alt="썸네일"
+            />
+          </Link>
+          <Body onClick={handleClickCard}>
+            <Title>
+              <div className="title">{title || prompt?.title || '제목을 입력해주세요.'}</div>
+              {prompt?.forkCnt !== 0 && <div className="caption">{prompt?.forkCnt}</div>}
+            </Title>
+            <Content>{description || prompt?.description || '설명을 입력해주세요.'}</Content>
+            <Infos>
+              <div className="caption">
+                {prompt?.updDt
+                  ? getDate(new Date(Number(prompt?.updDt) * 1000))
+                  : getDate(new Date())}
+              </div>
+              <div className="divider caption">·</div>
+              <div className="caption">{prompt?.commentCnt ? prompt?.commentCnt : '0'} 댓글</div>
+              <div className="divider caption">·</div>
+              <div className="caption">{prompt?.talkCnt ? prompt?.talkCnt : '0'} 대화</div>
+              <div className="divider caption">·</div>
+              <div className="caption">{prompt?.hit ? prompt?.hit : '0'} 조회수</div>
+            </Infos>
+          </Body>
+          <Footer>
+            <div
+              className="user"
+              onClick={handleMoveToUser}
+              style={prompt && { cursor: 'pointer' }}
+            >
+              <Image
+                priority
+                src={prompt?.writer?.writerImg || '/images/noProfile.png'}
+                alt="프로필 사진"
+                width={24}
+                height={24}
+                className="profileImg"
+              />
+              <div className="nickname">{prompt?.writer?.writerNickname || '닉네임'}</div>
+            </div>
+
+            <div className="extraBox">
+              <div className="likeItem item">
+                {prompt !== undefined ? (
+                  isLiked ? (
+                    <FaHeart className="like" onClick={handleLike} />
+                  ) : (
+                    <FaRegHeart className="like" onClick={handleLike} />
+                  )
+                ) : (
+                  <FaRegHeart className="like" />
+                )}
+                <div>{likeCnt}</div>
+              </div>
+              <div className="bookmarkItem item">
+                {prompt !== undefined ? (
+                  isBookmarked ? (
+                    <FaBookmark className="bookmark" onClick={handleBookmark} />
+                  ) : (
+                    <FaRegBookmark className="bookmark" onClick={handleBookmark} />
+                  )
+                ) : (
+                  <FaRegBookmark className="bookmark" />
+                )}
+              </div>
+              <div
+                id="promptCardPlay"
+                className="item"
+                onClick={(e) => {
+                  e.preventDefault();
+                  toastDevelop('DevelopUseAdd');
+                  // handlePlay();
+                }}
+              >
+                <BsFillPlayFill className="play" />
+                {/* <Link href="https://chat.openai.com/" target="_blank">
+            </Link> */}
+              </div>
+            </div>
+          </Footer>
+        </>
       ) : (
         <Image
           priority
@@ -102,76 +180,6 @@ export default function PromptCard({ image, title, description, url, prompt }: P
           alt="썸네일"
         />
       )}
-      <Body onClick={handleClickCard}>
-        <Title>
-          <div className="title">{title || prompt?.title || '제목을 입력해주세요.'}</div>
-          {prompt?.forkCnt !== 0 && <div className="caption">{prompt?.forkCnt}</div>}
-        </Title>
-        <Content>{description || prompt?.description || '설명을 입력해주세요.'}</Content>
-        <Infos>
-          <div className="caption">
-            {prompt?.updDt ? getDate(new Date(Number(prompt?.updDt) * 1000)) : getDate(new Date())}
-          </div>
-          <div className="divider caption">·</div>
-          <div className="caption">{prompt?.commentCnt ? prompt?.commentCnt : '0'} 댓글</div>
-          <div className="divider caption">·</div>
-          <div className="caption">{prompt?.talkCnt ? prompt?.talkCnt : '0'} 대화</div>
-          <div className="divider caption">·</div>
-          <div className="caption">{prompt?.hit ? prompt?.hit : '0'} 조회수</div>
-        </Infos>
-      </Body>
-      <Footer>
-        <div className="user" onClick={handleMoveToUser} style={prompt && { cursor: 'pointer' }}>
-          <Image
-            priority
-            src={prompt?.writer?.writerImg || '/images/noProfile.png'}
-            alt="프로필 사진"
-            width={24}
-            height={24}
-            className="profileImg"
-          />
-          <div className="nickname">{prompt?.writer?.writerNickname || '닉네임'}</div>
-        </div>
-
-        <div className="extraBox">
-          <div className="likeItem item">
-            {prompt !== undefined ? (
-              isLiked ? (
-                <FaHeart className="like" onClick={handleLike} />
-              ) : (
-                <FaRegHeart className="like" onClick={handleLike} />
-              )
-            ) : (
-              <FaRegHeart className="like" />
-            )}
-            <div>{likeCnt}</div>
-          </div>
-          <div className="bookmarkItem item">
-            {prompt !== undefined ? (
-              isBookmarked ? (
-                <FaBookmark className="bookmark" onClick={handleBookmark} />
-              ) : (
-                <FaRegBookmark className="bookmark" onClick={handleBookmark} />
-              )
-            ) : (
-              <FaRegBookmark className="bookmark" />
-            )}
-          </div>
-          <div
-            id="promptCardPlay"
-            className="item"
-            onClick={(e) => {
-              e.preventDefault();
-              toastDevelop('DevelopUseAdd');
-              // handlePlay();
-            }}
-          >
-            <BsFillPlayFill className="play" />
-            {/* <Link href="https://chat.openai.com/" target="_blank">
-            </Link> */}
-          </div>
-        </div>
-      </Footer>
     </Conatiner>
   );
 }

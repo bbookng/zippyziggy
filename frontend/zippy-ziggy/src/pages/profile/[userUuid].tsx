@@ -257,14 +257,14 @@ export default function Index() {
         <ProfilePromptList
           className={isSelectedBtn === 'bookmark' && 'invisible'}
           userUuid={userUuid}
-          size={4}
+          size={6}
           getData={getPromptsMemberAPI}
         />
 
         <ProfilePromptList
           className={isSelectedBtn === 'prompt' && 'invisible'}
           userUuid={userUuid}
-          size={4}
+          size={6}
           getData={getPromptsBookmarkAPI}
         />
       </ProfilePromptContainer>
