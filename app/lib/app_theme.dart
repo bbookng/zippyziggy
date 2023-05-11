@@ -6,7 +6,7 @@ class AppTheme {
   static const Color white = Color.fromARGB(255, 255, 255, 255);
   static const Color black = Color.fromARGB(255, 0, 0, 0);
   static const Color grey = Color.fromARGB(255, 148, 148, 148);
-  static const Color darkGrey = Color.fromARGB(255, 34, 34, 34);
+  static const Color darkGrey = Color.fromARGB(255, 51, 51, 51);
   static const Color primary = Color.fromARGB(0, 34, 49, 33);
 
   static const Color primaryText = Color.fromARGB(0, 36, 214, 24);

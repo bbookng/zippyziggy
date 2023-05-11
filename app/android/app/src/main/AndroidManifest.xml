@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="app"
+        android:label="ZippyZiggy"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
@@ -41,7 +41,7 @@
 
                 <!-- "kakao${YOUR_NATIVE_APP_KEY}://oauth" 형식의 앱 실행 스킴 설정 -->
                 <!-- 카카오 로그인 Redirect URI -->
-                <data android:scheme="kakao${}" android:host="oauth"/>
+                <data android:scheme="kakao${kakaoNativeKey}" android:host="oauth"/>
             </intent-filter>
         </activity>
     </application>

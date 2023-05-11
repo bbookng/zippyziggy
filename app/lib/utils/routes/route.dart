@@ -1,8 +1,11 @@
-import 'package:app/ui/account/login_page.dart';
-import 'package:app/ui/main_page.dart';
-import 'package:app/ui/prompt/prompt_detail_page.dart';
-import 'package:app/ui/prompt/prompt_page.dart';
-import 'package:app/utils/routes/route_name.dart';
+import 'package:zippy_ziggy/data/model/user_model.dart';
+import 'package:zippy_ziggy/ui/account/login_page.dart';
+import 'package:zippy_ziggy/ui/account/my_page.dart';
+import 'package:zippy_ziggy/ui/account/signup_page.dart';
+import 'package:zippy_ziggy/ui/main_page.dart';
+import 'package:zippy_ziggy/ui/prompt/prompt_detail_page.dart';
+import 'package:zippy_ziggy/ui/prompt/prompt_page.dart';
+import 'package:zippy_ziggy/utils/routes/route_name.dart';
 import 'package:flutter/material.dart';
 
 class Routes {
@@ -13,15 +16,27 @@ class Routes {
             builder: (BuildContext context) => const MainPage());
       case RoutesName.login:
         return MaterialPageRoute(
-            builder: (BuildContext context) => const LogInPage());
+            builder: (BuildContext context) => const LoginPage());
+      case RoutesName.signup:
+        var data = settings.arguments;
+        return MaterialPageRoute(
+          builder: (BuildContext context) => SignUpPage(
+            data: data as SocialSignUpModel,
+          ),
+        );
+      case RoutesName.my:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const MyPage());
       case RoutesName.prompt:
         return MaterialPageRoute(
             builder: (BuildContext context) => const PromptPage());
       case RoutesName.promptDetail:
-        var promptUuid = settings.arguments;
+        // var promptUuid = settings.arguments;
+        var data = settings.arguments as DetailArguments;
         return MaterialPageRoute(
           builder: (BuildContext context) => PromptDetail(
-            promptUuid: promptUuid as String,
+            // promptUuid: promptUuid as String,
+            data: data,
           ),
         );
       default:
@@ -36,4 +51,11 @@ class Routes {
         );
     }
   }
+}
+
+class DetailArguments {
+  final String promptUuid;
+  final Function handleBookmark;
+
+  DetailArguments(this.promptUuid, this.handleBookmark);
 }

@@ -1,11 +1,12 @@
-import 'package:app/app_theme.dart';
-import 'package:app/data/model/prompt_model.dart';
-import 'package:app/data/providers/prompt_provider.dart';
-import 'package:app/utils/routes/route_name.dart';
+import 'package:zippy_ziggy/app_theme.dart';
+import 'package:zippy_ziggy/data/model/prompt_model.dart';
+import 'package:zippy_ziggy/data/providers/prompt_provider.dart';
+import 'package:zippy_ziggy/utils/routes/route.dart';
+import 'package:zippy_ziggy/utils/routes/route_name.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class PromptListItem extends StatelessWidget {
+class PromptListItem extends StatefulWidget {
   const PromptListItem({
     super.key,
     required this.prompt,
@@ -14,8 +15,28 @@ class PromptListItem extends StatelessWidget {
   final PromptModel prompt;
 
   @override
+  State<PromptListItem> createState() => _PromptListItemState();
+}
+
+class _PromptListItemState extends State<PromptListItem> {
+  late bool isBookmarked;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.prompt.isBookmarked != null) {
+      isBookmarked = widget.prompt.isBookmarked!;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    bool isBookmarked = prompt.isBookmarked!;
+    // 북마크
+    handleBookmark() {
+      isBookmarked = !isBookmarked;
+      setState(() {});
+    }
+
     return Card(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -23,28 +44,25 @@ class PromptListItem extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              // gradient: LinearGradient(
-              //   colors: [
-              //     Colors.black.withOpacity(0.3),
-              //     Colors.black.withOpacity(0.2),
-              //   ],
-              //   // transform: const GradientRotation(0),
-              //   begin: Alignment.topLeft,
-              //   end: Alignment.bottomRight,
-              // ),
               color: Colors.black.withOpacity(0.2),
             ),
             child: ListTile(
               onTap: () {
-                Navigator.pushNamed(context, RoutesName.promptDetail,
-                    arguments: prompt.promptUuid);
+                Navigator.pushNamed(
+                  context,
+                  RoutesName.promptDetail,
+                  arguments: DetailArguments(
+                    widget.prompt.promptUuid!,
+                    handleBookmark,
+                  ),
+                );
               },
               // leading: const Icon(
               //   Icons.ads_click,
               //   color: Colors.blue,
               // ),
               title: Text(
-                '${prompt.title}',
+                '${widget.prompt.title}',
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
                 style: AppTheme.title.copyWith(
@@ -54,7 +72,7 @@ class PromptListItem extends StatelessWidget {
               subtitle: Padding(
                 padding: const EdgeInsets.only(top: 12),
                 child: Text(
-                  'by ${prompt.writer?.writerNickname ?? ""}',
+                  'by ${widget.prompt.writer?.writerNickname ?? ""}',
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                   style: AppTheme.subtitle.copyWith(
@@ -65,17 +83,13 @@ class PromptListItem extends StatelessWidget {
               trailing: IconButton(
                 constraints: const BoxConstraints(),
                 padding: const EdgeInsets.all(0),
-                onPressed: () {
-                  Provider.of<PromptProvider>(context, listen: false)
-                      .promptBookmark(promptUuid: prompt.promptUuid)
-                      .then(
-                        (value) => {
-                          if (value)
-                            {isBookmarked = true}
-                          else
-                            {isBookmarked = false},
-                        },
-                      );
+                onPressed: () async {
+                  final data =
+                      await Provider.of<PromptProvider>(context, listen: false)
+                          .promptBookmark(promptUuid: widget.prompt.promptUuid);
+                  if (data['result'] == 'SUCCESS') {
+                    handleBookmark();
+                  }
                 },
                 icon: Icon(
                   isBookmarked

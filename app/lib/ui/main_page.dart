@@ -1,12 +1,14 @@
-import 'package:app/data/model/navigation_model.dart';
-import 'package:app/data/providers/navigation_provider.dart';
-import 'package:app/widgets/my_appbar.dart';
-import 'package:app/widgets/navbar.dart';
+import 'package:zippy_ziggy/data/model/navigation_model.dart';
+import 'package:zippy_ziggy/data/providers/navigation_provider.dart';
+import 'package:zippy_ziggy/widgets/my_appbar.dart';
+import 'package:zippy_ziggy/widgets/navbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 
 class MainPage extends StatelessWidget {
   const MainPage({super.key});
+  static const storage = FlutterSecureStorage();
 
   @override
   Widget build(BuildContext context) {

@@ -44,6 +44,12 @@ class _DebouncedSearchBarState extends State<DebouncedSearchBar> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _searchController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return TextField(
       controller: _searchController,
@@ -57,11 +63,5 @@ class _DebouncedSearchBarState extends State<DebouncedSearchBar> {
             vertical: 8,
           )),
     );
-  }
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
   }
 }

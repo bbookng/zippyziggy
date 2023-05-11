@@ -1,11 +1,9 @@
-import "dart:convert";
-
-import "package:app/data/model/prompt_model.dart";
-import "package:app/services/api_service.dart";
-import "package:http/http.dart" as http;
+import "package:zippy_ziggy/data/model/prompt_model.dart";
+import "package:zippy_ziggy/services/dio_service.dart";
+import "package:dio/dio.dart";
 
 class PromptRepository {
-  final APIService _apiService = APIService();
+  final DioService _dioService = DioService();
 
   // GET : 프롬프트 리스트 조회
   Future<Map<String, dynamic>> getPromptListAPI(String keyword, String category,
@@ -17,14 +15,13 @@ class PromptRepository {
       "page": page,
       "size": size,
     };
-    http.Response response = await _apiService.get("/search/prompts", params);
-    dynamic responseJson = jsonDecode(utf8.decode(response.bodyBytes));
-    final promptsData = responseJson["searchPromptList"] as List;
+    Response response = await _dioService.get("/search/prompts", params);
+    final promptsData = response.data["searchPromptList"] as List;
     List<PromptModel> promptList =
         promptsData.map((json) => PromptModel.fromJson(json)).toList();
 
-    final totalPromptsCnt = responseJson["totalPromptsCnt"];
-    final totalPageCnt = responseJson["totalPageCnt"];
+    final totalPromptsCnt = response.data["totalPromptsCnt"];
+    final totalPageCnt = response.data["totalPageCnt"];
 
     Map<String, dynamic> returnData = {
       "promptList": promptList,
@@ -36,11 +33,10 @@ class PromptRepository {
 
   // GET : 프롬프트 상세 조회
   Future<Map<String, dynamic>> getPromptDetailAPI(String promptUuid) async {
-    http.Response response =
-        await _apiService.get("/prompts/$promptUuid", null);
-    dynamic responseJson = jsonDecode(utf8.decode(response.bodyBytes));
+    Response response = await _dioService.get("/prompts/$promptUuid", null);
     final PromptDetailModel promptDetail =
-        PromptDetailModel.fromJson(responseJson);
+        PromptDetailModel.fromJson(response.data);
+    print('상세조회 ${response.data.toString()}');
     Map<String, dynamic> returnData = {
       'result': 'SUCCESS',
       'prompt': promptDetail,
@@ -48,10 +44,12 @@ class PromptRepository {
     return returnData;
   }
 
-  // 프롬프트 북마크
+  // POST : 프롬프트 북마크
   Future<bool> promptBookmarkAPI(String promptUuid) async {
-    http.Response response =
-        await _apiService.post("/prompts/$promptUuid/bookmark", null);
+    Response response =
+        await _dioService.post("/prompts/$promptUuid/bookmark", null);
+    print(response);
+    print(response.statusMessage);
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -59,10 +57,11 @@ class PromptRepository {
     }
   }
 
-  // 프롬프트 좋아요
+  // POST : 프롬프트 좋아요
   Future<bool> promptLikeAPI(String promptUuid) async {
-    http.Response response =
-        await _apiService.post("/prompts/$promptUuid/like", null);
+    Response response =
+        await _dioService.post("/prompts/$promptUuid/like", null);
+    print(response);
     if (response.statusCode == 200) {
       return true;
     } else {

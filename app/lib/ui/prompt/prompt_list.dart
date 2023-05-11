@@ -1,7 +1,7 @@
-import 'package:app/data/providers/prompt_provider.dart';
-import 'package:app/ui/prompt/prompt_list_item.dart';
-import 'package:app/widgets/dropdown.dart';
-import 'package:app/widgets/searchbar.dart';
+import 'package:zippy_ziggy/data/providers/prompt_provider.dart';
+import 'package:zippy_ziggy/ui/prompt/prompt_list_item.dart';
+import 'package:zippy_ziggy/widgets/dropdown.dart';
+import 'package:zippy_ziggy/widgets/searchbar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

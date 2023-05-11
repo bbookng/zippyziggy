@@ -1,4 +1,4 @@
-name: app
+name: zippy_ziggy
 description: A new Flutter project.
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -41,11 +41,13 @@ dependencies:
   provider: ^6.0.5
   flutter_dotenv: ^5.0.2
   intl: ^0.18.1
+  image_picker: ^0.8.7+4
 
-  kakao_flutter_sdk_user: ^1.4.1
+  kakao_flutter_sdk: ^1.4.1
   dio: ^4.0.6
-  json_annotation: ^4.8.1
-  platform: ^3.1.0
+  flutter_secure_storage: ^8.0.0
+  # json_annotation: ^4.8.1
+  # platform: ^3.1.0
   package_info: ^2.0.0
 
 dev_dependencies:

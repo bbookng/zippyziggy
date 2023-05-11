@@ -1,5 +1,5 @@
-import 'package:app/app_theme.dart';
-import 'package:app/data/model/prompt_model.dart';
+import 'package:zippy_ziggy/app_theme.dart';
+import 'package:zippy_ziggy/data/model/prompt_model.dart';
 import 'package:flutter/material.dart';
 
 class PromptIntroduction extends StatelessWidget {

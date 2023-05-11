@@ -1,5 +1,5 @@
-import 'package:app/data/model/prompt_model.dart';
-import 'package:app/data/repository/prompt_repository.dart';
+import 'package:zippy_ziggy/data/model/prompt_model.dart';
+import 'package:zippy_ziggy/data/repository/prompt_repository.dart';
 import 'package:flutter/material.dart';
 
 class PromptProvider extends ChangeNotifier {
@@ -45,22 +45,24 @@ class PromptProvider extends ChangeNotifier {
   }
 
   // 프롬프트 북마크
-  Future<bool> promptBookmark({promptUuid}) async {
+  Future<Map<String, dynamic>> promptBookmark({promptUuid}) async {
     try {
-      bool data = await _promptRepository.promptBookmarkAPI(promptUuid);
-      return data;
+      await _promptRepository.promptBookmarkAPI(promptUuid);
+      return {'result': 'SUCCESS'};
     } catch (e) {
-      return false;
+      print(e);
+      return {'result': 'FAIL'};
     }
   }
 
   // 프롬프트 좋아요
-  Future<bool> promptLike({promptUuid}) async {
+  Future<Map<String, dynamic>> promptLike({promptUuid}) async {
     try {
-      bool data = await _promptRepository.promptBookmarkAPI(promptUuid);
-      return data;
+      print(promptUuid.toString());
+      await _promptRepository.promptLikeAPI(promptUuid);
+      return {'result': 'SUCCESS'};
     } catch (e) {
-      return false;
+      return {'result': 'FAIL'};
     }
   }
 

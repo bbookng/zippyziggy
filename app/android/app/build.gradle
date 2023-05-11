@@ -25,6 +25,8 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
+def kakaoNativeKey = localProperties.getProperty('KAKAO_NATIVE_KEY')
+
 android {
     namespace "com.example.app"
     compileSdkVersion flutter.compileSdkVersion
@@ -52,6 +54,10 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        
+        manifestPlaceholders += [kakaoNativeKey:kakaoNativeKey.replace(" ", "")]
+        // buildConfigField "String", "KAKAO_NATIVE_KEY", kakaoNativeKey
+        // buildConfigField "String", "KAKAO_NATIVE_K", "\"${kakaoNativeKy}\""
     }
 
     buildTypes {

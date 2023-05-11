@@ -1,4 +1,4 @@
-import 'package:app/data/model/navigation_model.dart';
+import 'package:zippy_ziggy/data/model/navigation_model.dart';
 import 'package:flutter/material.dart';
 
 class NavigationProvider extends ChangeNotifier {

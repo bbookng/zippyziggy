@@ -1,27 +1,44 @@
-import 'package:app/app_theme.dart';
-import 'package:app/data/model/prompt_model.dart';
-import 'package:app/data/providers/prompt_provider.dart';
+import 'package:zippy_ziggy/app_theme.dart';
+import 'package:zippy_ziggy/data/model/prompt_model.dart';
+import 'package:zippy_ziggy/data/providers/prompt_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class PromptTitle extends StatelessWidget {
+class PromptTitle extends StatefulWidget {
   final PromptDetailModel prompt;
+  final String promptUuid;
+  final Function handleBookmark;
   const PromptTitle({
     super.key,
     required this.prompt,
+    required this.promptUuid,
+    required this.handleBookmark,
   });
 
   @override
-  Widget build(BuildContext context) {
-    int likeCnt;
-    if (prompt.likeCnt != null) {
-      likeCnt = prompt.likeCnt!;
+  State<PromptTitle> createState() => _PromptTitleState();
+}
+
+class _PromptTitleState extends State<PromptTitle> {
+  late int likeCnt;
+  late bool isLiked;
+  late bool isBookmarked;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.prompt.likeCnt != null) {
+      likeCnt = widget.prompt.likeCnt!;
     } else {
       likeCnt = 0;
     }
-    bool isLiked = prompt.isLiked!;
-    bool isBookmarked = prompt.isBookmarked!;
+    isLiked = widget.prompt.isLiked!;
+    isBookmarked = widget.prompt.isBookmarked!;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     Map<String, String> categoryMap = {
       'STUDY': '학업',
       'FUN': '오락',
@@ -29,6 +46,7 @@ class PromptTitle extends StatelessWidget {
       'PROGRAMMING': '프로그래밍',
       'ETC': '기타',
     };
+
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: 16,
@@ -40,23 +58,27 @@ class PromptTitle extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                categoryMap[prompt.category]!,
+                categoryMap[widget.prompt.category]!,
                 style: AppTheme.body2.copyWith(),
               ),
               Row(
                 children: [
                   IconButton(
-                    onPressed: () {
-                      Provider.of<PromptProvider>(context, listen: false)
-                          .promptLike(promptUuid: prompt.promptUuid)
-                          .then(
-                            (value) => {
-                              if (value)
-                                {isLiked = true, likeCnt += 1}
-                              else
-                                {isLiked = false, likeCnt -= 1}
-                            },
-                          );
+                    onPressed: () async {
+                      final data = await Provider.of<PromptProvider>(context,
+                              listen: false)
+                          .promptLike(promptUuid: widget.promptUuid);
+                      if (data['result'] == 'SUCCESS') {
+                        print(isLiked);
+                        if (isLiked == true) {
+                          isLiked = false;
+                          likeCnt -= 1;
+                        } else {
+                          isLiked = true;
+                          likeCnt += 1;
+                        }
+                        setState(() {});
+                      }
                     },
                     icon: Icon(
                       isLiked ? Icons.favorite : Icons.favorite_border_outlined,
@@ -71,17 +93,15 @@ class PromptTitle extends StatelessWidget {
                     style: AppTheme.body1.copyWith(fontSize: 16),
                   ),
                   IconButton(
-                    onPressed: () {
-                      Provider.of<PromptProvider>(context, listen: false)
-                          .promptBookmark(promptUuid: prompt.promptUuid)
-                          .then(
-                            (value) => {
-                              if (value)
-                                {isBookmarked = true}
-                              else
-                                {isBookmarked = false},
-                            },
-                          );
+                    onPressed: () async {
+                      final data = await Provider.of<PromptProvider>(context,
+                              listen: false)
+                          .promptBookmark(promptUuid: widget.promptUuid);
+                      if (data['result'] == 'SUCCESS') {
+                        isBookmarked = !isBookmarked;
+                        widget.handleBookmark();
+                        setState(() {});
+                      }
                     },
                     icon: Icon(
                       isBookmarked
@@ -105,7 +125,7 @@ class PromptTitle extends StatelessWidget {
               SizedBox(
                 width: MediaQuery.of(context).size.width * 0.75,
                 child: Text(
-                  prompt.title!,
+                  widget.prompt.title!,
                   style: AppTheme.headline.copyWith(),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
@@ -124,7 +144,8 @@ class PromptTitle extends StatelessWidget {
               ),
               Text(
                 DateFormat('yyyy.MM.dd').format(
-                  DateTime.fromMillisecondsSinceEpoch(prompt.updDt! * 1000),
+                  DateTime.fromMillisecondsSinceEpoch(
+                      widget.prompt.updDt! * 1000),
                 ),
                 style: AppTheme.caption,
               ),
@@ -133,14 +154,14 @@ class PromptTitle extends StatelessWidget {
           const SizedBox(
             height: 20,
           ),
-          if (prompt.writer?.writerImg != null)
+          if (widget.prompt.writer?.writerImg != null)
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(30),
                   child: Image.network(
-                    prompt.writer!.writerImg!,
+                    widget.prompt.writer!.writerImg!,
                     width: 40,
                     height: 40,
                     fit: BoxFit.cover,
@@ -160,7 +181,7 @@ class PromptTitle extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        prompt.writer!.writerNickname!,
+                        widget.prompt.writer!.writerNickname!,
                         style: AppTheme.body1.copyWith(
                           color: Colors.white,
                         ),

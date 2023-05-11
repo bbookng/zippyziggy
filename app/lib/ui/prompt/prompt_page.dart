@@ -1,6 +1,6 @@
-import 'package:app/ui/prompt/prompt_list.dart';
-import 'package:app/widgets/my_appbar.dart';
-import 'package:app/widgets/navbar.dart';
+import 'package:zippy_ziggy/ui/prompt/prompt_list.dart';
+import 'package:zippy_ziggy/widgets/my_appbar.dart';
+import 'package:zippy_ziggy/widgets/navbar.dart';
 import 'package:flutter/material.dart';
 
 class PromptPage extends StatelessWidget {

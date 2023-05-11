@@ -1,9 +1,10 @@
-import 'package:app/app_theme.dart';
-import 'package:app/data/providers/navigation_provider.dart';
-import 'package:app/data/providers/prompt_provider.dart';
-import 'package:app/data/providers/user_provider.dart';
-import 'package:app/utils/routes/route.dart';
-import 'package:app/utils/routes/route_name.dart';
+import 'package:zippy_ziggy/app_theme.dart';
+import 'package:zippy_ziggy/data/providers/navigation_provider.dart';
+import 'package:zippy_ziggy/data/providers/prompt_provider.dart';
+import 'package:zippy_ziggy/data/providers/user_provider.dart';
+import 'package:zippy_ziggy/utils/routes/route.dart';
+import 'package:zippy_ziggy/utils/routes/route_name.dart';
+import 'package:zippy_ziggy/services/navigation_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<UserProvider>(
-          create: (_) => UserProvider(),
+          create: (_) => UserProvider()..initProvider(),
         ),
         ChangeNotifierProvider<NavigationProvider>(
           create: (_) => NavigationProvider(),
@@ -57,6 +58,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         initialRoute: RoutesName.main,
         onGenerateRoute: Routes.generateRoute,
+        navigatorKey: navigatorKey,
         title: _title,
       ),
     );

@@ -1,8 +1,6 @@
-import 'package:app/data/providers/theme_provider.dart';
-import 'package:app/data/providers/user_provider.dart';
-import 'package:app/widgets/counter.dart';
-import 'package:app/widgets/custom_button.dart';
-import 'package:app/widgets/dropdown.dart';
+import 'package:zippy_ziggy/data/providers/theme_provider.dart';
+import 'package:zippy_ziggy/data/providers/user_provider.dart';
+import 'package:zippy_ziggy/widgets/dropdown.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -26,8 +24,6 @@ class ThemeChangePage extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Counter(),
-              const CustomButton(),
               Consumer<ThemeProvider>(
                 builder: (context, provider, child) {
                   return CustomDropdown(

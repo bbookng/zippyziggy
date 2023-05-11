@@ -1,17 +1,19 @@
-import 'package:app/data/model/prompt_model.dart';
-import 'package:app/data/providers/prompt_provider.dart';
-import 'package:app/ui/prompt/widgets/prompt_introduction.dart';
-import 'package:app/ui/prompt/widgets/prompt_title.dart';
-import 'package:app/widgets/my_appbar.dart';
+import 'package:zippy_ziggy/data/model/prompt_model.dart';
+import 'package:zippy_ziggy/data/providers/prompt_provider.dart';
+import 'package:zippy_ziggy/ui/prompt/widgets/prompt_introduction.dart';
+import 'package:zippy_ziggy/ui/prompt/widgets/prompt_title.dart';
+import 'package:zippy_ziggy/widgets/my_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class PromptDetail extends StatefulWidget {
-  String promptUuid;
+  // String promptUuid;
+  dynamic data;
 
   PromptDetail({
     super.key,
-    required this.promptUuid,
+    // required this.promptUuid,
+    required this.data,
   });
 
   @override
@@ -25,7 +27,7 @@ class _PromptDetailState extends State<PromptDetail> {
     // WidgetsBinding.instance.addPostFrameCallback(
     //   (_) {
     await Provider.of<PromptProvider>(context, listen: false).getPromptDetail(
-      promptUuid: widget.promptUuid,
+      promptUuid: widget.data.promptUuid,
     );
     isLoading = false;
     // },
@@ -41,6 +43,7 @@ class _PromptDetailState extends State<PromptDetail> {
   @override
   Widget build(BuildContext context) {
     PromptDetailModel prompt = Provider.of<PromptProvider>(context).prompt;
+    print(prompt.isLiked);
 
     if (isLoading) {
       return const Scaffold(
@@ -59,6 +62,8 @@ class _PromptDetailState extends State<PromptDetail> {
                 children: [
                   PromptTitle(
                     prompt: prompt,
+                    promptUuid: widget.data.promptUuid,
+                    handleBookmark: widget.data.handleBookmark,
                   ),
                   const SizedBox(
                     height: 8,
