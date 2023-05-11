@@ -67,11 +67,8 @@ dependencies {
 	// mySQL
 	implementation 'com.mysql:mysql-connector-j:8.0.32'
 
-//	// Redis
-//	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-//
-//	// Jedis
-//	implementation group: 'redis.clients', name: 'jedis', version: '4.3.1'
+	// Redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
 	//querydsl 추가
 	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
