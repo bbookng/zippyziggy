@@ -133,7 +133,12 @@ export default function CreatePart2({
         </Wrapper>
       </LeftContainer>
       <RightContainer>
-        <div className="cardBox">
+        <div
+          className="cardBox"
+          onClick={(e) => {
+            e.preventDefault();
+          }}
+        >
           <PromptCard image={preview} title={title} description={content} />
         </div>
       </RightContainer>

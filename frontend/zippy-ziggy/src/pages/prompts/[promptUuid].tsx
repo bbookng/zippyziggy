@@ -23,6 +23,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { FaAngleUp } from 'react-icons/fa';
+import { FiMaximize } from 'react-icons/fi';
 
 export default function DetailPrompt() {
   const router = useRouter();
@@ -36,6 +37,7 @@ export default function DetailPrompt() {
   const [isMe, setIsMe] = useState<boolean>(false);
   const [isOpenPromptDeleteModal, setIsOpenPromptDeleteModal] = useState<boolean>(false);
   const [isReportModal, setIsReportModal] = useState(false);
+  const [isImageFull, setIsImageFull] = useState(false);
 
   const handleCloseModal = () => {
     setIsReportModal(false);
@@ -200,14 +202,23 @@ export default function DetailPrompt() {
                 />
               </MobileTopContainer>
               <Tab itemList={itemList} tab={tab} handleIsSelected={handleIsSelectedTab} />
-              <Image
-                priority
-                src={data.data.thumbnail}
-                alt="프롬프트 이미지"
-                width={100}
-                height={100}
-                className="promptImage"
-              />
+              <div className="promptImageContainer">
+                <Image
+                  priority
+                  src={data.data.thumbnail}
+                  alt="프롬프트 이미지"
+                  width={100}
+                  height={100}
+                  className={`promptImage ${isImageFull ? 'heightFull' : ''}`}
+                />
+
+                <FiMaximize
+                  className="fullBtn"
+                  onClick={() => {
+                    setIsImageFull(!isImageFull);
+                  }}
+                />
+              </div>
               <section id="0">
                 <Introduction prompt={data.data} />
               </section>

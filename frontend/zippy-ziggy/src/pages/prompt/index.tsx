@@ -179,7 +179,7 @@ function PromptCreate() {
       };
       const formData = new FormData();
       if (image) {
-        formData.append('thumbnail', image); //
+        formData.append('thumbnail', image[0]); //
       }
 
       formData.append('data', new Blob([JSON.stringify(data)], { type: 'application/json' }));
@@ -189,7 +189,7 @@ function PromptCreate() {
       };
       createPrompt(requestData);
     } catch (err) {
-      console.log(err);
+      err;
     }
   };
 

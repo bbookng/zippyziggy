@@ -2,8 +2,9 @@ import React, { useRef, useState } from 'react';
 import Image from 'next/image';
 import { FaPlayCircle } from 'react-icons/fa';
 import { testPrompt } from '@/core/prompt/promptAPI';
-import Lottie from 'react-lottie-player';
+import { FiAlertTriangle } from 'react-icons/fi';
 import lottieJson from '@/assets/lottieJson/loadingA.json';
+import Lottie from 'react-lottie-player';
 import {
   Container,
   LeftContainer,
@@ -13,6 +14,7 @@ import {
   Textarea,
 } from './Create_1Style';
 import Button from '../Button/Button';
+import Paragraph from '../Typography/Paragraph';
 
 interface PropTypes {
   guideElementRef?: any;
@@ -139,7 +141,14 @@ export default function CreatePart1({
                 alt="GPT 사진"
               />
               <div>테스트 결과</div>
+              <div className="noticeIcon">
+                <FiAlertTriangle stroke="#FA0" />
+                <Paragraph className="noticeText" margin="4px 0 0 4px" sizeType="xm">
+                  gpt-3.5-turbo는 한국어에 약해서 가끔 이상한 대답을 해요!
+                </Paragraph>
+              </div>
             </div>
+
             <div className="sentenceBox">
               {/* <div className="questionMark">
               </div> */}
