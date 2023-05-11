@@ -114,7 +114,7 @@ const Logo = styled.div`
       :hover {
         .guard {
           background: none;
-          background-color: ${({ theme }) => theme.colors.whiteColor00};
+          background-color: ${({ theme }) => theme.colors.primaryColor80};
         }
       }
     }

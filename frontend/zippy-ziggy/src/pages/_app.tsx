@@ -60,7 +60,13 @@ export const GlobalStyle = createGlobalStyle`
   }
 `;
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false, // default: true
+    },
+  },
+});
 
 function App({ Component, pageProps }: AppProps) {
   const { colorTheme, toggleTheme } = useDarkMode();
