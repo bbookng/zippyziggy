@@ -4,15 +4,7 @@ const sanitizeInput = (input: string) => {
   return input.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
 };
 
-/* 첫글자 대문자 */
-const capitalizeWords = (string: string) => {
-  return string.replace(
-    /\w\S*/g,
-    (txt) => txt.charAt(0).toUpperCase() + txt.substring(1).toLowerCase()
-  );
-};
-
-// 날짜 시간 포맷 YYYY년 MM월 DD일
+// 날짜 시간 포맷 YYYY 년 MM월 DD일
 const formatDateTime = (timestamp: number) => {
   const fullDate = new Date(timestamp);
 
@@ -27,7 +19,7 @@ const formatDateTime = (timestamp: number) => {
 };
 
 // 타임스탬프를  N {unit} 전 형태로 포맷
-const formatAgo = function (timestamp: number) {
+const formatAgo = (timestamp: number) => {
   const fullDate = new Date(timestamp);
 
   if (!fullDate || fullDate.toString() === 'Invalid Date') {
@@ -68,7 +60,7 @@ const formatAgo = function (timestamp: number) {
     },
   ];
 
-  for (let i = 0; i < units.length; i++) {
+  for (let i = 0; i < units.length; i += 1) {
     const unit = units[i];
 
     if (diff >= unit.value) {
@@ -94,4 +86,4 @@ const formatHumanReadableNumber = (number: number) => {
   return `${(number / 1000000).toFixed(1)}M`;
 };
 
-export { sanitizeInput, capitalizeWords, formatDateTime, formatAgo, formatHumanReadableNumber };
+export { sanitizeInput, formatDateTime, formatAgo, formatHumanReadableNumber };

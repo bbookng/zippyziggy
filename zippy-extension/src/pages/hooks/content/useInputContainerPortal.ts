@@ -11,8 +11,11 @@ import {
   createPortalContainer,
   removeFormParentClasses,
   setInputWrapperStyle,
-} from '@pages/content/utils/add-ui-to-input-portals';
-import { findRegenerateButton, hideEmptyDiv } from '@pages/content/utils/add-ui-to-prompt-portals';
+} from '@pages/content/utils/extension/add-ui-to-input-portals';
+import {
+  findRegenerateButton,
+  hideEmptyDiv,
+} from '@pages/content/utils/extension/add-ui-to-prompt-portals';
 
 const useInputContainerPortal = () => {
   const [portalContainer, setPortalContainer] = useState<HTMLDivElement | null>(null);
@@ -21,7 +24,7 @@ const useInputContainerPortal = () => {
     const existingPortal = document.getElementById(ZP_INPUT_WRAPPER_ID);
     if (existingPortal) return;
 
-    const $formParent = document.querySelector('form')?.parentElement;
+    const $formParent = document.querySelector('form:not(.signup__form)')?.parentElement;
     if (!$formParent) return;
 
     // 클래스 제거

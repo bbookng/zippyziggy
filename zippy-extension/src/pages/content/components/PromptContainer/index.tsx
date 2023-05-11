@@ -16,6 +16,7 @@ import Pagination from '@pages/content/components/PromptContainer/Pagination';
 import PromptCard from '@pages/content/components/PromptContainer/PromptCard';
 import useFetch from '@pages/hooks/@shared/useFetch';
 import useDebounce from '@pages/hooks/@shared/useDebounce';
+import UserInfo from '@pages/content/components/PromptContainer/UserInfo';
 
 export const category: Array<Category> = [
   { id: 'all', text: '전체', value: 'ALL' },
@@ -51,15 +52,13 @@ const PromptContainer = () => {
   const [limit, setLimit] = useState(LIMIT);
 
   const memoizedParams = useMemo(() => {
-    const params = {
+    return {
       category: selectedCategory,
       keyword: debouncedSearchTerm,
       sort: selectedSort,
       page: page - 1,
       size: limit,
     };
-
-    return params;
   }, [debouncedSearchTerm, page, selectedCategory, selectedSort, limit]);
 
   const {
@@ -70,6 +69,7 @@ const PromptContainer = () => {
     url: `/search/extension`,
     params: memoizedParams,
     autoFetch: true,
+    auth: true,
   });
 
   const isNewChatPage = !window.location.href.includes('/c/');
@@ -85,14 +85,10 @@ const PromptContainer = () => {
             selectedCategory={selectedCategory}
             setSelectedCategory={setCategory}
           />
-          {/* <UserInfo /> */}
+          <UserInfo />
         </section>
         <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-        {/* <a */}
-        {/*   href={`https://kauth.kakao.com/oauth/authorize?client_id=caeb5575d99036003c187adfadea9863&redirect_uri=${CHAT_GPT_URL}&response_type=code`} */}
-        {/* > */}
-        {/*   테스트 */}
-        {/* </a> */}
+
         <section className="ZP_prompt-container__main">
           <div className="ZP_prompt-container__category-wrapper">
             <h2 className="ZP_prompt-container__search-info">

@@ -6,7 +6,7 @@ import {
   findTargetElement,
   hideEmptyDiv,
   shouldCreatePromptContainerPortal,
-} from '@pages/content/utils/add-ui-to-prompt-portals';
+} from '@pages/content/utils/extension/add-ui-to-prompt-portals';
 import { ZP_PROMPT_CONTAINER_ID } from '@pages/constants';
 
 const usePromptListPortal = () => {
@@ -58,8 +58,10 @@ const usePromptListPortal = () => {
           const targetElement = mutation.target as Element;
           if (!document.querySelector('h1.text-4xl')) {
             if (targetElement.className === 'flex flex-col items-center text-sm dark:bg-gray-800') {
-              (document.querySelector(`#${ZP_PROMPT_CONTAINER_ID}`) as HTMLElement).style.display =
-                'none';
+              const $ZPPromptContainer = document.querySelector(
+                `#${ZP_PROMPT_CONTAINER_ID}`
+              ) as HTMLElement;
+              if ($ZPPromptContainer) $ZPPromptContainer.style.display = 'none';
             }
           }
           // 대상 요소가 포탈을 생성해야 하는지 판단

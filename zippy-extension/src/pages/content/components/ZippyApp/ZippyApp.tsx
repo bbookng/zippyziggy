@@ -3,35 +3,53 @@ import useInputContainerPortal from '@pages/hooks/content/useInputContainerPorta
 import usePromptListPortal from '@pages/hooks/content/usePromptContainerPortal';
 import PromptContainer from '@pages/content/components/PromptContainer';
 import InputWrapper from '@pages/content/components/InputWrapper';
-import { CHAT_GPT_URL, ZP_TO_TOP_BUTTON_ID } from '@pages/constants';
+import { CHAT_GPT_URL, CHROME_USERINFO_KEY, ZP_TO_TOP_BUTTON_ID } from '@pages/constants';
 import useScrollToTopButton from '@pages/hooks/content/useScrollToTopButton';
 import { ModalProvider, useModalContext } from '@pages/content/context/ModalContext';
 import Modal from '@pages/content/components/Modal';
-import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
-import { checkAuth } from '@pages/content/apis/auth';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { getMyInfo } from '@pages/content/apis/auth';
+import { useEffect } from 'react';
+import useCheckAuth from '@pages/hooks/queries/useCheckAuth';
+import useChromeStorage from '@pages/hooks/@shared/useChromeStorage';
+import { SignUpResult } from '@pages/content/apis/auth/models';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false, // default: true
+    },
+  },
+});
 const App = () => {
+  const [userData, setUserData] = useChromeStorage<SignUpResult>(
+    CHROME_USERINFO_KEY,
+    {
+      userUuid: '',
+      profileImg: '',
+      nickname: '',
+    },
+    'sync'
+  );
   const promptContainerPortal = usePromptListPortal();
   const inputWrapperPortal = useInputContainerPortal();
   useScrollToTopButton(promptContainerPortal, inputWrapperPortal, ZP_TO_TOP_BUTTON_ID);
-  const { openModal, closeModal } = useModalContext();
+  const { modalContent } = useModalContext();
 
   const url = new URL(window.location.href);
   const { searchParams } = url;
   const code = searchParams.get('code');
 
-  const params = {
-    code,
-    redirect: CHAT_GPT_URL,
-  };
+  // 로그인, 회원가입
+  useCheckAuth(code, CHAT_GPT_URL);
 
-  useQuery({
-    queryKey: ['checkAuth'],
-    queryFn: () => checkAuth(params),
-    enabled: !!code,
-    onSuccess: (data) => {},
-  });
+  // 내 정보 얻어오기
+  useEffect(() => {
+    // if (localStorage.getItem('accessToken')) {
+    if (chrome.storage.sync.get('accessToken')) {
+      getMyInfo().then((userData) => setUserData(userData));
+    }
+  }, [setUserData]);
 
   return (
     <>
@@ -39,15 +57,7 @@ const App = () => {
         {promptContainerPortal && createPortal(<PromptContainer />, promptContainerPortal)}
         {inputWrapperPortal && createPortal(<InputWrapper />, inputWrapperPortal)}
       </div>
-      <Modal>
-        <div className="ZP_modal-content">123</div>
-        <div className="ZP_modal-button-wrapper">
-          <button type="button">확인</button>
-          <button type="button" onClick={closeModal}>
-            취소
-          </button>
-        </div>
-      </Modal>
+      <Modal>{modalContent}</Modal>
     </>
   );
 };

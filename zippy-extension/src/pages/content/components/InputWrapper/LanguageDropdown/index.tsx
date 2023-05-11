@@ -7,7 +7,7 @@ import { CHAT_GPT_URL, CHROME_LANGUAGE_KEY } from '@pages/constants';
 import useBrowserName from '@pages/hooks/@shared/useBrowserName';
 import BrowserIcon from '@pages/content/components/InputWrapper/LanguageDropdown/BrowserIcon';
 import SearchBar from '@pages/content/components/PromptContainer/SearchBar';
-import splitKorean from '@pages/content/utils/split-korean';
+import splitKorean from '@pages/content/utils/@shared/split-korean';
 
 const LanguageDropbox = () => {
   const { setIsExpand, isExpand } = useContext(DropdownContext);

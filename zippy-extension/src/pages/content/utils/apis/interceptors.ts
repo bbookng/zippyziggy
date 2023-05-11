@@ -1,24 +1,31 @@
-import axios, {
-  AxiosError,
-  AxiosHeaders,
-  AxiosInstance,
-  AxiosResponse,
-  InternalAxiosRequestConfig,
-} from 'axios';
+import axios, { AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 /* eslint-disable no-useless-concat */
-import { ZIPPY_API_URL } from '@pages/constants';
-import logOnDev from '@pages/content/utils/logging';
+import { CHROME_USERINFO_KEY, ZIPPY_API_URL } from '@pages/constants';
+import logOnDev from '@pages/content/utils/@shared/logging';
 import { api } from './axios-instance';
+
+const getAccessToken = () => {
+  return new Promise((resolve, reject) => {
+    chrome.storage.sync.get('accessToken', (result) => {
+      if (chrome.runtime.lastError) {
+        reject(chrome.runtime.lastError);
+      } else {
+        resolve(result.accessToken);
+      }
+    });
+  });
+};
 
 const tokenInterceptor = (instance: AxiosInstance) => {
   instance.interceptors.request.use(
-    (config) => {
+    async (config) => {
       const axiosConfig = config;
       // 토큰을 얻어오는 함수
-      const token = localStorage.getItem('accessToken');
-      axiosConfig.headers = new AxiosHeaders({
-        Authorization: token,
-      });
+      // const token = localStorage.getItem('accessToken');
+      const token = await getAccessToken();
+      if (token) {
+        axiosConfig.headers.Authorization = `Bearer ${token}`;
+      }
       return axiosConfig;
     },
     (error: AxiosError) => Promise.reject(error.response)
@@ -38,20 +45,28 @@ const tokenInterceptor = (instance: AxiosInstance) => {
       if (status === 401) {
         const originalRequest = config;
 
-        // 토큰 refresh 요청
-        const data = await axios.get(`${ZIPPY_API_URL}/users/refresh`);
+        try {
+          // 토큰 refresh 요청
+          const data = await axios.get(`${ZIPPY_API_URL}/users/refresh`);
 
-        // 요청 후 새롭게 받은 accToken을 저장
-        const {
-          data: {
-            data: { accessToken },
-          },
-        } = data;
+          // 요청 후 새롭게 받은 accToken을 저장
+          const {
+            data: {
+              data: { accessToken },
+            },
+          } = data;
 
-        localStorage.setItem('accessToken', accessToken);
-        originalRequest.headers.Authorization = accessToken;
-        return api(originalRequest);
+          localStorage.setItem('accessToken', accessToken);
+          originalRequest.headers.Authorization = accessToken;
+          return await api(originalRequest);
+        } catch (err) {
+          if (err.config.url === `${ZIPPY_API_URL}/users/refresh`) {
+            localStorage.removeItem('accessToken');
+            await chrome.storage.sync.remove(CHROME_USERINFO_KEY);
+          }
+        }
       }
+
       return Promise.reject(error);
     }
   );

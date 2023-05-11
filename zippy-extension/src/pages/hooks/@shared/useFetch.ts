@@ -6,7 +6,7 @@ import axios, {
   AxiosResponse,
   CancelTokenSource,
 } from 'axios';
-import { api, authApi } from '@pages/content/utils/axios-instance';
+import { api, authApi } from '@pages/content/utils/apis/axios-instance';
 
 type HttpMethod = 'get' | 'post' | 'put' | 'patch' | 'delete';
 
