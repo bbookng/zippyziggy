@@ -7,7 +7,7 @@ import java.util.Map;
 public interface AlarmRepository {
 
     SseEmitter save(String emitterId, SseEmitter sseEmitter);
-    Map<String, SseEmitter> findAllEmitterStartWithByMemberUuid(String memberUuid);
+    Map<String, SseEmitter> findAllEmitterByMemberUuid(String memberUuid);
 
     void deleteAllEmitterStartWithMemberUuid(String memberUuid);
 
@@ -17,7 +17,7 @@ public interface AlarmRepository {
     // 캐쉬 관련 인터페이스
     void saveEventCache(String eventCacheId, Object event);
 
-    Map<String, Object> findAllEventCacheStartWithByMemberUuid(String memberUuid);
+    Map<String, Object> findAllEventCacheByMemberUuid(String memberUuid);
 
     Map<String, SseEmitter> findAllEmitters();
 

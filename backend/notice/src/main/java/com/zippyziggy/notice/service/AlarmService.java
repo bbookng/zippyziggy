@@ -23,7 +23,7 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class AlarmService {
 
-    private static final Long DEFAULT_TIMEOUT = 60L * 1000 * 60;
+    private static final Long DEFAULT_TIMEOUT = 60L * 1000 * 10; // 10분으로 설정
     private final AlarmRepository alarmRepository;
     private final AlarmEntityRepository alarmEntityRepository;
 
@@ -36,7 +36,7 @@ public class AlarmService {
 
         log.info("사용자의 기존 emitter 제거 후 신규 emitter 추가");
 
-        if (alarmRepository.findAllEmitterStartWithByMemberUuid(memberUuid) != null) {
+        if (alarmRepository.findAllEmitterByMemberUuid(memberUuid) != null) {
             alarmRepository.deleteAllEmitterStartWithMemberUuid(memberUuid);
             emitter = alarmRepository.save(emitterId, new SseEmitter(DEFAULT_TIMEOUT));
         } else {
@@ -45,7 +45,7 @@ public class AlarmService {
 
         log.info("emitter 추가 완료");
 
-        // 비동기 완료
+        // 클라이언트가 SSE연결을 끊게 된다면 자원 낭비를 막기 위해 연결을 끊어준다.
         emitter.onCompletion(() -> alarmRepository.deleteByEmitterId(emitterId));
         // 시간 초과
         emitter.onTimeout(() -> alarmRepository.deleteByEmitterId(emitterId));
@@ -53,11 +53,12 @@ public class AlarmService {
         emitter.onError((e) -> alarmRepository.deleteByEmitterId(emitterId));
         log.info("정상 작동 중...");
 
-        // 503 에러를 방지하기 위한 더미 이벤트 발송
+        // 503 에러를 방지하기 위한 더미 이벤트 발송, 반드시 필요
         sendNotification(emitter, emitterId, "EventStream Created. [memberUuid = " + memberUuid + "]");
 
-        // 유실 데이터가 존재하는 경우
+        // 유실 데이터가 존재하는 경우(??)
         if (hasLostData(lastEventId)) {
+            // 더미 데이터 한번 더 전송??? 위에 이미 보냈는데.. 한번 더 보내는 건가...
             sendLostData(lastEventId, memberUuid, emitterId, emitter);
         }
 
@@ -93,13 +94,15 @@ public class AlarmService {
         return !lastEventId.isEmpty();
     }
 
+    // 유실은 언제되는가?
+    // lastEventId는 언제 보내는가?
     // 유실된 데이터 다시 전송
     private void sendLostData(String lastEventId, String memberUuid, String emitterId, SseEmitter emitter) {
         log.info("유실된 데이터 존재");
         log.info("유실 데이터 재전송 중...");
-        Map<String, Object> eventCaches = alarmRepository.findAllEventCacheStartWithByMemberUuid(memberUuid);
+        Map<String, Object> eventCaches = alarmRepository.findAllEventCacheByMemberUuid(memberUuid);
         eventCaches.entrySet().stream()
-                .filter(entry -> lastEventId.compareTo(entry.getKey()) < 0)
+                .filter(entry -> lastEventId.compareTo(entry.getKey()) < 0) // 대상 문자열 보다 작은, 같은, 클 경우 -1, 0, 1을 반환
                 .forEach(entry -> sendNotification(emitter, emitterId, entry.getValue()));
 
     }
@@ -110,7 +113,7 @@ public class AlarmService {
         Alarm notification = createNotification(receiver, content, urlValue);
 
         // 로그인한 유저의 SseEmitter 모두 가져오기
-        Map<String, SseEmitter> sseEmitters = alarmRepository.findAllEmitterStartWithByMemberUuid(receiver);
+        Map<String, SseEmitter> sseEmitters = alarmRepository.findAllEmitterByMemberUuid(receiver);
 
         AlarmEntity alarmEntity = AlarmEntity.builder()
                 .content(content)
@@ -119,6 +122,8 @@ public class AlarmService {
                 .memberUuid(receiver).build();
         alarmEntityRepository.save(alarmEntity);
 
+        // 왜 for문을 도는걸까? sseEmitter는 로그인 시 유저당 하나씩 가지지 않을까 생각함.
+        // 만약 로그아웃된 사용자라면 위 로직에서 알람 저장만 하고 끝난다.
         sseEmitters.forEach(
                 (key, emitter) -> {
                     //데이터 캐시 저장(유실된 데이터 처리하기 위함
@@ -129,7 +134,6 @@ public class AlarmService {
                     // 데이터 전송
                     sendToClient(emitter, key, notification);
 
-
                 }
         );
 
@@ -137,6 +141,7 @@ public class AlarmService {
 
     // 알림 생성
     private Alarm createNotification(String receiver, String content, String urlValue) {
+        // 초기 알람은 읽지 않은 상태이므로 false를 가리킨다.
         return Alarm.builder()
                 .content(content)
                 .receiver(receiver)
@@ -158,25 +163,28 @@ public class AlarmService {
             log.info("알림 전송하고 emitters = " + alarmRepository.findAllEmitters());
 
         } catch (Exception exception) {
+            // 에러 발생 시 emitter 지움
             alarmRepository.deleteByEmitterId(emitterId);
+            // 이 친구는 뭐지?
             emitter.completeWithError(exception);
         }
     }
 
 
-    @Transactional
     // alarmId로 알림 삭제
+    @Transactional
     public void deleteAlarmById(Long alarmId) {
         alarmEntityRepository.deleteById(alarmId);
     }
 
-    @Transactional
     // 해당 유저의 알림 모두 삭제
+    @Transactional
     public void deleteAlarmByMemberUuid(String memberUuid) {
         alarmEntityRepository.deleteAllByMemberUuid(memberUuid);
     }
 
     // 해당 알람 읽기
+    @Transactional
     public void readAlarmById(Long alarmId) {
         Optional<AlarmEntity> alarm = alarmEntityRepository.findById(alarmId);
         AlarmEntity alarmEntity = alarm.get();
@@ -196,6 +204,7 @@ public class AlarmService {
         return alarmEntityRepository.countByMemberUuidAndIsReadFalse(memberUuid);
     }
 
+    // 모두 읽음 처리 진행하기
     @Transactional
     public void readAlarmAllByMemberUuid(String memberUuid) {
         List<AlarmEntity> alarms = alarmEntityRepository.findAllByMemberUuidAndIsReadFalse(memberUuid);

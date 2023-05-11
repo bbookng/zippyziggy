@@ -26,7 +26,7 @@ public class AlarmRepositoryImpl implements AlarmRepository{
     }
 
     @Override
-    public Map<String, SseEmitter> findAllEmitterStartWithByMemberUuid(String memberUuid) {
+    public Map<String, SseEmitter> findAllEmitterByMemberUuid(String memberUuid) {
 
         return emitters.entrySet().stream()
                 .filter(entry -> entry.getKey().split("_")[0].equals(memberUuid))
@@ -54,9 +54,9 @@ public class AlarmRepositoryImpl implements AlarmRepository{
     }
 
     @Override
-    public Map<String, Object> findAllEventCacheStartWithByMemberUuid(String memberUuid) {
+    public Map<String, Object> findAllEventCacheByMemberUuid(String memberUuid) {
         return eventCache.entrySet().stream()
-                .filter(entry -> entry.getKey().startsWith(memberUuid))
+                .filter(entry -> entry.getKey().split("_")[0].equals(memberUuid))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 

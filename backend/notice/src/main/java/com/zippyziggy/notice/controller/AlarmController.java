@@ -38,8 +38,16 @@ public class AlarmController {
 	public ResponseEntity<SseEmitter> subscribe(@PathVariable String memberUuid,
 												@RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId,
 												HttpServletResponse response) {
+
+		// HTTP1.1에서는 keep-alive가 기본 속성이지만 HTTP1.0같은 경우는 명시해줘야해서 헤더에 기입
 		response.setHeader("Connection", "keep-alive");
+
+		// 클라이언트에서 이전에 전송된 이벤트를 캐쉬해버리면 실시간 성이 떨어지거나, 이전 이벤트를 놓칠 수 있어서 no-cache로 설정한다.
 		response.setHeader("Cache-Control", "no-cache");
+
+		// Nignx에서 서버의 응답을 버퍼에 저장해두었다가, 버퍼가 차거나 서버가 응답데이터를 모두 보내면 전송하게 된다
+		// 그렇게 되면 SSE 통신이 원하는대로 동작하지 않거나 실시간 성이 떨어진다.
+		// 그래서 버퍼링을 하지 않도록 아래와 같이 헤더에 추가해준다.
 		response.setHeader("X-Accel-Buffering", "no");
 
 		return ResponseEntity.ok(alarmService.subscribe(memberUuid, lastEventId));
@@ -119,6 +127,7 @@ public class AlarmController {
 	}
 
 
+	// 단순 테스트용 사용하지 않는다.
 	@GetMapping("/emitters")
 	@Operation(hidden = true)
 	public ResponseEntity<?> test() {
@@ -129,7 +138,7 @@ public class AlarmController {
 	}
 
 
-	// method for dispatching events to all clients
+	// 단순 테스트용 사용하지 않는다. 알람을 보내는 경우를 설정함
 	@PostMapping(value = "/dispatchEvent")
 	@Operation(hidden = true)
 	public ResponseEntity<?> dispatchEventsToClients(@RequestBody NotificationRequest notificationRequest) {
