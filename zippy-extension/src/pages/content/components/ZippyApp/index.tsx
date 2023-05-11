@@ -80,7 +80,34 @@ if (currentUrl.startsWith(ZIPPY_SITE_URL)) {
     for (const mutation of mutations) {
       for (const node of [...mutation.addedNodes]) {
         const $targetElement = node as HTMLElement;
-        console.log($targetElement);
+        if (typeof $targetElement.className === 'object') return;
+        if ($targetElement.className.startsWith('Detailstyle__LeftContainer')) {
+          const $promptPlayDesktop = document.querySelector('#promptPlayDesktop') as HTMLElement;
+          const $promptPlayMobile = document.querySelector('#promptPlayMobile');
+          const { uuid } = $promptPlayDesktop.dataset;
+          const title = document.querySelector('.title').textContent;
+          const $ComponentStyleSubContainer = document.querySelectorAll(
+            '[class^=ComponentStyle__SubContainer]'
+          );
+          const $colorBox = $ComponentStyleSubContainer[2].querySelector('.colorBox');
+          const prefix = $colorBox.querySelector('div:first-of-type').textContent;
+          const example = $colorBox.querySelector('div.example').textContent;
+          const suffix = $colorBox.querySelector('div:last-of-type').textContent;
+
+          $promptPlayDesktop.addEventListener('click', () => {
+            chrome.runtime.sendMessage({
+              type: MK_DATA_FROM_PROMPT_CARD_PLAY,
+              data: { title, prefix, example, suffix, uuid },
+            });
+          });
+
+          $promptPlayMobile.addEventListener('click', () => {
+            chrome.runtime.sendMessage({
+              type: MK_DATA_FROM_PROMPT_CARD_PLAY,
+              data: { title, prefix, example, suffix, uuid },
+            });
+          });
+        }
         if ($targetElement.className.startsWith('CardStyle__Conatiner')) {
           const promptUuid = $targetElement.dataset.uuid;
           const $playButton = $targetElement.querySelector('#promptCardPlay');
