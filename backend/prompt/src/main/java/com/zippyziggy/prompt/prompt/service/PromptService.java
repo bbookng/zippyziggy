@@ -11,15 +11,7 @@ import com.zippyziggy.prompt.prompt.dto.request.PromptModifyRequest;
 import com.zippyziggy.prompt.prompt.dto.request.PromptRatingRequest;
 import com.zippyziggy.prompt.prompt.dto.request.PromptReportRequest;
 import com.zippyziggy.prompt.prompt.dto.request.PromptRequest;
-import com.zippyziggy.prompt.prompt.dto.response.ChatGptResponse;
-import com.zippyziggy.prompt.prompt.dto.response.GptApiResponse;
-import com.zippyziggy.prompt.prompt.dto.response.MemberResponse;
-import com.zippyziggy.prompt.prompt.dto.response.PromptCardListResponse;
-import com.zippyziggy.prompt.prompt.dto.response.PromptCardResponse;
-import com.zippyziggy.prompt.prompt.dto.response.PromptDetailResponse;
-import com.zippyziggy.prompt.prompt.dto.response.PromptReportResponse;
-import com.zippyziggy.prompt.prompt.dto.response.PromptResponse;
-import com.zippyziggy.prompt.prompt.dto.response.SearchPromptResponse;
+import com.zippyziggy.prompt.prompt.dto.response.*;
 import com.zippyziggy.prompt.prompt.exception.AwsUploadException;
 import com.zippyziggy.prompt.prompt.exception.ForbiddenMemberException;
 import com.zippyziggy.prompt.prompt.exception.PromptNotFoundException;
@@ -39,6 +31,7 @@ import com.zippyziggy.prompt.prompt.repository.PromptLikeRepository;
 import com.zippyziggy.prompt.prompt.repository.PromptReportRepository;
 import com.zippyziggy.prompt.prompt.repository.PromptRepository;
 import com.zippyziggy.prompt.prompt.repository.RatingRepository;
+import com.zippyziggy.prompt.prompt.util.RedisUtils;
 import com.zippyziggy.prompt.talk.dto.response.PromptTalkListResponse;
 import com.zippyziggy.prompt.talk.dto.response.TalkListResponse;
 import com.zippyziggy.prompt.talk.repository.TalkRepository;
@@ -61,6 +54,7 @@ import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -90,6 +84,9 @@ public class PromptService{
 	private final KafkaProducer kafkaProducer;
 	private final PromptClickRepository promptClickRepository;
 	private final ChatgptService chatgptService;
+
+	private final RedisUtils redisUtils;
+	private final RedisTemplate redisTemplate;
 
 	@Qualifier("openaiRestTemplate")
 	@Autowired
@@ -253,6 +250,20 @@ public class PromptService{
 			// 프롬프트 조회 시 최근 조회 테이블에 추가
 			PromptClick promptClick = PromptClick.from(prompt, UUID.fromString(crntMemberUuid));
 			promptClickRepository.save(promptClick);
+
+			// 레디스 저장 로직
+			long commentCnt = promptCommentRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
+			long forkCnt = promptRepository.countAllByOriginPromptUuidAndStatusCode(prompt.getPromptUuid(), StatusCode.OPEN);
+			long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
+
+			PromptCardResponse promptCardResponse = PromptCardResponse.from(writerInfo, prompt, commentCnt, forkCnt, talkCnt, isBookmarked, isLiked);
+
+			String key = "RecentPrompt" + crntMemberUuid;
+
+			// sorted set으로 저장
+			redisTemplate.opsForZSet().add(key, promptCardResponse, System.nanoTime());
+			redisTemplate.opsForZSet().removeRange(key, 0, -6);
+			redisUtils.setExpireTime(key, 60 * 60 * 24 * 7);
 		}
 
 		return promptDetailResponse;
@@ -506,40 +517,57 @@ public class PromptService{
 	/*
     최근 조회한 프롬프트 5개 조회
      */
-	public List<PromptCardResponse> recentPrompts(String crntMemberUuid) {
+	public RecentPromptCardListResponse recentPrompts(String crntMemberUuid) {
 		if (crntMemberUuid.equals("defaultValue")) {
 			return null;
 		} else {
-			CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 
-			List<PromptClick> promptClicks = promptClickRepository
-				.findTop5DistinctByMemberUuidAndPrompt_StatusCodeOrderByRegDtDesc(UUID.fromString(crntMemberUuid), StatusCode.OPEN);
+			String key = "RecentPrompt" + crntMemberUuid;
 
-			// 해당 프롬프트 내용 가져오기
-			List<Prompt> prompts = new ArrayList<>();
-			for (PromptClick promptClick: promptClicks) {
-				prompts.add(promptClick.getPrompt());
+			if (redisUtils.isExists(key)) {
+				log.info("redis 최근 프롬프트 조회");
+				RecentPromptCardListResponse recentPromptCardListResponse = redisUtils.get(key, RecentPromptCardListResponse.class);
+				log.info("최근 목록 조회 = " + recentPromptCardListResponse);
+				return recentPromptCardListResponse;
+
+			} else {
+				log.info("DB 최근 프롬프트 조회");
+				CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
+
+				List<PromptClick> promptClicks = promptClickRepository
+						.findTop5DistinctByMemberUuidAndPrompt_StatusCodeOrderByRegDtDesc(UUID.fromString(crntMemberUuid), StatusCode.OPEN);
+
+				// 해당 프롬프트 내용 가져오기
+				List<Prompt> prompts = new ArrayList<>();
+				for (PromptClick promptClick: promptClicks) {
+					prompts.add(promptClick.getPrompt());
+				}
+
+				List<PromptCardResponse> promptCardResponses = new ArrayList<>();
+
+				// PromptCardResponse Dto로 변환
+				for (Prompt prompt : prompts) {
+					long commentCnt = promptCommentRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
+					long forkCnt = promptRepository.countAllByOriginPromptUuidAndStatusCode(prompt.getPromptUuid(), StatusCode.OPEN);
+					long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
+
+					MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid()));
+
+					boolean isBookmarded = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
+							? true : false;
+					boolean isLiked = promptLikeRepository.findByPromptAndMemberUuid(prompt, UUID.fromString(crntMemberUuid)) != null
+							? true : false;
+
+					PromptCardResponse promptCardResponse = PromptCardResponse.from(writerInfo, prompt, commentCnt, forkCnt, talkCnt, isBookmarded, isLiked);
+					promptCardResponses.add(promptCardResponse);
+				}
+
+				RecentPromptCardListResponse recentPromptCardListResponse = RecentPromptCardListResponse.builder()
+						.promptCardResponseList(promptCardResponses).build();
+				log.info("최근 목록 조회 = " + recentPromptCardListResponse);
+				return recentPromptCardListResponse;
 			}
 
-			List<PromptCardResponse> promptCardResponses = new ArrayList<>();
-
-			// PromptCardResponse Dto로 변환
-			for (Prompt prompt : prompts) {
-				long commentCnt = promptCommentRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
-				long forkCnt = promptRepository.countAllByOriginPromptUuidAndStatusCode(prompt.getPromptUuid(), StatusCode.OPEN);
-				long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
-
-				MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid()));
-
-				boolean isBookmarded = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
-					? true : false;
-				boolean isLiked = promptLikeRepository.findByPromptAndMemberUuid(prompt, UUID.fromString(crntMemberUuid)) != null
-					? true : false;
-
-				PromptCardResponse promptCardResponse = PromptCardResponse.from(writerInfo, prompt, commentCnt, forkCnt, talkCnt, isBookmarded, isLiked);
-				promptCardResponses.add(promptCardResponse);
-			}
-			return promptCardResponses;
 		}
 	}
 
