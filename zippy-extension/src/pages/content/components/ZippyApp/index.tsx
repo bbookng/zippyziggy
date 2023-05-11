@@ -9,7 +9,7 @@ import {
 } from '@pages/constants';
 import { createRoot } from 'react-dom/client';
 import ContentScript from '@pages/content/components/ZippyApp/ZippyApp';
-import { api } from '@pages/content/utils/apis/axios-instance';
+import { getPromptDetail } from '@pages/content/apis/prompt';
 
 refreshOnUpdate('pages/content');
 
@@ -43,9 +43,7 @@ if (currentUrl.startsWith(CHAT_GPT_URL)) {
   injectScript();
 
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message.type === 'signOut') {
-      console.log(message);
-    }
+    console.log(message, sender, sendResponse);
   });
 }
 
@@ -70,10 +68,14 @@ if (currentUrl.startsWith(ZIPPY_SITE_URL)) {
       for (const node of [...mutation.addedNodes]) {
         const $targetElement = node as HTMLElement;
         if ($targetElement.className.startsWith('CardStyle__Conatiner')) {
-          const promptUuid = $targetElement.querySelector('a').href.split('/').at(-1);
+          const promptUuid = $targetElement.dataset.uuid;
           const $playButton = $targetElement.querySelector('#promptCardPlay');
-          $playButton.addEventListener('click', () => {
-            api.get(`/prompts/${promptUuid}`).then((data) => {});
+          $playButton.addEventListener('click', async () => {
+            const { title, prefix, example, suffix } = await getPromptDetail(promptUuid);
+            await chrome.runtime.sendMessage({
+              type: 'promptCardPlay',
+              data: { title, prefix, example, suffix },
+            });
           });
         }
       }

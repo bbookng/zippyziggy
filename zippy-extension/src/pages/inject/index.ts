@@ -85,6 +85,7 @@ window.addEventListener("message", function(event) {
       const {data : {prompt}} = data;
       ZIPPY.selectedPrompt = sanitizeInput(prompt);
       break;
+
     default:
       break;
   }

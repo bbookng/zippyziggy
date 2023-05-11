@@ -1,4 +1,5 @@
 chrome.runtime.sendMessage({ type: 'contentScriptReady' });
+
 console.log('content loaded');
 /**
  * @description
