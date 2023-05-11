@@ -209,7 +209,7 @@ export default function DetailPrompt() {
                   alt="프롬프트 이미지"
                   width={100}
                   height={100}
-                  className={`promptImage ${isImageFull ? 'heightFull' : ''}`}
+                  className={`promptImage ${isImageFull ? '' : 'heightFull'}`}
                 />
 
                 <FiMaximize
