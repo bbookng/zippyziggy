@@ -1,6 +1,9 @@
 package com.zippyziggy.member;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zippyziggy.member.dto.response.MemberInformResponseDto;
+import com.zippyziggy.member.model.JwtToken;
 import com.zippyziggy.member.util.RedisUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +16,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
@@ -25,6 +29,9 @@ class MemberApplicationTests {
 
 	@Autowired
 	private RedisTemplate<String, String> redisTemplate;
+
+	@Autowired
+	private ObjectMapper objectMapper;
 
 	@Test
 	void contextLoads() {
@@ -56,19 +63,29 @@ class MemberApplicationTests {
 	}
 
 	@Test
-	public void redisTest() {
-		redisTemplate.opsForZSet().add("test", "value1", System.nanoTime());
-		redisTemplate.opsForZSet().add("test", "value2", System.nanoTime());
-		redisTemplate.opsForZSet().add("test", "value3", System.nanoTime());
-		redisTemplate.opsForZSet().add("test", "value4", System.nanoTime());
-		redisTemplate.opsForZSet().add("test", "value5", System.nanoTime());
-		redisTemplate.opsForZSet().add("test", "value6", System.nanoTime());
+	public void redisTest() throws JsonProcessingException {
+		JwtToken jwtToken = JwtToken.builder().accessToken("1234").refreshToken("5678").build();
+		JwtToken jwtToken1 = JwtToken.builder().accessToken("dasf").refreshToken("zcx").build();
+		String value1 = objectMapper.writeValueAsString(jwtToken);
+		String value2 = objectMapper.writeValueAsString(jwtToken1);
+		redisTemplate.opsForZSet().add("test2", value1, System.nanoTime());
+		redisTemplate.opsForZSet().add("test2", value2, System.nanoTime());
 
-		redisTemplate.opsForZSet().removeRange("test", 0, -6);
+
+		redisTemplate.opsForZSet().removeRange("test2", 0, -6);
 
 		ZSetOperations<String, String> zSetOperations = redisTemplate.opsForZSet().getOperations().opsForZSet();
 		System.out.println("zSetOperations = " + zSetOperations);
-		Set<ZSetOperations.TypedTuple<String>> set = redisTemplate.opsForZSet().rangeWithScores("test", 0, -1);
+		Set<ZSetOperations.TypedTuple<String>> set = redisTemplate.opsForZSet().rangeWithScores("test2", 0, -1);
+
+		for (ZSetOperations.TypedTuple<String> tuple : set) {
+			String value = tuple.getValue();
+			double score = tuple.getScore();
+			System.out.println("Value: " + value + ", Score: " + score);
+			JwtToken jwtToken2 = objectMapper.readValue(value, JwtToken.class);
+			System.out.println("jwtToken2 = " + jwtToken2);
+		}
+
 		System.out.println("set = " + set);
 
 	}
