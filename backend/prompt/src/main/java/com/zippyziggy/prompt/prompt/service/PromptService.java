@@ -169,6 +169,7 @@ public class PromptService{
 		Long promptId = prompt.getId();
 
 		Cookie[] cookies = request.getCookies();
+		log.info("cookie -> : " + cookies);
 		boolean checkCookie = false;
 		int result = 0;
 		if(cookies != null){
