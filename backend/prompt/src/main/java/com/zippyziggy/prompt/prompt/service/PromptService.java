@@ -6,6 +6,7 @@ import com.zippyziggy.prompt.common.aws.AwsS3Uploader;
 import com.zippyziggy.prompt.common.kafka.KafkaProducer;
 import com.zippyziggy.prompt.prompt.client.MemberClient;
 import com.zippyziggy.prompt.prompt.dto.request.AppChatGptRequest;
+import com.zippyziggy.prompt.prompt.dto.request.ChatGptMessage;
 import com.zippyziggy.prompt.prompt.dto.request.ChatGptRequest;
 import com.zippyziggy.prompt.prompt.dto.request.GptApiRequest;
 import com.zippyziggy.prompt.prompt.dto.request.PromptCntRequest;
@@ -13,7 +14,16 @@ import com.zippyziggy.prompt.prompt.dto.request.PromptModifyRequest;
 import com.zippyziggy.prompt.prompt.dto.request.PromptRatingRequest;
 import com.zippyziggy.prompt.prompt.dto.request.PromptReportRequest;
 import com.zippyziggy.prompt.prompt.dto.request.PromptRequest;
-import com.zippyziggy.prompt.prompt.dto.response.*;
+import com.zippyziggy.prompt.prompt.dto.response.ChatGptResponse;
+import com.zippyziggy.prompt.prompt.dto.response.GptApiResponse;
+import com.zippyziggy.prompt.prompt.dto.response.MemberResponse;
+import com.zippyziggy.prompt.prompt.dto.response.PromptCardListResponse;
+import com.zippyziggy.prompt.prompt.dto.response.PromptCardResponse;
+import com.zippyziggy.prompt.prompt.dto.response.PromptDetailResponse;
+import com.zippyziggy.prompt.prompt.dto.response.PromptReportResponse;
+import com.zippyziggy.prompt.prompt.dto.response.PromptResponse;
+import com.zippyziggy.prompt.prompt.dto.response.RecentPromptCardListResponse;
+import com.zippyziggy.prompt.prompt.dto.response.SearchPromptResponse;
 import com.zippyziggy.prompt.prompt.exception.AwsUploadException;
 import com.zippyziggy.prompt.prompt.exception.ForbiddenMemberException;
 import com.zippyziggy.prompt.prompt.exception.PromptNotFoundException;
@@ -38,7 +48,6 @@ import com.zippyziggy.prompt.talk.dto.response.PromptTalkListResponse;
 import com.zippyziggy.prompt.talk.dto.response.TalkListResponse;
 import com.zippyziggy.prompt.talk.repository.TalkRepository;
 import com.zippyziggy.prompt.talk.service.TalkService;
-import io.github.flashvayne.chatgpt.service.ChatgptService;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -87,7 +96,6 @@ public class PromptService{
 	private final PromptReportRepository promptReportRepository;
 	private final KafkaProducer kafkaProducer;
 	private final PromptClickRepository promptClickRepository;
-	private final ChatgptService chatgptService;
 
 	private final RedisUtils redisUtils;
 	private final RedisTemplate redisTemplate;
@@ -638,19 +646,34 @@ public class PromptService{
 		String example = data.getExample();
 		String suffix = data.getSuffix();
 
-		String apiResult = "";
+		String content = "";
 
 		if (prefix != null) {
-			apiResult += prefix;
+			content += prefix;
 		}
 		if (example != null) {
-			apiResult += example;
+			content += example;
 		}
 		if (suffix != null) {
-			apiResult += suffix;
+			content += suffix;
 		}
 
-		return GptApiResponse.from(chatgptService.sendMessage(apiResult));
+		// create a request
+		List<ChatGptMessage> chatGptMessages = new ArrayList<>();
+		ChatGptMessage chatGptMessage = new ChatGptMessage("user", content);
+		chatGptMessages.add(chatGptMessage);
+		ChatGptRequest request = new ChatGptRequest(MODEL, chatGptMessages);
+
+		// call the API
+		ChatGptResponse response = restTemplate.postForObject(URL, request, ChatGptResponse.class);
+
+		if (response == null || response.getChoices() == null || response.getChoices().isEmpty()) {
+			return new GptApiResponse("No response");
+		}
+
+		// return the first response
+		final String answer = response.getChoices().get(0).getMessage().getContent();
+		return new GptApiResponse(answer);
     }
 
     public GptApiResponse getChatGptAnswer(AppChatGptRequest data) {
