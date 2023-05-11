@@ -113,13 +113,14 @@ public class MemberController {
      * 일일 방문자수 조회
      */
     @Operation(summary = "일일 방문자수 조회", description = "일일 방문자수를 조회해서 보여준다. 단 yyyy-mm-dd 형식으로 dateTime을 pathvariable로 넣어줘야한다. 1분마다 DB에 저장하는 스케쥴 기능 포함")
-    @GetMapping("/daily/visited/{dateTime}")
+    @GetMapping("/daily/visited")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
-    public ResponseEntity<?> dailyVisitedCount(@PathVariable String dateTime) {
+    public ResponseEntity<?> dailyVisitedCount() {
+        String dateTime = visitedMemberCountService.DateTimeDaily();
         if (redisUtils.isExists(dateTime)) {
             long dailyCount = redisUtils.getBitCount(dateTime);
             return ResponseEntity.ok(DailyVisitedCount.builder()
