@@ -15,11 +15,11 @@ const Container = styled.div`
 const LeftContainer = styled.div`
   display: flex;
   flex-direction: column;
-  max-width: 768px;
   width: 70%;
 
   ${media.small`
     width: 100%;
+    max-width: 768px;
   `}
 
   .promptImageContainer {
