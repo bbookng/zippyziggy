@@ -1,6 +1,5 @@
 package com.zippyziggy.prompt.prompt.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zippyziggy.prompt.common.aws.AwsS3Uploader;
 import com.zippyziggy.prompt.common.kafka.KafkaProducer;
@@ -22,27 +21,14 @@ import com.zippyziggy.prompt.prompt.dto.response.PromptCardResponse;
 import com.zippyziggy.prompt.prompt.dto.response.PromptDetailResponse;
 import com.zippyziggy.prompt.prompt.dto.response.PromptReportResponse;
 import com.zippyziggy.prompt.prompt.dto.response.PromptResponse;
-import com.zippyziggy.prompt.prompt.dto.response.RecentPromptCardListResponse;
 import com.zippyziggy.prompt.prompt.dto.response.SearchPromptResponse;
 import com.zippyziggy.prompt.prompt.exception.AwsUploadException;
 import com.zippyziggy.prompt.prompt.exception.ForbiddenMemberException;
 import com.zippyziggy.prompt.prompt.exception.PromptNotFoundException;
 import com.zippyziggy.prompt.prompt.exception.RatingAlreadyExistException;
 import com.zippyziggy.prompt.prompt.exception.ReportAlreadyExistException;
-import com.zippyziggy.prompt.prompt.model.Prompt;
-import com.zippyziggy.prompt.prompt.model.PromptBookmark;
-import com.zippyziggy.prompt.prompt.model.PromptClick;
-import com.zippyziggy.prompt.prompt.model.PromptLike;
-import com.zippyziggy.prompt.prompt.model.PromptReport;
-import com.zippyziggy.prompt.prompt.model.Rating;
-import com.zippyziggy.prompt.prompt.model.StatusCode;
-import com.zippyziggy.prompt.prompt.repository.PromptBookmarkRepository;
-import com.zippyziggy.prompt.prompt.repository.PromptClickRepository;
-import com.zippyziggy.prompt.prompt.repository.PromptCommentRepository;
-import com.zippyziggy.prompt.prompt.repository.PromptLikeRepository;
-import com.zippyziggy.prompt.prompt.repository.PromptReportRepository;
-import com.zippyziggy.prompt.prompt.repository.PromptRepository;
-import com.zippyziggy.prompt.prompt.repository.RatingRepository;
+import com.zippyziggy.prompt.prompt.model.*;
+import com.zippyziggy.prompt.prompt.repository.*;
 import com.zippyziggy.prompt.prompt.util.RedisUtils;
 import com.zippyziggy.prompt.talk.dto.response.PromptTalkListResponse;
 import com.zippyziggy.prompt.talk.dto.response.TalkListResponse;
@@ -94,8 +80,9 @@ public class PromptService{
 	private final TalkRepository talkRepository;
 	private final RatingRepository ratingRepository;
 	private final PromptReportRepository promptReportRepository;
-	private final KafkaProducer kafkaProducer;
 	private final PromptClickRepository promptClickRepository;
+
+	private final KafkaProducer kafkaProducer;
 
 	private final RedisUtils redisUtils;
 	private final RedisTemplate redisTemplate;
@@ -261,9 +248,6 @@ public class PromptService{
 		}
 
 		if (!crntMemberUuid.equals("defaultValue")) {
-			// 프롬프트 조회 시 최근 조회 테이블에 추가
-//			PromptClick promptClick = PromptClick.from(prompt, UUID.fromString(crntMemberUuid));
-//			promptClickRepository.save(promptClick);
 
 			// 레디스 저장 로직
 			long commentCnt = promptCommentRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
@@ -283,6 +267,14 @@ public class PromptService{
 			redisTemplate.opsForZSet().add(key, data, System.nanoTime());
 			redisTemplate.opsForZSet().removeRange(key, 0, -6);
 			redisUtils.setExpireTime(key, 60 * 60 * 24 * 7);
+
+			PromptClick promptClick = PromptClick.builder()
+					.prompt(prompt)
+					.memberUuid(UUID.fromString(crntMemberUuid))
+					.regDt(LocalDateTime.now())
+					.build();
+
+			promptClickRepository.save(promptClick);
 		}
 
 		return promptDetailResponse;
@@ -462,6 +454,7 @@ public class PromptService{
 		return PromptCardListResponse.from(totalPromptsCnt, totalPageCnt, promptCardResponses);
 	}
 
+
 	/*
     프롬프트 평가
      */
@@ -566,44 +559,6 @@ public class PromptService{
 				log.info("최근 조회한 프롬프트가 존재하지 않음");
 				return null;
 			}
-//			} else {
-//				log.info("DB 최근 프롬프트 조회");
-//				CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
-//
-//				List<PromptClick> promptClicks = promptClickRepository
-//						.findTop5DistinctByMemberUuidAndPrompt_StatusCodeOrderByRegDtDesc(UUID.fromString(crntMemberUuid), StatusCode.OPEN);
-//
-//				// 해당 프롬프트 내용 가져오기
-//				List<Prompt> prompts = new ArrayList<>();
-//				for (PromptClick promptClick: promptClicks) {
-//					prompts.add(promptClick.getPrompt());
-//				}
-//
-//				List<PromptCardResponse> promptCardResponses = new ArrayList<>();
-//
-//				// PromptCardResponse Dto로 변환
-//				for (Prompt prompt : prompts) {
-//					long commentCnt = promptCommentRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
-//					long forkCnt = promptRepository.countAllByOriginPromptUuidAndStatusCode(prompt.getPromptUuid(), StatusCode.OPEN);
-//					long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
-//
-//					MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid()));
-//
-//					boolean isBookmarded = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
-//							? true : false;
-//					boolean isLiked = promptLikeRepository.findByPromptAndMemberUuid(prompt, UUID.fromString(crntMemberUuid)) != null
-//							? true : false;
-//
-//					PromptCardResponse promptCardResponse = PromptCardResponse.from(writerInfo, prompt, commentCnt, forkCnt, talkCnt, isBookmarded, isLiked);
-//					promptCardResponses.add(promptCardResponse);
-//				}
-//
-//				RecentPromptCardListResponse recentPromptCardListResponse = RecentPromptCardListResponse.builder()
-//						.promptCardResponseList(promptCardResponses).build();
-//				log.info("최근 목록 조회 = " + recentPromptCardListResponse);
-//				return recentPromptCardListResponse;
-//			}
-
 		}
 	}
 
