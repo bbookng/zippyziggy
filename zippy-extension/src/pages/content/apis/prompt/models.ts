@@ -34,4 +34,5 @@ export interface PromptDetailResult {
   prefix: string | null;
   example: string;
   suffix: string | null;
+  uuid: string;
 }

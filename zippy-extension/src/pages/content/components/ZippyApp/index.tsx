@@ -2,20 +2,25 @@ import refreshOnUpdate from 'virtual:reload-on-update-in-view';
 import injectScript from '@pages/content/utils/extension/inject-script';
 import {
   CHAT_GPT_URL,
+  MK_DATA_FROM_PROMPT_CARD_PLAY,
+  MK_REQUEST_DATA,
+  MK_SIGN_OUT,
   ZIPPY_SITE_URL,
   ZP_BACKDROP_ID,
   ZP_OVERLAY_ID,
+  ZP_PROMPT_CONTAINER_ID,
   ZP_ROOT_ID,
 } from '@pages/constants';
 import { createRoot } from 'react-dom/client';
 import ContentScript from '@pages/content/components/ZippyApp/ZippyApp';
 import { getPromptDetail } from '@pages/content/apis/prompt';
+import intervalForFindElement from '@pages/content/utils/extension/intervalForFindElement';
 
 refreshOnUpdate('pages/content');
 
 const currentUrl = window.location.href;
 
-const addRoot = () => {
+const addRoot = async () => {
   // 리액트의 root 심기
   const root = document.createElement('div');
   root.id = ZP_ROOT_ID;
@@ -35,15 +40,26 @@ const addRoot = () => {
 };
 
 if (currentUrl.startsWith(CHAT_GPT_URL)) {
-  addRoot();
-}
-
-if (currentUrl.startsWith(CHAT_GPT_URL)) {
   // ChatGPT 사이트에서 실행할 로직
   injectScript();
-
-  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    console.log(message, sender, sendResponse);
+  addRoot().then(() => {
+    chrome.runtime.sendMessage({ type: MK_REQUEST_DATA });
+    chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+      switch (msg.type) {
+        case MK_DATA_FROM_PROMPT_CARD_PLAY: {
+          const message = {
+            type: MK_DATA_FROM_PROMPT_CARD_PLAY,
+            data: msg.data,
+          };
+          intervalForFindElement(`#${ZP_PROMPT_CONTAINER_ID}`, () => {
+            window.postMessage(message, CHAT_GPT_URL);
+          });
+          break;
+        }
+        default:
+          break;
+      }
+    });
   });
 }
 
@@ -51,14 +67,11 @@ if (currentUrl.startsWith(ZIPPY_SITE_URL)) {
   console.log('지피지기 kr 로직');
 
   // 로그아웃 연동
-  const intervalForBackgroundChange = setInterval(() => {
-    const $authContainer = document.querySelector('.authContainer');
-    const authContainerLoaded = !!$authContainer;
-    if (authContainerLoaded) {
-      clearInterval(intervalForBackgroundChange);
-      const $signOutButton = $authContainer.querySelector('button');
+  intervalForFindElement('.authContainer', ($authContainer: Element) => {
+    const $signOutButton = $authContainer.querySelector('button');
+    if ($signOutButton) {
       $signOutButton.addEventListener('click', () => {
-        chrome.runtime.sendMessage({ type: 'signOut' });
+        chrome.runtime.sendMessage({ type: MK_SIGN_OUT });
       });
     }
   });
@@ -67,14 +80,15 @@ if (currentUrl.startsWith(ZIPPY_SITE_URL)) {
     for (const mutation of mutations) {
       for (const node of [...mutation.addedNodes]) {
         const $targetElement = node as HTMLElement;
+        console.log($targetElement);
         if ($targetElement.className.startsWith('CardStyle__Conatiner')) {
           const promptUuid = $targetElement.dataset.uuid;
           const $playButton = $targetElement.querySelector('#promptCardPlay');
           $playButton.addEventListener('click', async () => {
-            const { title, prefix, example, suffix } = await getPromptDetail(promptUuid);
+            const { title, prefix, example, suffix, uuid } = await getPromptDetail(promptUuid);
             await chrome.runtime.sendMessage({
-              type: 'promptCardPlay',
-              data: { title, prefix, example, suffix },
+              type: MK_DATA_FROM_PROMPT_CARD_PLAY,
+              data: { title, prefix, example, suffix, uuid },
             });
           });
         }

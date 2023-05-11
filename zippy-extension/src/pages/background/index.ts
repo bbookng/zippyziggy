@@ -6,6 +6,9 @@ import {
   CHROME_SEARCH_KEY,
   CHROME_SORT_KEY,
   CHROME_USERINFO_KEY,
+  MK_DATA_FROM_PROMPT_CARD_PLAY,
+  MK_REQUEST_DATA,
+  MK_SIGN_OUT,
 } from '@pages/constants';
 
 reloadOnUpdate('pages/background');
@@ -41,7 +44,9 @@ const sendDataToGPTSite = (data) => {
     const contentScriptReadyListener = (message, sender) => {
       if (sender.tab.id === tab.id && message.type === 'contentScriptReady') {
         // content script가 준비된 경우 메시지 전송
-        chrome.runtime.sendMessage({ type: 'promptCardPlay', data });
+        chrome.runtime.sendMessage({ type: 'promptCardPlay', data }, () => {
+          console.log('전송완료');
+        });
 
         // 리스너 제거
         chrome.runtime.onMessage.removeListener(contentScriptReadyListener);
@@ -52,32 +57,36 @@ const sendDataToGPTSite = (data) => {
   });
 };
 
-let loadedTabId;
+let dataFromPromptCardPlay;
+let newTab;
+let creatingTab = false;
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   switch (message.type) {
-    case 'contentScriptReady':
-      if (sender.url.startsWith(CHAT_GPT_URL)) {
-        loadedTabId = sender.tab.id;
-      }
-      break;
-    case 'signOut':
+    case MK_SIGN_OUT:
       chrome.storage.sync.remove(CHROME_USERINFO_KEY);
       chrome.storage.sync.remove('accessToken');
       break;
-    case 'promptCardPlay':
-      chrome.tabs.create({ url: CHAT_GPT_URL }, function (newTab) {
-        // 탭이 로드되었을 때 데이터를 전달하는 예시
-        chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-          if (tabId === newTab.id && changeInfo.status === 'complete') {
-            console.log(tabId, newTab.id, loadedTabId, message);
-            // 데이터 전달
-            if (loadedTabId) {
-              chrome.tabs.sendMessage(loadedTabId, { type: 'test', data: message.data });
-              loadedTabId = null; // 메시지를 보낸 후 초기화
-            }
-          }
+    // 카드에 있는 play 버튼을 눌렀을 때..
+    case MK_DATA_FROM_PROMPT_CARD_PLAY:
+      dataFromPromptCardPlay = message.data;
+      // 탭이 한번에 4개 생겨서 flag로 처리 (이유를 아직 몰라서 이렇게 처리...)
+      if (!creatingTab) {
+        creatingTab = true;
+        chrome.tabs.create({ url: CHAT_GPT_URL }, (tab) => {
+          newTab = tab;
+          creatingTab = false;
         });
-      });
+      }
+      break;
+    case MK_REQUEST_DATA:
+      if (dataFromPromptCardPlay && newTab) {
+        // pass data to new tab
+        chrome.tabs.sendMessage(newTab.id, {
+          type: MK_DATA_FROM_PROMPT_CARD_PLAY,
+          data: dataFromPromptCardPlay,
+        });
+        dataFromPromptCardPlay = null;
+      }
       break;
     default:
       break;

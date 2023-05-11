@@ -11,6 +11,6 @@ export const getPromptDetail = withErrorHandling(
         title,
       },
     } = await api.get<PromptDetailResponse>(`${PROMPT_API_ENDPOINT}/${uuid}`);
-    return { title, prefix, example, suffix };
+    return { title, prefix, example, suffix, uuid };
   }
 );

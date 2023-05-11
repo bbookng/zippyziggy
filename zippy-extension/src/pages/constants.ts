@@ -40,6 +40,11 @@ const CHROME_USERINFO_KEY = 'ZP_userData';
 const LIMIT = 12; // 페이지 당 갯수
 const PAGE_PER_GROUP = 10; // 한 번에 표시할 페이지 수
 
+/* Chrome message type */
+const MK_REQUEST_DATA = 'requestData';
+const MK_SIGN_OUT = 'signOut';
+const MK_DATA_FROM_PROMPT_CARD_PLAY = 'dataFromPromptCardPlay';
+
 export {
   DEFAULT_TARGET_LANGUAGE,
   PROMPT_PLACEHOLDER,
@@ -68,4 +73,7 @@ export {
   CHROME_USERINFO_KEY,
   LIMIT,
   PAGE_PER_GROUP,
+  MK_SIGN_OUT,
+  MK_REQUEST_DATA,
+  MK_DATA_FROM_PROMPT_CARD_PLAY,
 };
