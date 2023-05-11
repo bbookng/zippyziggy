@@ -189,6 +189,7 @@ export default function DetailPrompt() {
               </TopBox>
               <MobileTopContainer>
                 <SideBar
+                  uuid={promptUuid}
                   isLiked={isLiked}
                   isBookmarked={isBookmarked}
                   likeCnt={likeCnt}
@@ -234,6 +235,7 @@ export default function DetailPrompt() {
             </LeftContainer>
             <RightContainer>
               <SideBar
+                uuid={promptUuid}
                 isLiked={isLiked}
                 isBookmarked={isBookmarked}
                 likeCnt={likeCnt}

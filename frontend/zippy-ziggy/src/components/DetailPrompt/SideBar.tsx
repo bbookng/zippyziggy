@@ -15,6 +15,7 @@ import Button from '../Button/Button';
 import { ActionBox, ButtonBox, Container, EditBox } from './SideBarStyle';
 
 interface PropsType {
+  uuid?: string | string[];
   isLiked: boolean;
   isBookmarked: boolean;
   likeCnt: number;
@@ -29,6 +30,7 @@ interface PropsType {
 }
 
 export default function SideBar({
+  uuid = '',
   isLiked,
   isBookmarked,
   likeCnt,
@@ -69,6 +71,7 @@ export default function SideBar({
       {type === 'prompt' ? (
         <ButtonBox>
           <Button
+            data-uuid={uuid}
             id="promptPlay"
             className="btn btn1"
             onClick={(e) => {
