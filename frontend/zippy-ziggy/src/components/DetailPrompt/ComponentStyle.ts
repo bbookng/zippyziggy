@@ -56,6 +56,7 @@ const SubContainer = styled.div`
   }
 
   .colorBox {
+    white-space: pre-wrap;
     line-height: 1.5;
     background-color: var(--colors-primary-10);
     padding: 1rem 1.25rem;

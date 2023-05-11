@@ -15,6 +15,7 @@ const UserBox = styled.div`
 
   .image {
     margin-right: 1rem;
+    aspect-ratio: 1;
     height: 100%;
     border-radius: 50%;
   }
@@ -48,6 +49,7 @@ const ContentBox = styled.div`
   p {
     width: 100%;
     overflow-wrap: anywhere;
+    white-space: pre-wrap;
   }
 `;
 
