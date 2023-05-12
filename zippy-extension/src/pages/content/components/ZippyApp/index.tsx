@@ -90,14 +90,14 @@ if (currentUrl.startsWith(ZIPPY_SITE_URL)) {
             '[class^=ComponentStyle__SubContainer]'
           );
           const $colorBox = $ComponentStyleSubContainer[2].querySelector('.colorBox');
-          const prefix = $colorBox.querySelector('div:first-of-type').textContent;
-          const example = $colorBox.querySelector('div.example').textContent;
-          const suffix = $colorBox.querySelector('div:last-of-type').textContent;
+          const prefix = $colorBox.querySelector('span:first-of-type').textContent ?? '';
+          const example = $colorBox.querySelector('span.example').textContent ?? '';
+          const suffix = $colorBox.querySelector('span:last-of-type').textContent ?? '';
 
           $promptPlayDesktop.addEventListener('click', () => {
             chrome.runtime.sendMessage({
               type: MK_DATA_FROM_PROMPT_CARD_PLAY,
-              data: { title, prefix, example, suffix, uuid },
+              data: { title, uuid },
             });
           });
 

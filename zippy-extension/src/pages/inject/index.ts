@@ -8,9 +8,9 @@ import {
   TARGET_LANGUAGE_PLACEHOLDER,
   ZIPPY_SITE_URL,
   ZP_PROMPT_TITLE_HOLDER_ID,
-} from '@pages/constants';
-import logOnDev from '@pages/content/utils/@shared/logging';
-import { sanitizeInput } from '@src/utils';
+} from "@pages/constants";
+import logOnDev from "@pages/content/utils/@shared/logging";
+import { sanitizeInput } from "@src/utils";
 
 const ZIPPY = (window.ZIPPYZIGGY = {
   init() {
@@ -93,7 +93,7 @@ window.addEventListener('message', function (event) {
       const {
         data: { prompt },
       } = event.data;
-      ZIPPY.selectedPrompt = sanitizeInput(prompt);
+      ZIPPY.selectedPrompt = prompt;
       break;
     }
     case MK_DATA_FROM_PROMPT_CARD_PLAY: {
@@ -101,10 +101,13 @@ window.addEventListener('message', function (event) {
         data: { title, suffix, prefix, example, uuid },
       } = event.data;
 
-      const prompt = `프롬프트 상세 정보 ${ZIPPY_SITE_URL}/prompts/${uuid}\n\n ${
-        prefix || ''
-      } ${PROMPT_PLACEHOLDER} ${suffix || ''} ${TARGET_LANGUAGE_PLACEHOLDER}`.trim();
-      ZIPPY.selectedPrompt = sanitizeInput(prompt);
+      const prompt = `프롬프트 상세 링크 ${ZIPPY_SITE_URL}/prompts/${uuid}\n
+      프롬프트 상세 정보는\n\n ${prefix || ''} ${PROMPT_PLACEHOLDER} ${
+        suffix || ''
+      } ${TARGET_LANGUAGE_PLACEHOLDER}\n\n 답변은 아래의 형식에 맞춰서 답변해줘.
+        1. [🔗프롬프트 상세정보](프롬프트 상세 링크)를 첫줄에 출력
+        2. 공백 한줄 출력후 답변을 출력`.trim();
+      ZIPPY.selectedPrompt = prompt;
 
       const $title = document.querySelector(`#${ZP_PROMPT_TITLE_HOLDER_ID}`);
       $title.textContent = `📟 ${title}`;
