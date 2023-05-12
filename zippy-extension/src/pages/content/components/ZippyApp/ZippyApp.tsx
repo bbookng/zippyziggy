@@ -13,8 +13,6 @@ import { useEffect } from 'react';
 import useChromeStorage from '@pages/hooks/@shared/useChromeStorage';
 import { SignUpResult } from '@pages/content/apis/auth/models';
 import useCheckAuth from '@pages/hooks/queries/useCheckAuth';
-import SignUpModalContent from '@pages/content/components/Modal/ModalContents/SignUpModalContent';
-import icon from '@assets/img/icon48.png';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -53,20 +51,6 @@ const App = () => {
       getMyInfo().then((userData) => setUserData(userData));
     }
   }, [setUserData]);
-
-  useEffect(() => {
-    setModalContent(
-      <SignUpModalContent
-        userData={{
-          profileImg: icon,
-          platform: '',
-          platformId: '',
-          name: '테스트',
-        }}
-      />
-    );
-    openModal();
-  }, []);
 
   return (
     <>

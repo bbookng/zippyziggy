@@ -1,11 +1,14 @@
 import React from 'react';
 import { CHAT_GPT_URL } from '@pages/constants';
+import Logo from '@pages/content/components/PromptContainer/Logo';
 
 const GOOGLE_AUTH_URL = `https://accounts.google.com/o/oauth2/v2/auth`;
 const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize`;
 const AuthModalContent = () => {
   return (
     <div id="authModalLinkWrapper">
+      <Logo />
+      <h1>더 많은 기능을 이용해보세요!</h1>
       <a
         href={`${KAKAO_AUTH_URL}?client_id=${
           import.meta.env.VITE_KAKAO_CLIENT_ID
@@ -22,7 +25,6 @@ const AuthModalContent = () => {
             </g>
           </svg>
         </span>
-        <p>카카오로 시작하기</p>
       </a>
       {/* <a href={`${CHAT_GPT_URL}`} style={{ backgroundColor: 'rgb(255, 255, 255)' }}> */}
       {/*   <span> */}
