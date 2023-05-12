@@ -103,7 +103,7 @@ export default function PromptUpdate() {
     const blob = new Blob([Uint8Array.from(arrayBuffer)], { type });
     const arr = url.split('/');
     const FileList = [
-      new File([blob], arr[arr.length - 1], {
+      new File([blob], `promptImg${arr[arr.length - 1].split('.')[1]}`, {
         type: `image/${arr[arr.length - 1].split('.')[1]}`,
       }),
     ];
@@ -210,9 +210,10 @@ export default function PromptUpdate() {
         },
       };
       const formData = new FormData();
-      if (image) {
-        formData.append('thumbnail', image[0]);
-      }
+      // if (image) {
+      //   formData.append('thumbnail', image[0]);
+      // }
+      formData.append('thumbnail', image[0]);
       formData.append('data', new Blob([JSON.stringify(tmpData)], { type: 'application/json' }));
       const requestData = {
         id: promptUuid,
