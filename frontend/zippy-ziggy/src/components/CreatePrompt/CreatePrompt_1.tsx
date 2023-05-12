@@ -114,11 +114,11 @@ export default function CreatePart1({
             </div>
             <div className="sentenceBox">
               <div className="questionMark">Q:</div>
-              <div>
-                <div className="text">{prompt1}</div>
-                <div className="example text">{example}</div>
-                <div className="text">{prompt2}</div>
-              </div>
+              <p>
+                <span className="text">{prompt1}</span>
+                <span className="example text">{example}</span>
+                <span className="text">{prompt2}</span>
+              </p>
             </div>
           </div>
           <div className="row">

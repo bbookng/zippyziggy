@@ -232,7 +232,7 @@ export default function PromptUpdate() {
           <div className="title">프롬프트 수정</div>
           <div className="help">
             <AiFillQuestionCircle className="icon" />
-            <div>수정이 처음이신가요?</div>
+            <div>수정에서는 프롬프트 변경이 안되요! 수정제작기능을 이용해주세요</div>
           </div>
         </TitleWrapper>
         <TitleInfoWrapper>
