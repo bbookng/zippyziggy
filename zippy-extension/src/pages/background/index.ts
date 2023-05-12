@@ -31,7 +31,7 @@ chrome.runtime.onStartup.addListener(() => {
 
 const waitForGPTSiteToLoad = (tabId, callback) => {
   chrome.tabs.get(tabId, (tab) => {
-    if (tab.status === 'complete') {
+    if (tab?.status === 'complete') {
       callback();
     } else {
       setTimeout(() => waitForGPTSiteToLoad(tabId, callback), 100);

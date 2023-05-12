@@ -20,7 +20,7 @@ const handleApiError = (error: unknown): string => {
     const message = `API request failed: ${error.message}`;
     logOnDev.error(message);
     if (error.response) {
-      logOnDev.error(`HTTP error status: ${error.response.status}`);
+      logOnDev.error(`HTTP error status: ${error.response?.status}`);
     }
     return message;
   }

@@ -8,31 +8,31 @@ interface LogOnDev {
 
 const logOnDev: LogOnDev = {
   log: (...message) => {
-    if (import.meta.env.MODE === 'production') {
+    if (import.meta.env.MODE === 'development') {
       console.log(...message);
     }
   },
 
   error: (...message) => {
-    if (import.meta.env.MODE === 'production') {
+    if (import.meta.env.MODE === 'development') {
       console.error(...message);
     }
   },
 
   info: (...message) => {
-    if (import.meta.env.MODE === 'production') {
+    if (import.meta.env.MODE === 'development') {
       console.info(...message);
     }
   },
 
   warn: (...message) => {
-    if (import.meta.env.MODE === 'production') {
+    if (import.meta.env.MODE === 'development') {
       console.warn(...message);
     }
   },
 
   dir: (...message) => {
-    if (import.meta.env.MODE === 'production') {
+    if (import.meta.env.MODE === 'development') {
       console.dir(...message);
     }
   },

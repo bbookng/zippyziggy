@@ -95,7 +95,7 @@ const onRequestError = (error: AxiosError): Promise<AxiosError> => {
 const onResponse = (response: AxiosResponse): AxiosResponse => {
   logOnDev.info(
     `👌 %c [API] ${response.config.method?.toUpperCase()} ${response.config.url} | [::response::] ${
-      response.status
+      response?.status
     }`,
     'color: #13ce29'
   );
