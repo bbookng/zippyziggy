@@ -28,11 +28,11 @@ public class PromptLike {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false)
+	@Column(nullable = false, columnDefinition = "BINARY(16)")
 	private UUID memberUuid;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "prompt_id", nullable = false)
+	@JoinColumn(name = "prompt_uuid", nullable = false)
 	private Prompt prompt;
 
 	@Column(nullable = false)

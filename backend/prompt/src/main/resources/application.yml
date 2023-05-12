@@ -17,6 +17,7 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
 
+
 eureka:
   instance:
     instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
@@ -24,7 +25,12 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://k8e205.p.ssafy.io:8761/eureka
+      defaultZone: http://zippyziggy.kr:8761/eureka
+
+springdoc:
+  swagger-ui:
+    path: /doc/swagger
+    operations-sorter: method
 
 management:
   endpoints:

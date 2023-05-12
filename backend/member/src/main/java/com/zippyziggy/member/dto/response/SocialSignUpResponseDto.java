@@ -15,9 +15,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SocialSignUpResponseDto {
 
-    private String profileImg;
-    private String name;
-    private Platform platform;
-    private String platformId;
+    private Boolean isSignUp;
+    private SocialSignUpDataResponseDto socialSignUpDataResponseDto;
 
+    public static SocialSignUpResponseDto from(SocialSignUpDataResponseDto socialSignUpDataResponseDto) {
+        return SocialSignUpResponseDto.builder()
+                .isSignUp(true)
+                .socialSignUpDataResponseDto(socialSignUpDataResponseDto)
+                .build();
+    }
 }

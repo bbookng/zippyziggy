@@ -15,6 +15,4 @@ public class PromptApplication {
 		SpringApplication.run(PromptApplication.class, args);
 	}
 
-
-
 }

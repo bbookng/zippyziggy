@@ -4,16 +4,20 @@ import com.zippyziggy.member.model.Member;
 import com.zippyziggy.member.model.Platform;
 import com.zippyziggy.member.model.RoleType;
 import com.zippyziggy.member.repository.MemberRepository;
-import org.assertj.core.api.Assertions;
+import com.zippyziggy.member.service.JwtProviderService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.test.annotation.Rollback;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -23,6 +27,12 @@ public class TestMethod {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private JwtProviderService jwtProviderService;
+
+    @Autowired
+    private RedisTemplate<String, String> redisTemplate;
 
     @Test
     @DisplayName("column default 설정 테스트")
@@ -49,4 +59,28 @@ public class TestMethod {
         assertThat(findMember.getName()).isEqualTo(member.getName());
 
     }
+
+    @Test
+    @DisplayName("redis template 사용")
+    void tokenSaveRedisTemplate() {
+        //given
+        UUID uuid = UUID.randomUUID();
+        String refreshToken = jwtProviderService.createRefreshToken(uuid);
+
+        //when
+        String key = "refreshToken" + uuid;
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+        valueOperations.set(key, refreshToken, Duration.ofSeconds(10));
+
+
+        //then
+        Object o = redisTemplate.opsForValue().get(key);
+        System.out.println("o = " + o);
+
+
+    }
+
+
+
+
 }

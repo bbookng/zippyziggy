@@ -6,7 +6,7 @@ import lombok.ToString;
 @Getter
 @ToString
 public enum RoleType {
-	USER("user"), ADMIN("admin");
+	USER("USER"), ADMIN("ADMIN");
 
 	private final String role;
 

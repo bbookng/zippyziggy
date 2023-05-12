@@ -29,7 +29,7 @@ public class PromptTemp {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false)
+	@Column(nullable = false, columnDefinition = "BINARY(16)")
 	private UUID memberUuid;
 
 	@Column(length = 255)
@@ -60,14 +60,14 @@ public class PromptTemp {
 	@Lob
 	private String example;
 
-	@Column(nullable = false, length = 128)
+	@Column(nullable = false, columnDefinition = "BINARY(16)")
 	private String promptUuid;
 
-	@Column(nullable = false)
-	private Long originPromptId;
+	@Column(nullable = false, columnDefinition = "BINARY(16)")
+	private Long originPromptUuId;
 
 	public void setOriginPromptId(Long originPromptId) {
-		this.originPromptId = originPromptId;
+		this.originPromptUuId = originPromptUuId;
 	}
 
 }
