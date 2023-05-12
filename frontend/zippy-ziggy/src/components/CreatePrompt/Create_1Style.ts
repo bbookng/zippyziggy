@@ -126,7 +126,6 @@ const SubContainer = styled.div`
 
     .text {
       white-space: pre-wrap;
-      padding-left: 0.5rem;
       width: 100%;
     }
   }

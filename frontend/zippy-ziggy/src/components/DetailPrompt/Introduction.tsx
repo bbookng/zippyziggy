@@ -24,11 +24,11 @@ export default function Introduction({ prompt }: PropsType) {
         </div>
       </SubContainer>
       <SubContainer>
-        <div className="colorBox">
-          <div>{prompt.messageResponse.prefix}</div>
-          <div className="example">{prompt.messageResponse.example}</div>
-          <div>{prompt.messageResponse.suffix}</div>
-        </div>
+        <p className="colorBox">
+          <span>{prompt.messageResponse.prefix}</span>
+          <span className="example">{prompt.messageResponse.example}</span>
+          <span>{prompt.messageResponse.suffix}</span>
+        </p>
       </SubContainer>
       <div />
     </Container>

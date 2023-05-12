@@ -44,6 +44,7 @@ function PromptCreate() {
     'GPT에게 요청중입니다',
     '잠시만 기다려주세요',
     '최대 1분 이상 소요될 수 있습니다',
+    '너무 긴 답변은 잘릴 수도 있어요',
   ];
   const [text, setText] = useState<string>(textList[0]);
 
@@ -62,19 +63,19 @@ function PromptCreate() {
   const sequenceText = [
     {
       title: '가이드 1/6',
-      content: '프롬프트는 질문을 쉽고 정확하게 할 수 있는 질문표현방법입니다.',
+      content: '프롬프트는 질문을 쉽고 정확하게 할 수 있는 질문표현방법입니다!',
     },
     {
       title: '가이드 2/6',
-      content: '앞 프롬프트에는 질문의 앞에 붙을 프롬프트입니다.',
+      content: '앞 프롬프트에는 질문의 앞에 붙어 질문을 도와줄 수 있어요.',
     },
     {
       title: '가이드 3/6',
-      content: '질문 예시는 Chat-gpt에게 물어볼 질문을 작성하면 됩니다.',
+      content: '질문 예시는 Chat-gpt에게 물어볼 질문입니다. 사용자가 바꿀 수 있어요!',
     },
     {
       title: '가이드 4/6',
-      content: '뒤 프롬프트에는 질문의 뒤에 붙을 프롬프트입니다.',
+      content: '뒤 프롬프트에는 질문의 뒤에 붙어  질문을 도와줄 수 있어요.',
     },
     {
       title: '가이드 5/6',
