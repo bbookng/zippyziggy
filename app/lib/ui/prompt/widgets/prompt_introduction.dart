@@ -20,6 +20,13 @@ class PromptIntroduction extends StatelessWidget {
             height: 150,
             fit: BoxFit.cover,
           ),
+        if (prompt.thumbnail == null)
+          const SizedBox(
+            height: 150,
+            child: CircularProgressIndicator(
+              backgroundColor: AppTheme.darkGrey,
+            ),
+          ),
         const SizedBox(
           height: 20,
         ),

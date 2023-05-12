@@ -2,6 +2,7 @@ import 'package:zippy_ziggy/data/model/user_model.dart';
 import 'package:zippy_ziggy/ui/account/login_page.dart';
 import 'package:zippy_ziggy/ui/account/my_page.dart';
 import 'package:zippy_ziggy/ui/account/signup_page.dart';
+import 'package:zippy_ziggy/ui/account/update_page.dart';
 import 'package:zippy_ziggy/ui/main_page.dart';
 import 'package:zippy_ziggy/ui/prompt/prompt_detail_page.dart';
 import 'package:zippy_ziggy/ui/prompt/prompt_page.dart';
@@ -24,6 +25,9 @@ class Routes {
             data: data as SocialSignUpModel,
           ),
         );
+      case RoutesName.update:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const UpdatePage());
       case RoutesName.my:
         return MaterialPageRoute(
             builder: (BuildContext context) => const MyPage());

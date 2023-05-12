@@ -23,32 +23,33 @@ class UserProvider extends ChangeNotifier {
   int totalPageCnt = 0;
   int totalPromptsCnt = 0;
   bool isLoading = false;
+  int page = 0;
 
   // 카카오로그인API요청
   Future kakaoLogin() async {
-    final data = await _userRepository.kakaoLoginAPI();
-    code = data["data"];
-    if (data["result"]) {
-      try {
-        Map<String, dynamic> res = await _userRepository.kakaoLogin(code!);
-        if (res["isSignUp"] != null) {
-          return {"result": "SIGNUP", "data": res["user"]};
-        }
-        user = res["user"];
-        storage.write(key: "accessToken", value: res["accessToken"]);
-        storage.write(key: "refreshToken", value: res["refreshToken"]);
-        final SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString('nickname', user!.nickname!);
-        await prefs.setString('profileImg', user!.profileImg!);
-        await prefs.setString('userUuid', user!.userUuid!);
-        nickname = user!.nickname;
-        profileImg = user!.profileImg;
-        userUuid = user!.userUuid;
+    try {
+      final data = await _userRepository.kakaoLoginAPI();
+      code = data["data"];
+      if (data["result"]) {
+        try {
+          Map<String, dynamic> res = await _userRepository.kakaoLogin(code!);
+          if (res["isSignUp"] != null) {
+            return {"result": "SIGNUP", "data": res["user"]};
+          }
+          user = res["user"];
+          storage.write(key: "accessToken", value: res["accessToken"]);
+          storage.write(key: "refreshToken", value: res["refreshToken"]);
+          nickname = user!.nickname;
+          profileImg = user!.profileImg;
+          userUuid = user!.userUuid;
 
-        return {"result": "LOGIN", "data": res["user"]};
-      } catch (err) {
-        return {"result": "FAIL", "data": err};
+          return {"result": "LOGIN", "data": res["user"]};
+        } catch (e) {
+          return {"result": "FAIL", "data": e};
+        }
       }
+    } catch (err) {
+      return {"result": "FAIL", "data": err};
     }
   }
 
@@ -78,10 +79,6 @@ class UserProvider extends ChangeNotifier {
         user = data['user'];
         storage.write(key: "accessToken", value: data["accessToken"]);
         storage.write(key: "refreshToken", value: data["refreshToken"]);
-        final SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString('nickname', user!.nickname!);
-        await prefs.setString('profileImg', user!.profileImg!);
-        await prefs.setString('userUuid', user!.userUuid!);
         nickname = user!.nickname;
         profileImg = user!.profileImg;
         userUuid = user!.userUuid;
@@ -92,6 +89,28 @@ class UserProvider extends ChangeNotifier {
       }
     } catch (err) {
       print('회원가입 실패 $err');
+      return false;
+    }
+  }
+
+  // 회원정보수정 요청
+  Future<bool> postUpdate(FormData formData) async {
+    try {
+      final data = await _userRepository.putUpdateAPI(formData);
+      if (data['result'] == 'SUCCESS') {
+        print('회원정보수정 성공');
+        print(data);
+        user = data['user'];
+        nickname = user!.nickname;
+        profileImg = user!.profileImg;
+        userUuid = user!.userUuid;
+        return true;
+      } else {
+        print('회원정보수정 실패');
+        return false;
+      }
+    } catch (err) {
+      print('회원정보수정 실패 $err');
       return false;
     }
   }
@@ -120,34 +139,97 @@ class UserProvider extends ChangeNotifier {
   }
 
   // 북마크 프롬프트 목록 조회
-  Future<void> getBookmarkedPromptList({userUuid, page, size}) async {
+  Future<bool> getBookmarkedPromptList({userUuid, size}) async {
     isLoading = true;
+    print('북마크 로딩시작 $isLoading 페이지 $page');
+    print('북마크으으으으으으으으');
     notifyListeners();
     try {
       Map<String, dynamic> data = await _userRepository
           .getBookmarkedPromptListAPI(userUuid, page, size);
+
       _promptList += data["promptList"];
       totalPageCnt = data["totalPageCnt"];
       totalPromptsCnt = data["totalPromptsCnt"];
+      page += 1;
+      print('다가져옴');
+      return true;
     } catch (e) {
       print('북마크 프롬프트 목록 조회 실패 $e');
+      return false;
     } finally {
       isLoading = false;
+      print('로딩끝 $isLoading');
       notifyListeners();
     }
   }
 
+  // 내 프롬프트 목록 조회
+  Future<bool> getMyPromptList({userUuid, size}) async {
+    isLoading = true;
+    print('내 로딩시작 $isLoading, 페이지 $page');
+    print('내애애애애애애');
+    notifyListeners();
+    try {
+      Map<String, dynamic> data =
+          await _userRepository.getMyPromptListAPI(userUuid, page, size);
+      _promptList += data["promptList"];
+      totalPageCnt = data["totalPageCnt"];
+      totalPromptsCnt = data["totalPromptsCnt"];
+      page += 1;
+      return true;
+    } catch (e) {
+      print('내 프롬프트 목록 조회 실패 $e');
+      return false;
+    } finally {
+      isLoading = false;
+      print('로딩끝 $isLoading');
+      notifyListeners();
+    }
+  }
+
+  // AccessToken으로 내 정보 가져오기
+  Future<bool> getMyInfo() async {
+    try {
+      Map<String, dynamic> data = await _userRepository.getMyInfoAPI();
+      if (data['result'] == 'SUCCESS') {
+        user = data['user'];
+        nickname = user!.nickname;
+        profileImg = user!.profileImg;
+        userUuid = user!.userUuid;
+        return true;
+      } else {
+        print('유저 정보 조회 실패');
+        return false;
+      }
+    } catch (err) {
+      print('유저 정보 조회 실패 $err');
+      return false;
+    }
+  }
+
   void initProvider() async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    nickname = prefs.getString('nickname');
-    profileImg = prefs.getString('profileImg');
-    userUuid = prefs.getString('userUuid');
-
     _promptList = [];
     totalPageCnt = 0;
     totalPromptsCnt = 0;
     isLoading = false;
+    page = 0;
+
+    nickname = null;
+    profileImg = null;
+    userUuid = null;
+
+    getMyInfo();
+    notifyListeners();
+  }
+
+  void resetPrompt() async {
+    _promptList = [];
+    totalPageCnt = 0;
+    totalPromptsCnt = 0;
+    isLoading = false;
+    page = 0;
+    print('리셋');
     notifyListeners();
   }
 }

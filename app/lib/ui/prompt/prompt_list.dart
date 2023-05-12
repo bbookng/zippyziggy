@@ -25,7 +25,6 @@ class _PromptListState extends State<PromptList> {
   late String _keyword;
   late String _category;
   late String _sort;
-  late var scrollController = ScrollController();
 
   int page = 0;
   int size = 8;
@@ -61,23 +60,21 @@ class _PromptListState extends State<PromptList> {
 
   // 프롬프트 목록 가져오기
   handleGetPrompt(bool isNew) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (isNew) {
-        page = 0;
-        Provider.of<PromptProvider>(context, listen: false).initProvider();
-      }
-      Provider.of<PromptProvider>(context, listen: false)
-          .getPromptList(
-            keyword: _keyword,
-            category: _category,
-            sort: _sort,
-            page: page.toString(),
-            size: size.toString(),
-          )
-          .then((_) => {
-                page = page + 1,
-              });
-    });
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) {
+        final provider = Provider.of<PromptProvider>(context, listen: false);
+        if (isNew) {
+          page = 0;
+          provider.initProvider();
+        }
+        provider.getPromptList(
+          keyword: _keyword,
+          category: _category,
+          sort: _sort,
+          size: size,
+        );
+      },
+    );
   }
 
   // 초기 설정
@@ -87,23 +84,11 @@ class _PromptListState extends State<PromptList> {
     _keyword = '';
     _category = 'ALL';
     _sort = 'likeCnt';
-    scrollController = ScrollController();
     // build가 다 되고 나서 콜백함수 실행
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<PromptProvider>(context, listen: false).initProvider();
-      scrollController.addListener(pagination);
     });
     handleGetPrompt(true);
-  }
-
-  // 페이지네이션
-  void pagination() {
-    if ((scrollController.position.pixels ==
-            scrollController.position.maxScrollExtent) &&
-        page <
-            Provider.of<PromptProvider>(context, listen: false).totalPageCnt) {
-      handleGetPrompt(false);
-    }
   }
 
   @override
@@ -165,58 +150,72 @@ class _PromptListState extends State<PromptList> {
           ),
 
           // 프롬프트 목록들
-          Consumer<PromptProvider>(
-            builder: (context, provider, widget) {
-              {
-                if (provider.promptList.isNotEmpty) {
-                  return promptListView(provider.promptList, scrollController);
-                } else if (provider.isLoading) {
-                  return const Center(
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 20,
-                        ),
-                        CircularProgressIndicator(),
-                      ],
-                    ),
-                  );
-                }
-                return const Center(
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Text('프롬프트가 없습니다.'),
-                    ],
-                  ),
-                );
-              }
-            },
+          Expanded(
+            child: _promptListView(),
           )
         ],
       ),
     );
   }
 
-  // 프롬프트 목록들
-  Expanded promptListView(promptList, scrollController) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-        child: ListView.separated(
-          controller: scrollController,
-          itemCount: promptList.length,
-          itemBuilder: (context, index) {
+  _promptListView() {
+    final provider = Provider.of<PromptProvider>(context);
+
+    final promptList = provider.promptList;
+
+    final isLoading = provider.isLoading;
+
+    // 로딩중이면서 캐시에 아무것도 없음
+    if (isLoading && promptList.isEmpty) {
+      return const Center(
+        child: CircularProgressIndicator(
+          color: Colors.green,
+        ),
+      );
+    }
+
+    // 로딩중이 아닌데 캐시에 아무것도 업슴
+    // 아무것도 가져올 아이템이 없을때
+    if (provider.page > 0 && !isLoading && promptList.isEmpty) {
+      return const Column(
+        children: [
+          SizedBox(
+            height: 200,
+          ),
+          Text('조회된 프롬프트가 없습니다.'),
+        ],
+      );
+    }
+
+    return SizedBox(
+        child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+      child: ListView.separated(
+        itemCount: promptList.length + 1,
+        itemBuilder: (context, index) {
+          if (index < promptList.length) {
             var prompt = promptList[index];
             return PromptListItem(prompt: prompt);
-          },
-          separatorBuilder: (context, index) => const Divider(
-            height: 5,
-          ),
+          }
+
+          if (!provider.isLoading && provider.page < provider.totalPageCnt) {
+            handleGetPrompt(false);
+          }
+
+          if (provider.page < provider.totalPageCnt) {
+            return const Center(
+              child: CircularProgressIndicator(
+                color: Colors.green,
+              ),
+            );
+          } else {
+            return null;
+          }
+        },
+        separatorBuilder: (context, index) => const Divider(
+          height: 5,
         ),
       ),
-    );
+    ));
   }
 }

@@ -6,8 +6,8 @@ class PromptRepository {
   final DioService _dioService = DioService();
 
   // GET : 프롬프트 리스트 조회
-  Future<Map<String, dynamic>> getPromptListAPI(String keyword, String category,
-      String sort, String page, String size) async {
+  Future<Map<String, dynamic>> getPromptListAPI(
+      String keyword, String category, String sort, int page, int size) async {
     Map<String, dynamic> params = {
       "keyword": keyword,
       "category": category,

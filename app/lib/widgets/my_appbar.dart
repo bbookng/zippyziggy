@@ -8,6 +8,7 @@ class MyAppbar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      // toolbarHeight: MediaQuery.of(context).size.height * 0.15,
       title: FractionallySizedBox(
         widthFactor: 0.5,
         child: Image.asset(

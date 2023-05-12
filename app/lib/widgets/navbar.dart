@@ -3,13 +3,10 @@ import 'package:zippy_ziggy/data/model/navigation_model.dart';
 import 'package:zippy_ziggy/data/providers/navigation_provider.dart';
 import 'package:zippy_ziggy/data/providers/user_provider.dart';
 import 'package:zippy_ziggy/utils/routes/route_name.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 
 class BurgerNavigator extends StatelessWidget {
-  static const storage = FlutterSecureStorage();
   const BurgerNavigator({
     Key? key,
   }) : super(key: key);
@@ -41,8 +38,16 @@ class BurgerNavigator extends StatelessWidget {
               ),
             if (provider.nickname != null)
               DrawerHeader(
+                // decoration: const BoxDecoration(
+                //   color: AppTheme.darkGrey,
+                //   borderRadius: BorderRadius.only(
+                //     bottomLeft: Radius.circular(40),
+                //     bottomRight: Radius.circular(40),
+                //   ),
+                // ),
                 child: Center(
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(100),
@@ -56,9 +61,24 @@ class BurgerNavigator extends StatelessWidget {
                       const SizedBox(
                         width: 10,
                       ),
-                      Text(
-                        '${provider.nickname}님\n안녕하세요!',
-                        style: AppTheme.title,
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${provider.nickname}님',
+                            style: AppTheme.title.copyWith(
+                              fontSize: 18,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            '안녕하세요',
+                            style: AppTheme.title.copyWith(),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -67,22 +87,6 @@ class BurgerNavigator extends StatelessWidget {
             buildMenuItem(context, item: NavigationItem.main, text: '메인페이지'),
             buildMenuItem(context, item: NavigationItem.prompt, text: '프롬프트'),
             buildMenuItem(context, item: NavigationItem.my, text: '마이페이지'),
-            if (provider.nickname != null)
-              CupertinoButton(
-                child: const Text(
-                  '로그아웃',
-                  style: AppTheme.title,
-                ),
-                onPressed: () async {
-                  final data =
-                      await Provider.of<UserProvider>(context, listen: false)
-                          .postLogout();
-                  if (data) {
-                    navigator.pushNamedAndRemoveUntil(
-                        RoutesName.login, (route) => false);
-                  }
-                },
-              ),
           ],
         ),
       ),

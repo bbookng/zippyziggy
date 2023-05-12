@@ -3,20 +3,19 @@ import 'package:provider/provider.dart';
 import 'package:zippy_ziggy/data/providers/user_provider.dart';
 import 'package:zippy_ziggy/ui/prompt/prompt_list_item.dart';
 
-class BookmarkedPromptList extends StatefulWidget {
-  const BookmarkedPromptList({super.key});
+class MyPromptList extends StatefulWidget {
+  const MyPromptList({super.key});
 
   @override
-  State<BookmarkedPromptList> createState() => _BookmarkedPromptListState();
+  State<MyPromptList> createState() => _MyPromptListState();
 }
 
-class _BookmarkedPromptListState extends State<BookmarkedPromptList> {
+class _MyPromptListState extends State<MyPromptList> {
   int page = 0;
   int size = 10;
-  bool loading = false;
 
-  // 북마크 프롬프트 목록 가져오기
-  handleGetBookmarkedPromptList(bool isNew) {
+  // 내 프롬프트 목록 가져오기
+  handleGetMyPromptList(bool isNew) {
     WidgetsBinding.instance.addPostFrameCallback(
       (_) {
         final provider = Provider.of<UserProvider>(context, listen: false);
@@ -24,8 +23,7 @@ class _BookmarkedPromptListState extends State<BookmarkedPromptList> {
           page = 0;
           provider.resetPrompt();
         }
-        loading = true;
-        provider.getBookmarkedPromptList(
+        provider.getMyPromptList(
           userUuid: provider.userUuid,
           size: size,
         );
@@ -38,19 +36,17 @@ class _BookmarkedPromptListState extends State<BookmarkedPromptList> {
     super.initState();
     page = 0;
     size = 10;
-    print('북마크 프롬프트 렌더링 시작');
+    print('내 프롬프트 렌더링 시작');
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<UserProvider>(context, listen: false).resetPrompt();
-      loading = true;
-      print('처음 가져오기 $loading');
-      handleGetBookmarkedPromptList(true);
+      handleGetMyPromptList(true);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    print('북마크 프롬프트 렌더링');
+    print('내 프롬프트 렌더링');
     return _promptListView();
   }
 
@@ -79,14 +75,12 @@ class _BookmarkedPromptListState extends State<BookmarkedPromptList> {
           SizedBox(
             height: 200,
           ),
-          Text('북마크한 프롬프트가 없습니다.'),
+          Text('내 프롬프트가 없습니다.'),
         ],
       );
     }
 
     return SizedBox(
-      // width: MediaQuery.of(context).size.width,
-      // height: MediaQuery.of(context).size.height * 0.5,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 36),
         child: ListView.separated(
@@ -98,9 +92,9 @@ class _BookmarkedPromptListState extends State<BookmarkedPromptList> {
             }
 
             print(
-                '북마크 - 로컬로딩 $loading, isLoading $isLoading, 페이지 ${provider.page}, 토탈페이지 ${provider.totalPageCnt}, 인덱스 $index');
+                '마이 - 페이지 ${provider.page}, 토탈페이지 ${provider.totalPageCnt}, 인덱스 $index');
             if (!provider.isLoading && provider.page < provider.totalPageCnt) {
-              handleGetBookmarkedPromptList(false);
+              handleGetMyPromptList(false);
             }
 
             if (provider.page < provider.totalPageCnt) {

@@ -1,3 +1,4 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:zippy_ziggy/data/model/prompt_model.dart';
 import 'package:zippy_ziggy/data/model/user_model.dart';
 import 'package:zippy_ziggy/services/dio_service.dart';
@@ -127,6 +128,36 @@ class UserRepository {
     };
   }
 
+  // PUT : 회원정보수정 요청
+  Future<Map<String, dynamic>> putUpdateAPI(FormData formData) async {
+    const storage = FlutterSecureStorage();
+    final accessToken = await storage.read(key: "accessToken");
+    Response response = await _dioService.dio.put(
+      "/members/profile",
+      data: formData,
+      options: Options(
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': 'Bearer $accessToken',
+        },
+      ),
+    );
+    final nickname = response.data['nickname'];
+    final profileImg = response.data['profileImg'];
+    final userUuid = response.data['userUuid'];
+
+    final SocialSignUpModel user = SocialSignUpModel.fromJson({
+      "nickname": nickname,
+      "profileImg": profileImg,
+      "userUuid": userUuid,
+    });
+
+    return {
+      "result": "SUCCESS",
+      "user": user,
+    };
+  }
+
   // POST : 로그아웃 요청
   Future<Map<String, dynamic>> postLogoutAPI() async {
     Response response = await _dioService.post("/members/logout", null);
@@ -140,6 +171,7 @@ class UserRepository {
   Future<Map<String, dynamic>> getBookmarkedPromptListAPI(
       String userUuid, int page, int size) async {
     final params = {"page": page, "size": size};
+    await Future.delayed(const Duration(milliseconds: 500));
     Response response =
         await _dioService.get("/members/prompts/bookmark/$userUuid", params);
     final promptsData = response.data["promptCardResponseList"] as List;
@@ -155,5 +187,46 @@ class UserRepository {
       "totalPromptsCnt": totalPromptsCnt,
     };
     return returnData;
+  }
+
+  // GET : 유저의 북마크 프롬프트 조회
+  Future<Map<String, dynamic>> getMyPromptListAPI(
+      String userUuid, int page, int size) async {
+    final params = {"page": page, "size": size};
+    await Future.delayed(const Duration(milliseconds: 500));
+    Response response =
+        await _dioService.get("/members/prompts/profile/$userUuid", params);
+    final promptsData = response.data["promptCardResponseList"] as List;
+    List<PromptModel> promptList =
+        promptsData.map((json) => PromptModel.fromJson(json)).toList();
+
+    final totalPromptsCnt = response.data["totalPromptsCnt"];
+    final totalPageCnt = response.data["totalPageCnt"];
+
+    Map<String, dynamic> returnData = {
+      "promptList": promptList,
+      "totalPageCnt": totalPageCnt,
+      "totalPromptsCnt": totalPromptsCnt,
+    };
+    return returnData;
+  }
+
+  // GET : AccessToken으로 내 정보 조회
+  Future<Map<String, dynamic>> getMyInfoAPI() async {
+    Response response = await _dioService.get("/members/profile", null);
+    final nickname = response.data['nickname'];
+    final profileImg = response.data['profileImg'];
+    final userUuid = response.data['userUuid'];
+
+    final SocialSignUpModel user = SocialSignUpModel.fromJson({
+      "nickname": nickname,
+      "profileImg": profileImg,
+      "userUuid": userUuid,
+    });
+
+    return {
+      "result": "SUCCESS",
+      "user": user,
+    };
   }
 }

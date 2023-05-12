@@ -1,9 +1,7 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:zippy_ziggy/app_theme.dart';
 import 'package:zippy_ziggy/data/model/navigation_model.dart';
-import 'package:zippy_ziggy/data/model/user_model.dart';
 import 'package:zippy_ziggy/data/providers/navigation_provider.dart';
 import 'package:zippy_ziggy/data/providers/user_provider.dart';
 import 'package:zippy_ziggy/utils/routes/route_name.dart';
@@ -15,18 +13,16 @@ import 'package:image_picker/image_picker.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:provider/provider.dart';
 
-class SignUpPage extends StatefulWidget {
-  SocialSignUpModel data;
-  SignUpPage({
+class UpdatePage extends StatefulWidget {
+  const UpdatePage({
     super.key,
-    required this.data,
   });
 
   @override
-  State<SignUpPage> createState() => _SignUpPageState();
+  State<UpdatePage> createState() => _UpdatePageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
+class _UpdatePageState extends State<UpdatePage> {
   late File? _image;
   late String? _imageUrl;
   final TextEditingController _nicknameController = TextEditingController();
@@ -63,10 +59,17 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final provider = Provider.of<UserProvider>(
+        context,
+        listen: false,
+      );
+      nickname = provider.nickname!;
+      nicknameCheck = false;
+      // _nicknameController.value = provider.nickname!;
+    });
     _image = null;
     _imageUrl = null;
-    nickname = '';
-    nicknameCheck = true;
   }
 
   @override
@@ -74,9 +77,10 @@ class _SignUpPageState extends State<SignUpPage> {
     super.dispose();
   }
 
-  // 회원가입 요청
-  handleSignUp() async {
+  // 회원정보 요청
+  handleUpdate() async {
     final provider = Provider.of<UserProvider>(context, listen: false);
+    final navProvider = Provider.of<NavigationProvider>(context, listen: false);
     navigator(name) {
       Navigator.pushNamedAndRemoveUntil(context, name, (route) => false);
     }
@@ -84,21 +88,17 @@ class _SignUpPageState extends State<SignUpPage> {
     if (nickname.length > 10) {
       return;
     }
-    final resultNicknameCheck = await provider.getNickname(nickname);
-    if (!resultNicknameCheck) {
-      setState(() {
-        nicknameCheck = false;
-        _tryValidation();
-      });
-      return;
+
+    if (nickname != provider.nickname) {
+      final resultNicknameCheck = await provider.getNickname(nickname);
+      if (!resultNicknameCheck) {
+        setState(() {
+          nicknameCheck = false;
+          _tryValidation();
+        });
+        return;
+      }
     }
-    final userData = {
-      'nickname': nickname,
-      'name': widget.data.name,
-      'platform': widget.data.platform,
-      'platformId': widget.data.platformId,
-      'profileImg': widget.data.profileImg,
-    };
 
     // 프로필 사진 데이터
     FormData formData;
@@ -110,8 +110,8 @@ class _SignUpPageState extends State<SignUpPage> {
             filename: _imageUrl,
             contentType: MediaType('image', 'png'),
           ),
-          'user': MultipartFile.fromString(
-            json.encode(userData),
+          'nickname': MultipartFile.fromString(
+            nickname,
             contentType: MediaType('application', 'json'),
           ),
         },
@@ -124,23 +124,23 @@ class _SignUpPageState extends State<SignUpPage> {
             filename: 'empty_image.png',
             contentType: MediaType('image', 'png'),
           ),
-          'user': MultipartFile.fromString(
-            json.encode(userData),
+          'nickname': MultipartFile.fromString(
+            nickname,
             contentType: MediaType('application', 'json'),
           )
         }),
       );
     }
-    final data = await provider.postSignUp(formData);
+    final data = await provider.postUpdate(formData);
     if (data) {
-      navigator(RoutesName.main);
-      Provider.of<NavigationProvider>(context, listen: false)
-          .setNavigationItem(NavigationItem.main);
+      navigator(RoutesName.my);
+      navProvider.setNavigationItem(NavigationItem.my);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<UserProvider>(context, listen: false);
     return Scaffold(
       appBar: const MyAppbar(),
       body: Center(
@@ -152,12 +152,12 @@ class _SignUpPageState extends State<SignUpPage> {
                 key: _formKey,
                 child: Column(
                   children: [
-                    Text(
-                      '${widget.data.name}님 반가워요!',
+                    const Text(
+                      '회원정보수정',
                       style: AppTheme.headline,
                     ),
                     Text(
-                      '닉네임을 설정하고 회원가입을 완료하세요!',
+                      '닉네임과 이미지를 변경하고 수정을 완료하세요!',
                       style: AppTheme.caption.copyWith(fontSize: 14),
                     ),
                     const SizedBox(
@@ -171,7 +171,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             borderRadius: BorderRadius.circular(100),
                             child: _image == null
                                 ? Image.network(
-                                    widget.data.profileImg!,
+                                    provider.profileImg!,
                                     width: 150,
                                     height: 150,
                                     fit: BoxFit.cover,
@@ -209,7 +209,8 @@ class _SignUpPageState extends State<SignUpPage> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 24),
                       child: TextFormField(
-                        controller: _nicknameController,
+                        initialValue: provider.nickname,
+                        // controller: _nicknameController,
                         key: const ValueKey(1),
                         validator: (value) {
                           if (value!.isNotEmpty && value.length > 10) {
@@ -262,13 +263,13 @@ class _SignUpPageState extends State<SignUpPage> {
                         width: MediaQuery.of(context).size.width,
                         child: CupertinoButton(
                           onPressed: () {
-                            handleSignUp();
+                            handleUpdate();
                           },
                           padding: const EdgeInsets.all(12),
                           borderRadius: BorderRadius.circular(30),
                           color: Colors.grey,
                           child: const Text(
-                            '회원가입',
+                            '회원정보수정',
                             style: AppTheme.title,
                           ),
                         ),

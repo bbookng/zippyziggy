@@ -9,11 +9,12 @@ class PromptProvider extends ChangeNotifier {
   PromptDetailModel prompt = PromptDetailModel();
   int totalPageCnt = 0;
   int totalPromptsCnt = 0;
+  int page = 0;
   String error = "";
   bool isLoading = false;
 
   // 프롬프트 목록 조회
-  Future<void> getPromptList({keyword, category, sort, page, size}) async {
+  Future<void> getPromptList({keyword, category, sort, size}) async {
     isLoading = true;
     notifyListeners();
     try {
@@ -22,6 +23,7 @@ class PromptProvider extends ChangeNotifier {
       _promptList += data["promptList"];
       totalPageCnt = data["totalPageCnt"];
       totalPromptsCnt = data["totalPromptsCnt"];
+      page += 1;
     } catch (e) {
       error = "error";
       print('프롬프트 목록 조회 실패 $e');
@@ -70,6 +72,7 @@ class PromptProvider extends ChangeNotifier {
     _promptList = [];
     totalPageCnt = 0;
     totalPromptsCnt = 0;
+    page = 0;
     isLoading = false;
     error = "";
     prompt = PromptDetailModel();

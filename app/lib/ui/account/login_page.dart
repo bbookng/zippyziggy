@@ -6,13 +6,33 @@ import 'package:zippy_ziggy/utils/routes/route_name.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final provider = Provider.of<UserProvider>(context, listen: false);
+
+      //////////// 시작시 토큰 확인해서 로그인 시키는 로직 짜기 //////////////
+      provider.initProvider();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<UserProvider>(context, listen: false);
+    final navProvider = Provider.of<NavigationProvider>(context, listen: false);
     final navigator = Navigator.of(context);
+    // print(provider.nickname);
+    // print(provider.profileImg);
+    // print(provider.userUuid);
 
     handleKakaoLogin() async {
       final res = await provider.kakaoLogin();
@@ -25,8 +45,7 @@ class LoginPage extends StatelessWidget {
           RoutesName.main,
           (route) => false,
         );
-        Provider.of<NavigationProvider>(context, listen: false)
-            .setNavigationItem(NavigationItem.main);
+        navProvider.setNavigationItem(NavigationItem.main);
         return;
       }
     }
