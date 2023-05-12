@@ -105,7 +105,7 @@ public class Prompt {
 	public PromptDetailResponse toDetailResponse(boolean isLiked, boolean isBookmarked) {
 		PromptMessageResponse message = new PromptMessageResponse(this.getPrefix(), this.getExample(), this.getSuffix());
 		long regDt = this.getRegDt().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
-		long updDt = this.getRegDt().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
+		long updDt = this.getUpdDt().atZone(ZoneId.systemDefault()).toInstant().getEpochSecond();
 
 		return PromptDetailResponse.builder()
 				.messageResponse(message)
