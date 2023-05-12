@@ -232,7 +232,7 @@ export default function PromptUpdate() {
           <div className="title">프롬프트 수정</div>
           <div className="help">
             <AiFillQuestionCircle className="icon" />
-            <div>수정에서는 프롬프트 변경이 안되요! 수정제작기능을 이용해주세요</div>
+            {/* <div>수정기능</div> */}
           </div>
         </TitleWrapper>
         <TitleInfoWrapper>
@@ -255,6 +255,7 @@ export default function PromptUpdate() {
           prompt1={prompt1}
           prompt2={prompt2}
           example={example}
+          possible
           text={text}
           testContent={testContent}
           isLoading={GPTIsLoading}
