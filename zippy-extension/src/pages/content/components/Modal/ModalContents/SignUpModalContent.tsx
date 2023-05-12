@@ -4,6 +4,7 @@ import { checkNicknameDuplicate, signUp } from '@pages/content/apis/auth';
 import useChromeStorage from '@pages/hooks/@shared/useChromeStorage';
 import { CHROME_USERINFO_KEY } from '@pages/constants';
 import { SignUpResult } from '@pages/content/apis/auth/models';
+import Logo from '@pages/content/components/PromptContainer/Logo';
 
 interface SignUpModalContentProps {
   userData: {
@@ -72,44 +73,45 @@ const SignUpModalContent = ({ userData }: SignUpModalContentProps) => {
   };
 
   return (
-    <>
-      <button type="button" className="signup__close-button" onClick={closeModal}>
-        x
-      </button>
-      <div className="signup__wrapper">
-        <h3 className="signup__title">{name}님 반가워요!</h3>
-        <p className="signup__desc">닉네임을 설정하고 회원가입을 완료하세요!</p>
+    <div className="signup__wrapper">
+      <Logo />
+      <h3 className="signup__title">
+        <span>
+          <img src={profileImg} alt={name} />
+        </span>
+        {name}님 반가워요!
+      </h3>
+      <p className="signup__desc">닉네임을 설정하고 회원가입을 완료하세요!</p>
 
-        <form className="signup__form" onSubmit={handleSignupSubmit}>
-          <input
-            className="signup__nickname-input"
-            type="text"
-            id="nickname"
-            placeholder="닉네임을 입력해주세요"
-            value={nickname}
-            onChange={(e) => setNickname(e.target.value)}
-            required
-          />
-          <p
-            className="signup__nickname-status"
-            style={{
-              color: `${statusMessages[nicknameStatus].color}`,
-            }}
-          >
-            {statusMessages[nicknameStatus].text}
-          </p>
-          <button
-            className={`signup__submit-button ${nicknameStatus}`}
-            type="submit"
-            onClick={() => {
-              console.log('회원가입');
-            }}
-          >
-            회원가입
-          </button>
-        </form>
-      </div>
-    </>
+      <form className="signup__form" onSubmit={handleSignupSubmit}>
+        <input
+          className="signup__nickname-input"
+          type="text"
+          id="nickname"
+          placeholder="닉네임을 입력해주세요"
+          value={nickname}
+          onChange={(e) => setNickname(e.target.value)}
+          required
+        />
+        <p
+          className="signup__nickname-status"
+          style={{
+            color: `${statusMessages[nicknameStatus].color}`,
+          }}
+        >
+          {statusMessages[nicknameStatus].text}
+        </p>
+        <button
+          className="signup__submit-button"
+          type="submit"
+          onClick={() => {
+            console.log('회원가입');
+          }}
+        >
+          회원가입
+        </button>
+      </form>
+    </div>
   );
 };
 

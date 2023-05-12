@@ -27,8 +27,8 @@ const LanguageDropbox = () => {
   useEffect(() => {
     const targetLanguage =
       selectedLanguage > -1
-        ? countryData[selectedLanguage].englishName
-        : countryData.find((item) => item.navigatorLanguage === navigator.language).englishName;
+        ? countryData[selectedLanguage]?.englishName
+        : countryData.find((item) => item.navigatorLanguage === navigator.language)?.englishName;
 
     const message = {
       type: 'changeLanguage',
@@ -45,11 +45,11 @@ const LanguageDropbox = () => {
           {selectedLanguage > -1 ? (
             <>
               <FlagKit
-                code={countryData[selectedLanguage].code}
-                alt={countryData[selectedLanguage].englishName}
+                code={countryData[selectedLanguage]?.code}
+                alt={countryData[selectedLanguage]?.englishName}
                 size={18}
               />
-              {countryData[selectedLanguage].koreanName}
+              {countryData[selectedLanguage]?.koreanName}
             </>
           ) : (
             <>
@@ -74,14 +74,14 @@ const LanguageDropbox = () => {
           </li>
           {countryData
             .filter((country) => {
-              const splitKoreanName = splitKorean(country.koreanName);
+              const splitKoreanName = splitKorean(country?.koreanName);
               const splitSearchTerm = splitKorean(searchLanguage);
               return splitKoreanName.includes(splitSearchTerm);
             })
             .map((country, index) => {
               return (
                 <li
-                  key={country.englishName}
+                  key={country?.englishName}
                   className={`ZP_language-item-wrapper ${index === selectedLanguage && 'active'}`}
                 >
                   <button
@@ -89,8 +89,8 @@ const LanguageDropbox = () => {
                     className="ZP_language-item"
                     onClick={() => handleLanguageClick(index)}
                   >
-                    <FlagKit code={country.code} alt={country.englishName} size={18} />
-                    {country.koreanName}
+                    <FlagKit code={country?.code} alt={country?.englishName} size={18} />
+                    {country?.koreanName}
                   </button>
                 </li>
               );

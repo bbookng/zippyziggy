@@ -3,7 +3,6 @@
 }
 
 
-
 :root {
   /* Colors */
   // #ffffff
@@ -13,6 +12,7 @@
   // #000000
   --black-color-100: rgba(0, 0, 0, 1);
   --black-color-90: rgba(0, 0, 0, 0.9);
+  --black-color-70: rgba(0, 0, 0, 0.7);
   --black-color-50: rgba(0, 0, 0, 0.5);
   --black-color-30: rgba(0, 0, 0, 0.3);
 
@@ -35,6 +35,8 @@
 
   /* Border Color */
   --border-color: rgba(217, 217, 227, 1);
+
+  --logo-color: rgba(44, 55, 43, 1);
 
   /* 공통 css */
   // 시멘틱 컬러 (변경되지 않음)
@@ -77,6 +79,7 @@
   // #000000(라이트) -> #ffffff(다크)
   --black-color-100: rgba(255, 255, 255, 1);
   --black-color-90: rgba(255, 255, 255, 0.9);
+  --black-color-70: rgba(255, 255, 255, 0.7);
   --black-color-50: rgba(255, 255, 255, 0.5);
   --black-color-30: rgba(255, 255, 255, 0.3);
 
@@ -93,6 +96,8 @@
 
   /* Border Color */
   --border-color: rgba(255, 255, 255, 0.5);
+
+  --logo-color: rgba(255, 255, 255, 1);
 }
 
 // 멀티라인 말줄임 표시
@@ -105,7 +110,7 @@
   display: -webkit-box;
   -webkit-line-clamp: $line-cnt; /* 라인수 */
   -webkit-box-orient: vertical;
-  word-wrap:break-word;
+  word-wrap: break-word;
   line-height: $line-height;
   height: $line-height * $line-cnt; /* line-height 가 1.2em 이고 3라인을 자르기 때문에 height는 1.2em * 3 = 3.6em */
 }

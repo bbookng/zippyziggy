@@ -1,4 +1,6 @@
 // 로고
-.ZP_prompt-container__logo {
-  background-color: transparent;
+#ZP_logo {
+  path:not(:last-of-type) {
+    fill: var(--logo-color);
+  }
 }
