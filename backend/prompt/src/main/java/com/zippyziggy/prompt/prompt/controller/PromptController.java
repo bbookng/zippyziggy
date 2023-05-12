@@ -74,7 +74,7 @@ public class PromptController {
 	})
 	public ResponseEntity<PromptResponse> modifyPrompt(@PathVariable String promptUuid,
 													   @RequestPart PromptModifyRequest data,
-													   @RequestPart MultipartFile thumbnail,
+													   @RequestPart @Nullable MultipartFile thumbnail,
 													   @RequestHeader String crntMemberUuid) {
 		return ResponseEntity.ok(promptService.modifyPrompt(UUID.fromString(promptUuid), data, UUID.fromString(crntMemberUuid), thumbnail));
 	}

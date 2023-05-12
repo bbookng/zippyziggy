@@ -115,7 +115,7 @@ public class PromptService{
 		return PromptResponse.from(prompt);
 	}
 
-	public PromptResponse modifyPrompt(UUID promptUuid, PromptModifyRequest data, UUID crntMemberUuid, MultipartFile thumbnail) {
+	public PromptResponse modifyPrompt(UUID promptUuid, PromptModifyRequest data, UUID crntMemberUuid, @Nullable MultipartFile thumbnail) {
 		Prompt prompt = promptRepository
 			.findByPromptUuidAndStatusCode(promptUuid, StatusCode.OPEN)
 			.orElseThrow(PromptNotFoundException::new);
@@ -128,10 +128,10 @@ public class PromptService{
 		if (thumbnail == null) {
 			try {
 				awsS3Uploader.delete("thumbnails/", prompt.getThumbnail());
-				prompt.setThumbnail("https://zippyziggy.s3.ap-northeast-2.amazonaws.com/default/noCardImg.png");
 			} catch (RuntimeException e) {
 				throw new AwsUploadException("삭제하는데 실패하였습니다.");
 			}
+			prompt.setThumbnail("https://zippyziggy.s3.ap-northeast-2.amazonaws.com/default/noCardImg.png");
 
 		} else {
 			awsS3Uploader.delete("thumbnails/", prompt.getThumbnail());
@@ -142,6 +142,7 @@ public class PromptService{
 		prompt.setTitle(data.getTitle());
 		prompt.setDescription(data.getDescription());
 		prompt.setCategory(data.getCategory());
+		prompt.setUpdDt(LocalDateTime.now());
 
 		// 수정 시 search 서비스에 Elasticsearch UPDATE 요청
 		kafkaProducer.send("update-prompt-topic", prompt.toEsPromptRequest());
