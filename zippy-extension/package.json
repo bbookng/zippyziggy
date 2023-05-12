@@ -1,6 +1,6 @@
 {
   "name": "zippyziggy",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Modify fetch requests to OpenAI's conversation API",
   "license": "MIT",
   "scripts": {
