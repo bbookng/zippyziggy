@@ -219,7 +219,6 @@ class UserProvider extends ChangeNotifier {
     profileImg = null;
     userUuid = null;
 
-    getMyInfo();
     notifyListeners();
   }
 

@@ -88,7 +88,7 @@ class _BookmarkedPromptListState extends State<BookmarkedPromptList> {
       // width: MediaQuery.of(context).size.width,
       // height: MediaQuery.of(context).size.height * 0.5,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 36),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
         child: ListView.separated(
           itemCount: promptList.length + 1,
           itemBuilder: (context, index) {

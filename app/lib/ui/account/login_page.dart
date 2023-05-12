@@ -17,12 +17,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final provider = Provider.of<UserProvider>(context, listen: false);
-
-      //////////// 시작시 토큰 확인해서 로그인 시키는 로직 짜기 //////////////
-      provider.initProvider();
-    });
   }
 
   @override
@@ -30,9 +24,6 @@ class _LoginPageState extends State<LoginPage> {
     final provider = Provider.of<UserProvider>(context, listen: false);
     final navProvider = Provider.of<NavigationProvider>(context, listen: false);
     final navigator = Navigator.of(context);
-    // print(provider.nickname);
-    // print(provider.profileImg);
-    // print(provider.userUuid);
 
     handleKakaoLogin() async {
       final res = await provider.kakaoLogin();
@@ -59,14 +50,24 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  SizedBox(
+                    child: Image.asset(
+                      'assets/images/Logo_dark.png',
+                      width: MediaQuery.of(context).size.width * 0.616666,
+                      height: MediaQuery.of(context).size.height * 0.0859375,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 50,
+                  ),
                   SocialLoginButton(
                     'Kakao_Logo_Yellow.png',
                     handleKakaoLogin,
                     '카카오로 시작하기',
-                    const Color.fromRGBO(255, 255, 22, 1),
+                    Colors.yellow,
                   ),
                   const SizedBox(
-                    height: 10,
+                    height: 20,
                   ),
                   SocialLoginButton(
                     'Google_Logo.png',

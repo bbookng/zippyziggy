@@ -6,6 +6,7 @@ import 'package:zippy_ziggy/ui/account/update_page.dart';
 import 'package:zippy_ziggy/ui/main_page.dart';
 import 'package:zippy_ziggy/ui/prompt/prompt_detail_page.dart';
 import 'package:zippy_ziggy/ui/prompt/prompt_page.dart';
+import 'package:zippy_ziggy/ui/splash_page.dart';
 import 'package:zippy_ziggy/utils/routes/route_name.dart';
 import 'package:flutter/material.dart';
 
@@ -43,6 +44,9 @@ class Routes {
             data: data,
           ),
         );
+      case RoutesName.splash:
+        return MaterialPageRoute(
+            builder: (BuildContext context) => const SplashPage());
       default:
         return MaterialPageRoute(
           builder: (_) {

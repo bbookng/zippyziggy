@@ -48,10 +48,6 @@ class _MyPageState extends State<MyPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<UserProvider>(context);
-    // print(userProvider.nickname);
-    // print(userProvider.profileImg);
-    // print(userProvider.userUuid);
     print('마이페이지 렌더링');
     return Scaffold(
       appBar: const MyAppbar(),
@@ -64,13 +60,15 @@ class _MyPageState extends State<MyPage> with TickerProviderStateMixin {
               slivers: [
                 SliverAppBar(
                   floating: true,
-                  expandedHeight: MediaQuery.of(context).size.height * 0.4,
+                  toolbarHeight: 60,
+                  expandedHeight: 320,
                   pinned: true,
                   leading: const SizedBox(),
                   flexibleSpace: FlexibleSpaceBar(
                     expandedTitleScale: 1,
                     titlePadding: const EdgeInsets.symmetric(
                       horizontal: 12,
+                      vertical: 12,
                     ),
                     title: TabBar(
                       controller: _tabController,
@@ -80,14 +78,14 @@ class _MyPageState extends State<MyPage> with TickerProviderStateMixin {
                       ),
                       tabs: myTabs,
                     ),
-                    background: MyInfo(userProvider: userProvider),
+                    background: const MyInfo(),
                   ),
                 ),
                 SliverList(
                   delegate: SliverChildListDelegate(
                     [
                       SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.8,
+                        height: MediaQuery.of(context).size.height - 200,
                         child: TabBarView(
                           controller: _tabController,
                           children: const [

@@ -7,13 +7,11 @@ import 'package:zippy_ziggy/utils/routes/route_name.dart';
 class MyInfo extends StatelessWidget {
   const MyInfo({
     super.key,
-    required this.userProvider,
   });
-
-  final UserProvider userProvider;
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UserProvider>(context);
     return Column(
       children: [
         const SizedBox(
@@ -24,12 +22,21 @@ class MyInfo extends StatelessWidget {
         Center(
           child: ClipRRect(
             borderRadius: BorderRadius.circular(100),
-            child: Image.network(
-              userProvider.profileImg!,
-              width: 120,
-              height: 120,
-              fit: BoxFit.cover,
-            ),
+            child: userProvider.profileImg != null
+                ? Image.network(
+                    userProvider.profileImg!,
+                    width: 120,
+                    height: 120,
+                    fit: BoxFit.cover,
+                  )
+                : ClipRRect(
+                    borderRadius: BorderRadius.circular(60),
+                    child: Container(
+                      width: 120,
+                      height: 120,
+                      color: AppTheme.darkGrey,
+                    ),
+                  ),
           ),
         ),
         const SizedBox(
@@ -82,13 +89,14 @@ class MyInfo extends StatelessWidget {
                 ),
                 onPressed: () async {
                   final navigator = Navigator.of(context);
-                  final data =
-                      await Provider.of<UserProvider>(context, listen: false)
-                          .postLogout();
-                  if (data) {
-                    navigator.pushNamedAndRemoveUntil(
-                        RoutesName.login, (route) => false);
-                  }
+                  await Provider.of<UserProvider>(context, listen: false)
+                      .postLogout()
+                      .then(
+                        (value) => {
+                          navigator.pushNamedAndRemoveUntil(
+                              RoutesName.login, (route) => false)
+                        },
+                      );
                 },
               ),
             ),

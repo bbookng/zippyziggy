@@ -42,6 +42,7 @@ class _PromptListItemState extends State<PromptListItem> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Container(
+            height: 90,
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
               color: Colors.black.withOpacity(0.2),

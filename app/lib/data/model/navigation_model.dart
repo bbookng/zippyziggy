@@ -3,4 +3,5 @@ enum NavigationItem {
   main,
   prompt,
   my,
+  splash,
 }
