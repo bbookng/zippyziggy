@@ -32,10 +32,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
-import java.util.Base64;
-import java.util.Date;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static com.auth0.jwt.JWT.require;
 
@@ -71,41 +68,45 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
             if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
                 return onError(exchange, "No authorization header", HttpStatus.UNAUTHORIZED);
             }
-            String token = resolveToken(request);
-            if (token != null) {
-                try {
-                    // accessToken인지 refreshToken인지 확인
-                    JwtPayLoadResponseDto jwtPayLoadResponseDto = checkToken(token);
-                    String tokenType = jwtPayLoadResponseDto.getSub();
-                    log.info("tokenType =  " + tokenType);
+            else {
 
-                    // accessToken인 경우
-                    JwtResponse jwtResponse = validateRefreshToken(token);
-                    if (tokenType.equals("accessToken")) {
-                        //유효한 access토큰인지 확인
-                        log.info("accessTokenJwtResponse = " + jwtResponse);
+                String token = resolveToken(request);
+                if (token != null) {
+                    try {
+                        // accessToken인지 refreshToken인지 확인
+                        JwtPayLoadResponseDto jwtPayLoadResponseDto = checkToken(token);
+                        String tokenType = jwtPayLoadResponseDto.getSub();
+
+                        log.info("tokenType =  " + tokenType);
+
+                        // accessToken인 경우
+                        JwtResponse jwtResponse = validateRefreshToken(token);
+
+                        if (tokenType.equals("accessToken")) {
+                            //유효한 access토큰인지 확인
+                            log.info("accessTokenJwtResponse = " + jwtResponse);
+                        }
+
+                        // refreshToken인 경우
+                        else {
+                            //유효한 refresh토큰인지 확인
+                            log.info("refreshTokenJwtResponse = " + jwtResponse);
+                        }
+
+                        // 토큰이 유효하면 토큰으로부터 유저 정보를 받아온다.
+                        DecodedJWT verify = require(Algorithm.HMAC512(jwtSecretKey)).build().verify(token);
+                        String userUuid = verify.getClaim("userUuid").asString();
+
+                        exchange.getRequest()
+                                .mutate()
+                                .header("crntMemberUuid", userUuid)
+                                .build();
+
+                    } catch (TokenExpiredException e) {
+                        return onError(exchange, "토큰이 만료되었습니다.", HttpStatus.UNAUTHORIZED);
+                    } catch (Exception e) {
+                        return onError(exchange, "토큰이 유효하지 않습니다.", HttpStatus.UNAUTHORIZED);
                     }
-                    // refreshToken인 경우
-                    else {
-                        //유효한 refresh토큰인지 확인
-                        log.info("refreshTokenJwtResponse = " + jwtResponse);
-                    }
-
-                    // 토큰이 유효하면 토큰으로부터 유저 정보를 받아온다.
-                    DecodedJWT verify = require(Algorithm.HMAC512(jwtSecretKey)).build().verify(token);
-                    String userUuid = verify.getClaim("userUuid").asString();
-
-                    exchange.getRequest()
-                            .mutate()
-                            .header("crntMemberUuid", userUuid)
-                            .build();
-
-                } catch (JWTDecodeException e) {
-                    onError(exchange, "Can not decode token", HttpStatus.UNAUTHORIZED);
-                } catch (TokenExpiredException e) {
-                    onError(exchange, "Token is expired", HttpStatus.UNAUTHORIZED);
-                } catch (Exception e) {
-                    onError(exchange, "어떤어떤익셉션", HttpStatus.UNAUTHORIZED);
                 }
             }
             return chain.filter(exchange);
@@ -118,49 +119,27 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
         try {
             // token 내용이 유효한지 확인
             boolean contentCheck = tokenContentCheck(refreshToken);
-            // DB의 refreshToken과 일치하는지 확인
-            boolean refreshTokenDBCheck = refreshTokenDBCheck(refreshToken);
 
-            if (!contentCheck || !refreshTokenDBCheck) {
-                return JwtResponse.REFRESH_TOKEN_MISMATCH;
+            if (!contentCheck) {
+                throw new JWTDecodeException(JwtResponse.REFRESH_TOKEN_MISMATCH.getJwtResponse());
             }
             DecodedJWT verify = require(Algorithm.HMAC512(jwtSecretKey)).build().verify(refreshToken);
-
             // 만료시간이 지난 경우 새로운 refreshToken 생성
             if (verify.getExpiresAt().before(new Date())) {
 
-                return JwtResponse.REFRESH_TOKEN_EXPIRED;
+                throw new TokenExpiredException("만료된 refresh 토큰입니다.", Instant.now());
             }
         } catch (TokenExpiredException e) {
 
-            System.out.println("만료된 토큰입니다." + e);
-            return JwtResponse.REFRESH_TOKEN_EXPIRED;
+            log.info("만료된 토큰입니다." + e);
+            throw new TokenExpiredException("만료된 refresh 토큰입니다.", Instant.now());
 
         } catch (Exception e) {
-
-            System.out.println("유효하지 않은 토큰입니다" + e);
-            return JwtResponse.REFRESH_TOKEN_MISMATCH;
+            log.info("유효하지 않은 토큰입니다" + e);
+            throw new JWTDecodeException(JwtResponse.REFRESH_TOKEN_MISMATCH.getJwtResponse());
 
         }
         return JwtResponse.REFRESH_TOKEN_SUCCESS;
-    }
-
-    public boolean refreshTokenDBCheck(String refreshToken) throws Exception {
-
-        Member member = findMemberByJWT(refreshToken);
-
-        if (!member.getRefreshToken().equals(refreshToken)) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    public Member findMemberByJWT(String token) {
-        DecodedJWT verify = require(Algorithm.HMAC512(jwtSecretKey)).build().verify(token);
-        String userUuid = verify.getClaim("userUuid").asString();
-        Optional<Member> member = memberRepository.findByUserUuidEquals(UUID.fromString(userUuid));
-        return member.get();
     }
 
     private JwtResponse validateAccessToken(String accessToken) {
@@ -184,12 +163,10 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
 
         } catch (TokenExpiredException e) {
 
-            System.out.println("만료된 토큰입니다." + e);
             throw new TokenExpiredException("만료된 토큰입니다.", Instant.now());
 
         } catch (Exception e) {
 
-            System.out.println("유효하지 않은 토큰입니다" + e);
             throw new JWTDecodeException(JwtResponse.ACCESS_TOKEN_MISMATCH.getJwtResponse());
 
         }
@@ -200,7 +177,6 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
     private boolean tokenContentCheck(String token) throws NoSuchAlgorithmException, InvalidKeyException {
 
         DecodedJWT verify = require(Algorithm.HMAC512(jwtSecretKey)).build().verify(token);
-
         // token이 가지고 있는 signature 추출
         String signature = verify.getSignature();
 
@@ -233,7 +209,6 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
         String decode = new String(Base64Utils.decode(s.getBytes()));
         try {
             JwtPayLoadResponseDto jwtPayLoadResponseDto = objectMapper.readValue(decode, JwtPayLoadResponseDto.class);
-
             return jwtPayLoadResponseDto;
         } catch (Exception e) {
             throw new JWTDecodeException("유효하지 않은 토큰입니다.");
@@ -244,7 +219,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
     private Mono<Void> onError(ServerWebExchange exchange, String err, HttpStatus httpStatus) {
         ServerHttpResponse response = exchange.getResponse();
         response.setStatusCode(httpStatus);
-
+        log.error(err);
         return response.setComplete();
     }
 
