@@ -27,7 +27,7 @@ spring:
       globalcors:
         cors-configurations:
           '[/**]':
-            allowedOrigins: 'https://zippyziggy.kr/api/prompts,http://zippyziggy.kr:3000,http://k8e205.p.ssafy.io:3000,http://localhost:3000,http://zippyziggy.kr,https://zippyziggy.kr,http://localhost:8080,http://k8e205.p.ssafy.io:8000,59.20.195.127:3000,59.20.195.127,https://chat.openai.com'
+            allowedOrigins: 'https://zippyziggy.kr/api/prompts,http://zippyziggy.kr:3000,http://k8e205.p.ssafy.io:3000,http://localhost:3000,http://zippyziggy.kr,https://zippyziggy.kr,http://localhost:8080,http://k8e205.p.ssafy.io:8000,59.20.195.127:3000,59.20.195.127,https://chat.openai.com,https://zippyziggy.kr/api/notice'
             allow-credentials: true
             allowedHeaders:
               - x-requested-with
@@ -219,6 +219,7 @@ spring:
             - Path=/api/notice/**
             - Method=GET, POST, PUT, DELETE, OPTIONS
           filters:
+            - PromptAuthorizationHeaderFilter
             - RewritePath=/api/(?<segment>.*), /$\{segment}
 
         - id: openapi

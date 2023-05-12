@@ -4,11 +4,6 @@ server:
 spring:
   application:
     name: notice
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/noti?serverTimezone=UTC&characterEncoding=UTF-8
-    username: root
-    password: 1234
   jpa:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     open-in-view: false

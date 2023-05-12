@@ -45,6 +45,18 @@ dependencies {
 
 	// Swagger
 	implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
+
+	// kafka
+	implementation 'org.springframework.kafka:spring-kafka'
+
+	// chatGpt
+	implementation group: 'com.theokanning.openai-gpt3-java', name: 'client', version: '0.9.0'
+	implementation 'io.github.flashvayne:chatgpt-spring-boot-starter:1.0.4'
+
+	// zipkin, sleuth
+	implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+	implementation 'org.springframework.cloud:spring-cloud-starter-zipkin:2.2.8.RELEASE'
+
 }
 
 dependencyManagement {
