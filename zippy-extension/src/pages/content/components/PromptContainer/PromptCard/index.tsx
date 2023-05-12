@@ -40,12 +40,9 @@ const PromptCard = ({ prompt }: PromptCardProps) => {
     const message = {
       type: 'selectPrompt',
       data: {
-        prompt: `프롬프트 상세 링크 ${ZIPPY_SITE_URL}/prompts/${promptUuid}\n
-      프롬프트 상세 정보는\n\n ${prefix || ''} ${PROMPT_PLACEHOLDER} ${
-          suffix || ''
-        } ${TARGET_LANGUAGE_PLACEHOLDER}\n\n 답변은 아래의 형식에 맞춰서 답변해줘.
-        1. [🔗프롬프트 상세정보](프롬프트 상세 링크)를 첫줄에 출력
-        2. 공백 한줄 출력후 답변을 출력`.trim(),
+        prompt: `프롬프트 상세 정보 ${ZIPPY_SITE_URL}/prompts/${promptUuid}\n\n ${
+          prefix || ''
+        } ${PROMPT_PLACEHOLDER} ${suffix || ''} ${TARGET_LANGUAGE_PLACEHOLDER}`.trim(),
       },
     };
 

@@ -97,7 +97,7 @@ if (currentUrl.startsWith(ZIPPY_SITE_URL)) {
           $promptPlayDesktop.addEventListener('click', () => {
             chrome.runtime.sendMessage({
               type: MK_DATA_FROM_PROMPT_CARD_PLAY,
-              data: { title, uuid },
+              data: { title, prefix, example, suffix, uuid },
             });
           });
 
