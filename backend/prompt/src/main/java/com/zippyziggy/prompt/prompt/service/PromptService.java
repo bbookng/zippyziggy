@@ -8,6 +8,7 @@ import com.zippyziggy.prompt.prompt.dto.request.AppChatGptRequest;
 import com.zippyziggy.prompt.prompt.dto.request.ChatGptMessage;
 import com.zippyziggy.prompt.prompt.dto.request.ChatGptRequest;
 import com.zippyziggy.prompt.prompt.dto.request.GptApiRequest;
+import com.zippyziggy.prompt.prompt.dto.request.NoticeRequest;
 import com.zippyziggy.prompt.prompt.dto.request.PromptCntRequest;
 import com.zippyziggy.prompt.prompt.dto.request.PromptModifyRequest;
 import com.zippyziggy.prompt.prompt.dto.request.PromptRatingRequest;
@@ -127,7 +128,7 @@ public class PromptService{
 		if (thumbnail == null) {
 			try {
 				awsS3Uploader.delete("thumbnails/", prompt.getThumbnail());
-				prompt.setThumbnail("default thumbnail url");
+				prompt.setThumbnail("https://zippyziggy.s3.ap-northeast-2.amazonaws.com/default/noCardImg.png");
 			} catch (RuntimeException e) {
 				throw new AwsUploadException("삭제하는데 실패하였습니다.");
 			}
@@ -346,6 +347,11 @@ public class PromptService{
 			prompt.setLikeCnt(prompt.getLikeCnt() + 1);
 			promptRepository.save(prompt);
 
+			kafkaProducer.sendNotification("send-notification",
+				new NoticeRequest(prompt.getMemberUuid().toString(),
+					"'" + prompt.getTitle() + "'" + "게시물 좋아요 + 1",
+					"zippyziggy.kr/prompts/" + prompt.getPromptUuid().toString()));
+
 		} else {
 
 			// 프롬프트 - 사용자 좋아요 취소
@@ -516,6 +522,13 @@ public class PromptService{
 				.orElseThrow(PromptNotFoundException::new);
 			PromptReport promptReport = PromptReport.from(UUID.fromString(crntMemberUuid), prompt, promptReportRequest.getContent());
 			promptReportRepository.save(promptReport);
+
+			kafkaProducer.sendNotification("send-notification",
+				new NoticeRequest(prompt.getMemberUuid().toString(),
+					"'" + prompt.getTitle() + "'" + "게시물이 신고되었습니다.",
+					"zippyziggy.kr/prompts/" + prompt.getPromptUuid().toString()));
+
+
 		} else {
 			throw new ReportAlreadyExistException();
 		}
@@ -647,4 +660,18 @@ public class PromptService{
 		final String answer = response.getChoices().get(0).getMessage().getContent();
 		return new GptApiResponse(answer);
     }
+
+	public NoticeRequest sendUserNotice(String promptUuid, String crntMemberUuid) {
+
+		Prompt prompt = promptRepository.findByPromptUuid(UUID.fromString(promptUuid))
+			.orElseThrow(PromptNotFoundException::new);
+
+		NoticeRequest newNotice = new NoticeRequest(crntMemberUuid,
+			"사용해본 프롬프트를 평가하세요 : " + prompt.getTitle(),
+			"평가 url");
+
+		kafkaProducer.sendNotification("send-notification", newNotice);
+
+		return newNotice;
+	}
 }
