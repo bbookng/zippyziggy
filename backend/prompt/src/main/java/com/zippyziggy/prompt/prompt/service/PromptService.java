@@ -10,7 +10,6 @@ import com.zippyziggy.prompt.prompt.dto.request.ChatGptRequest;
 import com.zippyziggy.prompt.prompt.dto.request.GptApiRequest;
 import com.zippyziggy.prompt.prompt.dto.request.NoticeRequest;
 import com.zippyziggy.prompt.prompt.dto.request.PromptCntRequest;
-import com.zippyziggy.prompt.prompt.dto.request.PromptModifyRequest;
 import com.zippyziggy.prompt.prompt.dto.request.PromptRatingRequest;
 import com.zippyziggy.prompt.prompt.dto.request.PromptReportRequest;
 import com.zippyziggy.prompt.prompt.dto.request.PromptRequest;
@@ -115,7 +114,7 @@ public class PromptService{
 		return PromptResponse.from(prompt);
 	}
 
-	public PromptResponse modifyPrompt(UUID promptUuid, PromptModifyRequest data, UUID crntMemberUuid, @Nullable MultipartFile thumbnail) {
+	public PromptResponse modifyPrompt(UUID promptUuid, PromptRequest data, UUID crntMemberUuid, @Nullable MultipartFile thumbnail) {
 		Prompt prompt = promptRepository
 				.findByPromptUuidAndStatusCode(promptUuid, StatusCode.OPEN)
 				.orElseThrow(PromptNotFoundException::new);
@@ -143,6 +142,9 @@ public class PromptService{
 		prompt.setDescription(data.getDescription());
 		prompt.setCategory(data.getCategory());
 		prompt.setUpdDt(LocalDateTime.now());
+		prompt.setPrefix(data.getMessage().getPrefix());
+		prompt.setExample(data.getMessage().getExample());
+		prompt.setSuffix(data.getMessage().getSuffix());
 
 		// 수정 시 search 서비스에 Elasticsearch UPDATE 요청
 		kafkaProducer.send("update-prompt-topic", prompt.toEsPromptRequest());

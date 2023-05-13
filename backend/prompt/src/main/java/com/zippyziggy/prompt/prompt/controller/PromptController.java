@@ -73,7 +73,7 @@ public class PromptController {
 			@ApiResponse(responseCode = "500", description = "서버 에러")
 	})
 	public ResponseEntity<PromptResponse> modifyPrompt(@PathVariable String promptUuid,
-													   @RequestPart PromptModifyRequest data,
+													   @RequestPart PromptRequest data,
 													   @RequestPart @Nullable MultipartFile thumbnail,
 													   @RequestHeader String crntMemberUuid) {
 		return ResponseEntity.ok(promptService.modifyPrompt(UUID.fromString(promptUuid), data, UUID.fromString(crntMemberUuid), thumbnail));
