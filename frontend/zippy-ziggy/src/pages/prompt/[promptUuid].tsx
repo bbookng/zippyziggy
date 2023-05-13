@@ -11,12 +11,15 @@ import { useAppSelector } from '@/hooks/reduxHook';
 import { checkInputFormToast } from '@/lib/utils';
 import { ContainerTitle, TitleInfoWrapper, TitleWrapper } from '@/styles/prompt/Create.style';
 import { useQuery } from '@tanstack/react-query';
-import axios from 'axios';
+import axios, { Axios } from 'axios';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { AiFillQuestionCircle } from 'react-icons/ai';
 import styled from 'styled-components';
+import Toastify from 'toastify-js';
+import message from '@/assets/message.json';
+import toastifyCSS from '@/assets/toastify.json';
 
 const FooterBox = styled.div`
   display: block;
@@ -96,21 +99,48 @@ export default function PromptUpdate() {
 
   // URL의 이미지 다운로드
   async function getFile(url: string) {
-    const {
-      data: { type, arrayBuffer },
-    } = await axios.get('/api/file', { params: { url } });
+    await axios
+      .get<Blob>(url, { responseType: 'blob' })
+      .then((res) => {
+        const myFile = new File([res.data], 'imageName');
+        const FileList = [myFile];
+        setValue('image', FileList);
+        // const reader = new FileReader();
+        // reader.onload = (ev) => {
+        //   const previewImage = String(ev.target?.result);
+        //   setMyImage(previewImage); // myImage라는 state에 저장했음
+        // };
+        // reader.readAsDataURL(myFile);
+      })
+      .catch(() => {
+        Toastify({
+          text: message.PromptImageError,
+          duration: 1000,
+          position: 'center',
+          stopOnFocus: true,
+          style: toastifyCSS.fail,
+        }).showToast();
+      });
 
-    const blob = new Blob([Uint8Array.from(arrayBuffer)], { type });
-    const arr = url.split('/');
-    const FileList = [
-      new File([blob], `promptImg${arr[arr.length - 1].split('.')[1]}`, {
-        type: `image/${arr[arr.length - 1].split('.')[1]}`,
-      }),
-    ];
-    setValue('image', FileList);
+    // const blob = await rawData.blob();
+    // const { type } = blob;
+    // const arrayBuffer = Object.values(new Uint8Array(await blob.arrayBuffer()));
+
+    // // const {
+    // //   data: { type, arrayBuffer },
+    // // } = await axios.get('/api/file', { params: { url } });
+
+    // const newBlob = new Blob([Uint8Array.from(arrayBuffer)], { type });
+
+    // const arr = url.split('/');
+    // const FileList = [
+    //   new File([newBlob], `promptImg${arr[arr.length - 1].split('.')[1]}`, {
+    //     type: `image/${arr[arr.length - 1].split('.')[1]}`,
+    //   }),
+    // ];
+    // setValue('image', FileList);
     // <a> 태그의 href 속성값으로 들어갈 다운로드 URL
-    const downloadUrl = window.URL.createObjectURL(blob);
-    return downloadUrl;
+    // const downloadUrl = window.URL.createObjectURL(blob);
   }
 
   // Prompt 상세 요청 API

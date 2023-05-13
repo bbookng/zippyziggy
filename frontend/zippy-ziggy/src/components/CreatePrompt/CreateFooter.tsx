@@ -46,13 +46,7 @@ export default function CreateFooter({ isNext, isNew, fork, handleNext, handlePr
               포크 생성
             </Button>
           ) : (
-            <Button
-              color="navColor"
-              fontColor="blackColor90"
-              width="7rem"
-              className="testBtn"
-              onClick={handlePrompt}
-            >
+            <Button width="7rem" className="testBtn" onClick={handlePrompt}>
               게시글 수정
             </Button>
           )}

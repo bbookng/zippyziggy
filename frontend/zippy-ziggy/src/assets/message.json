@@ -16,6 +16,8 @@
   "CheckInputForm": "👇 입력된 폼을 다시 확인해주세요",
   "CheckInputCatagoryForm": "👇 카테고리를 설정해주세요",
 
+  "PromptImageError": "❌ 프롬프트 이미지를 새로 등록해주세요",
+
   "DeletePromptSuccess": "✅ 프롬프트를 삭제하셨습니다",
   "DeletePromptFail": "❌ 프롬프트 삭제에 실패하셨습니다",
 
