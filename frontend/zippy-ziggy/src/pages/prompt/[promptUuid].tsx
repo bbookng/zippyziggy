@@ -100,7 +100,7 @@ export default function PromptUpdate() {
   // URL의 이미지 다운로드
   async function getFile(url: string) {
     await axios
-      .get<Blob>(url, { responseType: 'blob' })
+      .get<Blob>(url, { withCredentials: true, responseType: 'blob' })
       .then((res) => {
         const myFile = new File([res.data], 'imageName');
         const FileList = [myFile];
@@ -262,7 +262,7 @@ export default function PromptUpdate() {
         <TitleWrapper isNext={isNext}>
           <div className="title">프롬프트 수정</div>
           <div className="help">
-            <AiFillQuestionCircle className="icon" />
+            {/* <AiFillQuestionCircle className="icon" /> */}
             {/* <div>수정기능</div> */}
           </div>
         </TitleWrapper>
