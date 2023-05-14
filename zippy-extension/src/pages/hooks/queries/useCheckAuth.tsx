@@ -17,6 +17,7 @@ const useCheckAuth = (code: string, redirectUrl: string) => {
     },
     'sync'
   );
+  const socialPlatform = sessionStorage.getItem('social');
   const params = {
     code,
     redirect: redirectUrl,
@@ -24,8 +25,8 @@ const useCheckAuth = (code: string, redirectUrl: string) => {
 
   return useQuery<CheckAuthResult>({
     queryKey: ['checkAuth'],
-    queryFn: () => checkAuth(params),
-    enabled: !!code,
+    queryFn: () => checkAuth(params, socialPlatform as 'kakao' | 'google'),
+    enabled: !!code && !!socialPlatform,
     onSuccess: (data) => {
       // 주소창에 있는 code 제거
       if (window.location.href.includes('?code=')) {

@@ -8,13 +8,13 @@ import {
   TARGET_LANGUAGE_PLACEHOLDER,
   ZIPPY_SITE_URL,
   ZP_PROMPT_TITLE_HOLDER_ID,
-} from "@pages/constants";
-import logOnDev from "@pages/content/utils/@shared/logging";
-import { sanitizeInput } from "@src/utils";
+} from '@pages/constants';
+import logOnDev from '@pages/content/utils/@shared/logging';
+import { sanitizeInput } from '@src/utils';
 
 const ZIPPY = (window.ZIPPYZIGGY = {
   init() {
-    console.log('ZP init');
+    logOnDev.log('ZP init');
     if (localStorage.getItem(LAST_TARGET_LANGUAGE_KEY) === null) {
       this.targetLanguage = DEFAULT_TARGET_LANGUAGE;
     }
@@ -101,9 +101,10 @@ window.addEventListener('message', function (event) {
         data: { title, suffix, prefix, example, uuid },
       } = event.data;
 
-      const prompt = `프롬프트 상세 링크 ${ZIPPY_SITE_URL}/prompts/${uuid}\n\n답변은 아래의 형식에 맞춰서 답변해줘.\n1. [🔗프롬프트 상세정보](프롬프트 상세 링크)를 첫줄에 출력\n2. 공백 한줄 출력후 답변을 출력\n\n${
-        prefix || ''
-      } ${PROMPT_PLACEHOLDER} ${suffix || ''}${TARGET_LANGUAGE_PLACEHOLDER}`.trim();
+      const prompt =
+        `프롬프트 상세 링크 ${ZIPPY_SITE_URL}/prompts/${uuid}\n\n답변은 아래의 형식에 맞춰서 답변해줘.\n1. [🔗프롬프트 상세정보](프롬프트 상세 링크)를 첫줄에 출력\n2. 공백 한줄 출력후 답변을 출력\n\n${
+          prefix || ''
+        } ${PROMPT_PLACEHOLDER} ${suffix || ''}${TARGET_LANGUAGE_PLACEHOLDER}`.trim();
       ZIPPY.selectedPrompt = prompt;
 
       const $title = document.querySelector(`#${ZP_PROMPT_TITLE_HOLDER_ID}`);

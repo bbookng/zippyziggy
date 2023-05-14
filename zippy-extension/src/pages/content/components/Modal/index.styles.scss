@@ -138,6 +138,19 @@
           transform: translate3d(0,-3px,0);
         }
       }
+
+      .signup__nickname-status{
+        text-align: left;
+      }
+      .signup__nickname-status.error {
+        color: var(--danger-color);
+      }
+      .signup__nickname-status.default {
+        color: transparent;
+      }
+      .signup__nickname-status.success {
+        color: var(--success-color);
+      }
     }
   }
 }

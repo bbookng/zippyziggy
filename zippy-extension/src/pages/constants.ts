@@ -43,6 +43,7 @@ const PAGE_PER_GROUP = 10; // 한 번에 표시할 페이지 수
 /* Chrome message type */
 const MK_REQUEST_DATA = 'requestData';
 const MK_SIGN_OUT = 'signOut';
+const MK_RESIGN = 'resign';
 const MK_DATA_FROM_PROMPT_CARD_PLAY = 'dataFromPromptCardPlay';
 
 export {
@@ -76,4 +77,5 @@ export {
   MK_SIGN_OUT,
   MK_REQUEST_DATA,
   MK_DATA_FROM_PROMPT_CARD_PLAY,
+  MK_RESIGN,
 };

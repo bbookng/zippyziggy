@@ -5,6 +5,7 @@ import useChromeStorage from '@pages/hooks/@shared/useChromeStorage';
 import { CHROME_USERINFO_KEY } from '@pages/constants';
 import { SignUpResult } from '@pages/content/apis/auth/models';
 import Logo from '@pages/content/components/PromptContainer/Logo';
+import delayPromise from '@pages/content/utils/@shared/delay-promise';
 
 interface SignUpModalContentProps {
   userData: {
@@ -17,9 +18,11 @@ interface SignUpModalContentProps {
 
 const statusMessages = {
   default: { color: 'transparent', text: '\u00A0' },
-  error: { color: 'dangerColor', text: '검증에 실패했어요!' },
+  error: { color: 'dangerColor', text: '중복된 닉네임이 있어요!' },
   success: { color: 'successColor', text: '검증에 성공했어요!' },
 };
+
+const skipLoopCycleOnce = async () => delayPromise(1);
 
 const SignUpModalContent = ({ userData }: SignUpModalContentProps) => {
   const [userData1, setUserData] = useChromeStorage<SignUpResult>(
@@ -38,7 +41,6 @@ const SignUpModalContent = ({ userData }: SignUpModalContentProps) => {
 
   const handleSignupSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     const { isDuplicate } = await checkNicknameDuplicate(nickname);
 
     if (isDuplicate) {
@@ -61,14 +63,10 @@ const SignUpModalContent = ({ userData }: SignUpModalContentProps) => {
 
     // 회원가입 요청
     const signUpResult = await signUp(formData);
-    if (signUpResult) {
-      setUserData({
-        userUuid: signUpResult.userUuid,
-        nickname: signUpResult.nickname,
-        profileImg: signUpResult.profileImg,
-      });
-    }
 
+    setUserData(signUpResult);
+    // userData 세팅을 기다리는 해키한 코드
+    await skipLoopCycleOnce();
     closeModal();
   };
 
@@ -93,21 +91,10 @@ const SignUpModalContent = ({ userData }: SignUpModalContentProps) => {
           onChange={(e) => setNickname(e.target.value)}
           required
         />
-        <p
-          className="signup__nickname-status"
-          style={{
-            color: `${statusMessages[nicknameStatus].color}`,
-          }}
-        >
+        <p className={`signup__nickname-status ${nicknameStatus}`}>
           {statusMessages[nicknameStatus].text}
         </p>
-        <button
-          className="signup__submit-button"
-          type="submit"
-          onClick={() => {
-            console.log('회원가입');
-          }}
-        >
+        <button type="submit" className="signup__submit-button">
           회원가입
         </button>
       </form>

@@ -8,8 +8,10 @@ import {
   CHROME_USERINFO_KEY,
   MK_DATA_FROM_PROMPT_CARD_PLAY,
   MK_REQUEST_DATA,
+  MK_RESIGN,
   MK_SIGN_OUT,
 } from '@pages/constants';
+import logOnDev from '@pages/content/utils/@shared/logging';
 
 reloadOnUpdate('pages/background');
 
@@ -45,7 +47,7 @@ const sendDataToGPTSite = (data) => {
       if (sender.tab.id === tab.id && message.type === 'contentScriptReady') {
         // content script가 준비된 경우 메시지 전송
         chrome.runtime.sendMessage({ type: 'promptCardPlay', data }, () => {
-          console.log('전송완료');
+          logOnDev.log('zippy to GPT 프롬프트 데이터 전송완료');
         });
 
         // 리스너 제거
@@ -63,8 +65,14 @@ let creatingTab = false;
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   switch (message.type) {
     case MK_SIGN_OUT:
-      chrome.storage.sync.remove(CHROME_USERINFO_KEY);
-      chrome.storage.sync.remove('accessToken');
+    case MK_RESIGN:
+      chrome.storage.sync.get(CHROME_USERINFO_KEY, (items) => {
+        if (items[CHROME_USERINFO_KEY].nickname === message.name) {
+          chrome.storage.sync.remove(CHROME_USERINFO_KEY);
+          chrome.storage.sync.remove('accessToken');
+        }
+      });
+
       break;
     // 카드에 있는 play 버튼을 눌렀을 때..
     case MK_DATA_FROM_PROMPT_CARD_PLAY:

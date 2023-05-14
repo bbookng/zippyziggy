@@ -28,13 +28,24 @@ const isCheckSignUpResult = (data: CheckAuthResponse): data is CheckSignUpRespon
  * @returns {Promise<CheckAuthResult>} - 사용자의 인증 확인 결과를 포함하는 객체로 이루어진 프로미스.
  */
 export const checkAuth = withErrorHandling(
-  async ({ code, redirect }: CheckAuthParams): Promise<CheckAuthResult> => {
-    const { data } = await api.get<CheckAuthResponse>(
-      `${MEMBER_API_ENDPOINT}/auth/kakao/callback`,
-      {
-        params: { code, redirect },
-      }
-    );
+  async (
+    { code, redirect }: CheckAuthParams,
+    socialPlatform: 'kakao' | 'google'
+  ): Promise<CheckAuthResult> => {
+    let SOCIAL_AUTH_URL;
+    if (socialPlatform === 'kakao') {
+      SOCIAL_AUTH_URL = `${MEMBER_API_ENDPOINT}/auth/kakao/callback`;
+      sessionStorage.removeItem('social');
+    }
+
+    if (socialPlatform === 'google') {
+      SOCIAL_AUTH_URL = `${MEMBER_API_ENDPOINT}/login/oauth2/code/google`;
+      sessionStorage.removeItem('social');
+    }
+
+    const { data } = await api.get<CheckAuthResponse>(SOCIAL_AUTH_URL, {
+      params: { code, redirect },
+    });
 
     // 회원가입일 경우
     if (isCheckSignUpResult(data)) {

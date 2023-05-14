@@ -5,34 +5,35 @@ interface LogOnDev {
   warn: (...message: Array<any>) => void;
   dir: (...message: Array<any>) => void;
 }
+const isDevelopment = import.meta.env.MODE === 'production';
 
 const logOnDev: LogOnDev = {
   log: (...message) => {
-    if (import.meta.env.MODE === 'development') {
+    if (isDevelopment) {
       console.log(...message);
     }
   },
 
   error: (...message) => {
-    if (import.meta.env.MODE === 'development') {
+    if (isDevelopment) {
       console.error(...message);
     }
   },
 
   info: (...message) => {
-    if (import.meta.env.MODE === 'development') {
+    if (isDevelopment) {
       console.info(...message);
     }
   },
 
   warn: (...message) => {
-    if (import.meta.env.MODE === 'development') {
+    if (isDevelopment) {
       console.warn(...message);
     }
   },
 
   dir: (...message) => {
-    if (import.meta.env.MODE === 'development') {
+    if (isDevelopment) {
       console.dir(...message);
     }
   },

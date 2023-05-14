@@ -75,7 +75,7 @@ const useInputContainerPortal = () => {
         ) {
           const scrollWrapper = document.querySelector("[class^='react-scroll-to-bottom--css']")
             ?.children[0];
-          if (scrollWrapper.scrollHeight > scrollWrapper.clientHeight) {
+          if (scrollWrapper.scrollHeight >= scrollWrapper.clientHeight) {
             addToTopButton(scrollWrapper);
           }
         }

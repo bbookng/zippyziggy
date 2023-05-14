@@ -4,11 +4,13 @@ import { Category } from '@pages/content/types';
 interface CategoryFilterProps {
   category: Array<Category>;
   selectedCategory: Category['value'];
+  setPage: Dispatch<SetStateAction<number>>;
   setSelectedCategory: Dispatch<SetStateAction<Category['value']>>;
 }
 const CategoryFilter = ({
   selectedCategory,
   setSelectedCategory,
+  setPage,
   category,
 }: CategoryFilterProps) => {
   const navRef = useRef<HTMLDivElement>(null);
@@ -17,6 +19,7 @@ const CategoryFilter = ({
   ) => {
     const { category } = e.currentTarget.dataset;
     setSelectedCategory(category as CategoryFilterProps['selectedCategory']);
+    setPage(1);
   };
 
   const handleCategoryKeydown = (e: React.KeyboardEvent<HTMLLIElement>) => {
