@@ -22,23 +22,22 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Table(name = "member")
 @Getter
 @ToString
-public class Member implements UserDetails {
+public class Member {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false, length = 10)
+	@Column(nullable = false, length = 50)
 	private String nickname;
 
-	@Column(length = 255)
+	@Column(length = 500)
 	private String profileImg;
 
-	@Column(nullable = false, length = 255)
+	@Column(nullable = false, length = 50)
 	private String name;
 
 	@Column(nullable = false)
-	@CreationTimestamp
 	private LocalDateTime regDt;
 
 	@Column(nullable = false, columnDefinition = "boolean default 1")
@@ -71,54 +70,13 @@ public class Member implements UserDetails {
 		this.activate = activate;
 	}
 
+	public void setNickname(String nickname) {this.nickname = nickname;}
+
+	public void setProfileImg(String profileImg) {this.profileImg = profileImg;}
 
 	@PrePersist
 	public void prePersist() {
 		this.activate = this.activate == null ? true : this.activate;
 		this.role = this.role == null ? RoleType.USER : this.role;
-	}
-
-
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		Collection<GrantedAuthority> collect = new ArrayList<>();
-        collect.add(new GrantedAuthority() {
-
-            @Override
-            public String getAuthority() {
-                return getRole().toString();
-            }
-        });
-		return collect;
-	}
-
-	@Override
-	public String getPassword() {
-		return null;
-	}
-
-	@Override
-	public String getUsername() {
-		return nickname;
-	}
-
-	@Override
-	public boolean isAccountNonExpired() {
-		return true;
-	}
-
-	@Override
-	public boolean isAccountNonLocked() {
-		return true;
-	}
-
-	@Override
-	public boolean isCredentialsNonExpired() {
-		return true;
-	}
-
-	@Override
-	public boolean isEnabled() {
-		return true;
 	}
 }

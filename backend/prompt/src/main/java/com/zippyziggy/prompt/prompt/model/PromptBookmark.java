@@ -1,6 +1,7 @@
 package com.zippyziggy.prompt.prompt.model;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.UUID;
 
 import javax.persistence.Column;
@@ -29,13 +30,22 @@ public class PromptBookmark {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false)
+	@Column(nullable = false, columnDefinition = "BINARY(16)")
 	private UUID memberUuid;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "prompt_id", nullable = false)
+	@JoinColumn(name = "prompt_uuid", nullable = false)
 	private Prompt prompt;
 
 	@Column(nullable = false)
 	private LocalDateTime regDt;
+
+	public static PromptBookmark from(Prompt prompt, UUID memberUuid) {
+		return PromptBookmark.builder()
+				.memberUuid(memberUuid)
+				.prompt(prompt)
+				.regDt(LocalDateTime.now()).build();
+	}
+
+
 }
