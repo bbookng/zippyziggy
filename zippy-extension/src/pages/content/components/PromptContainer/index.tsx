@@ -46,6 +46,7 @@ const PromptContainer = () => {
     defaultSort
   );
   const [searchTerm, setSearchTerm] = useChromeStorage<string>(CHROME_SEARCH_KEY, '');
+  // const [searchTerm, setSearchTerm] = useState('');
   const debouncedSearchTerm = useDebounce(searchTerm);
 
   const [page, setPage] = useChromeStorage<number>(CHROME_PAGE_KEY, 1);
@@ -103,7 +104,16 @@ const PromptContainer = () => {
           <ul className="ZP_prompt-container__prompt-card-list">
             {(() => {
               if (loading) {
-                return <div>로딩중...</div>;
+                return (
+                  Array(12)
+                    .fill((v, index) => index)
+                    // eslint-disable-next-line react/no-array-index-key
+                    .map((_, index) => (
+                      <div key={index} style={{ height: '300px' }}>
+                        로딩중...
+                      </div>
+                    ))
+                );
               }
               if (searchResult?.totalPromptsCnt === 0) {
                 return <div>결과가 없습니다.</div>;

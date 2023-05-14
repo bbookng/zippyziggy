@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
 import logOnDev from '@pages/content/utils/@shared/logging';
+import useDebounce from '@pages/hooks/@shared/useDebounce';
 
 type UseChromeStorage = <T>(
   key: string,
@@ -65,21 +66,21 @@ const useChromeStorage: UseChromeStorage = <T>(
     [key, storageArea]
   );
 
+  const debouncedValue = useDebounce(value);
+
+  useEffect(() => {
+    updateStorage(debouncedValue);
+  }, [debouncedValue, updateStorage]);
+
   return [
     value,
-    useCallback(
-      (newValue: SetStateAction<T>) => {
-        setValue((prevValue) => {
-          const updatedValue =
-            typeof newValue === 'function'
-              ? (newValue as (prevState: T) => T)(prevValue)
-              : newValue;
-          updateStorage(updatedValue);
-          return updatedValue;
-        });
-      },
-      [updateStorage]
-    ),
+    useCallback((newValue: SetStateAction<T>) => {
+      setValue((prevValue) => {
+        const updatedValue =
+          typeof newValue === 'function' ? (newValue as (prevState: T) => T)(prevValue) : newValue;
+        return updatedValue;
+      });
+    }, []),
   ];
 };
 
