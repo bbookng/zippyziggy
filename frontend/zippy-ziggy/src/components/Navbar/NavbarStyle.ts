@@ -39,6 +39,7 @@ const NavList = styled.ul<NavListProps>`
   align-items: center;
   margin-left: 2rem;
   flex-grow: 1;
+
   .iconSet {
     display: flex;
     margin-left: auto;
@@ -76,6 +77,7 @@ const NavOption = styled.li`
   align-items: center;
   vertical-align: middle;
   ${media.small`
+    margin: 0.5rem 0;
     &.mobileNone{
       display:none;
     }
@@ -144,6 +146,9 @@ const NavUser = styled.div`
   }
 
   ${media.small`
+    a {
+      margin-left: 1rem;
+    }
     .profileImage {
       width: 1rem;
       height: 1rem;

@@ -11,9 +11,89 @@ import lottieJson from '@/assets/lottieJson/background-pattern.json';
 import { links } from '@/utils/links';
 import Router from 'next/router';
 import { getDailyVisited, getTotalVisited } from '@/core/user/userAPI';
-import Head from 'next/head';
 
 const Container = styled.div`
+  width: 100%;
+
+  .scriptContainer {
+    width: 100%;
+    padding: 10% 10% 10% 10%;
+    &#prompts {
+      background-color: ${({ theme: { colors } }) => colors.blackColor03};
+      .scriptWrap {
+      }
+      .buttonContainer {
+        padding: 2rem 0 2rem 0;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+
+        button:nth-child(1) {
+          border: 1px solid ${({ theme: { colors } }) => colors.blackColor10};
+          padding: 1rem 3rem 1rem 3rem;
+          border-radius: 0;
+          margin-right: auto;
+          margin-bottom: 1rem;
+          text-align: left;
+
+          &:hover {
+            transform: translate(-5%);
+          }
+        }
+        button:nth-child(2) {
+          border: 1px solid ${({ theme: { colors } }) => colors.linkColor};
+          background: linear-gradient(322.63deg, #5d9fe111 0%, #4495ff11 100%);
+          font-size: ${({ theme }) => theme.fonts.body_sm};
+          color: ${({ theme: { colors } }) => colors.linkColor};
+          padding: 1rem 3rem 1rem 3rem;
+          border-radius: 0;
+          margin-right: auto;
+          text-align: center;
+          line-height: 1.2;
+          &:hover {
+            transform: translate(-5%);
+          }
+          .s2downBtn {
+            font-size: ${({ theme }) => theme.fonts.desktop_h_2xl};
+            font-weight: 600;
+          }
+        }
+      }
+    }
+    &#talks {
+      padding: 10%;
+      background-color: ${({ theme: { colors } }) => colors.navColor};
+
+      button:nth-child(1) {
+        margin-top: 2rem;
+        border: 1px solid ${({ theme: { colors } }) => colors.blackColor10};
+        padding: 1rem 3rem 1rem 3rem;
+        border-radius: 0;
+        margin-right: auto;
+        margin-bottom: 1rem;
+        text-align: left;
+
+        &:hover {
+          transform: translate(-5%);
+        }
+      }
+    }
+
+    h2 {
+      background: -webkit-linear-gradient(322.63deg, #54c85fb8 10.93%, #00e3aed5 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-size: ${({ theme }) => theme.fonts.desktop_h_3xl};
+      font-weight: 700;
+      margin-bottom: 2rem;
+    }
+
+    p {
+      line-height: 1.5;
+    }
+  }
+`;
+const TitleContainer = styled.div`
   width: 100%;
   display: flex;
 
@@ -88,9 +168,13 @@ const Logo = styled.div`
     &.t2 {
       aspect-ratio: 6;
       mask-image: url('/images/index/gptprompts.svg');
+      .guard {
+        /* background: linear-gradient(322.63deg, #5de16a55 10.93%, #00e3ae55 100%); */
+        background: linear-gradient(322.63deg, #5de16aaa 10.93%, #00e3aeaa 100%);
+      }
       :hover {
         .guard {
-          background-color: ${({ theme }) => theme.colors.blackColor00};
+          background: linear-gradient(322.63deg, #5de16a00 10.93%, #00e3ae00 100%);
         }
       }
     }
@@ -113,7 +197,7 @@ const Logo = styled.div`
       }
       :hover {
         .guard {
-          background: none;
+          background: linear-gradient(322.63deg, #5de16a33 10.93%, #00e3ae33 100%);
           background-color: ${({ theme }) => theme.colors.primaryColor80};
         }
       }
@@ -151,13 +235,25 @@ const Home: NextPage<HomePageProps> = ({ title }) => {
     setTodayViewCnt(todayCnt?.data?.dailyVisitedCount);
   };
 
+  const handlePromptsBtn = () => {
+    Router.push(links.prompts);
+  };
+
+  const handleDownloadBtn = () => {
+    Router.push(links.downloadLink);
+  };
+
+  const handleTalksBtn = () => {
+    Router.push(links.talks);
+  };
+
   useEffect(() => {
     getVisitedwCnt();
   }, []);
 
   return (
-    <>
-      <Container>
+    <Container>
+      <TitleContainer>
         <Logo>
           <div
             className="container t1"
@@ -183,7 +279,7 @@ const Home: NextPage<HomePageProps> = ({ title }) => {
               setIsPlaying2(true);
             }}
           >
-            {/* <div className="guard" /> */}
+            <div className="guard" />
             <Lottie className="lottie" loop animationData={lottieJson} play />
           </div>
           <div
@@ -236,9 +332,43 @@ const Home: NextPage<HomePageProps> = ({ title }) => {
             {todayViewCnt}
           </Paragraph>
         </LogoContainer>
-      </Container>
+      </TitleContainer>
+      <div id="prompts" className="scriptContainer">
+        <div className="scriptWrap">
+          <h2>Prompts</h2>
+          <p className="script">
+            GPT가 자주 엉뚱한 대답을 하지 않나요?
+            <br />
+            프롬프트로 질문을 명확하게 한다면 좋은 대답을 받을 수 있습니다.
+            <br />
+            지피지기에는 미리 준비된 다양한 프롬프트들이 있습니다.
+          </p>
+        </div>
+        <div className="buttonContainer">
+          <button type="button" onClick={handlePromptsBtn}>
+            프롬프트 종류 둘러보기
+          </button>
+          <button type="button" onClick={handleDownloadBtn}>
+            프롬프트를 쉽게 쓰는 방법!
+            <br /> <span className="s2downBtn">확장 다운로드</span>
+          </button>
+        </div>
+      </div>
+      <div id="talks" className="scriptContainer">
+        <h2>Talks</h2>
+        <p>
+          다른 사람들은 GPT에게 어떻게 질문할까요?
+          <br />
+          재밌거나 좋은 대답을 공유해보세요!
+        </p>
+        <div className="buttonContainer">
+          <button type="button" onClick={handleTalksBtn}>
+            대화 보러 가기
+          </button>
+        </div>
+      </div>
       <Footer />
-    </>
+    </Container>
   );
 };
 
