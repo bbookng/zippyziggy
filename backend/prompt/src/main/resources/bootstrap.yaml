@@ -1,0 +1,7 @@
+spring:
+  cloud:
+    config:
+      uri: http://zippyziggy.kr:8888
+      name: prompt
+  profiles:
+    active: default
