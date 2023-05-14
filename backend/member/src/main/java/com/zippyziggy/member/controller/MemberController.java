@@ -911,4 +911,9 @@ public class MemberController {
         return ResponseEntity.ok(memberTalkList);
     }
 
+    @GetMapping("/ids")
+    public ResponseEntity<List<MemberIdResponse>> findAllMemberIds() {
+        return ResponseEntity.ok(memberService.findAll());
+    }
+
 }
