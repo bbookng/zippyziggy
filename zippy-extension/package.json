@@ -1,6 +1,6 @@
 {
   "name": "zippyziggy",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "Modify fetch requests to OpenAI's conversation API",
   "license": "MIT",
   "scripts": {
@@ -31,6 +31,7 @@
     "@typescript-eslint/eslint-plugin": "^5.56.0",
     "@typescript-eslint/parser": "^5.38.1",
     "@vitejs/plugin-react": "2.2.0",
+    "archiver": "^5.3.1",
     "chokidar": "^3.5.3",
     "cross-env": "^7.0.3",
     "eslint": "8.36.0",

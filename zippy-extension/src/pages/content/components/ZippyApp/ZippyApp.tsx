@@ -31,6 +31,7 @@ const App = () => {
     },
     'sync'
   );
+
   const promptContainerPortal = usePromptListPortal();
   const inputWrapperPortal = useInputContainerPortal();
   useScrollToTopButton(promptContainerPortal, inputWrapperPortal, ZP_TO_TOP_BUTTON_ID);
