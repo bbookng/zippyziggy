@@ -15,6 +15,14 @@ const Container = styled.div`
   .btnNone {
     margin: 1rem auto;
   }
+
+  .rate {
+    button {
+      &:hover {
+        transform: translate(0, -4px);
+      }
+    }
+  }
 `;
 
 const Title = styled.div`

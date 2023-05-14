@@ -1,4 +1,8 @@
-import { createPromptComment, getPromptCommentList } from '@/core/prompt/promptAPI';
+import {
+  createPromptComment,
+  getPromptCommentList,
+  postPromptRatingAPI,
+} from '@/core/prompt/promptAPI';
 import { getTalkCommentList, getTalksCommentsAPI, postTalksCommentsAPI } from '@/core/talk/talkAPI';
 import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -7,10 +11,11 @@ import checkLogin, { checkLoginCuring } from '@/utils/checkLogin';
 import { Container, InputBox, Textarea, Title } from './CommentListStyle';
 import Button from '../Button/Button';
 import CommentItem from './CommentItem';
+import Paragraph from '../Typography/Paragraph';
 
 type PropsType = {
   id: string | string[] | number;
-  type: string;
+  type: 'prompt' | 'talk';
   size: number;
 };
 
@@ -123,8 +128,42 @@ export default function CommentList({ id, type, size }: PropsType) {
     };
   }, [id]);
 
+  // 프롬 평가
+  const handleRateDown = async () => {
+    await postPromptRatingAPI({ score: 1, promptUuid: id });
+  };
+  const handleRateUp = async () => {
+    await postPromptRatingAPI({ score: 5, promptUuid: id });
+  };
+
   return (
     <Container>
+      {type === 'prompt' ? (
+        <>
+          <Title>평가하기</Title>
+          <ul className="rate">
+            <li>
+              <button
+                type="button"
+                onClick={() => {
+                  checkLoginCuring(handleRateDown)();
+                }}
+              >
+                👎
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  checkLoginCuring(handleRateUp)();
+                }}
+              >
+                👍
+              </button>
+            </li>
+          </ul>
+        </>
+      ) : null}
+
       <Title>댓글({totalCnt})</Title>
       <InputBox>
         <Textarea

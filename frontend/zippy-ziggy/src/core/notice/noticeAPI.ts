@@ -132,3 +132,15 @@ export const postCongratulationAlarms = async (userUuid: string) => {
     e;
   }
 };
+
+export const postRatingAlarms = async (userUuid: string, url: string) => {
+  try {
+    await http.post('/notice/dispatchEvent', {
+      memberUuid: userUuid,
+      content: '좋은 평가를 받았습니다!',
+      urlValue: url,
+    });
+  } catch (e) {
+    e;
+  }
+};
