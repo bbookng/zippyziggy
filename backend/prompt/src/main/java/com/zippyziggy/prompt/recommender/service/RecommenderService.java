@@ -1,29 +1,27 @@
 package com.zippyziggy.prompt.recommender.service;
 
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.zippyziggy.prompt.common.aws.AwsS3Uploader;
-import com.zippyziggy.prompt.common.config.AwsS3Config;
 import com.zippyziggy.prompt.prompt.client.MemberClient;
-import com.zippyziggy.prompt.prompt.dto.response.MemberResponse;
 import com.zippyziggy.prompt.prompt.model.Prompt;
 import com.zippyziggy.prompt.prompt.repository.PromptClickRepository;
 import com.zippyziggy.prompt.prompt.repository.PromptRepository;
 import com.zippyziggy.prompt.recommender.dto.MahoutPromptClick;
+import com.zippyziggy.prompt.recommender.dto.response.MemberIdResponse;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
+import org.springframework.stereotype.Service;
 
-import java.io.*;
+import javax.transaction.Transactional;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import javax.transaction.Transactional;
-
-import com.zippyziggy.prompt.recommender.dto.response.MemberIdResponse;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.mahout.cf.taste.impl.model.file.FileDataModel;
-import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
-import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
-import org.springframework.stereotype.Service;
 
 @Service
 @Transactional
@@ -51,7 +49,7 @@ public class RecommenderService {
             final UUID memberUuid = UUID.fromString(memberIdResponse.getMemberUuid());
             for (Prompt prompt : allPrompts) {
                 final Long promptId = prompt.getId();
-                final Long clickCnt = promptClickRepository.countByMemberUuidAndAndPromptId(memberUuid, promptId);
+                final Long clickCnt = promptClickRepository.countByMemberUuidAndPromptId(memberUuid, promptId);
                 final MahoutPromptClick mahoutPromptClick = new MahoutPromptClick(memberId, promptId, clickCnt);
                 mahoutPromptClicks.add(mahoutPromptClick);
             }

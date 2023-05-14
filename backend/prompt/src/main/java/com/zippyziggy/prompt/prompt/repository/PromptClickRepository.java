@@ -12,5 +12,5 @@ public interface PromptClickRepository extends JpaRepository<PromptClick, Long> 
 
     List<PromptClick> findAllByMemberUuid(UUID memberUuid);
 
-    Long countByMemberUuidAndAndPromptId(UUID memberUuid, Long promptId);
+    Long countByMemberUuidAndPromptId(UUID memberUuid, Long promptId);
 }
