@@ -42,7 +42,7 @@ public class KafkaConsumer {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @KafkaListener(topics = "delete-member-topic")
     public void deleteMember(String kafkaMessage) {
-        log.info("Kafka Message: ->" + kafkaMessage);
+        log.info("Kafka ChatGptMessage: ->" + kafkaMessage);
 
         UUID memberUuid = UUID.fromString(kafkaMessage);
 

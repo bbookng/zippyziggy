@@ -3,11 +3,13 @@ package com.zippyziggy.prompt.prompt.service;
 import com.zippyziggy.prompt.common.aws.AwsS3Uploader;
 import com.zippyziggy.prompt.common.kafka.KafkaProducer;
 import com.zippyziggy.prompt.prompt.client.MemberClient;
+import com.zippyziggy.prompt.prompt.dto.request.NoticeRequest;
 import com.zippyziggy.prompt.prompt.dto.request.PromptRequest;
 import com.zippyziggy.prompt.prompt.dto.response.ForkPromptResponse;
 import com.zippyziggy.prompt.prompt.dto.response.ForkedPromptListResponse;
 import com.zippyziggy.prompt.prompt.dto.response.MemberResponse;
 import com.zippyziggy.prompt.prompt.dto.response.PromptCardResponse;
+import com.zippyziggy.prompt.prompt.exception.PromptNotFoundException;
 import com.zippyziggy.prompt.prompt.model.Prompt;
 import com.zippyziggy.prompt.prompt.model.StatusCode;
 import com.zippyziggy.prompt.prompt.repository.PromptBookmarkRepository;
@@ -16,6 +18,7 @@ import com.zippyziggy.prompt.prompt.repository.PromptLikeRepository;
 import com.zippyziggy.prompt.prompt.repository.PromptRepository;
 import com.zippyziggy.prompt.talk.repository.TalkRepository;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
@@ -43,9 +46,17 @@ public class ForkPromptService {
 	private final CircuitBreakerFactory circuitBreakerFactory;
 	private final KafkaProducer kafkaProducer;
 
-	public ForkPromptResponse createForkPrompt(UUID promptUuid, PromptRequest data, MultipartFile thumbnail, UUID crntMemberUuid) {
+	public ForkPromptResponse createForkPrompt(UUID promptUuid, PromptRequest data, @Nullable MultipartFile thumbnail, UUID crntMemberUuid) {
 
-		String thumbnailUrl = awsS3Uploader.upload(thumbnail, "thumbnails");
+		Prompt originPrompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
+
+		String thumbnailUrl;
+
+		if (thumbnail == null) {
+			thumbnailUrl = "https://zippyziggy.s3.ap-northeast-2.amazonaws.com/default/noCardImg.png";
+		} else {
+			thumbnailUrl = awsS3Uploader.upload(thumbnail, "thumbnails");
+		}
 
 		Prompt prompt = Prompt.from(data, crntMemberUuid, thumbnailUrl);
 		prompt.setOriginPromptUuid(promptUuid);
@@ -53,6 +64,11 @@ public class ForkPromptService {
 		promptRepository.save(prompt);
 
 		kafkaProducer.send("create-prompt-topic", prompt.toEsPromptRequest());
+
+		kafkaProducer.sendNotification("send-notification",
+			new NoticeRequest(originPrompt.getMemberUuid().toString(),
+				"'" + originPrompt.getTitle() + "'" + "게시물에 새로운 포크 프롬프트가 생성되었습니다.",
+				"https://zippyziggy.kr/prompts/" + prompt.getPromptUuid().toString()));
 
 		return ForkPromptResponse.from(prompt);
 	}
@@ -64,12 +80,12 @@ public class ForkPromptService {
 		Page<Prompt> forkedPrompts = promptRepository.findAllByOriginPromptUuidAndStatusCode(promptUuid, StatusCode.OPEN, pageable);
 
 		// fork 프롬프트들 카드 정보 가져오는 메서드
-		List<PromptCardResponse> prompts = getForkedPromptResponses(forkedPrompts, UUID.fromString(crntMemberUuid));
+		List<PromptCardResponse> prompts = getForkedPromptResponses(forkedPrompts, crntMemberUuid);
 
 		return new ForkedPromptListResponse(forkPromptCnt, prompts);
 	}
 
-	private List<PromptCardResponse> getForkedPromptResponses(Page<Prompt> forkedPrompts, @Nullable UUID crntMemberUuid) {
+	private List<PromptCardResponse> getForkedPromptResponses(Page<Prompt> forkedPrompts, @Nullable String crntMemberUuid) {
 		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 
 		List<PromptCardResponse> promptDtoList = forkedPrompts.stream().map(prompt -> {
@@ -89,9 +105,9 @@ public class ForkPromptService {
 				isBookmarked = false;
 				isLiked = false;
 			} else {
-				isBookmarked = promptBookmarkRepository.findByMemberUuidAndPrompt(crntMemberUuid, prompt) != null
+				isBookmarked = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
 					? true : false;
-				isLiked =  promptLikeRepository.findByPromptAndMemberUuid(prompt, crntMemberUuid) != null
+				isLiked =  promptLikeRepository.findByPromptAndMemberUuid(prompt, UUID.fromString(crntMemberUuid)) != null
 					? true : false;
 			}
 

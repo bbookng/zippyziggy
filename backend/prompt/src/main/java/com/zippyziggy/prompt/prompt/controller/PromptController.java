@@ -18,6 +18,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -51,7 +52,7 @@ public class PromptController {
 			@ApiResponse(responseCode = "500", description = "서버 에러")
 	})
 	public ResponseEntity<PromptResponse> createPrompt(@RequestPart PromptRequest data,
-													   @RequestPart MultipartFile thumbnail,
+													   @RequestPart @Nullable MultipartFile thumbnail,
 													   @RequestHeader String crntMemberUuid) {
 		return ResponseEntity.ok(promptService.createPrompt(data, UUID.fromString(crntMemberUuid), thumbnail));
 	}
@@ -72,8 +73,8 @@ public class PromptController {
 			@ApiResponse(responseCode = "500", description = "서버 에러")
 	})
 	public ResponseEntity<PromptResponse> modifyPrompt(@PathVariable String promptUuid,
-													   @RequestPart PromptModifyRequest data,
-													   @RequestPart MultipartFile thumbnail,
+													   @RequestPart PromptRequest data,
+													   @RequestPart @Nullable MultipartFile thumbnail,
 													   @RequestHeader String crntMemberUuid) {
 		return ResponseEntity.ok(promptService.modifyPrompt(UUID.fromString(promptUuid), data, UUID.fromString(crntMemberUuid), thumbnail));
 	}
@@ -126,7 +127,7 @@ public class PromptController {
 	})
 	public ResponseEntity<ForkPromptResponse> createForkPrompt(@PathVariable String promptUuid,
 															   @RequestPart PromptRequest data,
-															   @RequestPart MultipartFile thumbnail,
+															   @RequestPart @Nullable MultipartFile thumbnail,
 															   @RequestHeader String crntMemberUuid) {
 		ForkPromptResponse forkPrompt = forkPromptService.createForkPrompt(UUID.fromString(promptUuid), data, thumbnail, UUID.fromString(crntMemberUuid));
 		return ResponseEntity.ok(forkPrompt);
@@ -328,6 +329,29 @@ public class PromptController {
 	})
 	public ResponseEntity<GptApiResponse> testGptApi(@RequestBody GptApiRequest data) {
 		return ResponseEntity.ok(promptService.testGptApi(data));
+	}
+
+	@Operation(summary = "Chat GPT APP API", description = "APP에서 프롬프트 바로 이용해보기할 시 사용합니다.")
+	@PostMapping(value = "/gpt/app")
+	@ApiResponses({
+		@ApiResponse(responseCode = "200", description = "성공"),
+		@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+		@ApiResponse(responseCode = "500", description = "서버 에러")
+	})
+
+	public ResponseEntity<GptApiResponse> appChatGpt(@RequestBody AppChatGptRequest data) {
+		return ResponseEntity.ok(promptService.getChatGptAnswer(data));
+	}
+
+	@Operation(summary = "프롬프트 사용하기 클릭 시 평가 알림",  description = "프롬프트 사용하기 클릭 시 평가하라고 알림 보냅니당")
+	@PostMapping(value = "/{promptUuid}/use")
+	@ApiResponses({
+		@ApiResponse(responseCode = "200", description = "성공"),
+		@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+		@ApiResponse(responseCode = "500", description = "서버 에러")
+	})
+	public ResponseEntity<NoticeRequest> sendUseNotice(@PathVariable String promptUuid, @RequestHeader String crntMemberUuid) {
+		return ResponseEntity.ok(promptService.sendUserNotice(promptUuid, crntMemberUuid));
 	}
 
 }
