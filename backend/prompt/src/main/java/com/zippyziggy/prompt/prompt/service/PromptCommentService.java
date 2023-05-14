@@ -63,7 +63,7 @@ public class PromptCommentService {
 		kafkaProducer.sendNotification("send-notification",
 			new NoticeRequest(prompt.getMemberUuid().toString(),
 				"'" + prompt.getTitle() + "'" + "게시물에 댓글이 등록되었습니다.",
-				"zippyziggy.kr/prompts/" + prompt.getPromptUuid().toString()));
+				"https://zippyziggy.kr/prompts/" + prompt.getPromptUuid().toString()));
 
 		return PromptCommentResponse.from(promptComment);
 	}

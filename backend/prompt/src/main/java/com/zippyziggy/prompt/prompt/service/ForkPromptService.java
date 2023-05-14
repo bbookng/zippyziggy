@@ -68,7 +68,7 @@ public class ForkPromptService {
 		kafkaProducer.sendNotification("send-notification",
 			new NoticeRequest(originPrompt.getMemberUuid().toString(),
 				"'" + originPrompt.getTitle() + "'" + "게시물에 새로운 포크 프롬프트가 생성되었습니다.",
-				"zippyziggy.kr/prompts/" + prompt.getPromptUuid().toString()));
+				"https://zippyziggy.kr/prompts/" + prompt.getPromptUuid().toString()));
 
 		return ForkPromptResponse.from(prompt);
 	}
