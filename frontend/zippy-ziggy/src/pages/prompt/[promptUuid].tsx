@@ -125,17 +125,27 @@ export default function PromptUpdate() {
     //       style: toastifyCSS.fail,
     //     }).showToast();
     //   });
-    const {
-      data: { type, arrayBuffer },
-    } = await axios.get('/file', { params: { url } });
-    const blob = new Blob([Uint8Array.from(arrayBuffer)], { type });
-    const arr = url.split('/');
-    const FileList = [
-      new File([blob], `promptImg${arr[arr.length - 1].split('.')[1]}`, {
-        type: `image/${arr[arr.length - 1].split('.')[1]}`,
-      }),
-    ];
-    setValue('image', FileList);
+    try {
+      const {
+        data: { type, arrayBuffer },
+      } = await axios.get('/file', { params: { url } });
+      const blob = new Blob([Uint8Array.from(arrayBuffer)], { type });
+      const arr = url.split('/');
+      const FileList = [
+        new File([blob], `promptImg.${arr[arr.length - 1].split('.')[1]}`, {
+          type: `image/${arr[arr.length - 1].split('.')[1]}`,
+        }),
+      ];
+      setValue('image', FileList);
+    } catch {
+      Toastify({
+        text: message.PromptImageError,
+        duration: 1000,
+        position: 'center',
+        stopOnFocus: true,
+        style: toastifyCSS.fail,
+      }).showToast();
+    }
   }
 
   // Prompt 상세 요청 API

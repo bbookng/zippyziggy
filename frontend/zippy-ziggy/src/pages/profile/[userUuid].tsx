@@ -21,6 +21,7 @@ import TalkCard from '@/components/TalkCard/TalkCard';
 import Paging from '@/components/Paging/Paging';
 import Footer from '@/components/Footer/Footer';
 import Paragraph from '@/components/Typography/Paragraph';
+import { links } from '@/utils/links';
 
 const ProfileContainer = styled.div`
   width: 100%;
@@ -163,7 +164,9 @@ export default function Index() {
   };
 
   // GPT 연동 버튼 클릭
-  const handleGptBtn = () => {};
+  const handleGptBtn = () => {
+    router.push(links.downloadLink);
+  };
 
   // talks 페이지 변경
   const handlePage = (number: number) => {
@@ -220,7 +223,7 @@ export default function Index() {
             >
               <FiLink2 className="icon" size="20" style={{ marginLeft: '8px' }} />
               <span className="flex1" style={{ marginLeft: '8px' }}>
-                GPT 계정 연동하기
+                GPT 확장 설치하기
               </span>
             </IconButton>
           </div>

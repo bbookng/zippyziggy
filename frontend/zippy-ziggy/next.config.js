@@ -9,6 +9,7 @@ const nextConfig = {
     // 현재 도메인 주소로 변경
     APP_URL: 'http://zippyziggy:3000',
   },
+
   async rewrites() {
     return [
       {
@@ -17,6 +18,7 @@ const nextConfig = {
       },
     ];
   },
+
   async headers() {
     return [
       {

@@ -17,5 +17,10 @@
     "color": "#fff",
     "font-weight": "600",
     "border-radius": "0.15rem"
+  },
+  "notice": {
+    "color": "#fff",
+    "font-weight": "600",
+    "border-radius": "0.15rem"
   }
 }
