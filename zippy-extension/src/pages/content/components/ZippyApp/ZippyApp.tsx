@@ -4,15 +4,15 @@ import usePromptListPortal from '@pages/hooks/content/usePromptContainerPortal';
 import PromptContainer from '@pages/content/components/PromptContainer';
 import InputWrapper from '@pages/content/components/InputWrapper';
 import { CHAT_GPT_URL, CHROME_USERINFO_KEY, ZP_TO_TOP_BUTTON_ID } from '@pages/constants';
-import useScrollToTopButton from '@pages/hooks/content/useScrollToTopButton';
 import { ModalProvider, useModalContext } from '@pages/content/context/ModalContext';
 import Modal from '@pages/content/components/Modal';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { getMyInfo } from '@pages/content/apis/auth';
-import { useEffect } from 'react';
+import useScrollToTopButton from '@pages/hooks/content/useScrollToTopButton';
 import useChromeStorage from '@pages/hooks/@shared/useChromeStorage';
 import { SignUpResult } from '@pages/content/apis/auth/models';
 import useCheckAuth from '@pages/hooks/queries/useCheckAuth';
+import { useEffect } from 'react';
+import { getMyInfo } from '@pages/content/apis/auth';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -22,7 +22,6 @@ const queryClient = new QueryClient({
   },
 });
 const App = () => {
-  const { openModal, setModalContent } = useModalContext();
   const [userData, setUserData] = useChromeStorage<SignUpResult>(
     CHROME_USERINFO_KEY,
     {

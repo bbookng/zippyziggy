@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-export default function useTopButton(
+export default function useScrollToTopButton(
   promptContainerPortal,
   inputWrapperPortal,
   ZP_TO_TOP_BUTTON_ID
