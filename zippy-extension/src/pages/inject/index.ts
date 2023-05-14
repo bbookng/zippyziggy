@@ -9,12 +9,11 @@ import {
   ZIPPY_SITE_URL,
   ZP_PROMPT_TITLE_HOLDER_ID,
 } from '@pages/constants';
-import logOnDev from '@pages/content/utils/@shared/logging';
 import { sanitizeInput } from '@src/utils';
 
 const ZIPPY = (window.ZIPPYZIGGY = {
   init() {
-    logOnDev.log('ZP init');
+    console.log('ZP init');
     if (localStorage.getItem(LAST_TARGET_LANGUAGE_KEY) === null) {
       this.targetLanguage = DEFAULT_TARGET_LANGUAGE;
     }
@@ -29,7 +28,7 @@ const ZIPPY = (window.ZIPPYZIGGY = {
   fetch: (window._fetch = window._fetch || window.fetch),
 
   replaceFetch() {
-    logOnDev.log('replace 실행');
+    console.log('replace 실행');
     window.fetch = async (...t: Parameters<typeof fetch>) => {
       const [requestInfo, requestInit] = t;
 

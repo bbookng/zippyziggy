@@ -5,7 +5,10 @@ interface LogOnDev {
   warn: (...message: Array<any>) => void;
   dir: (...message: Array<any>) => void;
 }
-const isDevelopment = import.meta.env.MODE === 'production';
+
+const DEV = 'development';
+const PROD = 'production';
+const isDevelopment = import.meta.env.MODE === DEV;
 
 const logOnDev: LogOnDev = {
   log: (...message) => {
