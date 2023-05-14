@@ -31,6 +31,9 @@
     margin-bottom: 0.875rem;
     width: 60%;
 
+    & > div {
+      display: flex;
+    }
     #ZP_logo{
       width: 200px;
       margin-bottom: 0.75rem;
@@ -58,8 +61,8 @@
         height: 1.5rem;
       }
 
-      &:first-of-type{
-        margin-bottom: 1rem;
+      &:not(:last-of-type){
+        margin-right: 1.5rem;
       }
       &:hover {
         box-shadow: 0 1rem 2.5rem rgba(16, 198, 0,.1),0 .5rem 1rem -.75rem rgba(27,22,66,.1)!important;

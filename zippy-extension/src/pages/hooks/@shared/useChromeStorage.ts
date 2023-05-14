@@ -1,44 +1,39 @@
-import { Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
 
 type UseChromeStorage = <T>(
   key: string,
   initialValue: T,
   storageArea?: 'local' | 'sync'
 ) => [T, Dispatch<SetStateAction<T>>];
+
 const useChromeStorage: UseChromeStorage = <T>(
   key: string,
   initialValue: T,
   storageArea: 'local' | 'sync' = 'local'
 ) => {
+  const initialValueRef = useRef(initialValue);
   const [value, setValue] = useState<T>(initialValue);
 
-  const setData = useCallback(
-    (newValue: T) => {
-      chrome.storage[storageArea].set({ [key]: newValue }, () => {});
-    },
-    [key, storageArea]
-  );
-
   const getData = useCallback(() => {
-    return new Promise<void>((resolve) => {
+    return new Promise<T>((resolve) => {
       chrome.storage[storageArea].get(key, (result) => {
         if (result[key]) {
-          setValue(result[key]);
+          resolve(result[key]);
         } else {
-          setValue(initialValue);
-          chrome.storage[storageArea].set({ [key]: initialValue }, () => {
-            resolve();
+          setValue(initialValueRef.current);
+          chrome.storage[storageArea].set({ [key]: initialValueRef.current }, () => {
+            resolve(initialValueRef.current);
           });
         }
       });
     });
-  }, [initialValue, key, storageArea]);
+  }, [key, storageArea]);
 
   useEffect(() => {
-    getData().then(() => {
-      setValue(value);
+    getData().then((retrievedValue) => {
+      setValue(retrievedValue);
     });
-  }, [getData, setValue, value]);
+  }, [getData]);
 
   useEffect(() => {
     const handleStorageChange = (
@@ -46,7 +41,10 @@ const useChromeStorage: UseChromeStorage = <T>(
       areaName: string
     ) => {
       if (areaName === storageArea && changes[key]) {
-        setValue(changes[key].newValue);
+        const { newValue } = changes[key];
+        if (JSON.stringify(value) !== JSON.stringify(newValue)) {
+          setValue(newValue);
+        }
       }
     };
 
@@ -55,7 +53,7 @@ const useChromeStorage: UseChromeStorage = <T>(
     return () => {
       chrome.storage.onChanged.removeListener(handleStorageChange);
     };
-  }, [key, storageArea]);
+  }, [key, storageArea, value]);
 
   return [
     value,
@@ -66,11 +64,11 @@ const useChromeStorage: UseChromeStorage = <T>(
             typeof newValue === 'function'
               ? (newValue as (prevState: T) => T)(prevValue)
               : newValue;
-          setData(updatedValue);
+          chrome.storage[storageArea].set({ [key]: updatedValue }, () => {});
           return updatedValue;
         });
       },
-      [setData]
+      [key, storageArea]
     ),
   ];
 };
