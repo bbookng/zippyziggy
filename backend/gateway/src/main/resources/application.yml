@@ -216,6 +216,21 @@ spring:
         - id: notice
           uri: lb://NOTICE
           predicates:
+            - Path=/notice/doc/**
+          filters:
+            - RewritePath=notice/(?<segment>.*), /$\{segment}
+
+        - id: notice
+          uri: lb://NOTICE
+          predicates:
+            - Path=/notice/v3/**
+          filters:
+            - RewritePath=notice/(?<segment>.*), /$\{segment}
+
+
+        - id: notice
+          uri: lb://NOTICE
+          predicates:
             - Path=/api/notice/**
             - Method=GET, POST, PUT, DELETE, OPTIONS
           filters:
@@ -241,4 +256,7 @@ springdoc:
     urls[2]:
       name: search
       url: http://zippyziggy.kr:${server.port}/v3/api-docs/search
+    urls[3]:
+      name: notice
+      url: http://zippyziggy.kr:${server.port}/v3/api-docs/notice
 
