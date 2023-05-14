@@ -1,6 +1,11 @@
 spring:
   application:
     name: gateway
+  rabbitmq:
+    host: zippyziggy.kr
+    username: guest
+    password: guest
+    port: 5672
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://zippyziggy.cmme5aoanean.ap-northeast-2.rds.amazonaws.com:3306/member?serverTimezone=Asia/Seoul&useSSL=false
@@ -17,6 +22,9 @@ spring:
         format_sql: true
   cloud:
     gateway:
+      discovery:
+        locator:
+          enabled: true
       default-filters:
         - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials
       globalcors:
@@ -39,98 +47,98 @@ spring:
               - OPTIONS
 
       routes:
-
-        - id: member
-          uri: lb://MEMBER
-          predicates:
-            - Path=/members/doc/**
-          filters:
-            - RewritePath=/members/(?<segment>.*), /$\{segment}
-
-        - id: member
-          uri: lb://MEMBER
-          predicates:
-            - Path=/members/v3/**
-          filters:
-            - RewritePath=/members/(?<segment>.*), /$\{segment}
-
-        - id: member
-          uri: lb://MEMBER
-          predicates:
-            - Path=/api/members/signup
-            - Method= POST, OPTIONS
-          filters:
-            - RemoveRequestHeader=Cookie
-            - RewritePath=/api/(?<segment>.*), /$\{segment}
-
-
-        - id: member
-          uri: lb://MEMBER
-          predicates:
-            - Path=/api/members
-            - Method= PUT, OPTIONS
-          filters:
-            - AuthorizationHeaderFilter
-            - RewritePath=/api/(?<segment>.*), /$\{segment}
-
-        - id: member
-          uri: lb://MEMBER
-          predicates:
-            - Path=/api/members/profile
-            - Method= GET, PUT, OPTIONS
-          filters:
-            - AuthorizationHeaderFilter
-            - RewritePath=/api/(?<segment>.*), /$\{segment}
-
-
-        - id: member
-          uri: lb://MEMBER
-          predicates:
-            - Path=/api/members/index.html
-          filters:
-            - RewritePath=/api/(?<segment>.*), /$\{segment}
-
-        - id: member
-          uri: lb://MEMBER
-          predicates:
-            - Path=/api/members/auth/kakao/callback
-            - Method= GET
-          filters:
-            - RewritePath=/api/(?<segment>.*), /$\{segment}
-
-        - id: member
-          uri: lb://MEMBER
-          predicates:
-            - Path=/api/members/logout
-            - Method=POST, OPTIONS
-          filters:
-            - RewritePath=/api/(?<segment>.*), /$\{segment}
-            - AuthorizationHeaderFilter
-
-        - id: member
-          uri: lb://MEMBER
-          predicates:
-            - Path=/api/members/**
-            - Method=GET, POST, PUT, DELETE, OPTIONS
-          filters:
-            - RewritePath=/api/(?<segment>.*), /$\{segment}
+#
+#        - id: member
+#          uri: lb://MEMBER
+#          predicates:
+#            - Path=/members/doc/**
+#          filters:
+#            - RewritePath=/members/(?<segment>.*), /$\{segment}
+#
+#        - id: member
+#          uri: lb://MEMBER
+#          predicates:
+#            - Path=/members/v3/**
+#          filters:
+#            - RewritePath=/members/(?<segment>.*), /$\{segment}
+#
+#        - id: member
+#          uri: lb://MEMBER
+#          predicates:
+#            - Path=/api/members/signup
+#            - Method= POST, OPTIONS
+#          filters:
+#            - RemoveRequestHeader=Cookie
+#            - RewritePath=/api/(?<segment>.*), /$\{segment}
+#
+#
+#        - id: member
+#          uri: lb://MEMBER
+#          predicates:
+#            - Path=/api/members
+#            - Method= PUT, OPTIONS
+#          filters:
+#            - AuthorizationHeaderFilter
+#            - RewritePath=/api/(?<segment>.*), /$\{segment}
+#
+#        - id: member
+#          uri: lb://MEMBER
+#          predicates:
+#            - Path=/api/members/profile
+#            - Method= GET, PUT, OPTIONS
+#          filters:
+#            - AuthorizationHeaderFilter
+#            - RewritePath=/api/(?<segment>.*), /$\{segment}
+#
+#
+#        - id: member
+#          uri: lb://MEMBER
+#          predicates:
+#            - Path=/api/members/index.html
+#          filters:
+#            - RewritePath=/api/(?<segment>.*), /$\{segment}
+#
+#        - id: member
+#          uri: lb://MEMBER
+#          predicates:
+#            - Path=/api/members/auth/kakao/callback
+#            - Method= GET
+#          filters:
+#            - RewritePath=/api/(?<segment>.*), /$\{segment}
+#
+#        - id: member
+#          uri: lb://MEMBER
+#          predicates:
+#            - Path=/api/members/logout
+#            - Method=POST, OPTIONS
+#          filters:
+#            - RewritePath=/api/(?<segment>.*), /$\{segment}
+#            - AuthorizationHeaderFilter
+#
+#        - id: member
+#          uri: lb://MEMBER
+#          predicates:
+#            - Path=/api/members/**
+#            - Method=GET, POST, PUT, DELETE, OPTIONS
+#          filters:
+#            - RewritePath=/api/(?<segment>.*), /$\{segment}
 
         - id: prompt
-          uri: lb://PROMPT
+          uri: lb://prompt
           predicates:
             - Path=/prompts/doc/**
           filters:
             - RewritePath=prompts/(?<segment>.*), /$\{segment}
 
         - id: prompt
-          uri: lb://PROMPT
+          uri: lb://prompt
           predicates:
             - Path=/prompts/v3/**
           filters:
             - RewritePath=prompts/(?<segment>.*), /$\{segment}
 
         - id: prompt
-          uri: lb://PROMPT
+          uri: lb://prompt
           predicates:
             - Path=/api/prompts
             - Method=GET, POST, OPTIONS
@@ -140,7 +148,7 @@ spring:
 
 
         - id: prompt
-          uri: lb://PROMPT
+          uri: lb://prompt
           predicates:
             - Path=/api/members/**
             - Method=GET, OPTIONS
@@ -149,7 +157,7 @@ spring:
             - PromptAuthorizationHeaderFilter
 
         - id: prompt
-          uri: lb://PROMPT
+          uri: lb://prompt
           predicates:
             - Path=/api/reports/**
             - Method=GET, OPTIONS
@@ -157,9 +165,8 @@ spring:
             - RewritePath=/api/(?<segment>.*), /$\{segment}
             - PromptAuthorizationHeaderFilter
 
-
         - id: prompt
-          uri: lb://PROMPT
+          uri: lb://prompt
           predicates:
             - Path=/api/prompts/{promptUuid}/**
             - Method=GET, POST, PUT, DELETE, OPTIONS
@@ -168,7 +175,7 @@ spring:
             - RewritePath=/api/(?<segment>.*), /$\{segment}
 
         - id: talks
-          uri: lb://PROMPT
+          uri: lb://prompt
           predicates:
             - Path=/api/talks
             - Method=GET, POST, OPTIONS
@@ -177,64 +184,64 @@ spring:
             - RewritePath=/api/(?<segment>.*), /$\{segment}
 
         - id: talks
-          uri: lb://PROMPT
+          uri: lb://prompt
           predicates:
             - Path=/api/talks/{talkId}/**
             - Method=GET, POST, PUT, DELETE, OPTIONS
           filters:
             - PromptAuthorizationHeaderFilter
             - RewritePath=/api/(?<segment>.*), /$\{segment}
+#
+#        - id: search
+#          uri: lb://SEARCH
+#          predicates:
+#            - Path=/search/doc/**
+#          filters:
+#            - RewritePath=search/(?<segment>.*), /$\{segment}
+#
+#        - id: search
+#          uri: lb://SEARCH
+#          predicates:
+#            - Path=/search/v3/**
+#          filters:
+#            - RewritePath=search/(?<segment>.*), /$\{segment}
+#
+#        - id: search
+#          uri: lb://SEARCH
+#          predicates:
+#            - Path=/api/search/**
+#            - Method=GET, POST, PUT, DELETE, OPTIONS
+#          filters:
+#            - PromptAuthorizationHeaderFilter
+#            - RewritePath=/api/(?<segment>.*), /$\{segment}
+#
+#        - id: notice
+#          uri: lb://NOTICE
+#          predicates:
+#            - Path=/api/notice/**
+#            - Method=GET, POST, PUT, DELETE, OPTIONS
+#          filters:
+#            - RewritePath=/api/(?<segment>.*), /$\{segment}
+#
+#        - id: openapi
+#          uri: http://zippyziggy.kr:${server.port}
+#          predicates:
+#            - Path=/v3/api-docs/**
+#          filters:
+#            - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs
+#            - SetRequestHeader=crntMemberUuid, myDefaultValue
 
-        - id: search
-          uri: lb://SEARCH
-          predicates:
-            - Path=/search/doc/**
-          filters:
-            - RewritePath=search/(?<segment>.*), /$\{segment}
-
-        - id: search
-          uri: lb://SEARCH
-          predicates:
-            - Path=/search/v3/**
-          filters:
-            - RewritePath=search/(?<segment>.*), /$\{segment}
-
-        - id: search
-          uri: lb://SEARCH
-          predicates:
-            - Path=/api/search/**
-            - Method=GET, POST, PUT, DELETE, OPTIONS
-          filters:
-            - PromptAuthorizationHeaderFilter
-            - RewritePath=/api/(?<segment>.*), /$\{segment}
-
-        - id: notice
-          uri: lb://NOTICE
-          predicates:
-            - Path=/api/notice/**
-            - Method=GET, POST, PUT, DELETE, OPTIONS
-          filters:
-            - RewritePath=/api/(?<segment>.*), /$\{segment}
-
-        - id: openapi
-          uri: http://zippyziggy.kr:${server.port}
-          predicates:
-            - Path=/v3/api-docs/**
-          filters:
-            - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs
-            - SetRequestHeader=crntMemberUuid, myDefaultValue
-
-springdoc:
-  swagger-ui:
-    urls[0]:
-      name: prompt
-      url: http://zippyziggy.kr:${server.port}/v3/api-docs/prompts
-    urls[1]:
-      name: member
-      url: http://zippyziggy.kr:${server.port}/v3/api-docs/members
-    urls[2]:
-      name: search
-      url: http://zippyziggy.kr:${server.port}/v3/api-docs/search
+#springdoc:
+#  swagger-ui:
+#    urls[0]:
+#      name: prompt
+#      url: http://zippyziggy.kr:${server.port}/v3/api-docs/prompts
+#    urls[1]:
+#      name: member
+#      url: http://zippyziggy.kr:${server.port}/v3/api-docs/members
+#    urls[2]:
+#      name: search
+#      url: http://zippyziggy.kr:${server.port}/v3/api-docs/search
 
 jwt:
   secret:
@@ -247,3 +254,9 @@ jwt:
     token:
       expiration:
         time: 1209600000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, busrefresh

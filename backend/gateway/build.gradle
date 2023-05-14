@@ -37,12 +37,23 @@ dependencies {
 	implementation 'org.springdoc:springdoc-openapi-webflux-core:1.5.13'
 	implementation 'org.springdoc:springdoc-openapi-webflux-ui:1.5.13'
 
+
+	// actuator
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
 	// AMQP
 	implementation 'org.springframework.cloud:spring-cloud-starter-bus-amqp'
 
 	// resilience4j
 	implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
 	implementation 'io.netty:netty-resolver-dns-native-macos:4.1.68.Final:osx-aarch_64'
+
+	// kubernetes
+
+	implementation "org.springframework.cloud:spring-cloud-starter-kubernetes-client-all"
+	implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+
+
 }
 
 dependencyManagement {

@@ -1,0 +1,14 @@
+spring:
+  cloud:
+    config:
+      uri: http://zippyziggy.kr:8888
+      name: gateway
+    cloud:
+      kubernetes:
+        secrets:
+          enabled: true
+          paths:
+            - /etc/secretspot
+          enableApi: false
+  profiles:
+    active: default
