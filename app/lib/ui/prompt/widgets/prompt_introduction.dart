@@ -13,20 +13,19 @@ class PromptIntroduction extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        if (prompt.thumbnail != null)
-          Image.network(
-            prompt.thumbnail!,
-            width: MediaQuery.of(context).size.width,
-            height: 150,
-            fit: BoxFit.cover,
-          ),
-        if (prompt.thumbnail == null)
-          const SizedBox(
-            height: 150,
-            child: CircularProgressIndicator(
-              backgroundColor: AppTheme.darkGrey,
-            ),
-          ),
+        prompt.thumbnail != null
+            ? Image.network(
+                prompt.thumbnail!,
+                width: MediaQuery.of(context).size.width,
+                height: 150,
+                fit: BoxFit.cover,
+              )
+            : const SizedBox(
+                height: 150,
+                child: CircularProgressIndicator(
+                  backgroundColor: AppTheme.darkGrey,
+                ),
+              ),
         const SizedBox(
           height: 20,
         ),

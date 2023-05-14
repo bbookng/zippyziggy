@@ -3,6 +3,7 @@ import 'package:zippy_ziggy/ui/account/login_page.dart';
 import 'package:zippy_ziggy/ui/account/my_page.dart';
 import 'package:zippy_ziggy/ui/account/signup_page.dart';
 import 'package:zippy_ziggy/ui/account/update_page.dart';
+import 'package:zippy_ziggy/ui/chat/chat_page.dart';
 import 'package:zippy_ziggy/ui/main_page.dart';
 import 'package:zippy_ziggy/ui/prompt/prompt_detail_page.dart';
 import 'package:zippy_ziggy/ui/prompt/prompt_page.dart';
@@ -47,6 +48,13 @@ class Routes {
       case RoutesName.splash:
         return MaterialPageRoute(
             builder: (BuildContext context) => const SplashPage());
+      case RoutesName.chat:
+        var promptUuid = settings.arguments as String?;
+        return MaterialPageRoute(
+          builder: (BuildContext context) => ChatPage(
+            promptUuid: promptUuid,
+          ),
+        );
       default:
         return MaterialPageRoute(
           builder: (_) {

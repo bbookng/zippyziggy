@@ -36,7 +36,6 @@ class PromptRepository {
     Response response = await _dioService.get("/prompts/$promptUuid", null);
     final PromptDetailModel promptDetail =
         PromptDetailModel.fromJson(response.data);
-    print('상세조회 ${response.data.toString()}');
     Map<String, dynamic> returnData = {
       'result': 'SUCCESS',
       'prompt': promptDetail,

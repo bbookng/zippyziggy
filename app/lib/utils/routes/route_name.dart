@@ -7,4 +7,5 @@ class RoutesName {
   static const String prompt = 'prompt_page';
   static const String promptDetail = 'prompt_detail_page';
   static const String splash = 'splash_page';
+  static const String chat = 'chat_page';
 }

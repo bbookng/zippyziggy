@@ -54,6 +54,7 @@ class _PromptTitleState extends State<PromptTitle> {
       ),
       child: Column(
         children: [
+          // 카테고리, 좋아요, 북마크
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -117,6 +118,8 @@ class _PromptTitleState extends State<PromptTitle> {
               ),
             ],
           ),
+
+          // 제목
           Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -128,7 +131,7 @@ class _PromptTitleState extends State<PromptTitle> {
                   widget.prompt.title!,
                   style: AppTheme.headline.copyWith(),
                   overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
+                  maxLines: 2,
                 ),
               ),
             ],
@@ -136,6 +139,8 @@ class _PromptTitleState extends State<PromptTitle> {
           const SizedBox(
             height: 5,
           ),
+
+          // 마지막 업데이트
           Row(
             children: [
               const Text(
@@ -154,18 +159,25 @@ class _PromptTitleState extends State<PromptTitle> {
           const SizedBox(
             height: 20,
           ),
+
+          // 작성자 정보
           if (widget.prompt.writer?.writerImg != null)
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(30),
-                  child: Image.network(
-                    widget.prompt.writer!.writerImg!,
-                    width: 40,
-                    height: 40,
-                    fit: BoxFit.cover,
-                  ),
+                  child: widget.prompt.writer?.writerImg != null
+                      ? Image.network(
+                          widget.prompt.writer!.writerImg!,
+                          width: 40,
+                          height: 40,
+                          fit: BoxFit.cover,
+                        )
+                      : const SizedBox(
+                          height: 40,
+                          width: 40,
+                        ),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(

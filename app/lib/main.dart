@@ -1,4 +1,5 @@
 import 'package:zippy_ziggy/app_theme.dart';
+import 'package:zippy_ziggy/data/providers/chat_provider.dart';
 import 'package:zippy_ziggy/data/providers/navigation_provider.dart';
 import 'package:zippy_ziggy/data/providers/prompt_provider.dart';
 import 'package:zippy_ziggy/data/providers/user_provider.dart';
@@ -43,6 +44,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider<PromptProvider>(
           create: (_) => PromptProvider()..initProvider(),
+        ),
+        ChangeNotifierProvider<ChatProvider>(
+          create: (_) => ChatProvider()..initProvider(),
         ),
       ],
       child: MaterialApp(

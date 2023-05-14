@@ -1,7 +1,10 @@
+import 'package:zippy_ziggy/app_theme.dart';
 import 'package:zippy_ziggy/data/model/prompt_model.dart';
+import 'package:zippy_ziggy/data/providers/chat_provider.dart';
 import 'package:zippy_ziggy/data/providers/prompt_provider.dart';
 import 'package:zippy_ziggy/ui/prompt/widgets/prompt_introduction.dart';
 import 'package:zippy_ziggy/ui/prompt/widgets/prompt_title.dart';
+import 'package:zippy_ziggy/utils/routes/route_name.dart';
 import 'package:zippy_ziggy/widgets/my_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -43,7 +46,6 @@ class _PromptDetailState extends State<PromptDetail> {
   @override
   Widget build(BuildContext context) {
     PromptDetailModel prompt = Provider.of<PromptProvider>(context).prompt;
-    print(prompt.isLiked);
 
     if (isLoading) {
       return const Scaffold(
@@ -55,26 +57,60 @@ class _PromptDetailState extends State<PromptDetail> {
       // drawer: const BurgerNavigator(),
       body: PageView(
         children: [
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 10),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  PromptTitle(
-                    prompt: prompt,
-                    promptUuid: widget.data.promptUuid,
-                    handleBookmark: widget.data.handleBookmark,
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  PromptIntroduction(
-                    prompt: prompt,
-                  ),
-                ],
+          Stack(children: [
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    PromptTitle(
+                      prompt: prompt,
+                      promptUuid: widget.data.promptUuid,
+                      handleBookmark: widget.data.handleBookmark,
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    PromptIntroduction(
+                      prompt: prompt,
+                    ),
+                  ],
+                ),
               ),
             ),
-          )
+            AnimatedPositioned(
+              bottom: 20,
+              right: 20,
+              duration: const Duration(
+                milliseconds: 500,
+              ),
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  final chatProvider =
+                      Provider.of<ChatProvider>(context, listen: false);
+                  chatProvider.initProvider();
+                  final navigator = Navigator.of(context);
+                  navigator.pushNamed(RoutesName.chat,
+                      arguments: widget.data.promptUuid);
+                },
+                icon: const Icon(
+                  Icons.play_circle_outline_outlined,
+                  color: Colors.white,
+                  size: 16,
+                ),
+                label: Text(
+                  '사용하기',
+                  style: AppTheme.caption.copyWith(
+                    color: Colors.white,
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                ),
+              ),
+            ),
+          ])
         ],
       ),
     );
