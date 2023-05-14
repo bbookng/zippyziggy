@@ -2,7 +2,9 @@ package com.zippyziggy.member.service;
 
 import com.zippyziggy.member.config.kafka.KafkaProducer;
 import com.zippyziggy.member.dto.request.MemberSignUpRequestDto;
+import com.zippyziggy.member.dto.response.MemberIdResponse;
 import com.zippyziggy.member.dto.response.MemberInformResponseDto;
+import com.zippyziggy.member.dto.response.MemberResponse;
 import com.zippyziggy.member.model.JwtToken;
 import com.zippyziggy.member.model.Member;
 import com.zippyziggy.member.model.Platform;
@@ -17,8 +19,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.NonUniqueResultException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -213,4 +218,11 @@ public class MemberService {
         return member;
     }
 
+    public List<MemberIdResponse> findAll() {
+        return memberRepository
+                .findAll()
+                .stream()
+                .map(m -> MemberIdResponse.from(m))
+                .collect(Collectors.toList());
+    }
 }
