@@ -4,14 +4,19 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.zippyziggy.member.client.PromptClient;
 import com.zippyziggy.member.dto.request.MemberSignUpRequestDto;
 import com.zippyziggy.member.dto.response.*;
-import com.zippyziggy.member.exception.MemberNotFoundException;
 import com.zippyziggy.member.model.JwtToken;
 import com.zippyziggy.member.model.Member;
 import com.zippyziggy.member.model.Platform;
 import com.zippyziggy.member.model.VisitedMemberCount;
 import com.zippyziggy.member.repository.MemberRepository;
 import com.zippyziggy.member.repository.VisitedMemberCountRepository;
-import com.zippyziggy.member.service.*;
+import com.zippyziggy.member.service.GoogleLoginService;
+import com.zippyziggy.member.service.JwtProviderService;
+import com.zippyziggy.member.service.JwtValidationService;
+import com.zippyziggy.member.service.KakaoLoginService;
+import com.zippyziggy.member.service.MemberService;
+import com.zippyziggy.member.service.RedisService;
+import com.zippyziggy.member.service.VisitedMemberCountService;
 import com.zippyziggy.member.util.CookieUtils;
 import com.zippyziggy.member.util.RedisUtils;
 import com.zippyziggy.member.util.SecurityUtil;
@@ -21,20 +26,31 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
-import java.util.UUID;
 
 
 @RestController
@@ -96,7 +112,7 @@ public class MemberController {
     /**
      * 일일 방문자수 조회
      */
-    @Operation(summary = "일일 방문자수 조회", description = "일일 방문자수를 조회해서 보여준다. 1분마다 DB에 저장하는 스케쥴 기능 포함")
+    @Operation(summary = "일일 방문자수 조회", description = "일일 방문자수를 조회해서 보여준다. 단 yyyy-mm-dd 형식으로 dateTime을 pathvariable로 넣어줘야한다. 1분마다 DB에 저장하는 스케쥴 기능 포함")
     @GetMapping("/daily/visited")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "성공"),
@@ -104,20 +120,38 @@ public class MemberController {
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
     public ResponseEntity<?> dailyVisitedCount() {
-        String dateTimeDaily = visitedMemberCountService.DateTimeDaily();
-        if (redisUtils.isExists(dateTimeDaily)) {
-            long dailyCount = redisUtils.getBitCount(dateTimeDaily);
+        String dateTime = visitedMemberCountService.DateTimeDaily();
+        if (redisUtils.isExists(dateTime)) {
+            long dailyCount = redisUtils.getBitCount(dateTime);
             return ResponseEntity.ok(DailyVisitedCount.builder()
                     .dailyVisitedCount(dailyCount)
-                    .dailyDate(dateTimeDaily).build());
+                    .dailyDate(dateTime).build());
         } else {
-            VisitedMemberCount visitedMemberCount = visitedMemberCountRepository.findByNowDate(dateTimeDaily);
+            VisitedMemberCount visitedMemberCount = visitedMemberCountRepository.findByNowDate(dateTime);
             return ResponseEntity.ok(DailyVisitedCount.builder()
                     .dailyVisitedCount(visitedMemberCount.getVisitedCount())
-                    .dailyDate(dateTimeDaily).build());
+                    .dailyDate(dateTime).build());
         }
     }
 
+    /**
+     * 해당 월의 총 일일 방문자 수 조회
+     */
+    @Operation(summary = "해당 월의 총 일일 방문자수 조회", description = "월에 해당하는 일일 방문자수를 조회해서 보여준다. 단 yyyy-mm 형식으로 dateTime을 pathvariable로 넣어줘야한다.")
+    @GetMapping("/monthly/visited/{dateTime}")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
+    public ResponseEntity<?> monthlyVisitedCount(@PathVariable String dateTime) {
+        List<VisitedMemberCount> visitedMemberCounts = visitedMemberCountRepository.findAllByNowDateContains(dateTime);
+        List<MonthlyVisitedCount> monthlyVisitedCountList = new ArrayList<>();
+        for (VisitedMemberCount visitedMemberCount : visitedMemberCounts) {
+            monthlyVisitedCountList.add(MonthlyVisitedCount.from(visitedMemberCount));
+        }
+        return ResponseEntity.ok(monthlyVisitedCountList);
+    }
 
     /**
      * refreshToken이 있는지 확인
@@ -133,7 +167,7 @@ public class MemberController {
         try {
             // 기존 쿠키 확인해서 refreshToken 검증진행
             Cookie[] myCookies = request.getCookies();
-            String refreshToken = null;
+            String refreshToken;
             if (myCookies != null) {
                 for (Cookie myCookie : myCookies) {
                     if (myCookie.getName().equals("refreshToken")) {
@@ -268,6 +302,9 @@ public class MemberController {
             return ResponseEntity.ok("생성한 프롬프트가 존재하지 않습니다.");
         }
     }
+
+
+
 //
 //    /**
 //     * 유저 자동 저장
@@ -303,77 +340,153 @@ public class MemberController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
-    public ResponseEntity<?> kakaoCallback(String code, @RequestParam(value = "redirect") String redirectUrl,HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // kakao Token 가져오기(권한)
-        String kakaoAccessToken = kakaoLoginService.kakaoGetToken(code, redirectUrl);
-        // Token으로 사용자 정보 가져오기
-        KakaoUserInfoResponseDto kakaoUserInfo = kakaoLoginService.kakaoGetProfile(kakaoAccessToken);
-        // 기존 회원인지 검증
-        String platformId = kakaoUserInfo.getId();
-        Member member = memberService.memberCheck(Platform.KAKAO, platformId);
-        // DB에 해당 유저가 없다면 회원가입 진행, 없으면 로그인 진행
-        // 회원가입을 위해서 일단 프런트로 회원 정보를 넘기고 회원가입 페이지로 넘어가게 해야 할 듯
-        if (member == null || member.getActivate().equals(false)) {
-            // 회원가입 요청 메세지
-            SocialSignUpDataResponseDto socialSignUpDataResponseDto = SocialSignUpDataResponseDto.fromKakao(kakaoUserInfo);
-            return new ResponseEntity<>(SocialSignUpResponseDto.from(socialSignUpDataResponseDto), HttpStatus.OK);
-        }
-        // Jwt 토큰 생성
-        JwtToken jwtToken = jwtProviderService.createJwtToken(member.getUserUuid());
+    public ResponseEntity<?> kakaoCallback(String code, @RequestParam(value = "redirect", required = false) String redirectUrl,HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-        member.setRefreshToken(jwtToken.getRefreshToken());
+        KakaoUserInfoResponseDto kakaoUserInfo;
+        Member member;
+        log.info("redorect = " + redirectUrl);
+        if (redirectUrl == null) {
+            log.info("앱용 로그인 진행");
+            log.info(code);
+            // 앱용
+            kakaoUserInfo = kakaoLoginService.kakaoGetProfile(code);
+            log.info("카카오 유저 정보" + kakaoUserInfo);
+            // 기존 회원인지 검증
+            String platformId = kakaoUserInfo.getId();
+            member = memberService.memberCheck(Platform.KAKAO, platformId);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", jwtToken.getAccessToken());
-        headers.add("Access-Control-Expose-Headers", "Authorization");
+            log.info("기존 회원 검증");
+            log.info("platformId = " + platformId);
+            log.info("member = " + member);
 
+            // DB에 해당 유저가 없다면 회원가입 진행, 없으면 로그인 진행
+            // 회원가입을 위해서 일단 프런트로 회원 정보를 넘기고 회원가입 페이지로 넘어가게 해야 할 듯
+            if (member == null || member.getActivate().equals(false)) {
+                log.info("회원가입 필요");
+                // 회원가입 요청 메세지
+                SocialSignUpDataResponseDto socialSignUpDataResponseDto = SocialSignUpDataResponseDto.fromKakao(kakaoUserInfo);
+                log.info("회원 가입 정보 = " + socialSignUpDataResponseDto);
+                return new ResponseEntity<>(SocialSignUpResponseDto.from(socialSignUpDataResponseDto), HttpStatus.OK);
+            }
 
-        // 기존 쿠키 제거
-        Cookie myCookie = cookieUtils.findRefreshTokenCookie(request);
-        if (myCookie != null) {
-            myCookie.setMaxAge(0);
-            response.addCookie(myCookie);
-        }
+            // Jwt 토큰 생성
+            JwtToken jwtToken = jwtProviderService.createJwtToken(member.getUserUuid());
 
-        // 쿠키 설정
-        ResponseCookie cookie = jwtProviderService.createSetCookie(jwtToken.getRefreshToken());
-
-        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
-        response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.addHeader("Set-Cookie", cookie.toString());
+            member.setRefreshToken(jwtToken.getRefreshToken());
 
 
-        // 로그인 시 최소한의 유저 정보 전달
-        MemberInformResponseDto memberInformResponseDto = MemberInformResponseDto.from(member);
-
-        ///////////////////////////////레디스/////////////////////////////////
-        String dateTimeDaily = visitedMemberCountService.DateTimeDaily();
-        // 방문한 사람이 있는지 확인
-        if (redisUtils.isExists(dateTimeDaily)) {
-            // 로그인한 유저가 오늘 방문했는지 확인
-            if (!redisUtils.getBitSet(dateTimeDaily, member.getId())) {
-                // 방문한 사람이 아니라면 방문 체크 및 전체 방문 수 1 증가
+            ///////////////////////////////레디스/////////////////////////////////
+            String dateTimeDaily = visitedMemberCountService.DateTimeDaily();
+            // 방문한 사람이 있는지 확인
+            if (redisUtils.isExists(dateTimeDaily)) {
+                // 로그인한 유저가 오늘 방문했는지 확인
+                if (!redisUtils.getBitSet(dateTimeDaily, member.getId())) {
+                    // 방문한 사람이 아니라면 방문 체크 및 전체 방문 수 1 증가
+                    redisUtils.setBitSet(dateTimeDaily, member.getId());
+                    redisUtils.setExpireTime(dateTimeDaily, 60 * 60 * 24);
+                    redisUtils.increaseTotalVisitedCount();
+                }
+            } else {
+                // 첫 방문일 경우 일일 방문자수와 누적 방문자수 모두 생성
                 redisUtils.setBitSet(dateTimeDaily, member.getId());
                 redisUtils.setExpireTime(dateTimeDaily, 60 * 60 * 24);
                 redisUtils.increaseTotalVisitedCount();
             }
-        } else {
-            // 첫 방문일 경우 일일 방문자수와 누적 방문자수 모두 생성
-            redisUtils.setBitSet(dateTimeDaily, member.getId());
-            redisUtils.setExpireTime(dateTimeDaily, 60 * 60 * 24);
-            redisUtils.increaseTotalVisitedCount();
-        }
 
-        // 기존 redis 정보 삭제
+            // 로그인 시 최소한의 유저 정보 전달
+            MemberInformResponseDto memberInformResponseDto = MemberInformResponseDto.from(member);
+            log.info("memberInformResponseDto = " + memberInformResponseDto);
+
+            redisService.saveRedisData(member.getUserUuid().toString(), memberInformResponseDto, jwtToken.getRefreshToken());
+
+            ///////////////////////////////레디스/////////////////////////////////
+
+            AppMemberResponse appMemberResponse = AppMemberResponse.builder()
+                    .memberInformResponseDto(memberInformResponseDto)
+                    .jwtToken(jwtToken).build();
+
+            log.info("appMemberResponse" + appMemberResponse);
+
+            return ResponseEntity.ok(appMemberResponse);
+
+
+        } else {
+
+
+            // kakao Token 가져오기(권한)
+            String kakaoAccessToken = kakaoLoginService.kakaoGetToken(code, redirectUrl);
+            // Token으로 사용자 정보 가져오기
+            kakaoUserInfo = kakaoLoginService.kakaoGetProfile(kakaoAccessToken);
+
+            // 기존 회원인지 검증
+            String platformId = kakaoUserInfo.getId();
+            member = memberService.memberCheck(Platform.KAKAO, platformId);
+            // DB에 해당 유저가 없다면 회원가입 진행, 없으면 로그인 진행
+            // 회원가입을 위해서 일단 프런트로 회원 정보를 넘기고 회원가입 페이지로 넘어가게 해야 할 듯
+            if (member == null || member.getActivate().equals(false)) {
+                // 회원가입 요청 메세지
+                SocialSignUpDataResponseDto socialSignUpDataResponseDto = SocialSignUpDataResponseDto.fromKakao(kakaoUserInfo);
+                return new ResponseEntity<>(SocialSignUpResponseDto.from(socialSignUpDataResponseDto), HttpStatus.OK);
+            }
+
+            // Jwt 토큰 생성
+            JwtToken jwtToken = jwtProviderService.createJwtToken(member.getUserUuid());
+
+            member.setRefreshToken(jwtToken.getRefreshToken());
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Authorization", jwtToken.getAccessToken());
+            headers.add("Access-Control-Expose-Headers", "Authorization");
+
+
+            // 기존 쿠키 제거
+            Cookie myCookie = cookieUtils.findRefreshTokenCookie(request);
+            if (myCookie != null) {
+                myCookie.setMaxAge(0);
+                response.addCookie(myCookie);
+            }
+
+            // 쿠키 설정
+            ResponseCookie cookie = jwtProviderService.createSetCookie(jwtToken.getRefreshToken());
+
+            response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+            response.setHeader("Access-Control-Allow-Credentials", "true");
+            response.addHeader("Set-Cookie", cookie.toString());
+
+            // 로그인 시 최소한의 유저 정보 전달
+            MemberInformResponseDto memberInformResponseDto = MemberInformResponseDto.from(member);
+
+            ///////////////////////////////레디스/////////////////////////////////
+            String dateTimeDaily = visitedMemberCountService.DateTimeDaily();
+            // 방문한 사람이 있는지 확인
+            if (redisUtils.isExists(dateTimeDaily)) {
+                // 로그인한 유저가 오늘 방문했는지 확인
+                if (!redisUtils.getBitSet(dateTimeDaily, member.getId())) {
+                    // 방문한 사람이 아니라면 방문 체크 및 전체 방문 수 1 증가
+                    redisUtils.setBitSet(dateTimeDaily, member.getId());
+                    redisUtils.setExpireTime(dateTimeDaily, 60 * 60 * 24);
+                    redisUtils.increaseTotalVisitedCount();
+                }
+            } else {
+                // 첫 방문일 경우 일일 방문자수와 누적 방문자수 모두 생성
+                redisUtils.setBitSet(dateTimeDaily, member.getId());
+                redisUtils.setExpireTime(dateTimeDaily, 60 * 60 * 24);
+                redisUtils.increaseTotalVisitedCount();
+            }
+
+            // 기존 redis 정보 삭제
 //        redisService.deleteRedisData(member.getUserUuid().toString());
 
-        // redis 설정(1. 유저 정보 저장 -> UUID나 AccessToken으로 회원 조회할 시 활용
-        //           2. refreshToken 저장 -> accessToken 만료 시 DB가 아닌 Redis에서 먼저 찾아오기)
-        redisService.saveRedisData(member.getUserUuid().toString(), memberInformResponseDto, jwtToken.getRefreshToken());
-        ///////////////////////////////레디스/////////////////////////////////
-        return ResponseEntity.ok()
-                .headers(headers)
-                .body(memberInformResponseDto);
+            // redis 설정(1. 유저 정보 저장 -> UUID나 AccessToken으로 회원 조회할 시 활용
+            //           2. refreshToken 저장 -> accessToken 만료 시 DB가 아닌 Redis에서 먼저 찾아오기)
+            redisService.saveRedisData(member.getUserUuid().toString(), memberInformResponseDto, jwtToken.getRefreshToken());
+            ///////////////////////////////레디스/////////////////////////////////
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(memberInformResponseDto);
+
+        }
+
     }
 
     /**
@@ -453,9 +566,6 @@ public class MemberController {
             redisUtils.increaseTotalVisitedCount();
         }
 
-        // 기존 redis 정보 삭제
-//        redisService.deleteRedisData(member.getUserUuid().toString());
-
         // redis 설정(1. 유저 정보 저장 -> UUID나 AccessToken으로 회원 조회할 시 활용
         //           2. refreshToken 저장 -> accessToken 만료 시 DB가 아닌 Redis에서 먼저 찾아오기)
         redisService.saveRedisData(member.getUserUuid().toString(), memberInformResponseDto, jwtToken.getRefreshToken());
@@ -505,7 +615,7 @@ public class MemberController {
      * 추후에 사진도 같이 업로드 필요
      */
     @PostMapping("/signup")
-    @Operation(summary = "회원가입", description = "추후 사진 파일 업로드 적용 예정, 현재는 nickname, profileImg, name, platform, platformId 입력 필요" +
+    @Operation(summary = "웹 전용 회원가입", description = "추후 사진 파일 업로드 적용 예정, 현재는 nickname, profileImg, name, platform, platformId 입력 필요" +
             "중복된 유저일 경우 400 상태 코드와 함께 문구가 반환된다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "성공"),
@@ -513,64 +623,118 @@ public class MemberController {
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
     public ResponseEntity<?> memberSignUp(@RequestPart(value = "user") MemberSignUpRequestDto memberSignUpRequestDto,
-                                          @RequestPart(value = "file", required = false) MultipartFile file, HttpServletRequest request, HttpServletResponse response) throws Exception {
+                                          @RequestPart(value = "file", required = false) MultipartFile file,
+                                          HttpServletRequest request, HttpServletResponse response) throws Exception {
         try {
-            JwtToken jwtToken = memberService.memberSignUp(memberSignUpRequestDto, file);
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("Authorization", jwtToken.getAccessToken());
-            headers.add("Access-Control-Expose-Headers", "Authorization");
+
+                JwtToken jwtToken = memberService.memberSignUp(memberSignUpRequestDto, file);
+                HttpHeaders headers = new HttpHeaders();
+                headers.add("Authorization", jwtToken.getAccessToken());
+                headers.add("Access-Control-Expose-Headers", "Authorization");
 
 
-            // 기존 쿠키 제거
-            Cookie myCookie = cookieUtils.findRefreshTokenCookie(request);
-            if (myCookie != null) {
-                myCookie.setMaxAge(0);
-                response.addCookie(myCookie);
-            }
+                // 기존 쿠키 제거
+                Cookie myCookie = cookieUtils.findRefreshTokenCookie(request);
+                if (myCookie != null) {
+                    myCookie.setMaxAge(0);
+                    response.addCookie(myCookie);
+                }
 
-            // 쿠키 설정
-            ResponseCookie cookie = jwtProviderService.createSetCookie(jwtToken.getRefreshToken());
+                // 쿠키 설정
+                ResponseCookie cookie = jwtProviderService.createSetCookie(jwtToken.getRefreshToken());
 
-            response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
-            response.setHeader("Access-Control-Allow-Credentials", "true");
-            response.addHeader("Set-Cookie", cookie.toString());
+                response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+                response.setHeader("Access-Control-Allow-Credentials", "true");
+                response.addHeader("Set-Cookie", cookie.toString());
 
-            Member member = jwtValidationService.findMemberByJWT(jwtToken.getAccessToken());
-            MemberInformResponseDto memberInformResponseDto = MemberInformResponseDto.from(member);
+                Member member = jwtValidationService.findMemberByJWT(jwtToken.getAccessToken());
+                MemberInformResponseDto memberInformResponseDto = MemberInformResponseDto.from(member);
 
-            MemberSignUpResponseDto memberSignUpResponseDto = MemberSignUpResponseDto.builder()
-                    .isSignUp(false)
-                    .memberInformResponseDto(memberInformResponseDto).build();
+                MemberSignUpResponseDto memberSignUpResponseDto = MemberSignUpResponseDto.builder()
+                        .isSignUp(false)
+                        .memberInformResponseDto(memberInformResponseDto).build();
 
-            String dateTimeDaily = visitedMemberCountService.DateTimeDaily();
-            // 방문한 사람이 있는지 확인
-            if (redisUtils.isExists(dateTimeDaily)) {
-                // 로그인한 유저가 오늘 방문했는지 확인
-                if (!redisUtils.getBitSet(dateTimeDaily, member.getId())) {
-                    // 방문한 사람이 아니라면 방문 체크 및 전체 방문 수 1 증가
+                String dateTimeDaily = visitedMemberCountService.DateTimeDaily();
+                // 방문한 사람이 있는지 확인
+                if (redisUtils.isExists(dateTimeDaily)) {
+                    // 로그인한 유저가 오늘 방문했는지 확인
+                    if (!redisUtils.getBitSet(dateTimeDaily, member.getId())) {
+                        // 방문한 사람이 아니라면 방문 체크 및 전체 방문 수 1 증가
+                        redisUtils.setBitSet(dateTimeDaily, member.getId());
+                        redisUtils.setExpireTime(dateTimeDaily, 60 * 60 * 24);
+                        redisUtils.increaseTotalVisitedCount();
+                    }
+                } else {
+                    // 첫 방문일 경우 일일 방문자수와 누적 방문자수 모두 생성
                     redisUtils.setBitSet(dateTimeDaily, member.getId());
                     redisUtils.setExpireTime(dateTimeDaily, 60 * 60 * 24);
                     redisUtils.increaseTotalVisitedCount();
                 }
-            } else {
-                // 첫 방문일 경우 일일 방문자수와 누적 방문자수 모두 생성
-                redisUtils.setBitSet(dateTimeDaily, member.getId());
-                redisUtils.setExpireTime(dateTimeDaily, 60 * 60 * 24);
-                redisUtils.increaseTotalVisitedCount();
-            }
 
-            // Redis에 refreshToken과 유저 정보 저장
-            redisService.saveRedisData(member.getUserUuid().toString(), memberInformResponseDto, jwtToken.getRefreshToken());
+                // Redis에 refreshToken과 유저 정보 저장
+                redisService.saveRedisData(member.getUserUuid().toString(), memberInformResponseDto, jwtToken.getRefreshToken());
 
-            return ResponseEntity.ok()
-                    .headers(headers)
-                    .body(memberSignUpResponseDto);
+                return ResponseEntity.ok()
+                        .headers(headers)
+                        .body(memberSignUpResponseDto);
 
         } catch (Exception e) {
 
             return new ResponseEntity<>("회원가입 도중 오류가 발생했습니다 => " + e, HttpStatus.BAD_REQUEST);
         }
     }
+
+    /**
+     * 앱용 회원가입
+     * 추후에 사진도 같이 업로드 필요
+     */
+    @PostMapping("/signup/app")
+    @Operation(summary = "앱 전용 회원가입", description = "추후 사진 파일 업로드 적용 예정, 현재는 nickname, profileImg, name, platform, platformId 입력 필요" +
+            "중복된 유저일 경우 400 상태 코드와 함께 문구가 반환된다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
+    public ResponseEntity<?> memberSignUpByApp(@RequestPart(value = "user") MemberSignUpRequestDto memberSignUpRequestDto,
+                                          @RequestPart(value = "file", required = false) MultipartFile file,
+                                          HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+
+        // Flutter로 회원가입 할 경우
+        JwtToken jwtToken = memberService.memberSignUp(memberSignUpRequestDto, file);
+
+        Member member = jwtValidationService.findMemberByJWT(jwtToken.getAccessToken());
+        MemberInformResponseDto memberInformResponseDto = MemberInformResponseDto.from(member);
+
+        AppMemberResponse appMemberResponse = AppMemberResponse.builder()
+                .memberInformResponseDto(memberInformResponseDto)
+                .jwtToken(jwtToken).build();
+
+        String dateTimeDaily = visitedMemberCountService.DateTimeDaily();
+        // 방문한 사람이 있는지 확인
+        if (redisUtils.isExists(dateTimeDaily)) {
+            // 로그인한 유저가 오늘 방문했는지 확인
+            if (!redisUtils.getBitSet(dateTimeDaily, member.getId())) {
+                // 방문한 사람이 아니라면 방문 체크 및 전체 방문 수 1 증가
+                redisUtils.setBitSet(dateTimeDaily, member.getId());
+                redisUtils.setExpireTime(dateTimeDaily, 60 * 60 * 24);
+                redisUtils.increaseTotalVisitedCount();
+            }
+        } else {
+            // 첫 방문일 경우 일일 방문자수와 누적 방문자수 모두 생성
+            redisUtils.setBitSet(dateTimeDaily, member.getId());
+            redisUtils.setExpireTime(dateTimeDaily, 60 * 60 * 24);
+            redisUtils.increaseTotalVisitedCount();
+        }
+
+        // Redis에 refreshToken과 유저 정보 저장
+        redisService.saveRedisData(member.getUserUuid().toString(), memberInformResponseDto, jwtToken.getRefreshToken());
+
+        return ResponseEntity.ok(appMemberResponse);
+
+    }
+
 
     /**
      * 회원탈퇴
@@ -670,23 +834,25 @@ public class MemberController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
-    public ResponseEntity<?> findMemberByUUID(@RequestParam UUID userUuid) throws Exception {
+    public ResponseEntity<MemberResponse> findMemberByUUID(@RequestParam UUID userUuid) throws Exception {
 
         if (redisUtils.isExists("member" + userUuid)) {
             log.info("redis로 회원 조회 중");
-            MemberInformResponseDto memberInformResponseDto = redisUtils.get("member" + userUuid, MemberInformResponseDto.class);
-            return new ResponseEntity<>(memberInformResponseDto, HttpStatus.OK);
+            MemberResponse memberResponse = redisUtils.get("member" + userUuid, MemberResponse.class);
+            return new ResponseEntity<>(memberResponse, HttpStatus.OK);
         } else {
             log.info("DB로 회원 조회 중");
             log.info("userUuid = " + userUuid);
             Member member = memberRepository.findByUserUuid(userUuid);
             log.info("member = " + member);
 
-            MemberResponse memberResponse = (null == member) ? new MemberResponse() : MemberResponse.from(member);
+            MemberResponse memberResponse = (null == member)
+                ? new MemberResponse("알 수 없음", "https://zippyziggy.s3.ap-northeast-2.amazonaws.com/default/noProfile.png", "")
+                : MemberResponse.from(member);
 
             return new ResponseEntity<>(memberResponse, HttpStatus.OK);
         }
-        }
+    }
 
 
 
