@@ -1,0 +1,6 @@
+// 로고
+#ZP_logo {
+  path:not(:last-of-type) {
+    fill: var(--logo-color);
+  }
+}
