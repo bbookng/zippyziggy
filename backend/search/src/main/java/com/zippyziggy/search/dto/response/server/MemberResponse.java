@@ -4,12 +4,10 @@ import com.zippyziggy.search.dto.response.OriginerResponse;
 import com.zippyziggy.search.dto.response.WriterResponse;
 import lombok.Data;
 
-import java.util.UUID;
-
 @Data
 public class MemberResponse {
 
-    private UUID userUuid;
+    private String userUuid;
     private String nickname;
     private String profileImg;
 

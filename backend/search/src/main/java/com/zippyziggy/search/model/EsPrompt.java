@@ -77,7 +77,7 @@ public class EsPrompt {
             .title(esPrompt.getTitle())
             .description(esPrompt.getDescription())
             .hit(esPrompt.getHit())
-            .likeCnt(esPrompt.getHit())
+            .likeCnt(esPrompt.getLikeCnt())
             .regDt(esPrompt.getRegDt())
             .updDt(esPrompt.getUpdDt())
             .category(esPrompt.getCategory())
