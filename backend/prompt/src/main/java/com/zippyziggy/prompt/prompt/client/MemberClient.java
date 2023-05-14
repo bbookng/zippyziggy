@@ -15,6 +15,6 @@ public interface MemberClient {
     @GetMapping("/members/uuid")
     MemberResponse getMemberInfo(@RequestParam UUID userUuid);
 
-    @GetMapping("/ids")
+    @GetMapping("/members/ids")
     List<MemberIdResponse> getAllMemberIds();
 }
