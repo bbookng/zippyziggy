@@ -76,7 +76,9 @@ const NavOption = styled.li`
   align-items: center;
   vertical-align: middle;
   ${media.small`
-    margin-bottom: 0.5rem;
+    &.mobileNone{
+      display:none;
+    }
   `}
 
   &.active,
@@ -85,8 +87,32 @@ const NavOption = styled.li`
     color: var(--colors-primary-80);
   }
 
-  .themeBtn {
-    background-color: black;
+  &.noticeBtn.active,
+  &.noticeBtn:hover,
+  &.noticeBtn:active {
+    color: ${({ theme }) => theme.colors.dangerColor};
+    .noticeCount {
+      color: ${({ theme }) => theme.colors.whiteColor};
+    }
+  }
+
+  &.noticeBtn {
+    position: relative;
+
+    .noticeCount {
+      position: absolute;
+      top: 0;
+      right: -8px;
+      width: ${({ theme }) => theme.fonts.body_xm};
+      height: ${({ theme }) => theme.fonts.body_xm};
+      border-radius: 50%;
+      background-color: ${({ theme }) => theme.colors.dangerColor};
+      color: ${({ theme }) => theme.colors.whiteColor};
+      font-size: ${({ theme }) => theme.fonts.body_xm};
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
   }
 `;
 
@@ -113,15 +139,16 @@ const NavUser = styled.div`
   align-items: center;
   padding: 0;
 
-  .mobileNone {
-    ${media.small`
-      display: none;
-    `}
-  }
-
   .profileImage {
     border-radius: var(--borders-radius-round);
   }
+
+  ${media.small`
+    .profileImage {
+      width: 1rem;
+      height: 1rem;
+    }
+  `}
 `;
 
 const Overlay = styled.div`

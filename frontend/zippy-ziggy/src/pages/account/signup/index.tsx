@@ -19,6 +19,7 @@ import toastifyCSS from '@/assets/toastify.json';
 import checkImageFile from '@/utils/checkImageFile';
 
 import Link from 'next/link';
+import { postCongratulationAlarms } from '@/core/notice/noticeAPI';
 
 const LoginContainer = styled.div`
   width: 100%;
@@ -143,6 +144,7 @@ export default function SignUp() {
       dispatch(setNickname(user.nickname));
       dispatch(setUserUuid(user.userUuid));
       dispatch(setIsLogin(true));
+      postCongratulationAlarms(user.userUuid);
       router.push({
         pathname: '/account/signup/welcome',
         query: { nickname: user.nickname },

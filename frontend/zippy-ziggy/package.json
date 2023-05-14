@@ -29,6 +29,7 @@
     "react-dom": "18.2.0",
     "react-lottie-player": "^1.5.4",
     "react-redux": "^8.0.5",
+    "react-toastify": "^9.1.2",
     "redux-logger": "^3.0.6",
     "redux-persist": "^6.0.0",
     "styled-components": "^5.3.9",

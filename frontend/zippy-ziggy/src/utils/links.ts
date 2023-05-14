@@ -8,4 +8,5 @@ export const links = {
   talks: '/talks',
   downloadLink,
   noticeLink,
+  notification: '/notification',
 };
