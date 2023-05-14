@@ -84,6 +84,7 @@ const PromptContainer = () => {
             category={category}
             selectedCategory={selectedCategory}
             setSelectedCategory={setCategory}
+            setPage={setPage}
           />
           <UserInfo />
         </section>

@@ -4,6 +4,7 @@ import {
   CHAT_GPT_URL,
   MK_DATA_FROM_PROMPT_CARD_PLAY,
   MK_REQUEST_DATA,
+  MK_RESIGN,
   MK_SIGN_OUT,
   ZIPPY_SITE_URL,
   ZP_BACKDROP_ID,
@@ -15,6 +16,7 @@ import { createRoot } from 'react-dom/client';
 import ContentScript from '@pages/content/components/ZippyApp/ZippyApp';
 import { getPromptDetail } from '@pages/content/apis/prompt';
 import intervalForFindElement from '@pages/content/utils/extension/intervalForFindElement';
+import logOnDev from '@pages/content/utils/@shared/logging';
 
 refreshOnUpdate('pages/content');
 
@@ -64,15 +66,32 @@ if (currentUrl.startsWith(CHAT_GPT_URL)) {
 }
 
 if (currentUrl.startsWith(ZIPPY_SITE_URL)) {
-  console.log('지피지기 kr 로직');
+  logOnDev.log('지피지기 kr 로직');
 
   // 로그아웃 연동
-  intervalForFindElement('.authContainer', ($authContainer: Element) => {
-    const $signOutButton = $authContainer.querySelector('button');
+  intervalForFindElement('[class^=userUuid__ProfileHeaderContainer]', ($authContainer: Element) => {
+    const $signOutButton = $authContainer.querySelector('#logout');
     if ($signOutButton) {
       $signOutButton.addEventListener('click', () => {
-        chrome.runtime.sendMessage({ type: MK_SIGN_OUT });
+        const name = document.querySelector('h1').textContent;
+        chrome.runtime.sendMessage({ type: MK_SIGN_OUT, name });
       });
+    }
+  });
+
+  // 탈퇴 연동
+  intervalForFindElement('[class^=ModalStyle__ModalContent]', ($authContainer: Element) => {
+    if ($authContainer) {
+      const resignButton = $authContainer.querySelector('.btnBox > button:last-of-type');
+      const isResignModal =
+        $authContainer.querySelector('.modalTitle')?.textContent === '회원 탈퇴';
+
+      if (isResignModal) {
+        resignButton.addEventListener('click', () => {
+          const name = (document.querySelector('.nickNameInput') as HTMLInputElement).placeholder;
+          chrome.runtime.sendMessage({ type: MK_RESIGN, name });
+        });
+      }
     }
   });
 
@@ -81,18 +100,18 @@ if (currentUrl.startsWith(ZIPPY_SITE_URL)) {
       for (const node of [...mutation.addedNodes]) {
         const $targetElement = node as HTMLElement;
         if (typeof $targetElement.className === 'object') return;
-        if ($targetElement.className.startsWith('Detailstyle__LeftContainer')) {
+        if ($targetElement.className?.startsWith('Detailstyle__LeftContainer')) {
           const $promptPlayDesktop = document.querySelector('#promptPlayDesktop') as HTMLElement;
           const $promptPlayMobile = document.querySelector('#promptPlayMobile');
           const { uuid } = $promptPlayDesktop.dataset;
-          const title = document.querySelector('.title').textContent;
+          const title = document.querySelector('.title')?.textContent;
           const $ComponentStyleSubContainer = document.querySelectorAll(
             '[class^=ComponentStyle__SubContainer]'
           );
           const $colorBox = $ComponentStyleSubContainer[2].querySelector('.colorBox');
-          const prefix = $colorBox.querySelector('span:first-of-type').textContent ?? '';
-          const example = $colorBox.querySelector('span.example').textContent ?? '';
-          const suffix = $colorBox.querySelector('span:last-of-type').textContent ?? '';
+          const prefix = $colorBox.querySelector('span:first-of-type')?.textContent ?? '';
+          const example = $colorBox.querySelector('span.example')?.textContent ?? '';
+          const suffix = $colorBox.querySelector('span:last-of-type')?.textContent ?? '';
 
           $promptPlayDesktop.addEventListener('click', () => {
             chrome.runtime.sendMessage({
@@ -108,7 +127,7 @@ if (currentUrl.startsWith(ZIPPY_SITE_URL)) {
             });
           });
         }
-        if ($targetElement.className.startsWith('CardStyle__Conatiner')) {
+        if ($targetElement.className?.startsWith('CardStyle__Conatiner')) {
           const promptUuid = $targetElement.dataset.uuid;
           const $playButton = $targetElement.querySelector('#promptCardPlay');
           $playButton.addEventListener('click', async () => {

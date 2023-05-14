@@ -46,7 +46,6 @@ const App = () => {
 
   // 내 정보 얻어오기
   useEffect(() => {
-    // if (localStorage.getItem('accessToken')) {
     if (chrome.storage.sync.get('accessToken')) {
       getMyInfo().then((userData) => setUserData(userData));
     }

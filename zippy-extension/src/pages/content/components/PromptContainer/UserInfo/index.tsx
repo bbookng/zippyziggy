@@ -19,7 +19,7 @@ const UserInfo = () => {
 
   return (
     <div className="ZP_prompt-container__auth-wrapper">
-      {userData?.nickname !== '' ? (
+      {userData && userData.nickname !== '' ? (
         <a
           href={`${ZIPPY_SITE_URL}/profile/${userData?.userUuid}?mypage=true`}
           className="user-wrapper"

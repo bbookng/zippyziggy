@@ -1,6 +1,8 @@
+import logOnDev from '@pages/content/utils/@shared/logging';
+
 chrome.runtime.sendMessage({ type: 'contentScriptReady' });
 
-console.log('content loaded');
+logOnDev.log('content loaded');
 /**
  * @description
  * Chrome extensions don't support modules in content scripts.

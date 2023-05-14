@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
+import logOnDev from '@pages/content/utils/@shared/logging';
 
 type UseChromeStorage = <T>(
   key: string,
@@ -55,6 +56,15 @@ const useChromeStorage: UseChromeStorage = <T>(
     };
   }, [key, storageArea, value]);
 
+  const updateStorage = useCallback(
+    (newValue: T) => {
+      chrome.storage[storageArea].set({ [key]: newValue }, () => {
+        logOnDev.log(`${key} 스토리지 업데이트`);
+      });
+    },
+    [key, storageArea]
+  );
+
   return [
     value,
     useCallback(
@@ -64,11 +74,11 @@ const useChromeStorage: UseChromeStorage = <T>(
             typeof newValue === 'function'
               ? (newValue as (prevState: T) => T)(prevValue)
               : newValue;
-          chrome.storage[storageArea].set({ [key]: updatedValue }, () => {});
+          updateStorage(updatedValue);
           return updatedValue;
         });
       },
-      [key, storageArea]
+      [updateStorage]
     ),
   ];
 };
