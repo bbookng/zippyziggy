@@ -1,0 +1,31 @@
+server:
+  port: 80
+
+spring:
+  application:
+    name: member
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    open-in-view: false
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+springdoc:
+  swagger-ui:
+    path: /doc/swagger
+    operations-sorter: method
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, busrefresh
+

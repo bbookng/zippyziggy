@@ -1,0 +1,14 @@
+server:
+  port: 8761
+
+spring:
+  application:
+    name: eureka
+
+# all server with dependency is recognized as eureka client in default
+# so, it should be set for server
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+

@@ -1,0 +1,36 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: config-server
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: guest
+    password: guest
+  cloud:
+    config:
+      server:
+        git:
+          uri: git@github.com:bbookng/zippyziggy-config.git
+          default-label: master
+          ignore-local-ssh-settings: true
+          skip-ssl-validation: true
+          private-key: |
+            -----BEGIN EC PRIVATE KEY-----
+            MHcCAQEEIGpB39MlXRiVl9WeH72xf/f3gWDJkdVeUpRMhTS2hroRoAoGCCqGSM49
+            AwEHoUQDQgAExvepjM7AJG75jXqhVTYPXRgqscgzTfmijtYQNvMOxQ2HjKXOsEKY
+            yPKzIsztRQsSXlsDBQ3ppd+SB5FhZwQxSQ==
+            -----END EC PRIVATE KEY-----
+    kubernetes:
+      enabled: true
+      config:
+        enabled: true
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, busrefresh
