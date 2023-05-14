@@ -3,6 +3,7 @@ package com.zippyziggy.prompt.common.kafka;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zippyziggy.prompt.prompt.dto.request.EsPromptRequest;
+import com.zippyziggy.prompt.prompt.dto.request.NoticeRequest;
 import com.zippyziggy.prompt.prompt.dto.request.PromptCntRequest;
 import com.zippyziggy.prompt.prompt.dto.request.TalkCntRequest;
 import com.zippyziggy.prompt.talk.dto.request.EsTalkRequest;
@@ -79,5 +80,15 @@ public class KafkaProducer {
             throw new RuntimeException(e);
         }
         return talkCntRequest.getTalkId();
+    }
+
+    public NoticeRequest sendNotification(String topic, NoticeRequest data) {
+        try {
+            String jsonInString = mapper.writeValueAsString(data);
+            kafkaTemplate.send(topic, jsonInString);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        return data.from(data);
     }
 }
