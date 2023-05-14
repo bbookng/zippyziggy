@@ -70,7 +70,7 @@ dependencies {
 	// Redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
-	//querydsl 추가
+	// querydsl 추가
 	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
 	annotationProcessor "com.querydsl:querydsl-apt:${queryDslVersion}"
 	implementation 'com.google.code.findbugs:jsr305:3.0.2'
@@ -89,7 +89,10 @@ dependencies {
 	// monitoring
 	implementation 'io.micrometer:micrometer-registry-prometheus'
 
+	// apache mahout - for recommendation
+	implementation 'org.apache.mahout:mahout-integration:0.12.2'
 
+	implementation 'com.sun.jersey.contribs:jersey-apache-client4:1.19.4'
 }
 
 dependencyManagement {
