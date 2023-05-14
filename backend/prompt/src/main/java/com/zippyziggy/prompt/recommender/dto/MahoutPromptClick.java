@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MahoutPromptClick {
-    private Long userId;
+    private Long memberId;
     private Long promptId;
     private Long clickCnt;
 }

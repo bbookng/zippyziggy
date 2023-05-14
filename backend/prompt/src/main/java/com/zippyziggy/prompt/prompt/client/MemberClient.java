@@ -1,7 +1,11 @@
 package com.zippyziggy.prompt.prompt.client;
 
 import com.zippyziggy.prompt.prompt.dto.response.MemberResponse;
+
+import java.util.List;
 import java.util.UUID;
+
+import com.zippyziggy.prompt.recommender.dto.response.MemberIdResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -10,4 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface MemberClient {
     @GetMapping("/members/uuid")
     MemberResponse getMemberInfo(@RequestParam UUID userUuid);
+
+    @GetMapping("/ids")
+    List<MemberIdResponse> getAllMemberIds();
 }
