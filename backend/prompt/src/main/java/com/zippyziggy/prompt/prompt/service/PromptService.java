@@ -350,7 +350,7 @@ public class PromptService{
 			kafkaProducer.sendNotification("send-notification",
 					new NoticeRequest(prompt.getMemberUuid().toString(),
 							"'" + prompt.getTitle() + "'" + "게시물 좋아요 + 1",
-							"zippyziggy.kr/prompts/" + prompt.getPromptUuid().toString()));
+							"https://zippyziggy.kr/prompts/" + prompt.getPromptUuid().toString()));
 
 		} else {
 
