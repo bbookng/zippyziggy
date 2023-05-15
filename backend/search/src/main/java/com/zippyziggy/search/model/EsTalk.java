@@ -60,6 +60,7 @@ public class EsTalk {
 				.likeCnt(syncEsTalk.getLikeCnt())
 				.hit(syncEsTalk.getHit())
 				.esMessages(syncEsTalk.getEsMessages())
+				.model(syncEsTalk.getModel())
 				.build();
 	}
 
