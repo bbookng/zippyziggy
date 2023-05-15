@@ -119,6 +119,14 @@ spring:
         - id: member
           uri: lb://MEMBER
           predicates:
+            - Path=/api/members/actuator/**
+            - Method=GET, POST
+          filters:
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
+
+        - id: member
+          uri: lb://MEMBER
+          predicates:
             - Path=/api/members/**
           filters:
             - RewritePath=/api/(?<segment>.*), /$\{segment}
@@ -153,6 +161,14 @@ spring:
         - id: prompt
           uri: lb://PROMPT
           predicates:
+            - Path=/api/prompts/actuator/**
+            - Method=GET, POST
+          filters:
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
+
+        - id: prompt
+          uri: lb://PROMPT
+          predicates:
             - Path=/api/prompts/{promptUuid}/**
             - Method=GET, POST, PUT, DELETE, OPTIONS
           filters:
@@ -162,7 +178,23 @@ spring:
         - id: search
           uri: lb://SEARCH
           predicates:
+            - Path=/api/search/actuator/**
+            - Method=GET, POST
+          filters:
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
+
+        - id: search
+          uri: lb://SEARCH
+          predicates:
             - Path=/api/search/**
+          filters:
+            - RewritePath=/api/(?<segment>.*), /$\{segment}
+
+        - id: notice
+          uri: lb://NOTICE
+          predicates:
+            - Path=/api/notice/actuator/**
+            - Method=GET, POST
           filters:
             - RewritePath=/api/(?<segment>.*), /$\{segment}
 
