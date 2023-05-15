@@ -68,7 +68,8 @@ if (currentUrl.startsWith(CHAT_GPT_URL)) {
 // 지피지기 사이트에서 적용할 로직
 if (currentUrl.startsWith(ZIPPY_SITE_URL)) {
   logOnDev.log('지피지기 kr 로직');
-
+  // 프론트엔드에서 확장이 설치되었는지 확인을 하기위해 심는 attribute
+  document.documentElement.setAttribute('zippy', 'true');
   // 로그아웃 연동
   intervalForFindElement('[class^=userUuid__ProfileHeaderContainer]', ($authContainer: Element) => {
     const $signOutButton = $authContainer.querySelector('#logout');

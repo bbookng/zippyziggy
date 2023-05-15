@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import {
+  CHAT_GPT_URL,
   ZP_INPUT_WRAPPER_ID,
   ZP_PROMPT_CONTAINER_ID,
   ZP_PROMPT_TITLE_HOLDER_ID,
@@ -38,11 +39,15 @@ const useInputContainerPortal = () => {
     addToggleButton($formParent);
     // 입력창 focus 시 border 스타일 지정
     setInputWrapperStyle($inputWrapperPortal.parentElement);
+    const $selectedPromptTitleWrapper = document.createElement('div');
+
     const $selectedPromptTitle = document.createElement('p');
     $selectedPromptTitle.id = ZP_PROMPT_TITLE_HOLDER_ID;
 
-    $inputWrapperPortal.prepend($selectedPromptTitle);
-
+    $inputWrapperPortal.prepend($selectedPromptTitleWrapper);
+    $selectedPromptTitleWrapper.appendChild($selectedPromptTitle);
+    const message = { type: 'renderInputPortals' };
+    window.postMessage(message, CHAT_GPT_URL);
     setPortalContainer($inputWrapperPortal);
   }, []);
 
@@ -83,7 +88,6 @@ const useInputContainerPortal = () => {
           }
         }
 
-        // 포탈이 생길 조건
         if (targetElement.id === ZP_INPUT_WRAPPER_ID) {
           const $ZPActionGroup = document.querySelector('#ZP_actionGroup');
           if (!$ZPActionGroup) return;
@@ -92,13 +96,16 @@ const useInputContainerPortal = () => {
           if (findRegenerateButton()) $ZPActionGroup.classList.remove('ZP_invisible');
         }
 
+        // GPT 사이트의 맨 아래로 가는 버튼의 위치를 조정
         if (targetElement.className.includes('react-scroll-to-bottom--css')) {
-          // GPT 사이트의 맨 아래로 가는 버튼의 위치를 조정
           adjustToBottomButtonPosition(targetElement as HTMLElement);
         }
 
+        // 포탈이 생길 조건
         if (shouldCreateInputWrapperPortal(targetElement)) {
+          // 포탈 생성
           addInputWrapperPortal();
+          // 쉐어버튼 생성
           const $regenerateButton = findRegenerateButton();
           if ($regenerateButton) {
             const $ZPActionGroup = document.querySelector('#ZP_actionGroup');

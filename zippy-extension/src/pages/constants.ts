@@ -25,6 +25,7 @@ const ZP_HIDE_TOGGLE_BUTTON_ID = 'ZP_hideToggleButton';
 const ZP_TO_TOP_BUTTON_ID = 'ZP_toTopButton';
 const ZP_SHARE_BUTTON_ID = 'ZP_shareButton';
 const ZP_PROMPT_TITLE_HOLDER_ID = 'ZP_promptTitleHolder';
+const ZP_AUTH_BUTTON_ID = 'ZP_authButton';
 
 /* Storage Key */
 const LAST_TARGET_LANGUAGE_KEY = 'ZP_lastTargetLanguage';
@@ -66,6 +67,7 @@ export {
   ZP_HIDE_TOGGLE_BUTTON_ID,
   ZP_TO_TOP_BUTTON_ID,
   ZP_PROMPT_TITLE_HOLDER_ID,
+  ZP_AUTH_BUTTON_ID,
   ZP_SHARE_BUTTON_ID,
   LAST_TARGET_LANGUAGE_KEY,
   CHROME_CATEGORY_KEY,

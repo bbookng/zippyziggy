@@ -49,9 +49,26 @@ const PromptCard = ({ prompt }: PromptCardProps) => {
 
     const $textarea = document.querySelector(`form textarea`) as HTMLTextAreaElement;
     $textarea.placeholder = `예시) ${example}`;
+    $textarea.style.overflowY = 'visible';
+    $textarea.style.height = 'fit-content';
 
-    const $selectedPromptTitle = document.querySelector(`#${ZP_PROMPT_TITLE_HOLDER_ID}`);
+    const $selectedPromptTitle = document.querySelector(
+      `#${ZP_PROMPT_TITLE_HOLDER_ID}`
+    ) as HTMLElement;
     $selectedPromptTitle.textContent = `📟 ${title}`;
+    $selectedPromptTitle.dataset.promptUuid = promptUuid;
+    const $cancelPromptButton = document.createElement('button');
+    $cancelPromptButton.textContent = 'X';
+    $cancelPromptButton.style.display = 'block';
+    $cancelPromptButton.addEventListener('click', () => {
+      window.postMessage({ type: 'cancelPrompt' }, CHAT_GPT_URL);
+      $selectedPromptTitle.textContent = null;
+      $selectedPromptTitle.dataset.promptUuid = '';
+      $textarea.placeholder = 'Send a message.';
+      $textarea.style.height = 'fit-content';
+      $cancelPromptButton.style.display = 'none';
+    });
+    $selectedPromptTitle.parentElement.appendChild($cancelPromptButton);
 
     window.postMessage(message, CHAT_GPT_URL);
   };

@@ -19,6 +19,28 @@
   height: 100%;
 }
 
+#ZP_authButton {
+  display: flex;
+  align-items: center;
+  color: var(--black-color-70);
+  font-size: 0.9rem;
+  transition: box-shadow .25s ease,transform .25s ease, color .5s ease;
+  padding: 0.5rem;
+  border-radius: var(--borders-radius-base);
+  background-color: var(--background-color);
+  height: 2rem;
+
+  img{
+    margin-right: 0.25rem;
+  }
+
+  &:hover {
+    color: var(--black-color-100);
+    transform: translate3d(0,-3px,0);
+    background-color: var(--background-color-hover);
+  }
+}
+
 .ZP_prompt-container__inner {
   display: flex;
   position: relative;
@@ -34,8 +56,6 @@
     justify-content: center;
     margin-bottom: 1rem;
   }
-
-
 }
 
 

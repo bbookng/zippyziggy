@@ -95,6 +95,11 @@ window.addEventListener('message', function (event) {
       ZIPPY.selectedPrompt = prompt;
       break;
     }
+    case 'cancelPrompt':
+    case 'renderInputPortals': {
+      ZIPPY.selectedPrompt = null;
+      break;
+    }
     case MK_DATA_FROM_PROMPT_CARD_PLAY: {
       const {
         data: { title, suffix, prefix, example, uuid },
@@ -111,6 +116,8 @@ window.addEventListener('message', function (event) {
 
       const $textarea = document.querySelector(`form textarea`) as HTMLTextAreaElement;
       $textarea.placeholder = `예시) ${example}`;
+      $textarea.style.overflowY = 'visible';
+      $textarea.style.height = 'fit-content';
       break;
     }
     default:
