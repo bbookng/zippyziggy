@@ -59,9 +59,9 @@ public class RecommenderService {
         String tempDir = System.getProperty("java.io.tmpdir");
         log.info("tempDir: ", tempDir.toString());
         File tempFile;
-        final String path = "recommender/";
+        final String key = "recommender/" + LocalDate.now().toString() + "-mahout-prompt-click.csv";
         try {
-            tempFile = File.createTempFile(LocalDate.now().toString().concat("-mahout-prompt-click.csv"), ".csv", new File(tempDir));
+            tempFile = File.createTempFile(LocalDate.now().toString().concat("-mahout-prompt-click"), ".csv", new File(tempDir));
             BufferedWriter bw = new BufferedWriter(new FileWriter(tempFile));
             log.info("BufferedWriter 생성");
             for (MahoutPromptClick promptClick : mahoutPromptClicks) {
@@ -78,8 +78,9 @@ public class RecommenderService {
             bw.close();
             log.info("BufferedWriter close");
             // S3에 저장
-            awsS3Uploader.uploadCsv(path, tempFile);
+            awsS3Uploader.uploadCsv(key, tempFile);
             log.info("csv 파일 저장 완료");
+            tempFile.deleteOnExit();
 
         } catch (Exception e) {
             e.printStackTrace();
