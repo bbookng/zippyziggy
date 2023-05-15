@@ -176,19 +176,19 @@ const Navbar = ({ toggleTheme }) => {
     }
     if (result.result === 'FAIL') {
       dispatch(setUserReset());
-      toast.success(`다시 로그인해주세요`, {
-        onClick: () => {
-          Router.push(`/notification`);
-        },
-        icon: '⌛',
-        position: 'top-center',
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-      });
+      // toast.success(`다시 로그인해주세요`, {
+      //   onClick: () => {
+      //     Router.push(`/notification`);
+      //   },
+      //   icon: '⌛',
+      //   position: 'top-center',
+      //   autoClose: 1000,
+      //   hideProgressBar: false,
+      //   closeOnClick: true,
+      //   pauseOnHover: true,
+      //   draggable: true,
+      //   progress: undefined,
+      // });
     }
   };
 
