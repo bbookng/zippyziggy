@@ -93,6 +93,7 @@ public class Talk {
 		List<MessageResponse> messageResponses = this.messages.stream()
 				.map(m -> m.toMessageResponse()).collect(Collectors.toList());
 		return TalkResponse.builder()
+				.talkId(this.id)
 				.title(this.title)
 				.regDt(this.regDt)
 				.memberUuid(this.memberUuid)
