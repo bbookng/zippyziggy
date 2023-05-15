@@ -60,7 +60,7 @@ const ColorBox = styled.div`
       /* width: fit-content; */
 
       .heartBox {
-        background-color: ${({ theme }) => theme.colors.heartColor};
+        background-color: ${({ theme }) => theme.colors.dangerColor};
         border-radius: 40px;
         display: flex;
         justify-content: center;
@@ -75,7 +75,7 @@ const ColorBox = styled.div`
       }
 
       .commentBox {
-        background-color: ${({ theme }) => theme.colors.primaryColor};
+        background-color: ${({ theme }) => theme.colors.primaryColor80};
         border-radius: 40px;
         display: flex;
         justify-content: center;

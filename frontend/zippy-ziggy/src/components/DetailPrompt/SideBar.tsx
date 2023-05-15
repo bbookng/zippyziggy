@@ -113,10 +113,12 @@ export default function SideBar({
             </div>
           </>
         )}
-        <div className="editBtnBox" onClick={() => checkLoginCuring(handleOpenReportModal)()}>
-          <FiFlag className="icon" />
-          신고하기
-        </div>
+        {type === 'prompt' ? (
+          <div className="editBtnBox" onClick={() => checkLoginCuring(handleOpenReportModal)()}>
+            <FiFlag className="icon" />
+            신고하기
+          </div>
+        ) : null}
       </EditBox>
     </Container>
   );

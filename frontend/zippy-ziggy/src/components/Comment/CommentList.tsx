@@ -4,6 +4,9 @@ import {
   postPromptRatingAPI,
 } from '@/core/prompt/promptAPI';
 import { getTalkCommentList, getTalksCommentsAPI, postTalksCommentsAPI } from '@/core/talk/talkAPI';
+import Toastify from 'toastify-js';
+import toastifyCSS from '@/assets/toastify.json';
+import message from '@/assets/message.json';
 import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { checkInputFormToast } from '@/lib/utils';
@@ -130,10 +133,44 @@ export default function CommentList({ id, type, size }: PropsType) {
 
   // 프롬 평가
   const handleRateDown = async () => {
-    await postPromptRatingAPI({ score: 1, promptUuid: id });
+    const res = await postPromptRatingAPI({ score: 1, promptUuid: id });
+    if (res.result === 'SUCCESS') {
+      Toastify({
+        text: message.RatingSuccess,
+        duration: 1000,
+        position: 'center',
+        stopOnFocus: true,
+        style: toastifyCSS.success,
+      }).showToast();
+      return;
+    }
+    Toastify({
+      text: message.RatingFail,
+      duration: 1000,
+      position: 'center',
+      stopOnFocus: true,
+      style: toastifyCSS.success,
+    }).showToast();
   };
   const handleRateUp = async () => {
-    await postPromptRatingAPI({ score: 5, promptUuid: id });
+    const res = await postPromptRatingAPI({ score: 5, promptUuid: id });
+    if (res.result === 'SUCCESS') {
+      Toastify({
+        text: message.RatingSuccess,
+        duration: 1000,
+        position: 'center',
+        stopOnFocus: true,
+        style: toastifyCSS.success,
+      }).showToast();
+      return;
+    }
+    Toastify({
+      text: message.RatingFail,
+      duration: 1000,
+      position: 'center',
+      stopOnFocus: true,
+      style: toastifyCSS.success,
+    }).showToast();
   };
 
   return (
