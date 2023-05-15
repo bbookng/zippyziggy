@@ -22,6 +22,7 @@ public class SearchTalk {
             .question(esTalk.getEsMessages().get(0).getContent())
             .answer(esTalk.getEsMessages().get(1).getContent())
             .hit(esTalk.getHit().intValue())
+            .model(esTalk.getModel())
             .build();
     }
 
@@ -34,6 +35,7 @@ public class SearchTalk {
     private final Integer hit;
     private final String question;
     private final String answer;
+    private final String model;
 
 
     @Builder
@@ -46,8 +48,8 @@ public class SearchTalk {
             Long commentCnt,
             Long likeCnt,
             String question,
-            String answer
-    ) {
+            String answer,
+        String model) {
         this.writer = writer;
         this.talkId = talkId;
         this.title = title;
@@ -57,6 +59,7 @@ public class SearchTalk {
         this.likeCnt = likeCnt;
         this.question = question;
         this.answer = answer;
+        this.model = model;
     }
 
 }

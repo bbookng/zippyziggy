@@ -40,6 +40,9 @@ public class EsTalk {
 	@Field(type = FieldType.Long, name = "hit")
 	private Long hit;
 
+	@Field(type = FieldType.Text, name = "model")
+	private String model;
+
 	@Field(name = "es_messages")
 	private List<EsMessage> esMessages;
 
