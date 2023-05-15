@@ -14,11 +14,19 @@ public class TalkListResponse {
 	private Long likeCnt;
 	private Long commentCnt;
 	private Boolean isLiked;
+	private String model;
 
 
-	public static TalkListResponse from(String question, String answer,
-								 String memberImg, String memberNickname,
-								 Long likeCnt, Long commentCnt, Boolean isLiked) {
+	public static TalkListResponse from(
+		String question,
+		String answer,
+		String memberImg,
+		String memberNickname,
+		Long likeCnt,
+		Long commentCnt,
+		Boolean isLiked,
+		String model
+	) {
 		return TalkListResponse.builder()
 				.question(question)
 				.answer(answer)
@@ -27,6 +35,7 @@ public class TalkListResponse {
 				.likeCnt(likeCnt)
 				.commentCnt(commentCnt)
 				.isLiked(isLiked)
+				.model(model)
 				.build();
 	}
 }
