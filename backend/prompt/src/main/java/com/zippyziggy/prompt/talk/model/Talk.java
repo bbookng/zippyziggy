@@ -132,7 +132,6 @@ public class Talk {
 
 		return EsTalkRequest.builder()
 				.talkId(this.id)
-				.promptUuid(this.getPrompt().getPromptUuid().toString())
 				.memberUuid(this.getMemberUuid().toString())
 				.title(this.getTitle())
 				.regDt(this.regDt.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond())
