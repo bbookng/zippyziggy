@@ -5,6 +5,7 @@ import com.zippyziggy.prompt.prompt.dto.response.*;
 import com.zippyziggy.prompt.prompt.service.ForkPromptService;
 import com.zippyziggy.prompt.prompt.service.PromptCommentService;
 import com.zippyziggy.prompt.prompt.service.PromptService;
+import com.zippyziggy.prompt.recommender.service.RecommenderService;
 import com.zippyziggy.prompt.talk.dto.response.PromptTalkListResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -24,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.UUID;
 
 @RestController
@@ -35,6 +37,7 @@ public class PromptController {
 	private final PromptService promptService;
 	private final ForkPromptService forkPromptService;
 	private final PromptCommentService promptCommentService;
+	private final RecommenderService recommenderService;
 
 	/**
 	 *
@@ -73,8 +76,8 @@ public class PromptController {
 			@ApiResponse(responseCode = "500", description = "서버 에러")
 	})
 	public ResponseEntity<PromptResponse> modifyPrompt(@PathVariable String promptUuid,
-													   @RequestPart PromptModifyRequest data,
-													   @RequestPart MultipartFile thumbnail,
+													   @RequestPart PromptRequest data,
+													   @RequestPart @Nullable MultipartFile thumbnail,
 													   @RequestHeader String crntMemberUuid) {
 		return ResponseEntity.ok(promptService.modifyPrompt(UUID.fromString(promptUuid), data, UUID.fromString(crntMemberUuid), thumbnail));
 	}
@@ -341,6 +344,23 @@ public class PromptController {
 
 	public ResponseEntity<GptApiResponse> appChatGpt(@RequestBody AppChatGptRequest data) {
 		return ResponseEntity.ok(promptService.getChatGptAnswer(data));
+	}
+
+	@Operation(summary = "프롬프트 사용하기 클릭 시 평가 알림",  description = "프롬프트 사용하기 클릭 시 평가하라고 알림 보냅니당")
+	@PostMapping(value = "/{promptUuid}/use")
+	@ApiResponses({
+		@ApiResponse(responseCode = "200", description = "성공"),
+		@ApiResponse(responseCode = "400", description = "잘못된 요청"),
+		@ApiResponse(responseCode = "500", description = "서버 에러")
+	})
+	public ResponseEntity<NoticeRequest> sendUseNotice(@PathVariable String promptUuid, @RequestHeader String crntMemberUuid) {
+		return ResponseEntity.ok(promptService.sendUserNotice(promptUuid, crntMemberUuid));
+	}
+
+	@GetMapping("/recommender")
+	public ResponseEntity<String> testUploadCsv() throws IOException {
+		recommenderService.uploadPromptClickCsv();
+		return ResponseEntity.ok("csv 파일 업로드 완료");
 	}
 
 }

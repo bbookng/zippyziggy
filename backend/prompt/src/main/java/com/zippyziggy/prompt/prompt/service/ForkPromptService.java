@@ -3,11 +3,13 @@ package com.zippyziggy.prompt.prompt.service;
 import com.zippyziggy.prompt.common.aws.AwsS3Uploader;
 import com.zippyziggy.prompt.common.kafka.KafkaProducer;
 import com.zippyziggy.prompt.prompt.client.MemberClient;
+import com.zippyziggy.prompt.prompt.dto.request.NoticeRequest;
 import com.zippyziggy.prompt.prompt.dto.request.PromptRequest;
 import com.zippyziggy.prompt.prompt.dto.response.ForkPromptResponse;
 import com.zippyziggy.prompt.prompt.dto.response.ForkedPromptListResponse;
 import com.zippyziggy.prompt.prompt.dto.response.MemberResponse;
 import com.zippyziggy.prompt.prompt.dto.response.PromptCardResponse;
+import com.zippyziggy.prompt.prompt.exception.PromptNotFoundException;
 import com.zippyziggy.prompt.prompt.model.Prompt;
 import com.zippyziggy.prompt.prompt.model.StatusCode;
 import com.zippyziggy.prompt.prompt.repository.PromptBookmarkRepository;
@@ -16,6 +18,7 @@ import com.zippyziggy.prompt.prompt.repository.PromptLikeRepository;
 import com.zippyziggy.prompt.prompt.repository.PromptRepository;
 import com.zippyziggy.prompt.talk.repository.TalkRepository;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
@@ -45,6 +48,8 @@ public class ForkPromptService {
 
 	public ForkPromptResponse createForkPrompt(UUID promptUuid, PromptRequest data, @Nullable MultipartFile thumbnail, UUID crntMemberUuid) {
 
+		Prompt originPrompt = promptRepository.findByPromptUuid(promptUuid).orElseThrow(PromptNotFoundException::new);
+
 		String thumbnailUrl;
 
 		if (thumbnail == null) {
@@ -59,6 +64,11 @@ public class ForkPromptService {
 		promptRepository.save(prompt);
 
 		kafkaProducer.send("create-prompt-topic", prompt.toEsPromptRequest());
+
+		kafkaProducer.sendNotification("send-notification",
+			new NoticeRequest(originPrompt.getMemberUuid().toString(),
+				"'" + originPrompt.getTitle() + "'" + "게시물에 새로운 포크 프롬프트가 생성되었습니다.",
+				"https://zippyziggy.kr/prompts/" + prompt.getPromptUuid().toString()));
 
 		return ForkPromptResponse.from(prompt);
 	}
