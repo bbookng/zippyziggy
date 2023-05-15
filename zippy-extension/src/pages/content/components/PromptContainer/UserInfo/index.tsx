@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useModalContext } from '@pages/content/context/ModalContext';
 import useChromeStorage from '@pages/hooks/@shared/useChromeStorage';
 import { SignUpResult } from '@pages/content/apis/auth/models';
 import { CHROME_USERINFO_KEY, ZIPPY_SITE_URL } from '@pages/constants';
 import AuthModalContent from '@pages/content/components/Modal/ModalContents/AuthModalContent';
+import { getMyInfo } from '@pages/content/apis/auth';
 
 const UserInfo = () => {
   const { openModal, setModalContent } = useModalContext();
@@ -16,6 +17,17 @@ const UserInfo = () => {
     },
     'sync'
   );
+
+  // 내 정보 얻어오기
+  useEffect(() => {
+    chrome.storage.sync.get('accessToken', ({ accessToken }) => {
+      if (accessToken) {
+        getMyInfo().then((userData) => {
+          setUserData(userData);
+        });
+      }
+    });
+  }, [setUserData]);
 
   return (
     <div className="ZP_prompt-container__auth-wrapper">

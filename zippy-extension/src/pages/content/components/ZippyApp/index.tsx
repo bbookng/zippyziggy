@@ -65,6 +65,7 @@ if (currentUrl.startsWith(CHAT_GPT_URL)) {
   });
 }
 
+// 지피지기 사이트에서 적용할 로직
 if (currentUrl.startsWith(ZIPPY_SITE_URL)) {
   logOnDev.log('지피지기 kr 로직');
 

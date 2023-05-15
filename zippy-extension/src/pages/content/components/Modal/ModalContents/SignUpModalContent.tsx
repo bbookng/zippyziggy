@@ -22,8 +22,6 @@ const statusMessages = {
   success: { color: 'successColor', text: '검증에 성공했어요!' },
 };
 
-const skipLoopCycleOnce = async () => delayPromise(1);
-
 const SignUpModalContent = ({ userData }: SignUpModalContentProps) => {
   const [userData1, setUserData] = useChromeStorage<SignUpResult>(
     CHROME_USERINFO_KEY,
@@ -65,8 +63,8 @@ const SignUpModalContent = ({ userData }: SignUpModalContentProps) => {
     const signUpResult = await signUp(formData);
 
     setUserData(signUpResult);
-    // userData 세팅을 기다리는 해키한 코드
-    await skipLoopCycleOnce();
+    // 디바운스 대기
+    await delayPromise(600);
     closeModal();
   };
 

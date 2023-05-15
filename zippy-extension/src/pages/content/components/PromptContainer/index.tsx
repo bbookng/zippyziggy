@@ -109,8 +109,9 @@ const PromptContainer = () => {
                     .fill((v, index) => index)
                     // eslint-disable-next-line react/no-array-index-key
                     .map((_, index) => (
+                      // eslint-disable-next-line react/no-array-index-key
                       <div key={index} style={{ height: '300px' }}>
-                        로딩중...
+                        {}
                       </div>
                     ))
                 );
