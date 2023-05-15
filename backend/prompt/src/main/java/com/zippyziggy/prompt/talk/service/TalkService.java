@@ -165,7 +165,7 @@ public class TalkService {
 	}
 
 	public List<TalkListResponse> getTalks(CircuitBreaker circuitBreaker, List<Talk> talks, String crntMemberUuid) {
-		List<TalkListResponse> talkListResponses = talks.stream().map(t -> {
+		List<TalkListResponse> talkListResponses = talks.stream().map(talk -> {
 
 			boolean isTalkLiked;
 
@@ -173,17 +173,15 @@ public class TalkService {
 				isTalkLiked = false;
 			} else {
 				isTalkLiked = talkLikeRepository
-						.findByTalk_IdAndMemberUuid(t.getId(), UUID.fromString(crntMemberUuid)) != null ? true : false;
+						.findByTalk_IdAndMemberUuid(talk.getId(), UUID.fromString(crntMemberUuid)).isPresent();
 			}
-			Long talkLikeCnt = talkLikeRepository.countAllByTalkId(t.getId());
-			Long talkCommentCnt = talkCommentRepository.countAllByTalk_Id(t.getId());
-			String question = messageRepository.findFirstByTalkIdAndRole(t.getId(), Role.USER).getContent().toString();
-			String answer = messageRepository.findFirstByTalkIdAndRole(t.getId(), Role.ASSISTANT).getContent().toString();
-			MemberResponse memberResponse = circuitBreaker.run(() -> memberClient.getMemberInfo(t.getMemberUuid()));
+			Long talkLikeCnt = talkLikeRepository.countAllByTalkId(talk.getId());
+			Long talkCommentCnt = talkCommentRepository.countAllByTalk_Id(talk.getId());
+			String question = messageRepository.findFirstByTalkIdAndRole(talk.getId(), Role.USER).getContent().toString();
+			String answer = messageRepository.findFirstByTalkIdAndRole(talk.getId(), Role.ASSISTANT).getContent().toString();
+			MemberResponse memberResponse = circuitBreaker.run(() -> memberClient.getMemberInfo(talk.getMemberUuid()));
 
-			return TalkListResponse.from(
-				t.getId(),
-				t.getTitle(),
+			return talk.from(
 				question,
 				answer,
 				memberResponse,

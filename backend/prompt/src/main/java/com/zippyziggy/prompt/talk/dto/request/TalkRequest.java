@@ -12,5 +12,6 @@ public class TalkRequest {
 	private String promptUuid;
 	private String title;
 	private List<MessageRequest> messages;
+	private String model;
 
 }
