@@ -190,3 +190,8 @@ springdoc:
       name: member
       url: http://zippyziggy.kr:${server.port}/v3/api-docs/members
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, busrefresh, info, prometheus
