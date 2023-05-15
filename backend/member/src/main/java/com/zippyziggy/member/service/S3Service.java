@@ -1,19 +1,12 @@
 package com.zippyziggy.member.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.services.s3.model.PutObjectResult;
-import com.zippyziggy.member.model.Member;
+import com.amazonaws.services.s3.model.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -25,6 +18,7 @@ public class S3Service {
 
     @Value("${cloud.aws.region.static}")
     private String region;
+
 
     private final AmazonS3Client amazonS3Client;
 
@@ -54,9 +48,8 @@ public class S3Service {
 
 
     public void deleteS3File(String fileName) throws Exception {
-        String filePath = fileName.replace("https://zippyziggytest.s3.ap-northeast-2.amazonaws.com/", "");
+        String filePath = fileName.replace("https://zippyziggyimage.s3.ap-northeast-2.amazonaws.com/", "");
         boolean isObjectExist = amazonS3Client.doesObjectExist(bucket, filePath);
-        System.out.println("isObjectExist = " + isObjectExist);
         if (isObjectExist) {
             amazonS3Client.deleteObject(bucket, filePath);
         }

@@ -1,36 +1,43 @@
 package com.zippyziggy.member.service;
 
+import com.zippyziggy.member.config.kafka.KafkaProducer;
 import com.zippyziggy.member.dto.request.MemberSignUpRequestDto;
+import com.zippyziggy.member.dto.response.MemberIdResponse;
+import com.zippyziggy.member.dto.response.MemberInformResponseDto;
 import com.zippyziggy.member.model.JwtToken;
 import com.zippyziggy.member.model.Member;
 import com.zippyziggy.member.model.Platform;
-import com.zippyziggy.member.model.RoleType;
 import com.zippyziggy.member.repository.MemberRepository;
-//import com.zippyziggy.member.util.RedisUtils;
+import com.zippyziggy.member.util.RedisUtils;
 import com.zippyziggy.member.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.NonUniqueResultException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class MemberService {
 
 
     private final MemberRepository memberRepository;
     private final JwtProviderService jwtProviderService;
-    private final JwtValidationService jwtValidationService;
+    private final RedisService redisService;
     private final S3Service s3Service;
     private final SecurityUtil securityUtil;
-//    private final RedisUtils redisUtils;
+    private final KafkaProducer kafkaProducer;
+    private final RedisUtils redisUtils;
+
 
     /**
      * 기존 회원인지 검증 서비스
@@ -56,7 +63,6 @@ public class MemberService {
         try {
             // 보내준 파일이 없을 경우 그냥 플랫폼에서 받은 프로필 이미지를 삽입
             if (file == null || file.isEmpty()) {
-                System.out.println("222222222222222222222222222222222222222222222");
                 UUID uuid = UUID.randomUUID();
 
                 JwtToken jwtToken = signUpLogic(dto, uuid, dto.getProfileImg());
@@ -64,7 +70,6 @@ public class MemberService {
                 return jwtToken;
 
             } else {
-                System.out.println("333333333333333333333333333333333333333333333333");
                 // 파일을 업로드해서 보내준 경우
                 UUID uuid = UUID.randomUUID();
 
@@ -78,7 +83,7 @@ public class MemberService {
         } catch (NonUniqueResultException error) {
           throw  new NonUniqueResultException("유저가 이미 존재합니다.");
         } catch (Exception e) {
-            System.out.println("e = " + e);
+            log.error("에러발생 = " + e);
             throw new NullPointerException();
         }
 
@@ -89,13 +94,9 @@ public class MemberService {
      * 회원가입되는 로직
      */
     private JwtToken signUpLogic(MemberSignUpRequestDto dto, UUID uuid, String profileImg) throws Exception {
-        System.out.println("5555555555555555555555555555555555555555555");
         String nickname = dto.getNickname();
 
         Member checkMemberPlatform = memberCheck(dto.getPlatform(), dto.getPlatformId());
-        System.out.println("checkMemberPlatform = " + checkMemberPlatform);
-        System.out.println("dto = " + dto.getPlatform());
-        System.out.println("dto = " + dto.getPlatformId());
         if (checkMemberPlatform == null) {
             Member member = Member.builder()
                     .name(dto.getName())
@@ -106,7 +107,6 @@ public class MemberService {
                     .userUuid(uuid)
                     .regDt(LocalDateTime.now())
                     .build();
-            System.out.println("member = " + member);
             memberRepository.save(member);
             return autoLogin(nickname);
 
@@ -161,22 +161,26 @@ public class MemberService {
     public void memberSignOut() throws Exception {
 
         Member member = securityUtil.getCurrentMember();
+
+        redisService.deleteRedisData(member.getUserUuid().toString());
+
+        kafkaProducer.send("delete-member-topic", member.getUserUuid());
         memberRepository.delete(member);
 //        member.setActivate(false);
 //        member.setNickname("");
 //        member.setRefreshToken(null);
 
         // 기존에 있던 redis 정보 삭제
-//        String MemberKey = "member" + member.getUserUuid();
-//        String RefreshKey = "refreshToken" + member.getUserUuid();
-//
-//        if (redisUtils.isExists(MemberKey)) {
-//            redisUtils.delete(MemberKey);
-//        }
-//
-//        if (redisUtils.isExists(RefreshKey)) {
-//            redisUtils.delete(RefreshKey);
-//        }
+        String MemberKey = "member" + member.getUserUuid();
+        String RefreshKey = "refreshToken" + member.getUserUuid();
+
+        if (redisUtils.isExists(MemberKey)) {
+            redisUtils.delete(MemberKey);
+        }
+
+        if (redisUtils.isExists(RefreshKey)) {
+            redisUtils.delete(RefreshKey);
+        }
 
         s3Service.deleteS3File(member.getProfileImg());
 
@@ -188,7 +192,7 @@ public class MemberService {
      */
     public Member updateProfile(String nickname, MultipartFile file, Member member) throws Exception {
         // 닉네임만 바꿀 경우
-        if (nickname != null && file.isEmpty()) {
+        if (nickname != null && (file.isEmpty()) ) {
             member.setNickname(nickname);
         } else if (nickname == null && !file.isEmpty()) {
             // 프로필 이미지만 바꿀 경우
@@ -205,7 +209,18 @@ public class MemberService {
             // 변경점이 없을 경우
             throw new NullPointerException("입력된 값이 없습니다.");
         }
+
+        // redis 내용도 함께 수정
+        redisService.saveRedisData(member.getUserUuid().toString(), MemberInformResponseDto.from(member), member.getRefreshToken());
+
         return member;
     }
 
+    public List<MemberIdResponse> findAll() {
+        return memberRepository
+                .findAll()
+                .stream()
+                .map(m -> MemberIdResponse.from(m))
+                .collect(Collectors.toList());
+    }
 }

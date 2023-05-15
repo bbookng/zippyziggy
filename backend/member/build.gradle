@@ -70,6 +70,14 @@ dependencies {
 	// resilience4j
 	implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
 
+	// kafka
+	implementation 'org.springframework.kafka:spring-kafka'
+
+	// zipkin, sleuth
+	implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+	implementation 'org.springframework.cloud:spring-cloud-starter-zipkin:2.2.8.RELEASE'
+
+
 	// monitoring
 	implementation 'io.micrometer:micrometer-registry-prometheus'
 

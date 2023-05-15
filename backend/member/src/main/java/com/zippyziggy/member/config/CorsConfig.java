@@ -19,11 +19,12 @@ public class CorsConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowCredentials(true); // 내 서버가 응답할 때 json을 자바스크립트에서 처리할 수 있게할지를 설정하는 것
-//        config.addAllowedOriginPattern("*");
-//        config.addAllowedOrigin("*");
         config.addAllowedOrigin("http://k8e205.p.ssafy.io:8000");
-        config.addAllowedOrigin("http://k8e205.p.ssafy.io:8888");
-//        config.addAllowedOrigin("http://k8e205.p.ssafy.io");
+        config.addAllowedOrigin("http://k8e205.p.ssafy.io:3000");
+        config.addAllowedOrigin("http://zippyziggy.kr:3000");
+        config.addAllowedOrigin("http://zippyziggy.kr");
+        config.addAllowedOrigin("https://zippyziggy.kr");
+        config.addAllowedOrigin("https://chat.openai.com");
         config.addAllowedOrigin("http://localhost:3000");
         config.addAllowedOrigin("http://localhost:8080"); // 모든 ip에 응답을 허용하겠다.
         config.addAllowedHeader("*"); // 모든 header에 응답을 허용하겠다.
@@ -33,10 +34,6 @@ public class CorsConfig {
                 HttpMethod.PUT.name(),
                 HttpMethod.DELETE.name(),
                 HttpMethod.POST.name())); // 모든 post, get, put, delete, patch 요청을 허용하겠다.
-//        config.addAllowedMethod("POST"); // 모든 post, get, put, delete, patch 요청을 허용하겠다.
-//        config.addAllowedMethod("DELETE"); // 모든 post, get, put, delete, patch 요청을 허용하겠다.
-//        config.addAllowedMethod("PUT"); // 모든 post, get, put, delete, patch 요청을 허용하겠다.
-//        config.addAllowedMethod("OPTIONS"); // 모든 post, get, put, delete, patch 요청을 허용하겠다.
         config.addExposedHeader("Set-Cookie");
         config.addExposedHeader("Authorization");
 

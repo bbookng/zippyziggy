@@ -6,23 +6,21 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
-
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class MemberInformResponseDto {
+public class MemberResponse {
 
     private String nickname;
     private String profileImg;
-    private UUID userUuid;
+    private String userUuid;
 
-    public static MemberInformResponseDto from(Member member) {
-        return MemberInformResponseDto.builder()
+    public static MemberResponse from(Member member) {
+        return MemberResponse.builder()
                 .nickname(member.getNickname())
                 .profileImg(member.getProfileImg())
-                .userUuid(member.getUserUuid()).build();
+                .userUuid(member.getUserUuid().toString())
+                .build();
     }
-
 }
