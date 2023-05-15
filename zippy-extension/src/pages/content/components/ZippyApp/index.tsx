@@ -101,6 +101,7 @@ if (currentUrl.startsWith(ZIPPY_SITE_URL)) {
       for (const node of [...mutation.addedNodes]) {
         const $targetElement = node as HTMLElement;
         if (typeof $targetElement.className === 'object') return;
+
         if ($targetElement.className?.startsWith('Detailstyle__LeftContainer')) {
           const $promptPlayDesktop = document.querySelector('#promptPlayDesktop') as HTMLElement;
           const $promptPlayMobile = document.querySelector('#promptPlayMobile');
@@ -143,6 +144,6 @@ if (currentUrl.startsWith(ZIPPY_SITE_URL)) {
     }
   });
 
-  const nextJSElement = document.getElementById('__next');
-  if (nextJSElement) observer.observe(nextJSElement, { subtree: true, childList: true });
+  const { body } = document;
+  if (body) observer.observe(body, { subtree: true, childList: true });
 }

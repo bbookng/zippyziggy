@@ -23,6 +23,7 @@ const ZP_INPUT_WRAPPER_ID = 'ZP_inputWrapperPortals';
 const ZP_INPUT_SECTION_ID = 'ZP_inputSection';
 const ZP_HIDE_TOGGLE_BUTTON_ID = 'ZP_hideToggleButton';
 const ZP_TO_TOP_BUTTON_ID = 'ZP_toTopButton';
+const ZP_SHARE_BUTTON_ID = 'ZP_shareButton';
 const ZP_PROMPT_TITLE_HOLDER_ID = 'ZP_promptTitleHolder';
 
 /* Storage Key */
@@ -65,6 +66,7 @@ export {
   ZP_HIDE_TOGGLE_BUTTON_ID,
   ZP_TO_TOP_BUTTON_ID,
   ZP_PROMPT_TITLE_HOLDER_ID,
+  ZP_SHARE_BUTTON_ID,
   LAST_TARGET_LANGUAGE_KEY,
   CHROME_CATEGORY_KEY,
   CHROME_SORT_KEY,

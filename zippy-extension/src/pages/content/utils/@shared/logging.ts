@@ -8,7 +8,7 @@ interface LogOnDev {
 
 const DEV = 'development';
 const PROD = 'production';
-const isDevelopment = import.meta.env.MODE === DEV;
+const isDevelopment = import.meta.env.MODE === PROD;
 
 const logOnDev: LogOnDev = {
   log: (...message) => {
