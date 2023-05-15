@@ -1,0 +1,15 @@
+.ZP_output-setting-group {
+  position: relative;
+  height: 2rem;
+  width: 100%;
+  max-width: 8rem;
+  display: flex;
+  color: var(--black-color-90);
+  background-color: var(--background-color);
+  border-radius: 0.375rem;
+  cursor: pointer;
+
+  & > div {
+    width: 100%;
+  }
+}
