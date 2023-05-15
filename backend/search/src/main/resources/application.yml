@@ -18,4 +18,4 @@ management:
   endpoints:
     web:
       exposure:
-        include: health, busrefresh
+        include: health, busrefresh, info, prometheus
