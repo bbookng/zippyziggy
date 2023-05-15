@@ -58,6 +58,9 @@ class _DebouncedSearchBarState extends State<DebouncedSearchBar> {
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
           ),
+          focusedBorder: const OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.white, width: 2.0),
+          ),
           contentPadding: const EdgeInsets.symmetric(
             horizontal: 12,
             vertical: 8,

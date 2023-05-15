@@ -38,19 +38,16 @@ class _BookmarkedPromptListState extends State<BookmarkedPromptList> {
     super.initState();
     page = 0;
     size = 10;
-    print('북마크 프롬프트 렌더링 시작');
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<UserProvider>(context, listen: false).resetPrompt();
       loading = true;
-      print('처음 가져오기 $loading');
       handleGetBookmarkedPromptList(true);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    print('북마크 프롬프트 렌더링');
     return _promptListView();
   }
 
@@ -97,8 +94,6 @@ class _BookmarkedPromptListState extends State<BookmarkedPromptList> {
               return PromptListItem(prompt: prompt);
             }
 
-            print(
-                '북마크 - 로컬로딩 $loading, isLoading $isLoading, 페이지 ${provider.page}, 토탈페이지 ${provider.totalPageCnt}, 인덱스 $index');
             if (!provider.isLoading && provider.page < provider.totalPageCnt) {
               handleGetBookmarkedPromptList(false);
             }

@@ -70,7 +70,6 @@ class _PromptTitleState extends State<PromptTitle> {
                               listen: false)
                           .promptLike(promptUuid: widget.promptUuid);
                       if (data['result'] == 'SUCCESS') {
-                        print(isLiked);
                         if (isLiked == true) {
                           isLiked = false;
                           likeCnt -= 1;

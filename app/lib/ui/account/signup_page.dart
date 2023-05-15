@@ -54,9 +54,7 @@ class _SignUpPageState extends State<SignUpPage> {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
         _imageUrl = pickedFile.path;
-      } else {
-        print('No image selected.');
-      }
+      } else {}
     });
   }
 
@@ -133,7 +131,7 @@ class _SignUpPageState extends State<SignUpPage> {
     }
     final data = await provider.postSignUp(formData);
     if (data) {
-      navigator(RoutesName.main);
+      navigator(RoutesName.prompt);
       Provider.of<NavigationProvider>(context, listen: false)
           .setNavigationItem(NavigationItem.main);
     }

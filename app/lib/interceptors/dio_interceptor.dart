@@ -12,8 +12,8 @@ class DioInterceptor extends Interceptor {
   void onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
     final accessToken = await storage.read(key: "accessToken");
-    print('[REQ] [${options.method}] [${options.uri}]');
-    print('[REQ] [ACCESSTOKEN] $accessToken');
+    // print('[REQ] [${options.method}] [${options.uri}]');
+    // print('[REQ] [ACCESSTOKEN] $accessToken');
     if (accessToken != null && accessToken.isNotEmpty) {
       options.headers.addAll({
         'Authorization': 'Bearer $accessToken',
@@ -26,8 +26,8 @@ class DioInterceptor extends Interceptor {
 
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    print(
-        '[RES] [${response.requestOptions.method}] ${response.requestOptions.uri}');
+    // print(
+    // '[RES] [${response.requestOptions.method}] ${response.requestOptions.uri}');
 
     super.onResponse(response, handler);
   }
@@ -37,7 +37,7 @@ class DioInterceptor extends Interceptor {
     // 401 에러가 났을 때 (statusCode)
     // 토큰 재발급 시도
     // 다시 새로운 토큰으로 요청
-    print('[ERR] [${err.requestOptions.method}] ${err.requestOptions.uri}');
+    // print('[ERR] [${err.requestOptions.method}] ${err.requestOptions.uri}');
 
     final refreshToken = await storage.read(key: 'refreshToken');
     final accessToken = await storage.read(key: 'accessToken');
@@ -47,12 +47,12 @@ class DioInterceptor extends Interceptor {
       return handler.reject(err);
     }
 
-    print("statusCode: ${err.response?.statusCode}");
+    // print("statusCode: ${err.response?.statusCode}");
     final isStatus401 = err.response?.statusCode == 401;
     final isPathRefresh = err.requestOptions.path == '/members/refresh/token';
 
     if (isStatus401 && !isPathRefresh) {
-      print('[ERR] [${err.requestOptions.method}] accessToken 만료');
+      // print('[ERR] [${err.requestOptions.method}] accessToken 만료');
 
       // 401 에러가 발생 + 일반 REST API 요청에서 에러가 발생한 경우 -> accessToken 재발급
       final dio = Dio();
@@ -82,8 +82,8 @@ class DioInterceptor extends Interceptor {
 
         // 정상적인 response 값 리턴
         return handler.resolve(response);
-      } on DioError catch (e) {
-        print('[ERR] [${e.requestOptions.method}] refreshToken 만료');
+      } on DioError {
+        // print('[ERR] [${e.requestOptions.method}] refreshToken 만료');
         storage.deleteAll();
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.remove('nickname');

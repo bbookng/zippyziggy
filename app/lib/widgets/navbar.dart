@@ -84,7 +84,7 @@ class BurgerNavigator extends StatelessWidget {
                   ),
                 ),
               ),
-            buildMenuItem(context, item: NavigationItem.main, text: '메인페이지'),
+            // buildMenuItem(context, item: NavigationItem.main, text: '메인페이지'),
             buildMenuItem(context, item: NavigationItem.prompt, text: '프롬프트'),
             buildMenuItem(context, item: NavigationItem.my, text: '마이페이지'),
             buildMenuItem(context, item: NavigationItem.chat, text: '채팅'),

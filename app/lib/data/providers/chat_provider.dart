@@ -59,7 +59,6 @@ class ChatProvider extends ChangeNotifier {
       notifyListeners();
       return true;
     } catch (e) {
-      print('프롬프트 상세 조회 실패 $e');
       return false;
     } finally {
       isLoading = false;
@@ -109,8 +108,6 @@ class ChatProvider extends ChangeNotifier {
         messages = extraMessages + messages;
       }
 
-      print(messages);
-      print('길이 : ${messages.length}');
       Map<String, dynamic> data =
           await _chatRepository.postChatGPTAPI(messages);
 
@@ -125,7 +122,6 @@ class ChatProvider extends ChangeNotifier {
       });
       return true;
     } catch (e) {
-      print('GPT 요청 실패 $e');
       chatList.add({
         "message": "요청 실패, 다시 시도해주세요.",
         "isMe": false,

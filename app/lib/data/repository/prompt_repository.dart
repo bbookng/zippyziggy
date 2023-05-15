@@ -47,8 +47,6 @@ class PromptRepository {
   Future<bool> promptBookmarkAPI(String promptUuid) async {
     Response response =
         await _dioService.post("/prompts/$promptUuid/bookmark", null);
-    print(response);
-    print(response.statusMessage);
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -60,7 +58,6 @@ class PromptRepository {
   Future<bool> promptLikeAPI(String promptUuid) async {
     Response response =
         await _dioService.post("/prompts/$promptUuid/like", null);
-    print(response);
     if (response.statusCode == 200) {
       return true;
     } else {

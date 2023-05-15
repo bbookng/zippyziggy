@@ -26,7 +26,6 @@ class PromptProvider extends ChangeNotifier {
       page += 1;
     } catch (e) {
       error = "error";
-      print('프롬프트 목록 조회 실패 $e');
     } finally {
       isLoading = false;
       notifyListeners();
@@ -42,7 +41,6 @@ class PromptProvider extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       error = "error";
-      print('프롬프트 상세 조회 실패 $e');
     }
   }
 
@@ -52,7 +50,6 @@ class PromptProvider extends ChangeNotifier {
       await _promptRepository.promptBookmarkAPI(promptUuid);
       return {'result': 'SUCCESS'};
     } catch (e) {
-      print(e);
       return {'result': 'FAIL'};
     }
   }
@@ -60,7 +57,6 @@ class PromptProvider extends ChangeNotifier {
   // 프롬프트 좋아요
   Future<Map<String, dynamic>> promptLike({promptUuid}) async {
     try {
-      print(promptUuid.toString());
       await _promptRepository.promptLikeAPI(promptUuid);
       return {'result': 'SUCCESS'};
     } catch (e) {

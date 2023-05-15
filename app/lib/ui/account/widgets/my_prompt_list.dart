@@ -36,7 +36,6 @@ class _MyPromptListState extends State<MyPromptList> {
     super.initState();
     page = 0;
     size = 10;
-    print('내 프롬프트 렌더링 시작');
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<UserProvider>(context, listen: false).resetPrompt();
@@ -46,7 +45,6 @@ class _MyPromptListState extends State<MyPromptList> {
 
   @override
   Widget build(BuildContext context) {
-    print('내 프롬프트 렌더링');
     return _promptListView();
   }
 
@@ -91,8 +89,6 @@ class _MyPromptListState extends State<MyPromptList> {
               return PromptListItem(prompt: prompt);
             }
 
-            print(
-                '마이 - 페이지 ${provider.page}, 토탈페이지 ${provider.totalPageCnt}, 인덱스 $index');
             if (!provider.isLoading && provider.page < provider.totalPageCnt) {
               handleGetMyPromptList(false);
             }

@@ -50,9 +50,7 @@ class _UpdatePageState extends State<UpdatePage> {
       if (pickedFile != null) {
         _image = File(pickedFile.path);
         _imageUrl = pickedFile.path;
-      } else {
-        print('No image selected.');
-      }
+      } else {}
     });
   }
 

@@ -26,7 +26,7 @@ class creating_message extends StatelessWidget {
                     textStyle: AppTheme.caption,
                   ),
                 ],
-                totalRepeatCount: 10,
+                totalRepeatCount: 100,
                 pause: const Duration(seconds: 3),
                 displayFullTextOnTap: true,
                 stopPauseOnTap: true,

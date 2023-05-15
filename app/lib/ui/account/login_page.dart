@@ -33,10 +33,10 @@ class _LoginPageState extends State<LoginPage> {
       }
       if (res["result"] == "LOGIN") {
         navigator.pushNamedAndRemoveUntil(
-          RoutesName.main,
+          RoutesName.prompt,
           (route) => false,
         );
-        navProvider.setNavigationItem(NavigationItem.main);
+        navProvider.setNavigationItem(NavigationItem.prompt);
         return;
       }
     }
@@ -66,15 +66,15 @@ class _LoginPageState extends State<LoginPage> {
                     '카카오로 시작하기',
                     Colors.yellow,
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  SocialLoginButton(
-                    'Google_Logo.png',
-                    () {},
-                    '구글로 시작하기',
-                    Colors.white,
-                  ),
+                  // const SizedBox(
+                  //   height: 20,
+                  // ),
+                  // SocialLoginButton(
+                  //   'Google_Logo.png',
+                  //   () {},
+                  //   '구글로 시작하기',
+                  //   Colors.white,
+                  // ),
                 ],
               ),
             ),

@@ -39,13 +39,8 @@ class _BookmarkedListItemState extends State<BookmarkedListItem> {
             ),
             child: ListTile(
               onTap: () async {
-                final data =
-                    await provider.getPrompt(widget.prompt.promptUuid!);
+                await provider.getPrompt(widget.prompt.promptUuid!);
               },
-              // leading: const Icon(
-              //   Icons.ads_click,
-              //   color: Colors.blue,
-              // ),
               title: Text(
                 '${widget.prompt.title}',
                 overflow: TextOverflow.ellipsis,

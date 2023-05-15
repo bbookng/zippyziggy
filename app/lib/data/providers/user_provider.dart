@@ -58,13 +58,10 @@ class UserProvider extends ChangeNotifier {
     try {
       final data = await _userRepository.getNicknameAPI(nickname);
       if (data['result'] == "SUCCESS") {
-        print('중복검사 성공');
         return true;
       }
-      print('중복검사 실패');
       return false;
     } catch (err) {
-      print('중복검사 에러 $err');
       return false;
     }
   }
@@ -74,8 +71,6 @@ class UserProvider extends ChangeNotifier {
     try {
       final data = await _userRepository.postSignUpAPI(formData);
       if (data['result'] == 'SUCCESS') {
-        print('회원가입 성공');
-        print(data);
         user = data['user'];
         storage.write(key: "accessToken", value: data["accessToken"]);
         storage.write(key: "refreshToken", value: data["refreshToken"]);
@@ -84,11 +79,9 @@ class UserProvider extends ChangeNotifier {
         userUuid = user!.userUuid;
         return true;
       } else {
-        print('회원가입 실패');
         return false;
       }
     } catch (err) {
-      print('회원가입 실패 $err');
       return false;
     }
   }
@@ -98,19 +91,15 @@ class UserProvider extends ChangeNotifier {
     try {
       final data = await _userRepository.putUpdateAPI(formData);
       if (data['result'] == 'SUCCESS') {
-        print('회원정보수정 성공');
-        print(data);
         user = data['user'];
         nickname = user!.nickname;
         profileImg = user!.profileImg;
         userUuid = user!.userUuid;
         return true;
       } else {
-        print('회원정보수정 실패');
         return false;
       }
     } catch (err) {
-      print('회원정보수정 실패 $err');
       return false;
     }
   }
@@ -119,9 +108,7 @@ class UserProvider extends ChangeNotifier {
   Future<bool> postLogout() async {
     try {
       final data = await _userRepository.postLogoutAPI();
-      print('로그아웃 응답 데이터 $data');
       if (data['result'] == 'SUCCESS') {
-        print('로그아웃 성공');
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.remove('nickname');
         await prefs.remove('profileImg');
@@ -133,7 +120,6 @@ class UserProvider extends ChangeNotifier {
         return false;
       }
     } catch (err) {
-      print('로그아웃 실패 $err');
       return false;
     }
   }
@@ -141,8 +127,6 @@ class UserProvider extends ChangeNotifier {
   // 북마크 프롬프트 목록 조회
   Future<bool> getBookmarkedPromptList({userUuid, size}) async {
     isLoading = true;
-    print('북마크 로딩시작 $isLoading 페이지 $page');
-    print('북마크으으으으으으으으');
     notifyListeners();
     try {
       Map<String, dynamic> data = await _userRepository
@@ -152,14 +136,11 @@ class UserProvider extends ChangeNotifier {
       totalPageCnt = data["totalPageCnt"];
       totalPromptsCnt = data["totalPromptsCnt"];
       page += 1;
-      print('다가져옴');
       return true;
     } catch (e) {
-      print('북마크 프롬프트 목록 조회 실패 $e');
       return false;
     } finally {
       isLoading = false;
-      print('로딩끝 $isLoading');
       notifyListeners();
     }
   }
@@ -167,8 +148,6 @@ class UserProvider extends ChangeNotifier {
   // 내 프롬프트 목록 조회
   Future<bool> getMyPromptList({userUuid, size}) async {
     isLoading = true;
-    print('내 로딩시작 $isLoading, 페이지 $page');
-    print('내애애애애애애');
     notifyListeners();
     try {
       Map<String, dynamic> data =
@@ -179,11 +158,9 @@ class UserProvider extends ChangeNotifier {
       page += 1;
       return true;
     } catch (e) {
-      print('내 프롬프트 목록 조회 실패 $e');
       return false;
     } finally {
       isLoading = false;
-      print('로딩끝 $isLoading');
       notifyListeners();
     }
   }
@@ -199,11 +176,9 @@ class UserProvider extends ChangeNotifier {
         userUuid = user!.userUuid;
         return true;
       } else {
-        print('유저 정보 조회 실패');
         return false;
       }
     } catch (err) {
-      print('유저 정보 조회 실패 $err');
       return false;
     }
   }
@@ -228,7 +203,6 @@ class UserProvider extends ChangeNotifier {
     totalPromptsCnt = 0;
     isLoading = false;
     page = 0;
-    print('리셋');
     notifyListeners();
   }
 }

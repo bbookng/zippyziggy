@@ -29,7 +29,9 @@ class _SplashPageState extends State<SplashPage> {
                     if (provider.nickname != null)
                       {
                         Navigator.of(context).pushNamedAndRemoveUntil(
-                            RoutesName.main, (route) => false)
+                            // RoutesName.main, (route) => false)
+                            RoutesName.prompt,
+                            (route) => false)
                       }
                     else
                       {

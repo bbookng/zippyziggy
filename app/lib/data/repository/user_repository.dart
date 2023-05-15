@@ -16,13 +16,9 @@ class UserRepository {
       // 카카오톡 실행이 가능하면 카카오톡으로 로그인, 아니면 카카오계정으로 로그인
       try {
         OAuthToken code = await UserApi.instance.loginWithKakaoTalk();
-        print('카카오톡으로 로그인 성공 ${code.accessToken}');
         // String code = await AuthCodeClient.instance.authorizeWithTalk();
-        // print('카카오톡으로 로그인 성공 $code');
         return {'result': true, 'data': code.accessToken};
       } catch (err) {
-        print('카카오톡으로 로그인 실패 $err');
-
         // 사용자가 카카오톡 설치 후 디바이스 권한 요청 화면에서 로그인을 취소한 경우,
         // 의도적인 로그인 취소로 보고 카카오계정으로 로그인 시도 없이 로그인 취소로 처리 (예 : 뒤로가기)
         if (err is PlatformException && err.code == 'CANCELED') {
@@ -32,24 +28,16 @@ class UserRepository {
         // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인
         try {
           OAuthToken code = await UserApi.instance.loginWithKakaoAccount();
-          print('카카오계정으로 로그인 성공 ${code.accessToken}');
-          // String code = await AuthCodeClient.instance.authorize();
-          // print('카카오계정으로 로그인 성공 $code');
           return {'result': true, 'data': code.accessToken};
         } catch (err) {
-          print('카카오계정으로 로그인 실패 $err');
           return {'result': false, 'data': err};
         }
       }
     } else {
       try {
         OAuthToken code = await UserApi.instance.loginWithKakaoAccount();
-        print('카카오계정으로 로그인 성공 ${code.accessToken}');
-        // String code = await AuthCodeClient.instance.authorize();
-        // print('카카오계정으로 로그인 성공 $code');
         return {'result': true, 'data': code.accessToken};
       } catch (err) {
-        print('카카오계정으로 로그인 실패 $err');
         return {'result': false, 'data': err};
       }
     }

@@ -13,7 +13,7 @@
 		<key>CFBundleInfoDictionaryVersion</key>
 		<string>6.0</string>
 		<key>CFBundleName</key>
-		<string>app</string>
+		<string>ZippyZiggy</string>
 		<key>CFBundlePackageType</key>
 		<string>APPL</string>
 		<key>CFBundleShortVersionString</key>
@@ -49,6 +49,8 @@
 		<true/>
 		<key>LSApplicationQueriesSchemes</key>
 		<array>
+			<string>https</string>
+			<string>http</string>
 			<!-- 카카오톡으로 로그인 -->
 			<string>kakaokompassauth</string>
 			<!-- 카카오톡 공유 -->

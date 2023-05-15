@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zippy_ziggy/app_theme.dart';
 
 class CustomDropdown extends StatefulWidget {
   final String? title;
@@ -58,8 +59,16 @@ class _CustomDropdownState extends State<CustomDropdown> {
         }
       },
       decoration: InputDecoration(
-        border: const OutlineInputBorder(),
+        enabledBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: AppTheme.grey),
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.white, width: 2.0),
+        ),
+        filled: true,
+        // fillColor: Colors.green,
         labelText: _title,
+        labelStyle: AppTheme.caption.copyWith(fontSize: 14),
         contentPadding: const EdgeInsets.symmetric(horizontal: 10),
       ),
     );

@@ -47,7 +47,7 @@ class _NewMessageState extends State<NewMessage> {
           Expanded(
             child: Container(
               padding: const EdgeInsets.symmetric(
-                horizontal: 8,
+                horizontal: 4,
               ),
               child: TextField(
                 controller: _controller,
@@ -56,7 +56,12 @@ class _NewMessageState extends State<NewMessage> {
                       prompt != null && prompt.messageResponse?.example != null
                           ? '예시) ${prompt.messageResponse!.example}'
                           : '메세지를 입력해주세요.',
+                  labelStyle: const TextStyle(color: Colors.white54),
+                  focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.white54, width: 2),
+                  ),
                 ),
+                cursorColor: Colors.white54,
                 onChanged: (value) {
                   setState(() {
                     _userEnterMessage = value;
@@ -72,8 +77,11 @@ class _NewMessageState extends State<NewMessage> {
             onPressed: _userEnterMessage.trim().isEmpty || provider.isLoadingGPT
                 ? null
                 : _sendMessage,
-            icon: const Icon(
+            icon: Icon(
               Icons.send,
+              color: _userEnterMessage.trim().isEmpty || provider.isLoadingGPT
+                  ? null
+                  : Colors.white,
             ),
             constraints: const BoxConstraints(),
           )

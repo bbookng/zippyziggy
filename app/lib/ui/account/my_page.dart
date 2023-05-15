@@ -48,7 +48,6 @@ class _MyPageState extends State<MyPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    print('마이페이지 렌더링');
     return Scaffold(
       appBar: const MyAppbar(),
       drawer: const BurgerNavigator(),
@@ -60,7 +59,7 @@ class _MyPageState extends State<MyPage> with TickerProviderStateMixin {
               slivers: [
                 SliverAppBar(
                   floating: true,
-                  toolbarHeight: 60,
+                  toolbarHeight: 54,
                   expandedHeight: 320,
                   pinned: true,
                   leading: const SizedBox(),
@@ -85,7 +84,7 @@ class _MyPageState extends State<MyPage> with TickerProviderStateMixin {
                   delegate: SliverChildListDelegate(
                     [
                       SizedBox(
-                        height: MediaQuery.of(context).size.height - 200,
+                        height: MediaQuery.of(context).size.height * 0.78,
                         child: TabBarView(
                           controller: _tabController,
                           children: const [

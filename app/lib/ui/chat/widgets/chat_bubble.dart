@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:zippy_ziggy/app_theme.dart';
 import 'package:zippy_ziggy/data/model/prompt_model.dart';
 
@@ -41,6 +42,9 @@ class ChatBubble extends StatelessWidget {
               MarkdownBody(
                 data: message,
                 styleSheet: myStyleSheet,
+                onTapLink: (text, url, title) {
+                  launchUrl(Uri.parse(url!));
+                },
               ),
               // Text(
               //   message,
