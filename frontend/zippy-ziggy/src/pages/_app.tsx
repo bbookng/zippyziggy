@@ -13,6 +13,8 @@ import { Provider } from 'react-redux';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import 'toastify-js/src/toastify.css';
 import Head from 'next/head';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export const GlobalStyle = createGlobalStyle`
   ${normalize}
@@ -115,6 +117,25 @@ function App({ Component, pageProps }: AppProps) {
         <link rel="icon" type="image/png" sizes="32x32" href="/images/favicons/favicon-32x32.png" />
         <link rel="icon" type="image/png" sizes="96x96" href="/images/favicons/favicon-96x96.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/images/favicons/favicon-16x16.png" />
+        <link
+          rel="shortcut icon"
+          type="image/png"
+          sizes="32x32"
+          href="/images/favicons/favicon-32x32.png"
+        />
+        <link
+          rel="shortcut icon"
+          type="image/png"
+          sizes="96x96"
+          href="/images/favicons/favicon-96x96.png"
+        />
+        <link
+          rel="shortcut icon"
+          type="image/png"
+          sizes="16x16"
+          href="/images/favicons/favicon-16x16.png"
+        />
+
         {/* <link rel="manifest" href="/manifest.json" /> */}
         <meta name="msapplication-TileColor" content="#ffffff" />
         <meta name="msapplication-TileImage" content="/ms-icon-144x144.png" />
@@ -135,6 +156,11 @@ function App({ Component, pageProps }: AppProps) {
             <GlobalStyle />
             <AppLayout toggleTheme={toggleTheme}>
               <Component {...pageProps} />
+              <ToastContainer
+                limit={1}
+                pauseOnFocusLoss={false}
+                theme={colorTheme === 'dark' ? 'dark' : 'light'}
+              />
             </AppLayout>
           </ThemeProvider>
           <ReactQueryDevtools initialIsOpen={false} />
