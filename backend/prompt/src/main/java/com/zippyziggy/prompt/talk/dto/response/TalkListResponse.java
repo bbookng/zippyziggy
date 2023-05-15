@@ -17,26 +17,6 @@ public class TalkListResponse {
 	private Long likeCnt;
 	private Long commentCnt;
 	private Boolean isLiked;
+	private String model;
 
-	public static TalkListResponse from(
-			Long talkId,
-			String title,
-			String question,
-			String answer,
-			MemberResponse member,
-			Long likeCnt,
-			Long commentCnt,
-			Boolean isLiked
-	) {
-		return TalkListResponse.builder()
-				.talkId(talkId)
-				.title(title)
-				.question(question)
-				.answer(answer)
-				.writer(member.toWriterResponse())
-				.likeCnt(likeCnt)
-				.commentCnt(commentCnt)
-				.isLiked(isLiked)
-				.build();
-	}
 }
