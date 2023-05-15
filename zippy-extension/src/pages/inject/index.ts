@@ -1,5 +1,6 @@
 /* eslint-disable */
 import {
+  CHAT_GPT_URL,
   DEFAULT_TARGET_LANGUAGE,
   ENDPOINT_CONVERSATION_URL,
   LAST_TARGET_LANGUAGE_KEY,
@@ -111,13 +112,27 @@ window.addEventListener('message', function (event) {
         } ${PROMPT_PLACEHOLDER} ${suffix || ''}${TARGET_LANGUAGE_PLACEHOLDER}`.trim();
       ZIPPY.selectedPrompt = prompt;
 
-      const $title = document.querySelector(`#${ZP_PROMPT_TITLE_HOLDER_ID}`);
+      const $title = document.querySelector(`#${ZP_PROMPT_TITLE_HOLDER_ID}`) as HTMLElement;
       $title.textContent = `📟 ${title}`;
-
+      $title.dataset.promptUuid = uuid;
       const $textarea = document.querySelector(`form textarea`) as HTMLTextAreaElement;
       $textarea.placeholder = `예시) ${example}`;
       $textarea.style.overflowY = 'visible';
       $textarea.style.height = 'fit-content';
+
+      const $cancelPromptButton = document.createElement('button');
+      $cancelPromptButton.textContent = 'X';
+      $cancelPromptButton.style.display = 'block';
+      $cancelPromptButton.addEventListener('click', () => {
+        window.postMessage({ type: 'cancelPrompt' }, CHAT_GPT_URL);
+        $title.textContent = null;
+        $title.dataset.promptUuid = '';
+        $textarea.placeholder = 'Send a message.';
+        $textarea.style.height = 'fit-content';
+        $cancelPromptButton.style.display = 'none';
+      });
+      $title.parentElement.appendChild($cancelPromptButton);
+
       break;
     }
     default:
