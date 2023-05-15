@@ -96,12 +96,6 @@ function Prompt() {
             handleCategorySelect={handleSortSelect}
             props={{ padding: '0.75rem 0.75rem' }}
           />
-          <Button onClick={createPrompt} width="7rem" className="btn btn1">
-            <FiPlus /> 글쓰기
-          </Button>
-          <Button onClick={createPrompt} width="2rem" className="btn btn2">
-            <FiPlus />
-          </Button>
         </SortBox>
       </TitleBox>
       <CardList>
@@ -114,4 +108,4 @@ function Prompt() {
   );
 }
 
-export default withDevelopModal(Prompt);
+export default Prompt;
