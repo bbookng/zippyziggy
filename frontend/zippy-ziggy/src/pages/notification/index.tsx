@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { serverUrl } from '@/lib/http';
 import { useEffect, useState } from 'react';
 import { EventListener, EventSourcePolyfill } from 'event-source-polyfill';
-import { useAppSelector } from '@/hooks/reduxHook';
+import { useAppSelector, useAppDispatch } from '@/hooks/reduxHook';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Title from '@/components/Typography/Title';
@@ -16,6 +16,8 @@ import {
 } from '@/core/notice/noticeAPI';
 import Router from 'next/router';
 import NoticesList from '@/components/Notice/NoticeList';
+// userSlice에서 유저 정보 변경
+import { setNoticeCount } from '@/core/user/userSlice';
 
 const Container = styled.div`
   width: 100%;
@@ -30,7 +32,6 @@ const Wrap = styled.div`
   button {
     :hover {
       background-color: ${({ theme }) => theme.colors.linkColor};
-      color: ${({ theme }) => theme.colors.whiteColor};
       transform: translate(0px, -2px);
     }
   }
@@ -87,6 +88,7 @@ function Index() {
   const [noticeList, setNoticeList] = useState([]);
   const [noticeListSize, setNoticeListSize] = useState(0);
   const [countNoticeList, setCountNoticeList] = useState(10);
+  const dispatch = useAppDispatch();
 
   // 알림 리스트 전체 받아오기
   const getNoticeList = async (size = countNoticeList) => {
@@ -101,6 +103,7 @@ function Index() {
     const result = await getNoticeUnreadCountAPI();
     if (result.result === 'SUCCESS') {
       setNoticeListSize(result.data);
+      dispatch(setNoticeCount(result.data));
     }
   };
 

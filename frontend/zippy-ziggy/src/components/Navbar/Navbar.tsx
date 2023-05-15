@@ -6,6 +6,15 @@ import Link from 'next/link';
 import { useTheme } from 'styled-components';
 import Router from 'next/router';
 
+// userSlice에서 유저 정보 변경
+import {
+  setIsLogin,
+  setNickname,
+  setProfileImg,
+  setUserReset,
+  setUserUuid,
+} from '@/core/user/userSlice';
+
 // sse 관련 import
 import { EventListener, EventSourcePolyfill } from 'event-source-polyfill';
 import { serverUrl } from '@/lib/http';
@@ -16,11 +25,12 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 // 유저 정보 가져오기
-import { useAppSelector } from '@/hooks/reduxHook';
+import { useAppDispatch, useAppSelector } from '@/hooks/reduxHook';
 import { links } from '@/utils/links';
 
 import { FiBell, FiSun } from 'react-icons/fi';
 
+import { getTokenAPI } from '@/core/user/userAPI';
 import { NavWrapper, NavList, NavOption, Logo, NavUser, Overlay } from './NavbarStyle';
 import Button from '../Button/Button';
 import ProfileImage from '../Image/ProfileImage';
@@ -30,6 +40,7 @@ const Navbar = ({ toggleTheme }) => {
   const [isSelected, setIsSelected] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { isDark } = useTheme();
+  const dispatch = useAppDispatch();
 
   // 네비게이션바 닫기
   const handleNavClose = (e) => {
@@ -153,9 +164,41 @@ const Navbar = ({ toggleTheme }) => {
     };
   }, [token]);
 
+  const getToken = async () => {
+    const result = await getTokenAPI();
+
+    if (result.result === 'SUCCESS') {
+      const { nickname, profileImg, userUuid } = result.data;
+      dispatch(setNickname(nickname));
+      dispatch(setProfileImg(profileImg));
+      dispatch(setUserUuid(userUuid));
+      token = result.data;
+    }
+    if (result.result === 'FAIL') {
+      dispatch(setUserReset());
+      toast.success(`다시 로그인해주세요`, {
+        onClick: () => {
+          Router.push(`/notification`);
+        },
+        icon: '⌛',
+        position: 'top-center',
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+  };
+
+  useEffect(() => {
+    getToken();
+  }, []);
+
   useEffect(() => {
     getNoticeListSize();
-  }, []);
+  }, [userState.noticeCount]);
 
   return (
     <NavWrapper>

@@ -1,3 +1,4 @@
+import { set } from 'react-hook-form';
 import { HYDRATE } from 'next-redux-wrapper'; // next-redux-wrapper에서 HYDRATE를 불러옴
 import { createSlice } from '@reduxjs/toolkit'; // reduxjs toolkit에서 createSlice를 불러옴
 import { RootState } from '../store';
@@ -8,6 +9,7 @@ export interface UserState {
   nickname: string;
   profileImg: string;
   userUuid: string;
+  noticeCount: number;
 }
 
 // 초기 상태값 정의
@@ -16,6 +18,7 @@ const initialState: UserState = {
   nickname: '',
   profileImg: '',
   userUuid: '',
+  noticeCount: 0,
 };
 
 // 액션에 대한 slice 생성
@@ -36,6 +39,9 @@ export const userSlice = createSlice({
     setUserUuid(state, action) {
       return { ...state, userUuid: action.payload };
     },
+    setNoticeCount(state, action) {
+      return { ...state, noticeCount: action.payload };
+    },
     setUserReset(state) {
       return { ...initialState };
     },
@@ -53,6 +59,6 @@ export const userSlice = createSlice({
   },
 });
 
-export const { setIsLogin, setNickname, setProfileImg, setUserUuid, setUserReset } =
+export const { setIsLogin, setNickname, setProfileImg, setUserUuid, setUserReset, setNoticeCount } =
   userSlice.actions; // 액션 생성자 함수와 셀렉터를 export함
 export default userSlice.reducer; // slice를 리듀서로 변환하여 export함

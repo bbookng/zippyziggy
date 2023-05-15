@@ -274,9 +274,11 @@ export default function Index() {
       <ProfileTalkContainer>
         <Title>대화</Title>
         <CardList>
-          {cardList?.map((talk: any) => (
-            <TalkCard key={talk.talkId} talk={talk} url={`/talks/${talk.talkId}`} />
-          ))}
+          {cardList.length > 0
+            ? cardList?.map((talk: any) => (
+                <TalkCard key={talk.talkId} talk={talk} url={`/talks/${talk.talkId}`} />
+              ))
+            : null}
         </CardList>
         {cardList?.length === 0 && <Paragraph textAlign="center">게시한 대화가 없어요!</Paragraph>}
         <Paging page={page.current} size={6} totalCnt={totalPromptsCnt || 0} setPage={handlePage} />

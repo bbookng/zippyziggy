@@ -20,10 +20,13 @@ export const deleteUserAPI = async () => {
 // AccessToken으로 내 정보 가져오기(Authorization 필요)
 export const getTokenAPI = async () => {
   try {
-    const { data } = await httpAuth.get(`/members/profile`);
-    return data;
+    const res = await httpAuth.get(`/members/profile`);
+    if (res.status === 200) {
+      return { result: 'SUCCESS', data: res.data };
+    }
+    return { result: 'FAIL' };
   } catch (err) {
-    return err;
+    return { result: 'FAIL' };
   }
 };
 
