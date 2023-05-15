@@ -5,6 +5,7 @@ import com.zippyziggy.prompt.prompt.dto.response.*;
 import com.zippyziggy.prompt.prompt.service.ForkPromptService;
 import com.zippyziggy.prompt.prompt.service.PromptCommentService;
 import com.zippyziggy.prompt.prompt.service.PromptService;
+import com.zippyziggy.prompt.recommender.service.RecommenderService;
 import com.zippyziggy.prompt.talk.dto.response.PromptTalkListResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -24,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.UUID;
 
 @RestController
@@ -35,6 +37,7 @@ public class PromptController {
 	private final PromptService promptService;
 	private final ForkPromptService forkPromptService;
 	private final PromptCommentService promptCommentService;
+	private final RecommenderService recommenderService;
 
 	/**
 	 *
@@ -352,6 +355,12 @@ public class PromptController {
 	})
 	public ResponseEntity<NoticeRequest> sendUseNotice(@PathVariable String promptUuid, @RequestHeader String crntMemberUuid) {
 		return ResponseEntity.ok(promptService.sendUserNotice(promptUuid, crntMemberUuid));
+	}
+
+	@GetMapping("/recommender")
+	public ResponseEntity<String> testUploadCsv() throws IOException {
+		recommenderService.uploadPromptClickCsv();
+		return ResponseEntity.ok("csv 파일 업로드 완료");
 	}
 
 }
