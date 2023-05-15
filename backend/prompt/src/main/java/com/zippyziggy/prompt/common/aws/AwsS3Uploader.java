@@ -3,6 +3,7 @@ package com.zippyziggy.prompt.common.aws;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.zippyziggy.prompt.common.config.AwsS3Config;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
@@ -82,8 +83,8 @@ public class AwsS3Uploader {
 		amazonS3Client.deleteObject(bucket, directory + "/" + fileName);
 	}
 
-	public void uploadCsv(String path, File file) {
-		amazonS3Client.putObject(bucket, path, file);
+	public void uploadCsv(String key, File file) {
+		amazonS3Client.putObject(bucket, key, file);
 	}
 
 }
