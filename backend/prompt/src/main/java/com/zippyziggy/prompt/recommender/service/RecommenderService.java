@@ -42,7 +42,7 @@ public class RecommenderService {
         CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
         List<MemberIdResponse> allMemberIds = circuitBreaker.run(() -> memberClient.getAllMemberIds());
         List<Prompt> allPrompts = promptRepository.findAll();
-        log.info("csv 생성에 필요한 db 데이터 불러오기 완료");
+
         List<MahoutPromptClick> mahoutPromptClicks = new ArrayList<>();
         for (MemberIdResponse memberIdResponse : allMemberIds) {
             final Long memberId = memberIdResponse.getId();
@@ -54,34 +54,30 @@ public class RecommenderService {
                 mahoutPromptClicks.add(mahoutPromptClick);
             }
         }
-        log.info("mahout에 사용할 dto로 변환 완료");
-        // 임시 경로에 저장
-        String tempDir = System.getProperty("java.io.tmpdir");
-        log.info("tempDir: ", tempDir.toString());
-        File tempFile;
-        final String key = "recommender/" + LocalDate.now().toString() + "-mahout-prompt-click.csv";
+
+        // 로컬 저장 경로
+        String localDir = "..\\..\\..\\..\\..\\..\\resources\\";
         try {
-            tempFile = File.createTempFile(LocalDate.now().toString().concat("-mahout-prompt-click"), ".csv", new File(tempDir));
-            BufferedWriter bw = new BufferedWriter(new FileWriter(tempFile));
+            FileWriter fw = new FileWriter(localDir + "mahout-prompt-click.csv");
+            log.info("FileWriter 생성");
+            BufferedWriter bw = new BufferedWriter(fw);
             log.info("BufferedWriter 생성");
             for (MahoutPromptClick promptClick : mahoutPromptClicks) {
                 final Long memberId = promptClick.getMemberId();
                 final Long promptId = promptClick.getPromptId();
                 final Long clickCnt = promptClick.getClickCnt();
+
                 final String row = memberId + "," + promptId  + "," + clickCnt;
                 bw.write(row);
                 bw.newLine();
             }
-            log.info("BufferedWriter 쓰기 완료");
             bw.flush();
-            log.info("BufferedWriter flush");
             bw.close();
-            log.info("BufferedWriter close");
+            log.info("csv 작성 완료");
             // S3에 저장
-            awsS3Uploader.uploadCsv(key, tempFile);
-            log.info("csv 파일 저장 완료");
-            tempFile.deleteOnExit();
-
+            final String key = "recommender/" + LocalDate.now().toString() + "-mahout-prompt-click.csv";
+            awsS3Uploader.uploadCsv(key, new File("..\\..\\..\\..\\..\\..\\resources\\mahout-prompt-click.csv"));
+            log.info("S3 저장 완료");
         } catch (Exception e) {
             e.printStackTrace();
         }
