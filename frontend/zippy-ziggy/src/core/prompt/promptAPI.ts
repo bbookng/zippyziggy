@@ -331,22 +331,8 @@ export const postPromptRatingAPI = async (reqeustData: {
     const { data } = await httpAuth.post(`/prompts/${reqeustData.promptUuid}/rating`, {
       score: reqeustData.score,
     });
-    Toastify({
-      text: message.RatingSuccess,
-      duration: 1000,
-      position: 'center',
-      stopOnFocus: true,
-      style: toastifyCSS.success,
-    }).showToast();
     return { result: 'SUCCESS', data };
   } catch (err) {
-    Toastify({
-      text: message.RatingSuccess,
-      duration: 1000,
-      position: 'center',
-      stopOnFocus: true,
-      style: toastifyCSS.success,
-    }).showToast();
     return { result: 'FAIL', data: err };
   }
 };

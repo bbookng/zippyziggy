@@ -9,4 +9,5 @@ export const links = {
   downloadLink,
   noticeLink,
   notification: '/notification',
+  canny: 'https://zippyziggy.canny.io/',
 };
