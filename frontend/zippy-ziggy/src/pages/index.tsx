@@ -417,7 +417,7 @@ const Home: NextPage<HomePageProps> = ({ title }) => {
           </Title>
           <Link href={links.noticeLink}>
             <Paragraph className="sub" color="blackColor90" textAlign="center">
-              베타버전 0.2.4 release
+              베타버전 0.2.8 release
             </Paragraph>
             <Link href={links.canny}>
               <Button buttonType="outline" margin="16px 0 16px 0">
