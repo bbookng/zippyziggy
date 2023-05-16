@@ -113,6 +113,9 @@ const useInputContainerPortal = () => {
               $ZPActionGroup.classList.remove('ZP_invisible');
             }
             appendShareButton();
+            document.getElementById(ZP_PROMPT_TITLE_HOLDER_ID).parentElement.style.display = 'none';
+            const $textarea = document.querySelector(`form textarea`) as HTMLTextAreaElement;
+            $textarea.placeholder = 'Send a message.';
           }
           return;
         }

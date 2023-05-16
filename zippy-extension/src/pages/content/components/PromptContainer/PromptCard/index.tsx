@@ -57,7 +57,9 @@ const PromptCard = ({ prompt }: PromptCardProps) => {
     ) as HTMLElement;
     $selectedPromptTitle.textContent = `📟 ${title}`;
     $selectedPromptTitle.dataset.promptUuid = promptUuid;
+    if (document.getElementById('ZP_cancelPromptButton')) return;
     const $cancelPromptButton = document.createElement('button');
+    $cancelPromptButton.id = 'ZP_cancelPromptButton';
     $cancelPromptButton.textContent = 'X';
     $cancelPromptButton.style.display = 'block';
     $cancelPromptButton.addEventListener('click', () => {
