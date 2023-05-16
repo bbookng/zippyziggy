@@ -118,7 +118,7 @@ spring:
             - Path=/api/members/actuator/**
             - Method=GET, POST
           filters:
-            - RewritePath=/api/(?<segment>.*), /$\{segment}
+            - RewritePath=/api/prompts/actuator/(?<segment>.*), /actuator/$\{segment}
 
         - id: member
           uri: lb://MEMBER
@@ -177,7 +177,7 @@ spring:
             - Path=/api/prompts/actuator/**
             - Method=GET, POST
           filters:
-            - RewritePath=/api/(?<segment>.*), /$\{segment}
+            - RewritePath=/api/prompts/actuator/(?<segment>.*), /actuator/$\{segment}
 
         - id: prompt
           uri: lb://PROMPT
@@ -194,7 +194,7 @@ spring:
             - Path=/api/search/actuator/**
             - Method=GET, POST
           filters:
-            - RewritePath=/api/(?<segment>.*), /$\{segment}
+            - RewritePath=/api/prompts/actuator/(?<segment>.*), /actuator/$\{segment}
 
         - id: talks
           uri: lb://PROMPT
@@ -258,7 +258,7 @@ spring:
             - Path=/api/notice/actuator/**
             - Method=GET, POST
           filters:
-            - RewritePath=/api/(?<segment>.*), /$\{segment}
+            - RewritePath=/api/prompts/actuator/(?<segment>.*), /actuator/$\{segment}
 
         - id: notice
           uri: lb://NOTICE
