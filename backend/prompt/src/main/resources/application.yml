@@ -28,11 +28,15 @@ spring:
 eureka:
   instance:
     instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
+    metadata-map:
+      "prometheus.scrape": "true"
   client:
     register-with-eureka: true
     fetch-registry: true
     service-url:
       defaultZone: http://zippyziggy.kr:8761/eureka
+
+
 
 springdoc:
   swagger-ui:
