@@ -65,8 +65,18 @@ public class RecommenderService {
             }
         }
 
+        File csvFile = new File("mahout-prompt-click.csv");
         try {
-            File csvFile = new File("mahout-prompt-click.csv");
+            if (csvFile.createNewFile()) {
+                log.info("File created");
+            } else {
+                log.info("File already exists");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
             FileWriter fw = new FileWriter(csvFile);
             BufferedWriter bw = new BufferedWriter(fw);
             for (MahoutPromptClick promptClick : mahoutPromptClicks) {
@@ -95,7 +105,8 @@ public class RecommenderService {
     public List<Long> userBasedRecommend(Long memberId) {
         FileDataModel dm;
         try {
-            dm = new FileDataModel(new File("./mahout-prompt-click.csv"));
+            dm = new FileDataModel(new File("mahout-prompt-click.csv"));
+            log.info("FileDataModel\n" + dm.toString());
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -104,6 +115,7 @@ public class RecommenderService {
         UserSimilarity user;
         try {
             user = new PearsonCorrelationSimilarity(dm);
+            log.info("피어슨상관계수\n" + user.toString());
         } catch (TasteException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -111,10 +123,14 @@ public class RecommenderService {
 
         ThresholdUserNeighborhood nh = new ThresholdUserNeighborhood(0.1, user, dm);
         GenericUserBasedRecommender recommender = new GenericUserBasedRecommender(dm, nh, user);
+        log.info("ThresholdUserNeighborhood\n" + nh.toString());
+        log.info("recommender" + recommender.toString());
 
         List<RecommendedItem> recommend;
         try {
             recommend = recommender.recommend(memberId, 10);
+            log.info("recommend\n" + recommend.toString());
+            log.info("recommend size\n" + String.valueOf(recommend.size()));
         } catch (TasteException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -125,6 +141,7 @@ public class RecommenderService {
             Long promptId = item.getItemID();
             promptIds.add(promptId);
         }
+        log.info("promptIds\n" + promptIds.toString());
 
         return promptIds;
     }
@@ -133,7 +150,7 @@ public class RecommenderService {
     public List<Long> itemBasedRecommend(Long memberId) {
         FileDataModel dm;
         try {
-            dm = new FileDataModel(new File("./mahout-prompt-click.csv"));
+            dm = new FileDataModel(new File("mahout-prompt-click.csv"));
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
