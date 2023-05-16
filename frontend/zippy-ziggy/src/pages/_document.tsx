@@ -30,7 +30,26 @@ export default class MyDocument extends Document {
   render() {
     return (
       <Html>
-        <Head />
+        <Head>
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+            (function(j,ennifer) {
+              j['dmndata']=[];j['jenniferFront']=function(args){window.dmndata.push(args)};
+              j['dmnaid']=ennifer;j['dmnatime']=new Date();j['dmnanocookie']=false;j['dmnajennifer']='JENNIFER_FRONT@INTG';
+            }(window, '8c18481d'));
+            jenniferFront({
+              set: {
+                  filter: {
+                      localhost: true
+                  }
+              }
+          });
+          `,
+            }}
+          />
+          <script async src="https://d-collect.jennifersoft.com/8c18481d/demian.js" />
+        </Head>
         <body>
           <Main />
           <div id="portal-root" />
