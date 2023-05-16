@@ -42,8 +42,8 @@ springdoc:
     path: /doc/swagger
     operations-sorter: method
 
-#management:
-#  endpoints:
-#    web:
-#      exposure:
-#        include: health, busrefresh
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, busrefresh
