@@ -249,7 +249,7 @@ public class MemberController {
             PromptCardListResponse promptsLike = promptClient.getPromptsLike(crntMemberUuid, page, size).orElseThrow(NotExistPromptList::new);
             return ResponseEntity.ok(promptsLike);
 
-    };
+    }
 
     /**
      * 멤버가 북마크를 누른 프롬프트 조회
@@ -900,6 +900,11 @@ public class MemberController {
     @GetMapping("/ids")
     public ResponseEntity<List<MemberIdResponse>> findAllMemberIds() {
         return ResponseEntity.ok(memberService.findAll());
+    }
+
+    @GetMapping("/long")
+    public ResponseEntity<Long> findLongId(String memberUuid) {
+        return ResponseEntity.ok(memberService.findLongIdByMemberUuid(memberUuid));
     }
 
 }

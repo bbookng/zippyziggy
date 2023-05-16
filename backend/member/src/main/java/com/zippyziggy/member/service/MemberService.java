@@ -223,4 +223,8 @@ public class MemberService {
                 .map(m -> MemberIdResponse.from(m))
                 .collect(Collectors.toList());
     }
+
+    public Long findLongIdByMemberUuid(String memberUuid) {
+        return memberRepository.findByUserUuid(UUID.fromString(memberUuid)).getId();
+    }
 }
