@@ -2,7 +2,9 @@ package com.zippyziggy.prompt.common.aws;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.S3Object;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -85,4 +87,24 @@ public class AwsS3Uploader {
 		amazonS3Client.putObject(bucket, key, file);
 	}
 
+	public void downloadCsv(String key) {
+		// Create a GetObjectRequest specifying the bucket name and object key
+		GetObjectRequest getObjectRequest = new GetObjectRequest(bucket, key);
+
+		// Create a file object
+		File file = new File("mahout-prompt-click.csv");
+		try {
+			if (file.createNewFile()) {
+				log.info("File created");
+			} else {
+				log.info("File already exists");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// Call the getObject() method to retrieve the S3 object and save it to the file
+		amazonS3Client.getObject(getObjectRequest, file);
+		log.info("S3 object has been successfully converted to a file.");
+	}
 }

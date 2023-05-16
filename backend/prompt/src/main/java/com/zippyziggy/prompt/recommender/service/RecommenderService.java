@@ -47,6 +47,7 @@ public class RecommenderService {
 
     private final AwsS3Uploader awsS3Uploader;
 
+
     //TODO 하루에 한 번 배치 실행
     public void uploadPromptClickCsv() throws IOException {
         CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
@@ -77,7 +78,7 @@ public class RecommenderService {
         }
 
         try {
-            FileWriter fw = new FileWriter(csvFile);
+            FileWriter fw = new FileWriter(csvFile, false);
             BufferedWriter bw = new BufferedWriter(fw);
             for (MahoutPromptClick promptClick : mahoutPromptClicks) {
                 final Long memberId = promptClick.getMemberId();
@@ -105,6 +106,8 @@ public class RecommenderService {
     public List<Long> userBasedRecommend(Long memberId) {
         FileDataModel dm;
         try {
+            final String key = "recommender/" + LocalDate.now().minusDays(1).toString() + "-mahout-prompt-click.csv";
+            awsS3Uploader.downloadCsv(key);
             dm = new FileDataModel(new File("mahout-prompt-click.csv"));
             log.info("FileDataModel\n" + dm.toString());
         } catch (IOException e) {
@@ -150,11 +153,15 @@ public class RecommenderService {
     public List<Long> itemBasedRecommend(Long memberId) {
         FileDataModel dm;
         try {
+            final String key = "recommender/" + LocalDate.now().minusDays(1).toString() + "-mahout-prompt-click.csv";
+            awsS3Uploader.downloadCsv(key);
             dm = new FileDataModel(new File("mahout-prompt-click.csv"));
+            log.info("FileDataModel\n" + dm.toString());
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+
         LogLikelihoodSimilarity sim = new LogLikelihoodSimilarity(dm);
         GenericItemBasedRecommender recommender = new GenericItemBasedRecommender(dm, sim);
 
