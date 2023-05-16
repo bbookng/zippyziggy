@@ -26,6 +26,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 // 유저 정보 가져오기
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHook';
+
 import { links } from '@/utils/links';
 
 import { FiBell, FiSun } from 'react-icons/fi';
@@ -39,8 +40,48 @@ const Navbar = ({ toggleTheme }) => {
   const userState = useAppSelector((state) => state.user); // 유저정보
   const [isSelected, setIsSelected] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  type UserClientType = {
+    isLogin: boolean;
+    id: string;
+    nickname: string;
+    profileImg: string;
+    userUuid: string;
+    noticeCount: number;
+  };
+  const DefaultClientValue = {
+    isLogin: false,
+    id: '',
+    nickname: '',
+    profileImg: '',
+    userUuid: '',
+    noticeCount: 0,
+  };
+
+  let token = null;
+  if (typeof window !== 'undefined') {
+    token = localStorage.getItem('accessToken');
+  }
+
+  let noticeCount = null;
+  if (typeof window !== 'undefined') {
+    noticeCount = localStorage.getItem('noticeCount');
+  }
+
+  // const [userState, setUserState] = useState<UserClientType>(DefaultClientValue);
   const { isDark } = useTheme();
   const dispatch = useAppDispatch();
+
+  // useEffect(() => {
+  //   setUserState({
+  //     isLogin: localStorage.getItem('isLogin') === 'true',
+  //     id: localStorage.getItem('id'),
+  //     nickname: localStorage.getItem('nickname'),
+  //     profileImg: localStorage.getItem('profileImg'),
+  //     userUuid: localStorage.getItem('userUuid'),
+  //     noticeCount: Number(localStorage.getItem('noticeCount')),
+  //   });
+  // }, [token]);
 
   // 네비게이션바 닫기
   const handleNavClose = (e) => {
@@ -90,7 +131,6 @@ const Navbar = ({ toggleTheme }) => {
   };
 
   let eventSource: EventSourcePolyfill | undefined;
-  let token = localStorage.getItem('accessToken');
   const [listening, setListening] = useState(false);
   const [noticeListSize, setNoticeListSize] = useState(0);
 
@@ -98,6 +138,7 @@ const Navbar = ({ toggleTheme }) => {
   const getNoticeListSize = async () => {
     const result = await getNoticeUnreadCountAPI();
     if (result.result === 'SUCCESS') {
+      localStorage.setItem('noticeCount', result.data.toString());
       setNoticeListSize(result.data);
     }
   };
@@ -169,12 +210,17 @@ const Navbar = ({ toggleTheme }) => {
 
     if (result.result === 'SUCCESS') {
       const { nickname, profileImg, userUuid } = result.data;
+      localStorage.setItem('isLogin', 'true');
+      localStorage.setItem('nickname', nickname);
+      localStorage.setItem('profileImg', profileImg);
+      localStorage.setItem('userUuid', userUuid);
       dispatch(setNickname(nickname));
       dispatch(setProfileImg(profileImg));
       dispatch(setUserUuid(userUuid));
       token = result.data;
     }
     if (result.result === 'FAIL') {
+      localStorage.clear();
       dispatch(setUserReset());
       // toast.success(`다시 로그인해주세요`, {
       //   onClick: () => {
@@ -198,7 +244,7 @@ const Navbar = ({ toggleTheme }) => {
 
   useEffect(() => {
     getNoticeListSize();
-  }, [userState.noticeCount]);
+  }, [noticeCount]);
 
   return (
     <NavWrapper>
@@ -273,7 +319,7 @@ const Navbar = ({ toggleTheme }) => {
             className="themeBtn noticeBtn"
           >
             <FiBell />
-            <div className="noticeCount">{noticeListSize > 9 ? '+' : noticeListSize}</div>
+            <div className="noticeCount">{noticeCount > 9 ? '+' : noticeCount}</div>
           </NavOption>
           <Link
             href={{ pathname: `/profile/${userState.userUuid}`, query: { mypage: true } }}

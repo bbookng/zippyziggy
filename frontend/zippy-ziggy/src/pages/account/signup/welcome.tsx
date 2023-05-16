@@ -1,7 +1,7 @@
 import Paragraph from '@/components/Typography/Paragraph';
 import Title from '@/components/Typography/Title';
 import { media } from '@/styles/media';
-import router from 'next/router';
+import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import lottieJson from '@/assets/lottieJson/congratulation-sparkle.json';
 import Lottie from 'react-lottie-player';
@@ -66,6 +66,7 @@ const LottieWrap = styled.div`
 `;
 
 export default function Index() {
+  const router = useRouter();
   const { nickname } = router.query;
 
   const handleGptBtn = () => {

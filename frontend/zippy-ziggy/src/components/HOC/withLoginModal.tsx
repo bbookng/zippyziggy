@@ -1,4 +1,3 @@
-import { setBeforeUrl, setIsLoginModal } from '@/core/modal/modalSlice';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHook';
 import Router from 'next/router';
 import { useEffect, useState } from 'react';
@@ -11,7 +10,6 @@ import LoginModal from '../Modal/LoginModal';
  * @returns
  */
 const WrappedComponent = (Component, ...props) => {
-  const modalState = useAppSelector((state) => state.modal); // 유저정보
   const [isModal, setIsModal] = useState(false);
   const dispatch = useAppDispatch();
 

@@ -1,5 +1,3 @@
-import { setBeforeUrl, setIsLoginModal } from '@/core/modal/modalSlice';
-import { useAppDispatch, useAppSelector } from '@/hooks/reduxHook';
 import Router from 'next/router';
 import { useEffect, useState } from 'react';
 import LoginModal from '../Modal/LoginModal';

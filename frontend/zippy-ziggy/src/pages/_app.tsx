@@ -7,7 +7,6 @@ import normalize from 'styled-normalize';
 import '@/styles/index.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import AppLayout from '@/layout/AppLayout';
-import store, { persistor } from '@/core/store';
 import { PersistGate } from 'redux-persist/integration/react';
 import { Provider } from 'react-redux';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -15,6 +14,8 @@ import 'toastify-js/src/toastify.css';
 import Head from 'next/head';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { wrapper } from '@/core/store';
+import DefaultMeta from '@/components/Meta/DefaultMeta';
 
 export const GlobalStyle = createGlobalStyle`
   ${normalize}
@@ -74,104 +75,24 @@ function App({ Component, pageProps }: AppProps) {
   const { colorTheme, toggleTheme } = useDarkMode();
 
   return (
-    <Provider store={store}>
-      <Head>
-        <title>Zippy Ziggy - ChatGPT 활용 플랫폼</title>
-        <meta name="description" content="team deun deun" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="apple-touch-icon" sizes="57x57" href="/images/favicons/apple-icon-57x57.png" />
-        <link rel="apple-touch-icon" sizes="60x60" href="/images/favicons/apple-icon-60x60.png" />
-        <link rel="apple-touch-icon" sizes="72x72" href="/images/favicons/apple-icon-72x72.png" />
-        <link rel="apple-touch-icon" sizes="76x76" href="/images/favicons/apple-icon-76x76.png" />
-        <link
-          rel="apple-touch-icon"
-          sizes="114x114"
-          href="/images/favicons/apple-icon-114x114.png"
-        />
-        <link
-          rel="apple-touch-icon"
-          sizes="120x120"
-          href="/images/favicons/apple-icon-120x120.png"
-        />
-        <link
-          rel="apple-touch-icon"
-          sizes="144x144"
-          href="/images/favicons/apple-icon-144x144.png"
-        />
-        <link
-          rel="apple-touch-icon"
-          sizes="152x152"
-          href="/images/favicons/apple-icon-152x152.png"
-        />
-        <link
-          rel="apple-touch-icon"
-          sizes="180x180"
-          href="/images/favicons/apple-icon-180x180.png"
-        />
-        <link
-          rel="icon"
-          type="image/png"
-          sizes="192x192"
-          href="/images/favicons/android-icon-192x192.png"
-        />
-        <link rel="icon" type="image/png" sizes="32x32" href="/images/favicons/favicon-32x32.png" />
-        <link rel="icon" type="image/png" sizes="96x96" href="/images/favicons/favicon-96x96.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/images/favicons/favicon-16x16.png" />
-        <link href="/favicon.ico" type="image/x-icon" rel="shortcut icon" />
-        <link
-          rel="shortcut icon"
-          type="image/png"
-          sizes="32x32"
-          href="/images/favicons/favicon-32x32.png"
-        />
-        <link
-          rel="shortcut icon"
-          type="image/png"
-          sizes="96x96"
-          href="/images/favicons/favicon-96x96.png"
-        />
-        <link
-          rel="shortcut icon"
-          type="image/png"
-          sizes="16x16"
-          href="/images/favicons/favicon-16x16.png"
-        />
+    <QueryClientProvider client={queryClient}>
+      <DefaultMeta />
+      {/* loading={<div></div>}  */}
 
-        {/* <link rel="manifest" href="/manifest.json" /> */}
-        <meta name="msapplication-TileColor" content="#ffffff" />
-        <meta name="msapplication-TileImage" content="/ms-icon-144x144.png" />
-        <meta name="theme-color" content="#ffffff" />
-        <meta property="og:url" content="https://zippyziggy.kr/" />
-        <meta property="og:title" content="지피지기- Chat-GPT 프롬프트 공유" />
-        <meta property="og:type" content="website" />
-        <meta property="og:image" content="/images/zippy_metaimage.png" />
-        <meta
-          property="og:description"
-          content="지피티를 알면 질문도 잘할 수 있다! GPT 프롬프트 및 대화 공유사이트 ZippyZiggy"
-        />
-      </Head>
-      <PersistGate persistor={persistor}>
-        {/* loading={<div></div>}  */}
-        <Head>
-          <meta property="og:meta" content="메타테그감지%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" />
-        </Head>
-        <QueryClientProvider client={queryClient}>
-          <ThemeProvider theme={colorTheme === 'dark' ? darkTheme : lightTheme}>
-            <GlobalStyle />
-            <AppLayout toggleTheme={toggleTheme}>
-              <Component {...pageProps} />
-              <ToastContainer
-                limit={1}
-                pauseOnFocusLoss={false}
-                theme={colorTheme === 'dark' ? 'dark' : 'light'}
-              />
-            </AppLayout>
-          </ThemeProvider>
-          <ReactQueryDevtools initialIsOpen={false} />
-        </QueryClientProvider>
-      </PersistGate>
-    </Provider>
+      <ThemeProvider theme={colorTheme === 'dark' ? darkTheme : lightTheme}>
+        <GlobalStyle />
+        <AppLayout toggleTheme={toggleTheme}>
+          <Component {...pageProps} />
+          <ToastContainer
+            limit={1}
+            pauseOnFocusLoss={false}
+            theme={colorTheme === 'dark' ? 'dark' : 'light'}
+          />
+        </AppLayout>
+      </ThemeProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   );
 }
 
-export default App;
+export default wrapper.withRedux(App);

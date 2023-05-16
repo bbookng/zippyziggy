@@ -8,6 +8,7 @@ import TalkComponent from '@/components/DetailPrompt/TalkComponent';
 import Modal from '@/components/Modal/Modal';
 import ReportModal from '@/components/Modal/ReportModal';
 import { bookmarkPrompt, deletePrompt, getPromptDetail, likePrompt } from '@/core/prompt/promptAPI';
+import { wrapper } from '@/core/store';
 import { useAppSelector } from '@/hooks/reduxHook';
 import {
   Container,
@@ -25,7 +26,7 @@ import React, { useEffect, useState } from 'react';
 import { FaAngleUp } from 'react-icons/fa';
 import { FiMaximize } from 'react-icons/fi';
 
-export default function DetailPrompt() {
+const DetailPrompt = () => {
   const router = useRouter();
   const { promptUuid } = router.query;
   const { nickname } = useAppSelector((state) => state?.user);
@@ -93,6 +94,7 @@ export default function DetailPrompt() {
     return res;
   };
 
+  // const isLoading = true;
   // Prompt 상세 가져오기
   const { isLoading, data } = useQuery(['prompt', promptUuid], handleGetPromptDetail, {
     enabled: !!promptUuid,
@@ -264,4 +266,30 @@ export default function DetailPrompt() {
       ) : null}
     </>
   );
-}
+};
+
+// 이게 먼저 실행되고 컴포넌트 함수가 실행될 것임
+export const getServerSideProps = wrapper.getServerSideProps((store) => async (context) => {
+  // server-side에서 실행되니까 front의 store는 아래 구문으로 재정의된다!
+  // Prompt 상세 요청 API
+
+  console.log('State on server', store.getState());
+
+  // const handleGetPromptDetail = async () => {
+  //   try {
+  //     const { data } = await httpAuth.get(`/prompts/${params.promptUuid}`);
+  //     return { result: 'SUCCESS', data };
+  //   } catch (err) {
+  //     return { result: 'FAIL', data: err };
+  //   }
+  // };
+
+  // const data = await handleGetPromptDetail();
+  console.log(store);
+
+  return {
+    props: {},
+  };
+});
+
+export default DetailPrompt;

@@ -18,6 +18,7 @@ import Router from 'next/router';
 import NoticesList from '@/components/Notice/NoticeList';
 // userSlice에서 유저 정보 변경
 import { setNoticeCount } from '@/core/user/userSlice';
+import Meta from '@/components/Meta/Meta';
 
 const Container = styled.div`
   width: 100%;
@@ -83,8 +84,11 @@ type EventListType = {
 
 function Index() {
   // let eventSource: EventSourcePolyfill | undefined;
-  const token = localStorage.getItem('accessToken');
-  const userState = useAppSelector((state) => state.user); // 유저정보
+  let token = null;
+  if (typeof window !== 'undefined') {
+    token = localStorage.getItem('accessToken');
+  }
+  // const userState = useAppSelector((state) => state.user); // 유저정보
   const [noticeList, setNoticeList] = useState([]);
   const [noticeListSize, setNoticeListSize] = useState(0);
   const [countNoticeList, setCountNoticeList] = useState(10);
@@ -103,6 +107,7 @@ function Index() {
     const result = await getNoticeUnreadCountAPI();
     if (result.result === 'SUCCESS') {
       setNoticeListSize(result.data);
+      localStorage.setItem('noticeCount', result.data.toString());
       dispatch(setNoticeCount(result.data));
     }
   };
@@ -111,65 +116,6 @@ function Index() {
     getNoticeList();
     getNoticeListSize();
   }, [token]);
-
-  // useEffect(() => {
-  //   const token = localStorage.getItem('accessToken');
-  //   if (!listening && token && !eventSource) {
-  //     // sse 연결
-  //     eventSource = new EventSourcePolyfill(`${serverUrl}/api/notice/subscribe`, {
-  //       headers: {
-  //         'Content-Type': 'text/event-stream',
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //       heartbeatTimeout: 86400000,
-  //       withCredentials: true,
-  //     });
-
-  //     // 최초 연결
-  //     eventSource.onopen = (event) => {
-  //       console.log('onopen');
-  //       setListening(true);
-  //     };
-
-  //     // 서버에서 메시지 날릴 때
-  //     eventSource.onmessage = (event) => {
-  //       // setSseData(event.data);
-  //       // setRespon(true);
-  //       // console.log('onmessage');
-  //       // if (event.data !== undefined) alert(event.data);
-  //     };
-
-  //     eventSource.addEventListener('sse', ((event: MessageEvent) => {
-  //       if (!event.data.includes('EventStream')) {
-  //         const eventData: EventListType = JSON.parse(event.data);
-  //         // console.log(eventData);
-  //         toast.success(`${eventData.content}`, {
-  //           onClick: () => {
-  //             Router.push(`/notification`);
-  //           },
-  //           icon: '🚀',
-  //           position: 'bottom-right',
-  //           autoClose: 1000,
-  //           hideProgressBar: false,
-  //           closeOnClick: true,
-  //           pauseOnHover: true,
-  //           draggable: true,
-  //           progress: undefined,
-  //         });
-  //       }
-  //     }) as EventListener);
-  //   } else {
-  //     console.log('logout');
-  //     eventSource?.close();
-  //   }
-
-  //   return () => {
-  //     if (!token && eventSource !== undefined) {
-  //       eventSource.close();
-  //       setListening(false);
-  //     }
-  //   };
-  // }, [userState.nickname]);
 
   // 모두 삭제 클릭
   const handleNoticeDelete = async () => {

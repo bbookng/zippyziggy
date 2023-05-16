@@ -3,9 +3,16 @@ import { useRouter } from 'next/router';
 import { http, httpAuth } from '@/lib/http';
 import { createSlice } from '@reduxjs/toolkit';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHook';
-import { setIsLogin, setNickname, setProfileImg, setUserUuid } from '@/core/user/userSlice';
+import {
+  setAccessToken,
+  setIsLogin,
+  setNickname,
+  setProfileImg,
+  setUserUuid,
+} from '@/core/user/userSlice';
 import { getGoogleAPI, getKakaoAPI } from '@/core/user/userAPI';
 import LottieAnimation from '@/components/LottieFiles/LoadingA';
+import { getGoogleApiSSR, getKakaoApiSSR } from '@/core/user/userAPISsr';
 
 interface SocialSignUpDataResponseDto {
   name: string;
@@ -16,11 +23,12 @@ interface SocialSignUpDataResponseDto {
   nickname?: string;
 }
 
-interface KakaoApiResult {
+interface LoginApiResult {
   result?: 'SUCCESS_SIGNUP' | 'SUCCESS_LOGIN';
   nickname?: string;
   profileImg?: string;
   userUuid?: string;
+  accessToken?: string;
   socialSignUpDataResponseDto?: SocialSignUpDataResponseDto;
   // 반환되는 값에 따라 필드를 추가할 수 있음
 }
@@ -35,7 +43,7 @@ function KakaoLoginRedirect() {
   const token = Array.isArray(code) ? code[0] : code;
 
   const HandleGetKakaoAPI = async () => {
-    const result: KakaoApiResult = await getKakaoAPI(token);
+    const result: LoginApiResult = await getKakaoAPI(token);
     if (result?.result === 'SUCCESS_SIGNUP') {
       const { name, platform, platformId, profileImg } = result?.socialSignUpDataResponseDto ?? {};
       router.push({
@@ -44,11 +52,17 @@ function KakaoLoginRedirect() {
       });
     }
     if (result?.result === 'SUCCESS_LOGIN') {
-      const { nickname, profileImg, userUuid } = result;
+      const { nickname, profileImg, userUuid, accessToken } = result;
+      localStorage.setItem('isLogin', 'true');
+      localStorage.setItem('nickname', nickname);
+      localStorage.setItem('profileImg', profileImg);
+      localStorage.setItem('userUuid', userUuid);
+      localStorage.setItem('accessToken', accessToken);
       dispatch(setIsLogin(true));
       dispatch(setNickname(nickname));
       dispatch(setProfileImg(profileImg));
       dispatch(setUserUuid(userUuid));
+      dispatch(setAccessToken(accessToken));
       router.push({
         pathname: '/',
       });
@@ -57,7 +71,7 @@ function KakaoLoginRedirect() {
 
   // 우리 서버로 구글 로그인 요청을 보냄
   const HandleGetGoogleAPI = async () => {
-    const result: KakaoApiResult = await getGoogleAPI(token);
+    const result: LoginApiResult = await getGoogleAPI(token);
     if (result?.result === 'SUCCESS_SIGNUP') {
       const { name, platform, platformId, profileImg } = result?.socialSignUpDataResponseDto ?? {};
       router.push({
@@ -66,11 +80,17 @@ function KakaoLoginRedirect() {
       });
     }
     if (result?.result === 'SUCCESS_LOGIN') {
-      const { nickname, profileImg, userUuid } = result;
+      const { nickname, profileImg, userUuid, accessToken } = result;
       dispatch(setIsLogin(true));
       dispatch(setNickname(nickname));
       dispatch(setProfileImg(profileImg));
       dispatch(setUserUuid(userUuid));
+      dispatch(setAccessToken(accessToken));
+      localStorage.setItem('isLogin', 'true');
+      localStorage.setItem('nickname', nickname);
+      localStorage.setItem('profileImg', profileImg);
+      localStorage.setItem('userUuid', userUuid);
+      localStorage.setItem('accessToken', accessToken);
       router.push({
         pathname: '/',
       });

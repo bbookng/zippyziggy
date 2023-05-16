@@ -10,6 +10,7 @@ export interface UserState {
   profileImg: string;
   userUuid: string;
   noticeCount: number;
+  accessToken: string;
 }
 
 // 초기 상태값 정의
@@ -19,6 +20,7 @@ const initialState: UserState = {
   profileImg: '',
   userUuid: '',
   noticeCount: 0,
+  accessToken: '',
 };
 
 // 액션에 대한 slice 생성
@@ -42,6 +44,9 @@ export const userSlice = createSlice({
     setNoticeCount(state, action) {
       return { ...state, noticeCount: action.payload };
     },
+    setAccessToken(state, action) {
+      return { ...state, accessToken: action.payload };
+    },
     setUserReset(state) {
       return { ...initialState };
     },
@@ -49,8 +54,7 @@ export const userSlice = createSlice({
 
   /** 페이지 이동 시 상태 초기화가 필요한 경우 추가해야 함 */
   extraReducers: {
-    // HYDRATE 액션이 실행되면 user 슬라이스에 대한 데이터만 가져와서 state를 업데이트함
-    [HYDRATE]: (state, action) => {
+    [HYDRATE]: (state: UserState, action: { payload: any; type: string }) => {
       return {
         ...state,
         ...action.payload.user,
@@ -59,6 +63,14 @@ export const userSlice = createSlice({
   },
 });
 
-export const { setIsLogin, setNickname, setProfileImg, setUserUuid, setUserReset, setNoticeCount } =
-  userSlice.actions; // 액션 생성자 함수와 셀렉터를 export함
+export const {
+  setIsLogin,
+  setNickname,
+  setProfileImg,
+  setUserUuid,
+  setUserReset,
+  setNoticeCount,
+  setAccessToken,
+} = userSlice.actions; // 액션 생성자 함수와 셀렉터를 export함
+export const selectUserState = (state: RootState) => state.user;
 export default userSlice.reducer; // slice를 리듀서로 변환하여 export함

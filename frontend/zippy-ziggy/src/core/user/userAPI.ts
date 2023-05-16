@@ -1,9 +1,5 @@
 import router from 'next/router';
 import { http, httpAuth, httpForm, httpAuthForm } from '@/lib/http';
-import Toastify from 'toastify-js';
-import toastifyCSS from '@/assets/toastify.json';
-import message from '@/assets/message.json';
-import { type } from 'os';
 
 // 회원 탈퇴(Authorization 필요)
 export const deleteUserAPI = async () => {
@@ -152,8 +148,13 @@ export const getGoogleAPI = async (code: string) => {
     }
     // 로그인으로 이동
     const { nickname, profileImg, userUuid } = data;
-    localStorage.setItem('accessToken', res?.headers?.authorization);
-    return { result: 'SUCCESS_LOGIN', userUuid, profileImg, nickname };
+    return {
+      result: 'SUCCESS_LOGIN',
+      userUuid,
+      profileImg,
+      nickname,
+      accessToken: res?.headers?.authorization,
+    };
   } catch (err) {
     return err;
   }
@@ -179,7 +180,14 @@ export const getKakaoAPI = async (code: string) => {
     // 로그인으로 이동
     const { nickname, profileImg, userUuid } = data;
     localStorage.setItem('accessToken', res?.headers?.authorization);
-    return { result: 'SUCCESS_LOGIN', userUuid, profileImg, nickname };
+
+    return {
+      result: 'SUCCESS_LOGIN',
+      userUuid,
+      profileImg,
+      nickname,
+      accessToken: res?.headers?.authorization,
+    };
   } catch (err) {
     return err;
   }
