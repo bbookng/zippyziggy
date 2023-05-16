@@ -249,7 +249,7 @@ public class MemberController {
             PromptCardListResponse promptsLike = promptClient.getPromptsLike(crntMemberUuid, page, size).orElseThrow(NotExistPromptList::new);
             return ResponseEntity.ok(promptsLike);
 
-    };
+    }
 
     /**
      * 멤버가 북마크를 누른 프롬프트 조회
