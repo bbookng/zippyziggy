@@ -28,8 +28,6 @@ spring:
 eureka:
   instance:
     instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
-    metadata-map:
-      "prometheus.scrape": "true"
   client:
     register-with-eureka: true
     fetch-registry: true
@@ -47,4 +45,4 @@ management:
   endpoints:
     web:
       exposure:
-        include: health, busrefresh, prometheus
+        include: health, busrefresh
