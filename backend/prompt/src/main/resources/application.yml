@@ -25,6 +25,7 @@ spring:
       max-lifetime: 178000
 
 
+
 eureka:
   instance:
     instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
@@ -41,8 +42,8 @@ springdoc:
     path: /doc/swagger
     operations-sorter: method
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health, busrefresh
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: health, busrefresh
