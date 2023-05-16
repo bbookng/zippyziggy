@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -357,10 +358,17 @@ public class PromptController {
 		return ResponseEntity.ok(promptService.sendUserNotice(promptUuid, crntMemberUuid));
 	}
 
-	@GetMapping("/recommender")
+	@GetMapping("/temp-csv")
 	public ResponseEntity<String> testUploadCsv() throws IOException {
 		recommenderService.uploadPromptClickCsv();
 		return ResponseEntity.ok("csv 파일 업로드 완료");
+	}
+
+	@GetMapping("/recommender")
+	public ResponseEntity<List<PromptCardResponse>> findRecommendedPrompts(
+		@RequestHeader String crntMemberUuid
+	) {
+		return ResponseEntity.ok(promptService.findRecommendedPrompts(crntMemberUuid));
 	}
 
 }

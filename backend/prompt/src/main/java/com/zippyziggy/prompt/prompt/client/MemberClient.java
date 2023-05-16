@@ -17,4 +17,7 @@ public interface MemberClient {
 
     @GetMapping("/members/ids")
     List<MemberIdResponse> getAllMemberIds();
+
+    @GetMapping("/members/long")
+    Long getLongId(String memberUuid);
 }

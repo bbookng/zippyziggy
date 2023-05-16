@@ -11,7 +11,6 @@ public class PromptCardListResponse {
     private final Integer totalPageCnt;
     private final List<PromptCardResponse> promptCardResponseList;
 
-
     public static PromptCardListResponse from(
             Long totalPromptsCnt,
             Integer totalPageCnt,
