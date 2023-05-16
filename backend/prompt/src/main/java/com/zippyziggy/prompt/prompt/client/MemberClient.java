@@ -8,6 +8,7 @@ import java.util.UUID;
 import com.zippyziggy.prompt.recommender.dto.response.MemberIdResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name="member")
@@ -18,6 +19,6 @@ public interface MemberClient {
     @GetMapping("/members/ids")
     List<MemberIdResponse> getAllMemberIds();
 
-    @GetMapping("/members/long")
-    Long getLongId(String memberUuid);
+    @GetMapping("/members/long/{memberUuid}")
+    Long getLongId(@PathVariable String memberUuid);
 }
