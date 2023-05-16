@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.mahout.cf.taste.common.TasteException;
 import org.apache.mahout.cf.taste.impl.model.file.FileDataModel;
+import org.apache.mahout.cf.taste.impl.neighborhood.NearestNUserNeighborhood;
 import org.apache.mahout.cf.taste.impl.recommender.GenericItemBasedRecommender;
 import org.apache.mahout.cf.taste.impl.recommender.GenericUserBasedRecommender;
 import org.apache.mahout.cf.taste.impl.similarity.LogLikelihoodSimilarity;
@@ -109,7 +110,6 @@ public class RecommenderService {
             final String key = "recommender/" + LocalDate.now().minusDays(1).toString() + "-mahout-prompt-click.csv";
             awsS3Uploader.downloadCsv(key);
             dm = new FileDataModel(new File("mahout-prompt-click.csv"));
-            log.info("FileDataModel\n" + dm.toString());
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -118,33 +118,34 @@ public class RecommenderService {
         UserSimilarity user;
         try {
             user = new PearsonCorrelationSimilarity(dm);
-            log.info("피어슨상관계수\n" + user.toString());
         } catch (TasteException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
 
-        ThresholdUserNeighborhood nh = new ThresholdUserNeighborhood(0.1, user, dm);
+        NearestNUserNeighborhood nh;
+        try {
+            nh = new NearestNUserNeighborhood(10, user, dm);
+        } catch (TasteException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
         GenericUserBasedRecommender recommender = new GenericUserBasedRecommender(dm, nh, user);
-        log.info("ThresholdUserNeighborhood\n" + nh.toString());
-        log.info("recommender" + recommender.toString());
 
         List<RecommendedItem> recommend;
         try {
             recommend = recommender.recommend(memberId, 10);
-            log.info("recommend\n" + recommend.toString());
-            log.info("recommend size\n" + String.valueOf(recommend.size()));
         } catch (TasteException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-
+        log.info("user-based recommend" + recommend.toString());
         List<Long> promptIds = new ArrayList<>();
         for (RecommendedItem item : recommend) {
             Long promptId = item.getItemID();
             promptIds.add(promptId);
         }
-        log.info("promptIds\n" + promptIds.toString());
+        log.info("promptIds" + promptIds.toString());
 
         return promptIds;
     }
@@ -156,7 +157,6 @@ public class RecommenderService {
             final String key = "recommender/" + LocalDate.now().minusDays(1).toString() + "-mahout-prompt-click.csv";
             awsS3Uploader.downloadCsv(key);
             dm = new FileDataModel(new File("mahout-prompt-click.csv"));
-            log.info("FileDataModel\n" + dm.toString());
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -172,13 +172,14 @@ public class RecommenderService {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+        log.info("item based recommend" + recommend);
 
         List<Long> promptIds = new ArrayList<>();
         for (RecommendedItem item : recommend) {
             Long promptId = item.getItemID();
             promptIds.add(promptId);
         }
-
+        log.info("promptIds" + promptIds.toString());
         return promptIds;
     }
 
