@@ -257,7 +257,6 @@ public class PromptController {
 		@RequestParam Integer page,
 		@RequestParam Integer size,
 		@RequestParam String sort
-
 	) {
 		final Sort sortBy = Sort.by(Sort.Direction.DESC, sort);
 		final Pageable pageable = PageRequest.of(page, size, sortBy);

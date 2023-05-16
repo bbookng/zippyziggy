@@ -455,6 +455,7 @@ public class PromptService{
     북마크 조회하기
      */
 	public PromptCardListResponse bookmarkPromptByMember(String crntMemberUuid, Pageable pageable) {
+		log.info(String.valueOf(pageable.getSort()));
 		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 
 		Page<Prompt> prompts = promptBookmarkRepository.findAllPromptsByMemberUuid(UUID.fromString(crntMemberUuid), pageable);
