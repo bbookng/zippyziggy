@@ -902,8 +902,8 @@ public class MemberController {
         return ResponseEntity.ok(memberService.findAll());
     }
 
-    @GetMapping("/long")
-    public ResponseEntity<Long> findLongId(String memberUuid) {
+    @GetMapping("/long/{memberUuid}")
+    public ResponseEntity<Long> findLongId(@PathVariable String memberUuid) {
         return ResponseEntity.ok(memberService.findLongIdByMemberUuid(memberUuid));
     }
 
