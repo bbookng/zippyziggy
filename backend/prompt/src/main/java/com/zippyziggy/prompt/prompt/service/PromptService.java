@@ -30,6 +30,7 @@ import com.zippyziggy.prompt.prompt.exception.ReportAlreadyExistException;
 import com.zippyziggy.prompt.prompt.model.*;
 import com.zippyziggy.prompt.prompt.repository.*;
 import com.zippyziggy.prompt.prompt.util.RedisUtils;
+import com.zippyziggy.prompt.recommender.service.RecommenderService;
 import com.zippyziggy.prompt.talk.dto.response.PromptTalkListResponse;
 import com.zippyziggy.prompt.talk.dto.response.TalkListResponse;
 import com.zippyziggy.prompt.talk.repository.TalkRepository;
@@ -37,6 +38,7 @@ import com.zippyziggy.prompt.talk.service.TalkService;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -46,6 +48,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.mahout.cf.taste.recommender.Recommender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
@@ -72,15 +75,18 @@ public class PromptService{
 	private final AwsS3Uploader awsS3Uploader;
 	private final MemberClient memberClient;
 	private final CircuitBreakerFactory circuitBreakerFactory;
+
 	private final PromptRepository promptRepository;
 	private final PromptLikeRepository promptLikeRepository;
 	private final PromptBookmarkRepository promptBookmarkRepository;
 	private final PromptCommentRepository promptCommentRepository;
-	private final TalkService talkService;
 	private final TalkRepository talkRepository;
 	private final RatingRepository ratingRepository;
 	private final PromptReportRepository promptReportRepository;
 	private final PromptClickRepository promptClickRepository;
+
+	private final TalkService talkService;
+	private final RecommenderService recommenderService;
 
 	private final KafkaProducer kafkaProducer;
 
@@ -452,12 +458,12 @@ public class PromptService{
 
 			MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid()));
 
-			boolean isBookmarded = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
+			boolean isBookmarked = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
 					? true : false;
 			boolean isLiked = promptLikeRepository.findByPromptAndMemberUuid(prompt, UUID.fromString(crntMemberUuid)) != null
 					? true : false;
 
-			PromptCardResponse promptCardResponse = PromptCardResponse.from(writerInfo, prompt, commentCnt, forkCnt, talkCnt, isBookmarded, isLiked);
+			PromptCardResponse promptCardResponse = PromptCardResponse.from(writerInfo, prompt, commentCnt, forkCnt, talkCnt, isBookmarked, isLiked);
 			promptCardResponses.add(promptCardResponse);
 
 		}
@@ -597,12 +603,12 @@ public class PromptService{
 			long forkCnt = promptRepository.countAllByOriginPromptUuidAndStatusCode(prompt.getPromptUuid(), StatusCode.OPEN);
 			long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
 
-			boolean isBookmarded = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
+			boolean isBookmarked = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
 					? true : false;
 			boolean isLiked = promptLikeRepository.findByPromptAndMemberUuid(prompt, UUID.fromString(crntMemberUuid)) != null
 					? true : false;
 
-			PromptCardResponse promptCardResponse = PromptCardResponse.from(writerInfo, prompt, commentCnt, forkCnt, talkCnt, isBookmarded, isLiked);
+			PromptCardResponse promptCardResponse = PromptCardResponse.from(writerInfo, prompt, commentCnt, forkCnt, talkCnt, isBookmarked, isLiked);
 			promptCardResponses.add(promptCardResponse);
 		}
 
@@ -674,4 +680,41 @@ public class PromptService{
 
 		return newNotice;
 	}
+
+    public List<PromptCardResponse> findRecommendedPrompts(String crntMemberUuid) {
+		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
+		Long memberId = circuitBreaker.run(() -> memberClient.getLongId(crntMemberUuid));
+
+		final List<Long> ub = recommenderService.userBasedRecommend(memberId);
+		final List<Long> ib = recommenderService.itemBasedRecommend(memberId);
+
+		Set<Long> promptIdSet = new HashSet<>();
+		for (int i=0; i<10; i++) {
+			promptIdSet.add(ub.get(i));
+			promptIdSet.add(ib.get(i));
+		}
+
+		List<Long> promptIds = List.copyOf(promptIdSet);
+		List<PromptCardResponse> promptCardResponses = new ArrayList<>();
+		for (int i=0; i<10; i++) {
+			Prompt prompt = promptRepository.findById(promptIds.get(i))
+				.orElseThrow(PromptNotFoundException::new);
+
+			long commentCnt = promptCommentRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
+			long forkCnt = promptRepository.countAllByOriginPromptUuidAndStatusCode(prompt.getPromptUuid(), StatusCode.OPEN);
+			long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
+
+			MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid()));
+
+			boolean isBookmarked = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
+				? true : false;
+			boolean isLiked = promptLikeRepository.findByPromptAndMemberUuid(prompt, UUID.fromString(crntMemberUuid)) != null
+				? true : false;
+
+			PromptCardResponse promptCardResponse = PromptCardResponse.from(writerInfo, prompt, commentCnt, forkCnt, talkCnt, isBookmarked, isLiked);
+			promptCardResponses.add(promptCardResponse);
+		}
+
+		return promptCardResponses;
+    }
 }

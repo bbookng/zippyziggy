@@ -1,6 +1,7 @@
 package com.zippyziggy.prompt.prompt.repository;
 
 import com.zippyziggy.prompt.prompt.model.StatusCode;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -29,4 +30,6 @@ public interface PromptRepository extends JpaRepository<Prompt, Long> {
 	Page<Prompt> findAllByMemberUuidAndStatusCode(UUID memberUuid, StatusCode statusCode, Pageable pageable);
 
 	Long countAllByOriginPromptUuidAndStatusCode(UUID promptUuid, StatusCode statusCode);
+
+    List<Prompt> findByStatusCode(StatusCode statusCode);
 }
