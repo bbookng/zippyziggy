@@ -65,10 +65,9 @@ public class RecommenderService {
             }
         }
 
-        // 로컬 저장 경로
-        String localDir = "./";
         try {
-            FileWriter fw = new FileWriter(localDir + "mahout-prompt-click.csv");
+            File csvFile = new File("mahout-prompt-click.csv");
+            FileWriter fw = new FileWriter(csvFile);
             BufferedWriter bw = new BufferedWriter(fw);
             for (MahoutPromptClick promptClick : mahoutPromptClicks) {
                 final Long memberId = promptClick.getMemberId();
@@ -81,11 +80,11 @@ public class RecommenderService {
             }
             bw.flush();
             bw.close();
-            log.info("csv 작성 완료");
+            log.info("csv 생성 완료");
 
             // S3에 저장
             final String key = "recommender/" + LocalDate.now().toString() + "-mahout-prompt-click.csv";
-            awsS3Uploader.uploadCsv(key, new File("./mahout-prompt-click.csv"));
+            awsS3Uploader.uploadCsv(key, new File("mahout-prompt-click.csv"));
             log.info("csv S3 저장 완료");
 
         } catch (Exception e) {
