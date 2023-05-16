@@ -123,7 +123,7 @@ public class RecommenderService {
 
         NearestNUserNeighborhood nh;
         try {
-            nh = new NearestNUserNeighborhood(10, user, dm);
+            nh = new NearestNUserNeighborhood(10, 0.0, user, dm);
         } catch (TasteException e) {
             e.printStackTrace();
             throw new RuntimeException(e);

@@ -728,4 +728,9 @@ public class PromptService{
 
 		return promptCardResponses;
     }
+
+	public List<Prompt> testSearch(String keyword, Pageable pageable) {
+		return promptRepository.findByTitleContainsAndDescriptionContainsAndPrefixContainsAndSuffixContainsAndExampleContains(
+			keyword, keyword, keyword, keyword, keyword, pageable);
+	}
 }

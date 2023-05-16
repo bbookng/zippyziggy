@@ -2,6 +2,7 @@ package com.zippyziggy.prompt.prompt.controller;
 
 import com.zippyziggy.prompt.prompt.dto.request.*;
 import com.zippyziggy.prompt.prompt.dto.response.*;
+import com.zippyziggy.prompt.prompt.model.Prompt;
 import com.zippyziggy.prompt.prompt.service.ForkPromptService;
 import com.zippyziggy.prompt.prompt.service.PromptCommentService;
 import com.zippyziggy.prompt.prompt.service.PromptService;
@@ -251,11 +252,16 @@ public class PromptController {
 
 	@Operation(hidden = true)
 	@GetMapping("/members/bookmark/{crntMemberUuid}")
-	public ResponseEntity<PromptCardListResponse> bookmarkPromptByMember(@PathVariable String crntMemberUuid,
-																		   @RequestParam("page") Integer page,
-																		   @RequestParam("size") Integer size) {
-		PageRequest pageRequest = PageRequest.of(page, size);
-		return ResponseEntity.ok(promptService.bookmarkPromptByMember(crntMemberUuid, pageRequest));
+	public ResponseEntity<PromptCardListResponse> bookmarkPromptByMember(
+		@PathVariable String crntMemberUuid,
+		@RequestParam Integer page,
+		@RequestParam Integer size,
+		@RequestParam String sort
+
+	) {
+		final Sort sortBy = Sort.by(Sort.Direction.DESC, sort);
+		final Pageable pageable = PageRequest.of(page, size, sortBy);
+		return ResponseEntity.ok(promptService.bookmarkPromptByMember(crntMemberUuid, pageable));
 	}
 
 	@Operation(summary = "프롬프트 평가", description = "헤더에는 accessToken을 담고, promptUuid를 pathVariable로 전달 필요")
@@ -371,4 +377,11 @@ public class PromptController {
 		return ResponseEntity.ok(promptService.findRecommendedPrompts(crntMemberUuid));
 	}
 
+	@GetMapping("/test-search")
+	public ResponseEntity<List<Prompt>> searchFromDB(
+		@RequestParam String keyword,
+		@PageableDefault Pageable pageable
+	) {
+		return ResponseEntity.ok(promptService.testSearch(keyword, pageable));
+	}
 }
