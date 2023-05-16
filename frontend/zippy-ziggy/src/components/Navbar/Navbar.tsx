@@ -118,7 +118,7 @@ const Navbar = ({ toggleTheme }) => {
       // 최초 연결
       eventSource.onopen = (event) => {
         event;
-        console.log('onopen');
+        // console.log('onopen');
         setListening(true);
       };
 
@@ -148,7 +148,7 @@ const Navbar = ({ toggleTheme }) => {
         }
       }) as EventListener);
     } else {
-      console.log('logout');
+      // console.log('logout');
       eventSource?.close();
     }
   };

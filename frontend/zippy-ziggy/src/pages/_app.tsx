@@ -7,7 +7,7 @@ import normalize from 'styled-normalize';
 import '@/styles/index.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import AppLayout from '@/layout/AppLayout';
-import store, { persistor, wrapper } from '@/core/store';
+import store, { persistor } from '@/core/store';
 import { PersistGate } from 'redux-persist/integration/react';
 import { Provider } from 'react-redux';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -117,7 +117,7 @@ function App({ Component, pageProps }: AppProps) {
         <link rel="icon" type="image/png" sizes="32x32" href="/images/favicons/favicon-32x32.png" />
         <link rel="icon" type="image/png" sizes="96x96" href="/images/favicons/favicon-96x96.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/images/favicons/favicon-16x16.png" />
-        <link href="/public/favicon.ico" type="image/x-icon" rel="shortcut icon" />
+        <link href="/favicon.ico" type="image/x-icon" rel="shortcut icon" />
         <link
           rel="shortcut icon"
           type="image/png"
@@ -152,6 +152,9 @@ function App({ Component, pageProps }: AppProps) {
       </Head>
       <PersistGate persistor={persistor}>
         {/* loading={<div></div>}  */}
+        <Head>
+          <meta property="og:meta" content="메타테그감지%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" />
+        </Head>
         <QueryClientProvider client={queryClient}>
           <ThemeProvider theme={colorTheme === 'dark' ? darkTheme : lightTheme}>
             <GlobalStyle />
@@ -171,4 +174,4 @@ function App({ Component, pageProps }: AppProps) {
   );
 }
 
-export default wrapper.withRedux(App);
+export default App;

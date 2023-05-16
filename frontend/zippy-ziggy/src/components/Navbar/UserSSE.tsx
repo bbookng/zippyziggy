@@ -45,7 +45,7 @@ function UserSSE() {
       // 최초 연결
       eventSource.onopen = (event) => {
         event;
-        console.log('onopen');
+        // console.log('onopen');
         setListening(true);
       };
 
@@ -75,7 +75,7 @@ function UserSSE() {
         }
       }) as EventListener);
     } else {
-      console.log('logout');
+      // console.log('logout');
       eventSource?.close();
     }
   };

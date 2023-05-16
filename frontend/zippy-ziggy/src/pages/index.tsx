@@ -419,11 +419,11 @@ const Home: NextPage<HomePageProps> = ({ title }) => {
             <Paragraph className="sub" color="blackColor90" textAlign="center">
               베타버전 0.2.8 release
             </Paragraph>
-            <Link href={links.canny}>
-              <Button buttonType="outline" margin="16px 0 16px 0">
-                피드백을 공유해주세요
-              </Button>
-            </Link>
+          </Link>
+          <Link href={links.canny}>
+            <Button buttonType="outline" margin="16px 0 16px 0">
+              피드백을 공유해주세요
+            </Button>
           </Link>
           <Paragraph margin="16px 0 0 0" color="blackColor90" textAlign="center" sizeType="xm">
             누적 방문자 수 : {totalViewCnt} &nbsp;&nbsp;|&nbsp;&nbsp; 오늘 이용자 수 :{' '}
