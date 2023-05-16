@@ -2,6 +2,7 @@ package com.zippyziggy.prompt.prompt.controller;
 
 import com.zippyziggy.prompt.prompt.dto.request.*;
 import com.zippyziggy.prompt.prompt.dto.response.*;
+import com.zippyziggy.prompt.prompt.model.Prompt;
 import com.zippyziggy.prompt.prompt.service.ForkPromptService;
 import com.zippyziggy.prompt.prompt.service.PromptCommentService;
 import com.zippyziggy.prompt.prompt.service.PromptService;
@@ -376,4 +377,11 @@ public class PromptController {
 		return ResponseEntity.ok(promptService.findRecommendedPrompts(crntMemberUuid));
 	}
 
+	@GetMapping("/test-search")
+	public ResponseEntity<List<Prompt>> searchFromDB(
+		@RequestParam String keyword,
+		@PageableDefault Pageable pageable
+	) {
+		return ResponseEntity.ok(promptService.testSearch(keyword, pageable));
+	}
 }

@@ -15,21 +15,25 @@ import com.zippyziggy.prompt.prompt.model.Prompt;
 
 public interface PromptRepository extends JpaRepository<Prompt, Long> {
 
-	@Modifying
-	@Query("update Prompt set hit = hit + 1 where id = :promptId")
-	int updateHit(@Param(value = "promptId") Long promptId);
+    List<Prompt> findByTitleContainsAndDescriptionContainsAndPrefixContainsAndSuffixContainsAndExampleContains(
+        String title, String description, String prefix, String suffix, String example,
+        Pageable pageable);
 
-	Optional<Prompt> findByPromptUuidAndStatusCode(UUID promptUuid, StatusCode statusCode);
+    @Modifying
+    @Query("update Prompt set hit = hit + 1 where id = :promptId")
+    int updateHit(@Param(value = "promptId") Long promptId);
 
-	Optional<Prompt> findByOriginPromptUuidAndPromptUuid(UUID originPromptUuid, UUID promptUuid);
+    Optional<Prompt> findByPromptUuidAndStatusCode(UUID promptUuid, StatusCode statusCode);
 
-	Optional<Prompt> findByPromptUuid(UUID promptUuid);
+    Optional<Prompt> findByOriginPromptUuidAndPromptUuid(UUID originPromptUuid, UUID promptUuid);
 
-	Page<Prompt> findAllByOriginPromptUuidAndStatusCode(UUID promptUuid, StatusCode statusCode, Pageable pageable);
+    Optional<Prompt> findByPromptUuid(UUID promptUuid);
 
-	Page<Prompt> findAllByMemberUuidAndStatusCode(UUID memberUuid, StatusCode statusCode, Pageable pageable);
+    Page<Prompt> findAllByOriginPromptUuidAndStatusCode(UUID promptUuid, StatusCode statusCode, Pageable pageable);
 
-	Long countAllByOriginPromptUuidAndStatusCode(UUID promptUuid, StatusCode statusCode);
+    Page<Prompt> findAllByMemberUuidAndStatusCode(UUID memberUuid, StatusCode statusCode, Pageable pageable);
+
+    Long countAllByOriginPromptUuidAndStatusCode(UUID promptUuid, StatusCode statusCode);
 
     List<Prompt> findByStatusCode(StatusCode statusCode);
 }
