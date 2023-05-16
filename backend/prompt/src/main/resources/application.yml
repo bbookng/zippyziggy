@@ -33,7 +33,7 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://zippyziggy.kr:8761/eureka
+      defaultZone: http://zippyziggy.kr:8761
 
 
 
