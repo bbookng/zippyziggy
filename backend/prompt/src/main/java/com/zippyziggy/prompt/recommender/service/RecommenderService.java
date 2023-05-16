@@ -8,22 +8,6 @@ import com.zippyziggy.prompt.prompt.repository.PromptClickRepository;
 import com.zippyziggy.prompt.prompt.repository.PromptRepository;
 import com.zippyziggy.prompt.recommender.dto.MahoutPromptClick;
 import com.zippyziggy.prompt.recommender.dto.response.MemberIdResponse;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.mahout.cf.taste.common.TasteException;
-import org.apache.mahout.cf.taste.impl.model.file.FileDataModel;
-import org.apache.mahout.cf.taste.impl.recommender.GenericItemBasedRecommender;
-import org.apache.mahout.cf.taste.impl.recommender.GenericUserBasedRecommender;
-import org.apache.mahout.cf.taste.impl.similarity.LogLikelihoodSimilarity;
-import org.apache.mahout.cf.taste.impl.similarity.PearsonCorrelationSimilarity;
-import org.apache.mahout.cf.taste.recommender.RecommendedItem;
-import org.apache.mahout.cf.taste.similarity.UserSimilarity;
-import org.apache.mahout.cf.taste.impl.neighborhood.ThresholdUserNeighborhood;
-import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
-import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
-import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -32,6 +16,21 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import javax.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.mahout.cf.taste.common.TasteException;
+import org.apache.mahout.cf.taste.impl.model.file.FileDataModel;
+import org.apache.mahout.cf.taste.impl.neighborhood.NearestNUserNeighborhood;
+import org.apache.mahout.cf.taste.impl.recommender.GenericItemBasedRecommender;
+import org.apache.mahout.cf.taste.impl.recommender.GenericUserBasedRecommender;
+import org.apache.mahout.cf.taste.impl.similarity.LogLikelihoodSimilarity;
+import org.apache.mahout.cf.taste.impl.similarity.PearsonCorrelationSimilarity;
+import org.apache.mahout.cf.taste.recommender.RecommendedItem;
+import org.apache.mahout.cf.taste.similarity.UserSimilarity;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
+import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
+import org.springframework.stereotype.Service;
 
 @Service
 @Transactional
@@ -51,7 +50,7 @@ public class RecommenderService {
     //TODO 하루에 한 번 배치 실행
     public void uploadPromptClickCsv() throws IOException {
         CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
-        List<MemberIdResponse> allMemberIds = circuitBreaker.run(() -> memberClient.getAllMemberIds());
+        List<MemberIdResponse> allMemberIds = circuitBreaker.run(memberClient::getAllMemberIds);
         List<Prompt> allOpenPrompts = promptRepository.findByStatusCode(StatusCode.OPEN);
 
         List<MahoutPromptClick> mahoutPromptClicks = new ArrayList<>();
@@ -94,7 +93,7 @@ public class RecommenderService {
             log.info("csv 생성 완료");
 
             // S3에 저장
-            final String key = "recommender/" + LocalDate.now().toString() + "-mahout-prompt-click.csv";
+            final String key = "recommender/" + LocalDate.now() + "-mahout-prompt-click.csv";
             awsS3Uploader.uploadCsv(key, new File("mahout-prompt-click.csv"));
             log.info("csv S3 저장 완료");
 
@@ -106,10 +105,9 @@ public class RecommenderService {
     public List<Long> userBasedRecommend(Long memberId) {
         FileDataModel dm;
         try {
-            final String key = "recommender/" + LocalDate.now().minusDays(1).toString() + "-mahout-prompt-click.csv";
+            final String key = "recommender/" + LocalDate.now().minusDays(1) + "-mahout-prompt-click.csv";
             awsS3Uploader.downloadCsv(key);
             dm = new FileDataModel(new File("mahout-prompt-click.csv"));
-            log.info("FileDataModel\n" + dm.toString());
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -118,33 +116,34 @@ public class RecommenderService {
         UserSimilarity user;
         try {
             user = new PearsonCorrelationSimilarity(dm);
-            log.info("피어슨상관계수\n" + user.toString());
         } catch (TasteException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
 
-        ThresholdUserNeighborhood nh = new ThresholdUserNeighborhood(0.1, user, dm);
+        NearestNUserNeighborhood nh;
+        try {
+            nh = new NearestNUserNeighborhood(10, user, dm);
+        } catch (TasteException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
         GenericUserBasedRecommender recommender = new GenericUserBasedRecommender(dm, nh, user);
-        log.info("ThresholdUserNeighborhood\n" + nh.toString());
-        log.info("recommender" + recommender.toString());
 
         List<RecommendedItem> recommend;
         try {
             recommend = recommender.recommend(memberId, 10);
-            log.info("recommend\n" + recommend.toString());
-            log.info("recommend size\n" + String.valueOf(recommend.size()));
         } catch (TasteException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-
+        log.info("user-based recommend" + recommend.toString());
         List<Long> promptIds = new ArrayList<>();
         for (RecommendedItem item : recommend) {
             Long promptId = item.getItemID();
             promptIds.add(promptId);
         }
-        log.info("promptIds\n" + promptIds.toString());
+        log.info("promptIds" + promptIds);
 
         return promptIds;
     }
@@ -153,10 +152,9 @@ public class RecommenderService {
     public List<Long> itemBasedRecommend(Long memberId) {
         FileDataModel dm;
         try {
-            final String key = "recommender/" + LocalDate.now().minusDays(1).toString() + "-mahout-prompt-click.csv";
+            final String key = "recommender/" + LocalDate.now().minusDays(1) + "-mahout-prompt-click.csv";
             awsS3Uploader.downloadCsv(key);
             dm = new FileDataModel(new File("mahout-prompt-click.csv"));
-            log.info("FileDataModel\n" + dm.toString());
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);
@@ -172,13 +170,14 @@ public class RecommenderService {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
+        log.info("item based recommend" + recommend);
 
         List<Long> promptIds = new ArrayList<>();
         for (RecommendedItem item : recommend) {
             Long promptId = item.getItemID();
             promptIds.add(promptId);
         }
-
+        log.info("promptIds" + promptIds);
         return promptIds;
     }
 
