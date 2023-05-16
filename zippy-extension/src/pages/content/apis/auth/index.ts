@@ -1,5 +1,6 @@
 import { api, authApi } from '@pages/content/utils/apis/axios-instance';
 import {
+  BookmarkPromptResponse,
   CheckAuthParams,
   CheckAuthResponse,
   CheckAuthResult,
@@ -134,3 +135,15 @@ export const signUp = withErrorHandling(async (formData: FormData): Promise<Sign
   } = data;
   return { profileImg, nickname, userUuid };
 });
+
+export const getBookmarkList = withErrorHandling(
+  async (uuid: string, params: { page: number; size: number }): Promise<BookmarkPromptResponse> => {
+    const { data } = await authApi.get<BookmarkPromptResponse>(
+      `${MEMBER_API_ENDPOINT}/prompts/bookmark/${uuid}`,
+      {
+        params,
+      }
+    );
+    return data;
+  }
+);

@@ -1,4 +1,6 @@
 /* 소셜버튼 최초 클릭 타입들 시작 */
+import { WriterResponse } from '@pages/content/types';
+
 export interface CheckAuthParams {
   code: string;
   redirect: string;
@@ -55,4 +57,27 @@ export interface SignUpResult {
   nickname: string;
   profileImg: string;
   userUuid: string;
+}
+
+export interface BookmarkedPrompt {
+  promptUuid: string;
+  thumbnail: string;
+  title: string;
+  description: string;
+  writer: WriterResponse;
+  likeCnt: number;
+  commentCnt: number;
+  forkCnt: number;
+  talkCnt: number;
+  hit: number;
+  regDt: number;
+  updDt: number;
+  isBookmarked: boolean;
+  isLiked: boolean;
+}
+
+export interface BookmarkPromptResponse {
+  promptCardResponseList: Array<BookmarkedPrompt>;
+  totalPageCnt: number;
+  totalPromptsCnt: number;
 }

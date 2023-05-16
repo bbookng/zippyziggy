@@ -3,12 +3,14 @@ import CategoryFilter from '@pages/content/components/PromptContainer/CategoryFi
 import SearchBar from '@pages/content/components/PromptContainer/SearchBar';
 import SortFilter from '@pages/content/components/PromptContainer/SortFilter';
 import { useMemo, useState } from 'react';
-import { Category, SearchResult, Sort } from '@pages/content/types';
+import { Category, ExtensionSearchResult, Sort } from '@pages/content/types';
 import {
   CHROME_CATEGORY_KEY,
+  CHROME_CHECK_BOOKMAKR_KEY,
   CHROME_PAGE_KEY,
   CHROME_SEARCH_KEY,
   CHROME_SORT_KEY,
+  CHROME_USERINFO_KEY,
   LIMIT,
 } from '@pages/constants';
 import useChromeStorage from '@pages/hooks/@shared/useChromeStorage';
@@ -17,6 +19,9 @@ import PromptCard from '@pages/content/components/PromptContainer/PromptCard';
 import useFetch from '@pages/hooks/@shared/useFetch';
 import useDebounce from '@pages/hooks/@shared/useDebounce';
 import UserInfo from '@pages/content/components/PromptContainer/UserInfo';
+import { useQuery } from '@tanstack/react-query';
+import { SignUpResult } from '@pages/content/apis/auth/models';
+import { getBookmarkList } from '@pages/content/apis/auth';
 
 export const category: Array<Category> = [
   { id: 'all', text: '전체', value: 'ALL' },
@@ -37,6 +42,16 @@ const defaultCategory = category[0].value;
 const defaultSort = sort[0].value;
 
 const PromptContainer = () => {
+  const [isBookmark, setIsBookmark] = useChromeStorage<boolean>(CHROME_CHECK_BOOKMAKR_KEY, false);
+  const [userData, setUserData] = useChromeStorage<SignUpResult>(
+    CHROME_USERINFO_KEY,
+    {
+      userUuid: '',
+      profileImg: '',
+      nickname: '',
+    },
+    'sync'
+  );
   const [selectedCategory, setCategory] = useChromeStorage<Category['value']>(
     CHROME_CATEGORY_KEY,
     defaultCategory
@@ -66,12 +81,27 @@ const PromptContainer = () => {
     data: searchResult,
     loading,
     error,
-  } = useFetch<SearchResult>({
+  } = useFetch<ExtensionSearchResult>({
     url: `/search/extension`,
     params: memoizedParams,
     autoFetch: true,
     auth: true,
   });
+
+  useQuery(
+    ['bookmark', page, limit],
+    () => {
+      const path = userData.userUuid;
+      const params = {
+        page: page - 1,
+        size: limit,
+      };
+      return getBookmarkList(path, params);
+    },
+    {
+      enabled: isBookmark && userData.userUuid.length > 0,
+    }
+  );
 
   const isNewChatPage = !window.location.href.includes('/c/');
 
@@ -86,16 +116,24 @@ const PromptContainer = () => {
             selectedCategory={selectedCategory}
             setSelectedCategory={setCategory}
             setPage={setPage}
+            isBookmark={isBookmark}
+            setIsBookmark={setIsBookmark}
           />
-          <UserInfo />
+          <UserInfo userData={userData} setUserData={setUserData} />
         </section>
-        <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+        {isBookmark || <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />}
 
         <section className="ZP_prompt-container__main">
           <div className="ZP_prompt-container__category-wrapper">
             <h2 className="ZP_prompt-container__search-info">
-              {`${category.find((item) => item.value === selectedCategory)?.text} ${
-                debouncedSearchTerm.trim().length > 0 ? `/ ${debouncedSearchTerm}` : ''
+              {`${
+                isBookmark
+                  ? '북마크'
+                  : category.find((item) => item.value === selectedCategory)?.text
+              } ${
+                !isBookmark && debouncedSearchTerm.trim().length > 0
+                  ? `/ ${debouncedSearchTerm}`
+                  : ''
               }`}
             </h2>
             <SortFilter sort={sort} selectedSort={selectedSort} setSelectedSort={setSelectedSort} />
@@ -119,20 +157,26 @@ const PromptContainer = () => {
               if (searchResult?.totalPromptsCnt === 0) {
                 return <div>결과가 없습니다.</div>;
               }
+              if (!isBookmark) {
+                return searchResult?.extensionSearchPromptList?.map((prompt) => (
+                  <PromptCard key={prompt.promptUuid} prompt={prompt} />
+                ));
+              }
               return searchResult?.extensionSearchPromptList?.map((prompt) => (
                 <PromptCard key={prompt.promptUuid} prompt={prompt} />
               ));
             })()}
           </ul>
         </section>
-        {loading || (
-          <Pagination
-            total={searchResult?.totalPromptsCnt}
-            limit={limit}
-            page={page}
-            setPage={setPage}
-          />
-        )}
+        {loading ||
+          (searchResult?.totalPromptsCnt > 0 && (
+            <Pagination
+              total={searchResult?.totalPromptsCnt}
+              limit={limit}
+              page={page}
+              setPage={setPage}
+            />
+          ))}
       </div>
     );
   }

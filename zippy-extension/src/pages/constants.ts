@@ -32,6 +32,7 @@ const LAST_TARGET_LANGUAGE_KEY = 'ZP_lastTargetLanguage';
 
 /* Chrome Storage Key */
 const CHROME_CATEGORY_KEY = 'ZP_category';
+const CHROME_CHECK_BOOKMAKR_KEY = 'ZP_isBookmark';
 const CHROME_SORT_KEY = 'ZP_sort';
 const CHROME_SEARCH_KEY = 'ZP_searchTerm';
 const CHROME_LANGUAGE_KEY = 'ZP_language';
@@ -71,6 +72,7 @@ export {
   ZP_SHARE_BUTTON_ID,
   LAST_TARGET_LANGUAGE_KEY,
   CHROME_CATEGORY_KEY,
+  CHROME_CHECK_BOOKMAKR_KEY,
   CHROME_SORT_KEY,
   CHROME_SEARCH_KEY,
   CHROME_LANGUAGE_KEY,

@@ -1,7 +1,7 @@
 export interface Category {
   id: string;
   text: '전체' | '학업' | '오락' | '비즈니스' | '개발' | '기타';
-  value: 'ALL' | 'STUDY' | 'FUN' | 'BUSINESS' | 'PROGRAMMING' | 'ETC';
+  value: 'ALL' | 'STUDY' | 'FUN' | 'BUSINESS' | 'PROGRAMMING' | 'ETC' | '';
 }
 
 export interface Sort {
@@ -38,7 +38,7 @@ export interface Prompt {
   writerResponse: WriterResponse;
 }
 
-export interface SearchResult {
+export interface ExtensionSearchResult {
   extensionSearchPromptList: Array<Prompt>;
   totalPageCnt: number;
   totalPromptsCnt: number;

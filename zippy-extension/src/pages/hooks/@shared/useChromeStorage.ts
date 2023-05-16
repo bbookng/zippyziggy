@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction, useCallback, useEffect, useRef, useState } from 'react';
 import logOnDev from '@pages/content/utils/@shared/logging';
 import useDebounce from '@pages/hooks/@shared/useDebounce';
+import { CHROME_SEARCH_KEY } from '@pages/constants';
 
 type UseChromeStorage = <T>(
   key: string,
@@ -69,8 +70,12 @@ const useChromeStorage: UseChromeStorage = <T>(
   const debouncedValue = useDebounce(value);
 
   useEffect(() => {
-    updateStorage(debouncedValue);
-  }, [debouncedValue, updateStorage]);
+    if (key === CHROME_SEARCH_KEY) {
+      updateStorage(debouncedValue);
+    } else {
+      updateStorage(value);
+    }
+  }, [debouncedValue, key, updateStorage, value]);
 
   return [
     value,

@@ -1,23 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { Dispatch, SetStateAction, useEffect } from 'react';
 import { useModalContext } from '@pages/content/context/ModalContext';
-import useChromeStorage from '@pages/hooks/@shared/useChromeStorage';
 import { SignUpResult } from '@pages/content/apis/auth/models';
-import { CHROME_USERINFO_KEY, ZIPPY_SITE_URL, ZP_AUTH_BUTTON_ID } from '@pages/constants';
+import { ZIPPY_SITE_URL, ZP_AUTH_BUTTON_ID } from '@pages/constants';
 import AuthModalContent from '@pages/content/components/Modal/ModalContents/AuthModalContent';
 import { getMyInfo } from '@pages/content/apis/auth';
 import logo from '@assets/img/icon16.png';
 
-const UserInfo = () => {
+interface UserInfoProps {
+  userData: SignUpResult;
+  setUserData: Dispatch<SetStateAction<SignUpResult>>;
+}
+const UserInfo = ({ userData, setUserData }) => {
   const { openModal, setModalContent } = useModalContext();
-  const [userData, setUserData] = useChromeStorage<SignUpResult>(
-    CHROME_USERINFO_KEY,
-    {
-      userUuid: '',
-      profileImg: '',
-      nickname: '',
-    },
-    'sync'
-  );
 
   // 내 정보 얻어오기
   useEffect(() => {
