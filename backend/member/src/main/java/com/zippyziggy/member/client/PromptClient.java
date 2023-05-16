@@ -21,9 +21,12 @@ public interface PromptClient {
                                             @RequestParam("size") Integer size);
 
     @GetMapping("/prompts/members/bookmark/{crntMemberUuid}")
-    Optional<PromptCardListResponse> getPromptsBookmark(@PathVariable("crntMemberUuid") String crntMemberUuid,
-                                              @RequestParam("page") Integer page,
-                                              @RequestParam("size") Integer size);
+    Optional<PromptCardListResponse> getPromptsBookmark(
+        @PathVariable("crntMemberUuid") String crntMemberUuid,
+        @RequestParam("page") Integer page,
+        @RequestParam("size") Integer size,
+        @RequestParam("sort") String sort
+    );
 
 
     @GetMapping("/prompts/members/profile/{crntMemberUuid}")
