@@ -50,7 +50,7 @@ public class RecommenderService {
     //TODO 하루에 한 번 배치 실행
     public void uploadPromptClickCsv() throws IOException {
         CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
-        List<MemberIdResponse> allMemberIds = circuitBreaker.run(() -> memberClient.getAllMemberIds());
+        List<MemberIdResponse> allMemberIds = circuitBreaker.run(memberClient::getAllMemberIds);
         List<Prompt> allOpenPrompts = promptRepository.findByStatusCode(StatusCode.OPEN);
 
         List<MahoutPromptClick> mahoutPromptClicks = new ArrayList<>();
@@ -93,7 +93,7 @@ public class RecommenderService {
             log.info("csv 생성 완료");
 
             // S3에 저장
-            final String key = "recommender/" + LocalDate.now().toString() + "-mahout-prompt-click.csv";
+            final String key = "recommender/" + LocalDate.now() + "-mahout-prompt-click.csv";
             awsS3Uploader.uploadCsv(key, new File("mahout-prompt-click.csv"));
             log.info("csv S3 저장 완료");
 
