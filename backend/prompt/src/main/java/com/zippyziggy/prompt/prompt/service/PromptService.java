@@ -584,15 +584,15 @@ public class PromptService{
 			if (redisUtils.isExists(key)) {
 				log.info("redis 최근 프롬프트 조회");
 				CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
-				Set<ZSetOperations.TypedTuple<String>> set = redisTemplate.opsForZSet().reverseRangeWithScores(key, 0, -1);
+				Set<ZSetOperations.TypedTuple<Long>> set = redisTemplate.opsForZSet().reverseRangeWithScores(key, 0, -1);
 
 				List<Long> promptIds = new ArrayList<>();
 
-				for (ZSetOperations.TypedTuple<String> tuple : set) {
-					String value = tuple.getValue();
-					promptIds.add(Long.parseLong(value));
+				for (ZSetOperations.TypedTuple<Long> tuple : set) {
+					Long value = tuple.getValue();
+					promptIds.add(value);
 				}
-
+				log.info("promptIds = " + promptIds);
 				List<PromptCardResponse> promptCardResponses = new ArrayList<>();
 				List<Prompt> prompts = promptRepository.findAllByIdIn(promptIds);
 				for (Prompt prompt : prompts) {
