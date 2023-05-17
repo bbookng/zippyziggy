@@ -583,15 +583,16 @@ public class PromptService{
 			if (redisUtils.isExists(key)) {
 				log.info("redis 최근 프롬프트 조회");
 				CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
-				Set<ZSetOperations.TypedTuple<Long>> set = redisTemplate.opsForZSet().reverseRangeWithScores(key, 0, -1);
+				Set<ZSetOperations.TypedTuple<Integer>> set = redisTemplate.opsForZSet().reverseRangeWithScores(key, 0, -1);
 				log.info("ZsetOperation = " + set);
 				List<Long> promptIds = new ArrayList<>();
 
-				for (ZSetOperations.TypedTuple<Long> tuple : set) {
+				for (ZSetOperations.TypedTuple<Integer> tuple : set) {
 					log.info("tupe = >>>> " + tuple);
-					Long temp = Long.valueOf(tuple.getValue());
+					log.info("tupe = >>>> " + tuple.getValue());
+					Integer temp = tuple.getValue();
 					log.info("정수를 롱타입으로" + temp);
-					Long value = tuple.getValue();
+					Long value = Long.valueOf(tuple.getValue());
 					log.info("롱타입 그대로" + value);
 					promptIds.add(value);
 				}
