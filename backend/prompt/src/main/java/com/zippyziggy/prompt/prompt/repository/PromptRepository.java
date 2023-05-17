@@ -14,7 +14,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import com.zippyziggy.prompt.prompt.model.Prompt;
 
-public interface PromptRepository extends JpaRepository<Prompt, Long>, PromptCustomRepository {
+public interface PromptRepository extends JpaRepository<Prompt, Long> {
 
     List<Prompt> findByTitleContainsAndDescriptionContainsAndPrefixContainsAndSuffixContainsAndExampleContains(
         String title, String description, String prefix, String suffix, String example,
