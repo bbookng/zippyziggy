@@ -597,8 +597,15 @@ public class PromptService{
 					promptIds.add(value);
 				}
 				log.info("promptIds = " + promptIds);
+				List<Prompt> prompts = new ArrayList<>();
+
+				for (Long promptId: promptIds) {
+					Prompt prompt = promptRepository.findById(promptId).get();
+					prompts.add(prompt);
+				}
+
 				List<PromptCardResponse> promptCardResponses = new ArrayList<>();
-				List<Prompt> prompts = promptRepository.findAllByIdIn(promptIds);
+
 				for (Prompt prompt : prompts) {
 					long commentCnt = promptCommentRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
 					long forkCnt = promptRepository.countAllByOriginPromptUuidAndStatusCode(prompt.getPromptUuid(), StatusCode.OPEN);
