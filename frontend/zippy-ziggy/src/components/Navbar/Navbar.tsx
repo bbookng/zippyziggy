@@ -194,7 +194,7 @@ const Navbar = ({ toggleTheme }) => {
   };
 
   useEffect(() => {
-    if (!localStorage.getItem('accessToken')) {
+    if (localStorage.getItem('accessToken')) {
       getToken();
     }
   }, []);
