@@ -194,7 +194,7 @@ export default function PromptUpdate() {
       //   formData.append('thumbnail', image[0]);
       // }
 
-      const imageFile = await imgComp({ image: image[0], maxSizeMB: 1, maxWidthOrHeight: 1400 });
+      const imageFile = await imgComp({ image: image[0], maxSizeMB: 1, maxWidthOrHeight: 800 });
       formData.append('thumbnail', imageFile);
       formData.append('data', new Blob([JSON.stringify(tmpData)], { type: 'application/json' }));
       const requestData = {

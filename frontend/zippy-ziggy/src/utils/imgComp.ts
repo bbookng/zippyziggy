@@ -20,7 +20,7 @@ const getImageDimensions = (file: Blob): Promise<{ width: number; height: number
   });
 };
 
-const imgComp = async ({ image, maxSizeMB = 1, maxWidthOrHeight = 1400 }: ImgCompType) => {
+const imgComp = async ({ image, maxSizeMB = 1, maxWidthOrHeight = 800 }: ImgCompType) => {
   try {
     const imageFile = image;
     const { width, height } = await getImageDimensions(imageFile);

@@ -151,7 +151,7 @@ export default function Index() {
       page.current = 0;
       handleProfileData();
     }
-  }, [userUuid, userState.userUuid]);
+  }, [userUuid, userState.userUuid]); // ,
 
   // 로그아웃 버튼 클릭
   const handleLogoutBtn = async () => {

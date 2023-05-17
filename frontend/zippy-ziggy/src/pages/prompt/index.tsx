@@ -185,7 +185,7 @@ function PromptCreate() {
       };
       const formData = new FormData();
       if (image) {
-        const imageFile = await imgComp({ image: image[0], maxSizeMB: 1, maxWidthOrHeight: 1400 });
+        const imageFile = await imgComp({ image: image[0], maxSizeMB: 1, maxWidthOrHeight: 800 });
         formData.append('thumbnail', imageFile); //
       }
 
