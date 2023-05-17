@@ -125,20 +125,20 @@ const PromptCard = ({ prompt }: PromptCardProps) => {
               {description}
             </p>
             <div className="ZP_prompt-container__info-wrapper">
-              <p
-                className="ZP_prompt-container__date caption"
-                title={`마지막 업데이트 ${formatAgo(updDt * 1000)}`}
-              >
-                {formatDateTime(regDt * 1000)}
-              </p>
-              <span className="caption">&middot;</span>
-              <p className="ZP_prompt-container__comments-count caption">
-                {formatHumanReadableNumber(commentCnt)}개의 댓글
-              </p>
-              <span className="caption">&middot;</span>
-              <p className="ZP_prompt-container__talks-count caption">
-                {formatHumanReadableNumber(talkCnt)}개의 Talk
-              </p>
+              <div>
+                <p
+                  className="ZP_prompt-container__date caption"
+                  title={`마지막 업데이트 ${formatAgo(updDt * 1000)}`}
+                >
+                  {formatDateTime(regDt * 1000)}
+                </p>
+              </div>
+              <div className="ZP_prompt-container__comments-count">
+                <span className="caption">&middot;</span>
+                <p className="caption">{formatHumanReadableNumber(commentCnt)}개의 댓글</p>
+                <span className="caption">&middot;</span>
+                <p className="caption">{formatHumanReadableNumber(talkCnt)}개의 Talk</p>
+              </div>
             </div>
           </div>
           <div className="ZP_prompt-container__profile-wrapper">

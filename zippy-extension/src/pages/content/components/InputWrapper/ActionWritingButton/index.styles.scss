@@ -1,9 +1,10 @@
 /* 실제로 클릭해서 간편 프롬프트를 실행하는 부분 버튼 */
-#ZP_actionWritingButton{
+#ZP_actionWritingButton {
   width: 100px;
   padding: 0.25rem;
   background-color: transparent;
-  &:hover{
+
+  &:hover {
     background-color: var(--background-color-hover);
   }
 }
