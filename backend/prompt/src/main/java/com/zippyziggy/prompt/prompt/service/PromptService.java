@@ -722,7 +722,6 @@ public class PromptService{
 		if (count < 200) {
 			// 최근 조회한  50개의 기록 중에 가장 조회가 많은 카테고리 2개를 가져온다
 			// 조회수, 좋아요 수, 평점의 가중치를 통해서 추천 진행
-//			List<Prompt> prompts = promptRepository.findClickPromptByMemberUuid(UUID.fromString(crntMemberUuid));
 			HashMap<String, Long> map = new HashMap<>();
 			long businessCnt = promptRepository.countAllByMemberUuidAndCategory(UUID.fromString(crntMemberUuid), Category.BUSINESS);
 			long etcCnt = promptRepository.countAllByMemberUuidAndCategory(UUID.fromString(crntMemberUuid), Category.ETC);
@@ -752,14 +751,44 @@ public class PromptService{
 					.collect(Collectors.toList());
 
 			// 각 카테고리에 해당하는 prompt 추출
-			List<Prompt> topPrompts = promptRepository.findAllByCategoryIn(topCategories);
+			List<RatingDto> top1Prompts = promptRepository.findAllByCategory(Category.valueOf(topCategories.get(0)));
+			List<RatingDto> top2Prompts = promptRepository.findAllByCategory(Category.valueOf(topCategories.get(1)));
 
-			// 추출된 prompt 출력 또는 처리
-			for (Prompt prompt : topPrompts) {
-				log.info("Prompt: " + prompt.getTitle());
-				// 추가적인 처리
+			log.info("top1Prompts = " + top1Prompts);
+			log.info("top2Prompts = " + top2Prompts);
 
+			HashMap<Long, Double> score_map = new HashMap<>();
+
+			for (RatingDto top1Prompt : top1Prompts) {
+				// 조회수와 좋아요 수 그리고 평점
+				long hitCount = top1Prompt.getHit();
+				long likeCount = top1Prompt.getLikeCnt();
+				int score = top1Prompt.getScore();
+
+				// 간단한 추천 점수 계산 (예시: 조회수의 가중치 0.7, 좋아요 수의 가중치 0.3)
+				double recommend_score = 0.3 * hitCount + 0.3 * likeCount + 0.4 * score;
+				log.info("hitCnt = " + hitCount + " likeCnt = " + likeCount + " score = " + score);
+				log.info("recommend_score" + recommend_score);
+				score_map.put(top1Prompt.getPrompId(), recommend_score);
 			}
+
+			// score_map을 내림차순으로 정렬
+			List<Map.Entry<Long, Double>> sortedScores = score_map.entrySet()
+					.stream()
+					.sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+					.limit(5)
+					.collect(Collectors.toList());
+
+			// 상위 5개의 Prompt 가져오기
+			List<Long> promptIds = sortedScores.stream()
+					.map(Map.Entry::getKey)
+					.collect(Collectors.toList());
+
+			List<Prompt> recommendedPrompts = promptRepository.findAllByPromptIdIn(promptIds);
+
+			log.info("recommendedPrompts = " + recommendedPrompts);
+
+
 			return null;
 
 		} else {

@@ -14,7 +14,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import com.zippyziggy.prompt.prompt.model.Prompt;
 
-public interface PromptRepository extends JpaRepository<Prompt, Long> {
+public interface PromptRepository extends JpaRepository<Prompt, Long>, PromptCustomRepository {
 
     List<Prompt> findByTitleContainsOrDescriptionContainsOrPrefixContainsOrSuffixContainsOrExampleContains(
         String title, String description, String prefix, String suffix, String example,
@@ -42,5 +42,5 @@ public interface PromptRepository extends JpaRepository<Prompt, Long> {
 
     long countAllByMemberUuidAndCategory(UUID memberUuid, Category category);
 
-    List<Prompt> findAllByCategoryIn(List<String> categories );
+    List<Prompt> findAllByPromptIdIn(List<Long> promptsIds);
 }
