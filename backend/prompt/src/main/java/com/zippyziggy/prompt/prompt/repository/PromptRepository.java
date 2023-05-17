@@ -36,4 +36,6 @@ public interface PromptRepository extends JpaRepository<Prompt, Long> {
     Long countAllByOriginPromptUuidAndStatusCode(UUID promptUuid, StatusCode statusCode);
 
     List<Prompt> findByStatusCode(StatusCode statusCode);
+
+    long count();
 }
