@@ -873,8 +873,16 @@ public class PromptService{
 
     }
 
-	public List<Prompt> testSearch(String keyword, Pageable pageable) {
-		return promptRepository.findByTitleContainsOrDescriptionContainsOrPrefixContainsOrSuffixContainsOrExampleContains(
+	public List<PromptResponse> testSearch(String keyword, Pageable pageable) {
+		List<Prompt> prompts = promptRepository
+			.findByTitleContainsOrDescriptionContainsOrPrefixContainsOrSuffixContainsOrExampleContains(
 			keyword, keyword, keyword, keyword, keyword, pageable);
+
+		List<PromptResponse> promptResponses = new ArrayList<>();
+		for (Prompt prompt : prompts) {
+			PromptResponse promptResponse = PromptResponse.from(prompt);
+			promptResponses.add(promptResponse);
+		}
+		return promptResponses;
 	}
 }

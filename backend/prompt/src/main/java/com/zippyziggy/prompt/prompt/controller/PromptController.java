@@ -390,12 +390,11 @@ public class PromptController {
 	}
 
 	@GetMapping("/test-search")
-	public ResponseEntity<List<Prompt>> searchFromDB(
+	public ResponseEntity<List<PromptResponse>> searchFromDB(
 		@RequestParam String keyword,
 		@PageableDefault Pageable pageable
 	) {
 		return ResponseEntity.ok(promptService.testSearch(keyword, pageable));
 	}
-
 
 }
