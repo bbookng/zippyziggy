@@ -716,9 +716,10 @@ public class PromptService{
     public List<PromptCardResponse> findRecommendedPrompts(String crntMemberUuid) {
 		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 		Long memberId = circuitBreaker.run(() -> memberClient.getLongId(crntMemberUuid));
-
+		long count = promptRepository.count();
+		log.info("count = " + count);
 		// 프롬프트 개수 200개 이상일 경우 ES 추천 알고리즘 적용
-		if (promptRepository.count() < 200) {
+		if (count < 200) {
 			// 최근 조회한  50개의 기록 중에 가장 조회가 많은 카테고리 2개를 가져온다
 			// 조회수, 좋아요 수, 평점의 가중치를 통해서 추천 진행
 //			List<Prompt> prompts = promptRepository.findClickPromptByMemberUuid(UUID.fromString(crntMemberUuid));
