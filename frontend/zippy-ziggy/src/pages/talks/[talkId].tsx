@@ -110,7 +110,7 @@ export default function DetailPrompt() {
     }
   };
 
-  // 프롬프트 삭제
+  // 톡 삭제
   const handleDeletePrompt = async () => {
     if (nickname === data?.data?.writer?.writerNickname) {
       deleteTalksAPI({ talkId, router });
@@ -134,8 +134,8 @@ export default function DetailPrompt() {
       {isOpenPromptDeleteModal && (
         <Modal
           isOpen={isOpenPromptDeleteModal}
-          title="프롬프트 삭제"
-          content="프롬프트를 삭제하시겠습니까?"
+          title="톡 삭제"
+          content="톡을 삭제하시겠습니까?"
           handleModalClose={() => setIsOpenPromptDeleteModal(false)}
           handleModalConfirm={handleDeletePrompt}
         />

@@ -20,42 +20,13 @@ import styled from 'styled-components';
 import Toastify from 'toastify-js';
 import message from '@/assets/message.json';
 import toastifyCSS from '@/assets/toastify.json';
+import imageCompression from 'browser-image-compression';
+import imgComp from '@/utils/imgComp';
 
 const FooterBox = styled.div`
   display: block;
   height: 4.25rem;
 `;
-
-// type DataType = {
-//   data: {
-//     category: string;
-//     description: string;
-//     isBookmarked: boolean;
-//     isForked: boolean;
-//     isLiked: boolean;
-//     likeCnt: number;
-//     messageResponse: {
-//       example: string;
-//       prefix: string;
-//       suffix: string;
-//     };
-//     originerResponse: {
-//       originerImg: string;
-//       originerNickname: string;
-//       originerUuid: string;
-//     } | null;
-//     regDt: number;
-//     thumbnail: string;
-//     title: string;
-//     updDt: SVGNumber;
-//     writerResponse: {
-//       writerImg: string;
-//       writerNickname: string;
-//       writerUuid: string;
-//     };
-//   };
-//   result: string;
-// };
 
 export default function PromptUpdate() {
   const [isNext, setIsNext] = useState<boolean>(false);
@@ -99,32 +70,6 @@ export default function PromptUpdate() {
 
   // URL의 이미지 다운로드
   async function getFile(url: string) {
-    // await axios
-    //   .get<Blob>(url, {
-    //     headers: { 'Access-Control-Allow-Origin': '*' },
-    //     withCredentials: true,
-    //     responseType: 'blob',
-    //   })
-    //   .then((res) => {
-    //     const myFile = new File([res.data], 'imageName');
-    //     const FileList = [myFile];
-    //     setValue('image', FileList);
-    //     // const reader = new FileReader();
-    //     // reader.onload = (ev) => {
-    //     //   const previewImage = String(ev.target?.result);
-    //     //   setMyImage(previewImage); // myImage라는 state에 저장했음
-    //     // };
-    //     // reader.readAsDataURL(myFile);
-    //   })
-    //   .catch(() => {
-    //     Toastify({
-    //       text: message.PromptImageError,
-    //       duration: 1000,
-    //       position: 'center',
-    //       stopOnFocus: true,
-    //       style: toastifyCSS.fail,
-    //     }).showToast();
-    //   });
     try {
       const {
         data: { type, arrayBuffer },
@@ -248,7 +193,9 @@ export default function PromptUpdate() {
       // if (image) {
       //   formData.append('thumbnail', image[0]);
       // }
-      formData.append('thumbnail', image[0]);
+
+      const imageFile = await imgComp({ image: image[0], maxSizeMB: 1, maxWidthOrHeight: 1400 });
+      formData.append('thumbnail', imageFile);
       formData.append('data', new Blob([JSON.stringify(tmpData)], { type: 'application/json' }));
       const requestData = {
         id: promptUuid,

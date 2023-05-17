@@ -77,7 +77,7 @@ export default function Index() {
   const [cardList, setCardList] = useState<Array<unknown>>([]);
   const [totalPromptsCnt, setTotalPromptsCnt] = useState<number>(0);
   const page = useRef<number>(0);
-
+  const [isMyPage, setIsMyPage] = useState<boolean>(false);
   // 1단계 : 유저 정보 받아오기
   const handleUserAPI = async () => {
     const result = await getUserAPI(userUuid);
@@ -145,10 +145,13 @@ export default function Index() {
   // query를 제대로 받아왔을 경우
   useEffect(() => {
     if (userUuid) {
+      if (userState.userUuid === userUuid) {
+        setIsMyPage(true);
+      }
       page.current = 0;
       handleProfileData();
     }
-  }, [userUuid]);
+  }, [userUuid, userState.userUuid]);
 
   // 로그아웃 버튼 클릭
   const handleLogoutBtn = async () => {
@@ -178,11 +181,11 @@ export default function Index() {
   return (
     <ProfileContainer>
       <ProfileHeaderContainer>
-        <ProfileImage src={profileImg} alt="프로필이미지" size={128} />
+        {profileImg ? <ProfileImage src={profileImg} alt="프로필이미지" size={128} /> : null}
         <Title sizeType="2xl" margin="8px 0px">
           {nickname}
         </Title>
-        {userState.userUuid === userUuid ? (
+        {isMyPage ? (
           <div className="authContainer">
             <Button
               id="logout"

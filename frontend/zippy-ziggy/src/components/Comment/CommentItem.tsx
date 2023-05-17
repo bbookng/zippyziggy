@@ -4,7 +4,7 @@ import { getDateTime } from '@/lib/utils';
 import { FaEllipsisH, FaPencilAlt, FaTrash } from 'react-icons/fa';
 import { useForm } from 'react-hook-form';
 import { deletePromptComment, updatePromptComment } from '@/core/prompt/promptAPI';
-import { putTalksCommentAPI } from '@/core/talk/talkAPI';
+import { deleteTalksCommentAPI, putTalksCommentAPI } from '@/core/talk/talkAPI';
 import { useAppSelector } from '@/hooks/reduxHook';
 import {
   Container,
@@ -62,11 +62,20 @@ export default function CommentItem({ comment, type, id, handleDeleteComment }: 
 
   // 댓글 삭제
   const requestDeleteComment = async () => {
-    const requestData = { id, commentId: Number(comment.commentId) };
-    const data = await deletePromptComment(requestData);
-    if (data.result === 'SUCCESS') {
-      handleDeleteComment();
-      setIsOpenCommentDeleteModal(false);
+    if (type === 'prompt') {
+      const requestData = { id, commentId: Number(comment.commentId) };
+      const data = await deletePromptComment(requestData);
+      if (data.result === 'SUCCESS') {
+        handleDeleteComment();
+        setIsOpenCommentDeleteModal(false);
+      }
+    } else {
+      const requestData = { id, commentId: Number(comment.commentId) };
+      const data = await deleteTalksCommentAPI(requestData);
+      if (data.result === 'SUCCESS') {
+        handleDeleteComment();
+        setIsOpenCommentDeleteModal(false);
+      }
     }
   };
 

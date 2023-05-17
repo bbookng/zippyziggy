@@ -5,6 +5,7 @@ import { createPromptFork, getPromptDetail, testPrompt } from '@/core/prompt/pro
 import { useAppSelector } from '@/hooks/reduxHook';
 import { checkInputFormToast } from '@/lib/utils';
 import { ContainerTitle, TitleInfoWrapper, TitleWrapper } from '@/styles/prompt/Create.style';
+import imgComp from '@/utils/imgComp';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useRouter } from 'next/router';
@@ -178,7 +179,8 @@ export default function PromptUpdate() {
       };
       const formData = new FormData();
       if (image) {
-        formData.append('thumbnail', image[0]);
+        const imageFile = await imgComp({ image: image[0], maxSizeMB: 1, maxWidthOrHeight: 1400 });
+        formData.append('thumbnail', imageFile);
       }
       formData.append('data', new Blob([JSON.stringify(tmpData)], { type: 'application/json' }));
       const requestData = {
@@ -199,7 +201,7 @@ export default function PromptUpdate() {
           <div className="title">프롬프트 포크</div>
           <div className="help">
             <AiFillQuestionCircle className="icon" />
-            <div>포크가 처음이신가요?</div>
+            <div>포크로 쉽게 변경해서 쓰세요</div>
           </div>
         </TitleWrapper>
         {/* prompt.forkCnt > 0 으로 확인하도록 바꾸기!! */}
