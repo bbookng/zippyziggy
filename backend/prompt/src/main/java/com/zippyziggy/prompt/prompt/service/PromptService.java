@@ -763,7 +763,7 @@ public class PromptService{
 				// 조회수와 좋아요 수 그리고 평점
 				long hitCount = top1Prompt.getHit();
 				long likeCount = top1Prompt.getLikeCnt();
-				int score = top1Prompt.getScore();
+				int score = top1Prompt.getScore() == null ? 3 : top1Prompt.getScore();
 
 				// 간단한 추천 점수 계산 (예시: 조회수의 가중치 0.7, 좋아요 수의 가중치 0.3)
 				double recommend_score = 0.3 * hitCount + 0.3 * likeCount + 0.4 * score;
