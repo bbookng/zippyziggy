@@ -796,7 +796,7 @@ public class PromptService{
 				// 조회수와 좋아요 수 그리고 평점
 				long hitCount = top2Prompt.getHit();
 				long likeCount = top2Prompt.getLikeCnt();
-				int score = top2Prompt.getScore();
+				int score = top2Prompt.getScore() == null ? 3 : top2Prompt.getScore();
 
 				// 간단한 추천 점수 계산 (예시: 조회수의 가중치 0.7, 좋아요 수의 가중치 0.3)
 				double recommend_score = 0.3 * hitCount + 0.3 * likeCount + 0.4 * score;
@@ -828,7 +828,26 @@ public class PromptService{
 			Collections.shuffle(combinedPrompts);
 			log.info("combinedPrompts = " + combinedPrompts);
 
-			return null;
+			List<PromptCardResponse> promptCardResponses = new ArrayList<>();
+
+			for (Prompt prompt : combinedPrompts) {
+				long commentCnt = promptCommentRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
+				long forkCnt = promptRepository.countAllByOriginPromptUuidAndStatusCode(prompt.getPromptUuid(), StatusCode.OPEN);
+				long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
+
+				MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid()));
+
+				boolean isBookmarked = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
+						? true : false;
+				boolean isLiked = promptLikeRepository.findByPromptAndMemberUuid(prompt, UUID.fromString(crntMemberUuid)) != null
+						? true : false;
+
+				PromptCardResponse promptCardResponse = PromptCardResponse.from(writerInfo, prompt, commentCnt, forkCnt, talkCnt, isBookmarked, isLiked);
+				promptCardResponses.add(promptCardResponse);
+
+			}
+
+			return promptCardResponses;
 
 		} else {
 
