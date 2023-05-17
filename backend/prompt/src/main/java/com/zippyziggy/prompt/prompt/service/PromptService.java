@@ -255,22 +255,12 @@ public class PromptService{
 		if (!crntMemberUuid.equals("defaultValue")) {
 
 			// 레디스 저장 로직
-			long commentCnt = promptCommentRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
-			long forkCnt = promptRepository.countAllByOriginPromptUuidAndStatusCode(prompt.getPromptUuid(), StatusCode.OPEN);
-			long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
-
-			PromptCardResponse promptCardResponse = PromptCardResponse.from(writerInfo, prompt, commentCnt, forkCnt, talkCnt, isBookmarked, isLiked);
-
 			String key = "RecentPrompt" + crntMemberUuid;
-			String data = null;
-			try {
-				data = objectMapper.writeValueAsString(promptCardResponse);
-			} catch (Exception e) {
-				log.error("Json 파싱 에러");
-			}
+			Long data = prompt.getId();
+
 			// sorted set으로 저장
 			redisTemplate.opsForZSet().add(key, data, System.nanoTime());
-			redisTemplate.opsForZSet().removeRange(key, 0, -6);
+			redisTemplate.opsForZSet().removeRange(key, 0, -11);
 			redisUtils.setExpireTime(key, 60 * 60 * 24 * 7);
 
 			PromptClick promptClick = PromptClick.builder()
@@ -582,7 +572,7 @@ public class PromptService{
 	}
 
 	/*
-    최근 조회한 프롬프트 5개 조회
+    최근 조회한 프롬프트 10개 조회
      */
 	public List<PromptCardResponse> recentPrompts(String crntMemberUuid) {
 		if (crntMemberUuid.equals("defaultValue")) {
@@ -593,21 +583,34 @@ public class PromptService{
 
 			if (redisUtils.isExists(key)) {
 				log.info("redis 최근 프롬프트 조회");
+				CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 				Set<ZSetOperations.TypedTuple<String>> set = redisTemplate.opsForZSet().reverseRangeWithScores(key, 0, -1);
 
-				List<PromptCardResponse> promptCardResponses = new ArrayList<>();
+				List<Long> promptIds = new ArrayList<>();
 
 				for (ZSetOperations.TypedTuple<String> tuple : set) {
 					String value = tuple.getValue();
-					double score = tuple.getScore();
-					PromptCardResponse promptCardResponse = null;
-					try {
-						promptCardResponse = objectMapper.readValue(value, PromptCardResponse.class);
-					} catch (Exception e) {
-						log.error("Json 파싱 에러");
-					}
+					promptIds.add(Long.parseLong(value));
+				}
+
+				List<PromptCardResponse> promptCardResponses = new ArrayList<>();
+				List<Prompt> prompts = promptRepository.findAllByIdIn(promptIds);
+				for (Prompt prompt : prompts) {
+					long commentCnt = promptCommentRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
+					long forkCnt = promptRepository.countAllByOriginPromptUuidAndStatusCode(prompt.getPromptUuid(), StatusCode.OPEN);
+					long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
+
+					MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid()));
+
+					boolean isBookmarked = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
+							? true : false;
+					boolean isLiked = promptLikeRepository.findByPromptAndMemberUuid(prompt, UUID.fromString(crntMemberUuid)) != null
+							? true : false;
+
+					PromptCardResponse promptCardResponse = PromptCardResponse.from(writerInfo, prompt, commentCnt, forkCnt, talkCnt, isBookmarked, isLiked);
 					promptCardResponses.add(promptCardResponse);
 				}
+
 				return promptCardResponses;
 
 			} else {
