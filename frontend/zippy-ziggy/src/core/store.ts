@@ -11,6 +11,7 @@ import storage from 'redux-persist/lib/storage'; // 로컬 스토리지를 이�
 import { persistReducer, persistStore } from 'redux-persist';
 import { userSlice } from './user/userSlice'; // userSlice 모듈을 불러옵니다.
 import { modalSlice } from './modal/modalSlice';
+import { promptSlice } from './prompt/promptSlice';
 import counterReducer from './auth/counterSlice'; // counterSlice 모듈을 불러옵니다.
 
 const persistConfig = { key: 'root', version: 1, storage }; // redux-persist 설정을 합니다.
@@ -20,6 +21,7 @@ const reducer = (state: any, action: PayloadAction<any>) => {
   return combineReducers({
     [userSlice.name]: userSlice.reducer, // userSlice 모듈을 사용하여 인증 정보를 관리합니다.
     [modalSlice.name]: modalSlice.reducer,
+    [promptSlice.name]: promptSlice.reducer,
   })(state, action);
 };
 

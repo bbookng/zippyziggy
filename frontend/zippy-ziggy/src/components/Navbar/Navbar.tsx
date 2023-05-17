@@ -31,6 +31,7 @@ import { links } from '@/utils/links';
 import { FiBell, FiSun } from 'react-icons/fi';
 
 import { getTokenAPI } from '@/core/user/userAPI';
+import { setPageReset } from '@/core/prompt/promptSlice';
 import { NavWrapper, NavList, NavOption, Logo, NavUser, Overlay } from './NavbarStyle';
 import Button from '../Button/Button';
 import ProfileImage from '../Image/ProfileImage';
@@ -237,7 +238,14 @@ const Navbar = ({ toggleTheme }) => {
               role="button"
               className={isSelected === navOption ? 'active' : ''}
             >
-              <Link href={link}>{navOption}</Link>
+              <Link
+                href={link}
+                onClick={() => {
+                  if (navOption === '프롬프트') dispatch(setPageReset());
+                }}
+              >
+                {navOption}
+              </Link>
             </NavOption>
           );
         })}

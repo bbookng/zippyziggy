@@ -13,6 +13,8 @@ import Router from 'next/router';
 import { getDailyVisited, getTotalVisited } from '@/core/user/userAPI';
 import TypeIt from 'typeit-react';
 import Button from '@/components/Button/Button';
+import { setPageReset } from '@/core/prompt/promptSlice';
+import { useAppDispatch } from '@/hooks/reduxHook';
 
 const Container = styled.div`
   width: 100%;
@@ -317,6 +319,7 @@ const Home: NextPage<HomePageProps> = ({ title }) => {
   const [isPlaying3, setIsPlaying3] = useState(false);
   const [isPlaying4, setIsPlaying4] = useState(false);
   const [guideNum, setGuideNum] = useState(0);
+  const dispatch = useAppDispatch();
 
   const [totalViewCnt, setTotalViewCnt] = useState(0);
   const [todayViewCnt, setTodayViewCnt] = useState(0);
@@ -329,6 +332,7 @@ const Home: NextPage<HomePageProps> = ({ title }) => {
   };
 
   const handlePromptsBtn = () => {
+    dispatch(setPageReset());
     Router.push(links.prompts);
   };
 

@@ -4,27 +4,31 @@ import PromptCard from '@/components/PromptCard/PromptCard';
 import Search from '@/components/Search/Search';
 import { CardList, Container, SearchBox, SortBox, TitleBox } from '@/styles/prompt/List.style';
 import { useRouter } from 'next/router';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Paging from '@/components/Paging/Paging';
 import useDebounce from '@/hooks/useDebounce';
 import { getPromptList } from '@/core/prompt/promptAPI';
 import { FiPlus } from 'react-icons/fi';
+import { useAppDispatch, useAppSelector } from '@/hooks/reduxHook';
+import { setSearchParams } from '@/core/prompt/promptSlice';
 
 export default function Prompt() {
-  const [category, setCategory] = useState<string>('ALL');
-  const [sort, setSort] = useState<string>('likeCnt');
-  const [keyword, setKeyword] = useState<string>('');
+  const { pageRef, categoryRef, sortRef, keywordRef } = useAppSelector((state) => state?.prompt);
+  const [category, setCategory] = useState<string>(categoryRef);
+  const [sort, setSort] = useState<string>(sortRef);
+  const [keyword, setKeyword] = useState<string>(keywordRef);
+  const [page, setPage] = useState<number>(pageRef);
   const [cardList, setCardList] = useState<Array<unknown>>([]);
   const [totalPromptsCnt, setTotalPromptsCnt] = useState<number>(0);
   const router = useRouter();
-  const page = useRef<number>(0);
   const debouncedKeyword = useDebounce(keyword);
+  const dispatch = useAppDispatch();
 
   // 검색 요청
   const handleSearch = async () => {
     // keyword, category로 검색 요청하기
     const requestData = {
-      page: page.current,
+      page,
       keyword: debouncedKeyword,
       size: 6,
       category,
@@ -32,6 +36,7 @@ export default function Prompt() {
     };
     const data = await getPromptList(requestData);
     if (data.result === 'SUCCESS') {
+      dispatch(setSearchParams(requestData));
       setCardList(data.data.searchPromptList);
       setTotalPromptsCnt(data.data.totalPromptsCnt);
     }
@@ -63,6 +68,7 @@ export default function Prompt() {
     e.preventDefault();
     if (e.target.dataset.value !== category) {
       setCategory(e.target.dataset.value);
+      setPage(0);
     }
   };
 
@@ -78,6 +84,7 @@ export default function Prompt() {
     e.preventDefault();
     if (e.target.dataset.value !== sort) {
       setSort(e.target.dataset.value);
+      setPage(0);
     }
   };
 
@@ -89,15 +96,13 @@ export default function Prompt() {
 
   // 페이지 이동
   const handlePage = (number: number) => {
-    page.current = number - 1;
-    handleSearch();
+    setPage(number - 1);
   };
 
   useEffect(() => {
-    page.current = 0;
     handleSearch();
-  }, [category, sort, debouncedKeyword]);
-
+  }, [category, sort, debouncedKeyword, page]);
+  console.log(category, sort, debouncedKeyword, page);
   return (
     <Container>
       <SearchBox>
@@ -134,7 +139,7 @@ export default function Prompt() {
           />
         ))}
       </CardList>
-      <Paging page={page.current} size={6} totalCnt={totalPromptsCnt || 0} setPage={handlePage} />
+      <Paging page={page} size={6} totalCnt={totalPromptsCnt || 0} setPage={handlePage} />
     </Container>
   );
 }
