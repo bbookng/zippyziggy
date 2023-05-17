@@ -42,12 +42,16 @@ public class PromptBookmarkRepositoryImpl implements PromptBookmarkCustomReposit
 
         OrderSpecifier orderSpecifier = new OrderSpecifier<>(Order.DESC, qPrompt.likeCnt);
         String property = pageable.getSort().stream().collect(Collectors.toList()).get(0).getProperty();
-        if (property.equals("likeCnt")) {
-            orderSpecifier = new OrderSpecifier<>(Order.DESC, qPrompt.likeCnt);
-        } else if (property.equals("hit")) {
-            orderSpecifier = new OrderSpecifier<>(Order.DESC, qPrompt.hit);
-        } else if (property.equals("regDt")) {
-            orderSpecifier = new OrderSpecifier<>(Order.DESC, qPrompt.regDt);
+        switch (property) {
+            case "likeCnt":
+                orderSpecifier = new OrderSpecifier<>(Order.DESC, qPrompt.likeCnt);
+                break;
+            case "hit":
+                orderSpecifier = new OrderSpecifier<>(Order.DESC, qPrompt.hit);
+                break;
+            case "regDt":
+                orderSpecifier = new OrderSpecifier<>(Order.DESC, qPrompt.regDt);
+                break;
         }
 
         List<Prompt> promptList = query
