@@ -24,11 +24,12 @@ export default function Introduction({ prompt }: PropsType) {
         </div>
       </SubContainer>
       <SubContainer>
-        <p className="colorBox">
+        <div className="colorBox">
+          <div className="exampleLabel">보완된 질문</div>
           <span>{prompt.messageResponse.prefix}</span>
           <span className="example">{prompt.messageResponse.example}</span>
           <span>{prompt.messageResponse.suffix}</span>
-        </p>
+        </div>
       </SubContainer>
       <div />
     </Container>

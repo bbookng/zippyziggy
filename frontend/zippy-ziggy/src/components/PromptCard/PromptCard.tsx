@@ -87,8 +87,8 @@ export default function PromptCard({ image, title, description, url, prompt }: P
             <Image
               priority
               src={`${image || prompt?.thumbnail || '/images/noCardImg.png'}`}
-              width={100}
-              height={160}
+              width={400}
+              height={200}
               className="image"
               alt="썸네일"
             />

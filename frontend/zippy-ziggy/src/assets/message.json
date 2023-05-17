@@ -46,5 +46,11 @@
   "CreatePromptForkFail": "❌ 프롬프트 포크 생성에 실패하셨습니다",
 
   "ReportPromptSuccess": "✅ 프롬프트를 신고하셨습니다",
-  "ReportPromptFail": "❌ 프롬프트 신고에 실패하셨습니다"
+  "ReportPromptFail": "❌ 프롬프트 신고에 실패하셨습니다",
+
+  "RatingSuccess": "✅ 평가하였습니다",
+  "RatingFail": "❌ 이미 평가하였습니다",
+
+  "UpdateProfileSuccess": "✅ 프로필을 수정하셨습니다",
+  "UpdateProfileFail": "❌ 프로필 수정에 실패하셨습니다"
 }

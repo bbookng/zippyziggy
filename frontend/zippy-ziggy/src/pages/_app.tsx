@@ -7,7 +7,7 @@ import normalize from 'styled-normalize';
 import '@/styles/index.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import AppLayout from '@/layout/AppLayout';
-import store, { persistor, wrapper } from '@/core/store';
+import store, { persistor } from '@/core/store';
 import { PersistGate } from 'redux-persist/integration/react';
 import { Provider } from 'react-redux';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -117,6 +117,7 @@ function App({ Component, pageProps }: AppProps) {
         <link rel="icon" type="image/png" sizes="32x32" href="/images/favicons/favicon-32x32.png" />
         <link rel="icon" type="image/png" sizes="96x96" href="/images/favicons/favicon-96x96.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/images/favicons/favicon-16x16.png" />
+        <link href="/favicon.ico" type="image/x-icon" rel="shortcut icon" />
         <link
           rel="shortcut icon"
           type="image/png"
@@ -135,7 +136,7 @@ function App({ Component, pageProps }: AppProps) {
           sizes="16x16"
           href="/images/favicons/favicon-16x16.png"
         />
-
+        <link rel="icon" href="/favicon.ico" />
         {/* <link rel="manifest" href="/manifest.json" /> */}
         <meta name="msapplication-TileColor" content="#ffffff" />
         <meta name="msapplication-TileImage" content="/ms-icon-144x144.png" />
@@ -144,6 +145,10 @@ function App({ Component, pageProps }: AppProps) {
         <meta property="og:title" content="지피지기- Chat-GPT 프롬프트 공유" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="/images/zippy_metaimage.png" />
+        <meta
+          name="keywords"
+          content="ZippyZiggy, 지피지기, ChatGPT, 지피티, 프롬프트, prompt, AI"
+        />
         <meta
           property="og:description"
           content="지피티를 알면 질문도 잘할 수 있다! GPT 프롬프트 및 대화 공유사이트 ZippyZiggy"
@@ -170,4 +175,4 @@ function App({ Component, pageProps }: AppProps) {
   );
 }
 
-export default wrapper.withRedux(App);
+export default App;

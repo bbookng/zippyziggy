@@ -34,7 +34,7 @@ export const getText = async (e) => {
     const data = await response.json();
     return { result: 'SUCCESS', data };
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     return { result: 'FAIL' };
   }
 };

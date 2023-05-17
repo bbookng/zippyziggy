@@ -9,6 +9,7 @@ import { createPrompt, testPrompt } from '@/core/prompt/promptAPI';
 import { useAppSelector } from '@/hooks/reduxHook';
 import { checkInputFormCategoryToast, checkInputFormToast } from '@/lib/utils';
 import { ContainerTitle, TitleInfoWrapper, TitleWrapper } from '@/styles/prompt/Create.style';
+import imgComp from '@/utils/imgComp';
 import { useRouter } from 'next/router';
 import React, { HTMLAttributes, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
@@ -184,7 +185,8 @@ function PromptCreate() {
       };
       const formData = new FormData();
       if (image) {
-        formData.append('thumbnail', image[0]); //
+        const imageFile = await imgComp({ image: image[0], maxSizeMB: 1, maxWidthOrHeight: 800 });
+        formData.append('thumbnail', imageFile); //
       }
 
       formData.append('data', new Blob([JSON.stringify(data)], { type: 'application/json' }));

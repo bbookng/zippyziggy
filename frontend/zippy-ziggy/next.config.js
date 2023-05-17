@@ -1,5 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  i18n: {
+    locales: ['ko'],
+    defaultLocale: 'ko',
+  },
+
   reactStrictMode: false, // useEffect twice
   images: {
     domains: ['zippyziggytest.s3.ap-northeast-2.amazonaws.com', 'http://k.kakaocdn.net'],

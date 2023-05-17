@@ -50,6 +50,8 @@ export default function CreatePart2({
   const registerImage = async (e) => {
     if (e.target.files.length) {
       const file = e.target.files[0];
+      // setImage(e);
+      // handlePreview(e);
       const result = await checkImageFile(file);
       if (result.result === true) {
         setImage(e);

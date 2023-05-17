@@ -321,3 +321,18 @@ export const postPromptReport = async (reqeustData: PostPromptReportType) => {
     return { result: 'FAIL', data: err };
   }
 };
+
+// 프롬프트 평가
+export const postPromptRatingAPI = async (reqeustData: {
+  promptUuid: string | string[] | number;
+  score: number;
+}) => {
+  try {
+    const { data } = await httpAuth.post(`/prompts/${reqeustData.promptUuid}/rating`, {
+      score: reqeustData.score,
+    });
+    return { result: 'SUCCESS', data };
+  } catch (err) {
+    return { result: 'FAIL', data: err };
+  }
+};

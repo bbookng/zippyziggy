@@ -110,7 +110,7 @@ export default function DetailPrompt() {
     }
   };
 
-  // 프롬프트 삭제
+  // 톡 삭제
   const handleDeletePrompt = async () => {
     if (nickname === data?.data?.writer?.writerNickname) {
       deleteTalksAPI({ talkId, router });
@@ -134,8 +134,8 @@ export default function DetailPrompt() {
       {isOpenPromptDeleteModal && (
         <Modal
           isOpen={isOpenPromptDeleteModal}
-          title="프롬프트 삭제"
-          content="프롬프트를 삭제하시겠습니까?"
+          title="톡 삭제"
+          content="톡을 삭제하시겠습니까?"
           handleModalClose={() => setIsOpenPromptDeleteModal(false)}
           handleModalConfirm={handleDeletePrompt}
         />
@@ -156,7 +156,6 @@ export default function DetailPrompt() {
                   handleOpenDeleteModal={() => setIsOpenPromptDeleteModal(true)}
                 />
               </TopBox>
-              <Tab itemList={itemList} tab={tab} handleIsSelected={handleIsSelectedTab} />
 
               <section id="0">
                 <TalkIntroduction talk={data?.data} />
@@ -164,12 +163,16 @@ export default function DetailPrompt() {
               <section id="1">
                 <CommentList id={talkId} type="talk" size={5} />
               </section>
-              <section id="2">
-                <TalkThisPromptComponent originPrompt={data?.data?.originPrompt} />
-              </section>
-              <section id="3">
-                <TalkComponent promptUuid={data?.data?.originPrompt?.promptUuid} size={4} />
-              </section>
+              {data?.data?.originPrompt ? (
+                <section id="2">
+                  <TalkThisPromptComponent originPrompt={data?.data?.originPrompt} />
+                </section>
+              ) : null}
+              {data?.data?.originPrompt ? (
+                <section id="3">
+                  <TalkComponent promptUuid={data?.data?.originPrompt?.promptUuid} size={4} />
+                </section>
+              ) : null}
             </LeftContainer>
             <RightContainer>
               <SideBar

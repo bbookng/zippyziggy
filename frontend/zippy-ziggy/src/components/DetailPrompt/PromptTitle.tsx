@@ -122,8 +122,12 @@ export default function PromptTitle({
         <span>
           {prompt?.updDt ? getDateTime(new Date(prompt.updDt * 1000)) : getDateTime(new Date())}
         </span>
-        <span>·</span>
-        <span>조회수 {prompt?.hit ? prompt?.hit : '0'}</span>
+        {type === 'prompt' ? (
+          <>
+            <span>·</span>
+            <span>조회수 {prompt?.hit ? prompt?.hit : '0'}</span>
+          </>
+        ) : null}
       </div>
       <UserBox>
         <Image
