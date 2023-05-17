@@ -39,3 +39,10 @@ management:
         include: health, busrefresh, prometheus, beans, info, metrics
 
 
+logging:
+  level:
+    com.example: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+  config:
+    classpath: logback.xml
