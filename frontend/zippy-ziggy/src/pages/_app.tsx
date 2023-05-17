@@ -146,6 +146,10 @@ function App({ Component, pageProps }: AppProps) {
         <meta property="og:type" content="website" />
         <meta property="og:image" content="/images/zippy_metaimage.png" />
         <meta
+          name="keywords"
+          content="ZippyZiggy, 지피지기, ChatGPT, 지피티, 프롬프트, prompt, AI"
+        />
+        <meta
           property="og:description"
           content="지피티를 알면 질문도 잘할 수 있다! GPT 프롬프트 및 대화 공유사이트 ZippyZiggy"
         />
