@@ -56,7 +56,12 @@ const PromptCard = ({ prompt }: PromptCardProps) => {
     ) as HTMLElement;
     $selectedPromptTitle.textContent = `📟 ${title}`;
     $selectedPromptTitle.dataset.promptUuid = promptUuid;
-    if (document.getElementById('ZP_cancelPromptButton')) return;
+
+    window.postMessage(message, CHAT_GPT_URL);
+    if (document.getElementById('ZP_cancelPromptButton')) {
+      document.getElementById('ZP_cancelPromptButton').style.display = 'block';
+      return;
+    }
     const $cancelPromptButton = document.createElement('button');
     $cancelPromptButton.id = 'ZP_cancelPromptButton';
     $cancelPromptButton.textContent = 'X';
@@ -70,8 +75,6 @@ const PromptCard = ({ prompt }: PromptCardProps) => {
       $cancelPromptButton.style.display = 'none';
     });
     $selectedPromptTitle.parentElement.appendChild($cancelPromptButton);
-
-    window.postMessage(message, CHAT_GPT_URL);
   };
 
   return (
@@ -87,31 +90,31 @@ const PromptCard = ({ prompt }: PromptCardProps) => {
             style={{ position: 'absolute', top: 0, right: 0 }}
           >
             {/* <button */}
-            {/*  type="button" */}
-            {/*  onClick={(e) => { */}
-            {/*    e.stopPropagation(); */}
-            {/*    console.log(1); */}
-            {/*  }} */}
+            {/*   type="button" */}
+            {/*   onClick={(e) => { */}
+            {/*     e.stopPropagation(); */}
+            {/*     console.log(1); */}
+            {/*   }} */}
             {/* > */}
-            {/*  1 */}
+            {/*   1 */}
             {/* </button> */}
             {/* <button */}
-            {/*  type="button" */}
-            {/*  onClick={(e) => { */}
-            {/*    e.stopPropagation(); */}
-            {/*    console.log(2); */}
-            {/*  }} */}
+            {/*   type="button" */}
+            {/*   onClick={(e) => { */}
+            {/*     e.stopPropagation(); */}
+            {/*     console.log(2); */}
+            {/*   }} */}
             {/* > */}
-            {/*  2 */}
+            {/*   2 */}
             {/* </button> */}
             {/* <button */}
-            {/*  type="button" */}
-            {/*  onClick={(e) => { */}
-            {/*    e.stopPropagation(); */}
-            {/*    console.log(3); */}
-            {/*  }} */}
+            {/*   type="button" */}
+            {/*   onClick={(e) => { */}
+            {/*     e.stopPropagation(); */}
+            {/*     console.log(3); */}
+            {/*   }} */}
             {/* > */}
-            {/*  3 */}
+            {/*   3 */}
             {/* </button> */}
           </div>
           <div className="ZP_prompt-container__content-wrapper">

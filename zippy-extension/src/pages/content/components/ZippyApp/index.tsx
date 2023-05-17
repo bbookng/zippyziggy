@@ -108,30 +108,31 @@ if (currentUrl.startsWith(ZIPPY_SITE_URL)) {
         ) {
           const $promptPlayDesktop = document.querySelector('#promptPlayDesktop') as HTMLElement;
           const $promptPlayMobile = document.querySelector('#promptPlayMobile') as HTMLElement;
-          if ($promptPlayDesktop) {
+          if ($promptPlayDesktop || $promptPlayMobile) {
+            const { uuid } = $promptPlayDesktop.dataset;
+            const title = document.querySelector('.title')?.textContent;
+            const $ComponentStyleSubContainer = document.querySelectorAll(
+              '[class^=ComponentStyle__SubContainer]'
+            );
+            const $colorBox = $ComponentStyleSubContainer[2].querySelector('.colorBox');
+            const prefix = $colorBox.querySelector('span:first-of-type')?.textContent ?? '';
+            const example = $colorBox.querySelector('span.example')?.textContent ?? '';
+            const suffix = $colorBox.querySelector('span:last-of-type')?.textContent ?? '';
+
             $promptPlayDesktop.addEventListener('click', () => {
               chrome.runtime.sendMessage({
                 type: MK_DATA_FROM_PROMPT_CARD_PLAY,
                 data: { title, prefix, example, suffix, uuid },
               });
             });
-          }
 
-          $promptPlayMobile.addEventListener('click', () => {
-            chrome.runtime.sendMessage({
-              type: MK_DATA_FROM_PROMPT_CARD_PLAY,
-              data: { title, prefix, example, suffix, uuid },
+            $promptPlayMobile.addEventListener('click', () => {
+              chrome.runtime.sendMessage({
+                type: MK_DATA_FROM_PROMPT_CARD_PLAY,
+                data: { title, prefix, example, suffix, uuid },
+              });
             });
-          });
-          const { uuid } = $promptPlayDesktop.dataset ?? {};
-          const title = document.querySelector('.title')?.textContent;
-          const $ComponentStyleSubContainer = document.querySelectorAll(
-            '[class^=ComponentStyle__SubContainer]'
-          );
-          const $colorBox = $ComponentStyleSubContainer[2].querySelector('.colorBox');
-          const prefix = $colorBox.querySelector('span:first-of-type')?.textContent ?? '';
-          const example = $colorBox.querySelector('span.example')?.textContent ?? '';
-          const suffix = $colorBox.querySelector('span:last-of-type')?.textContent ?? '';
+          }
         }
         if ($targetElement.className?.startsWith('CardStyle__Conatiner')) {
           const promptUuid = $targetElement.dataset.uuid;
