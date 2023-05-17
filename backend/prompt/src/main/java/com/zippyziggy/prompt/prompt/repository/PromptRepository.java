@@ -15,7 +15,7 @@ import com.zippyziggy.prompt.prompt.model.Prompt;
 
 public interface PromptRepository extends JpaRepository<Prompt, Long> {
 
-    List<Prompt> findByTitleContainsAndDescriptionContainsAndPrefixContainsAndSuffixContainsAndExampleContains(
+    List<Prompt> findByTitleContainsOrDescriptionContainsOrPrefixContainsOrSuffixContainsOrExampleContains(
         String title, String description, String prefix, String suffix, String example,
         Pageable pageable);
 
