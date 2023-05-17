@@ -1,14 +1,14 @@
 package com.zippyziggy.prompt.prompt.dto.response;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
+import lombok.*;
 
 import java.util.UUID;
 
 @Data
 @Getter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class RatingDto {
     private Long prompId;
     private Integer hit;
