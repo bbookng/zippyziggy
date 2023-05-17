@@ -1,5 +1,6 @@
 package com.zippyziggy.prompt.prompt.repository;
 
+import com.zippyziggy.prompt.prompt.model.Category;
 import com.zippyziggy.prompt.prompt.model.StatusCode;
 import java.util.List;
 import java.util.Optional;
@@ -13,7 +14,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import com.zippyziggy.prompt.prompt.model.Prompt;
 
-public interface PromptRepository extends JpaRepository<Prompt, Long> {
+public interface PromptRepository extends JpaRepository<Prompt, Long>, PromptCustomRepository {
 
     List<Prompt> findByTitleContainsAndDescriptionContainsAndPrefixContainsAndSuffixContainsAndExampleContains(
         String title, String description, String prefix, String suffix, String example,
@@ -38,4 +39,8 @@ public interface PromptRepository extends JpaRepository<Prompt, Long> {
     List<Prompt> findByStatusCode(StatusCode statusCode);
 
     long count();
+
+    long countAllByMemberUuidAndCategory(UUID memberUuid, Category category);
+
+    List<Prompt> findAllByCategoryIn(List<String> categories );
 }

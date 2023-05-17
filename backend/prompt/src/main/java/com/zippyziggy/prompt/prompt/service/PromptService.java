@@ -19,13 +19,7 @@ import com.zippyziggy.prompt.prompt.exception.ForbiddenMemberException;
 import com.zippyziggy.prompt.prompt.exception.PromptNotFoundException;
 import com.zippyziggy.prompt.prompt.exception.RatingAlreadyExistException;
 import com.zippyziggy.prompt.prompt.exception.ReportAlreadyExistException;
-import com.zippyziggy.prompt.prompt.model.Prompt;
-import com.zippyziggy.prompt.prompt.model.PromptBookmark;
-import com.zippyziggy.prompt.prompt.model.PromptClick;
-import com.zippyziggy.prompt.prompt.model.PromptLike;
-import com.zippyziggy.prompt.prompt.model.PromptReport;
-import com.zippyziggy.prompt.prompt.model.Rating;
-import com.zippyziggy.prompt.prompt.model.StatusCode;
+import com.zippyziggy.prompt.prompt.model.*;
 import com.zippyziggy.prompt.prompt.repository.PromptBookmarkRepository;
 import com.zippyziggy.prompt.prompt.repository.PromptClickRepository;
 import com.zippyziggy.prompt.prompt.repository.PromptCommentRepository;
@@ -41,11 +35,8 @@ import com.zippyziggy.prompt.talk.repository.TalkRepository;
 import com.zippyziggy.prompt.talk.service.TalkService;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -728,8 +719,46 @@ public class PromptService{
 
 		// 프롬프트 개수 200개 이상일 경우 ES 추천 알고리즘 적용
 		if (promptRepository.count() < 200) {
-			// 최근 조회한  50개의 기록 중에 가장 조회가 많은 장르 2개를 가져온다
+			// 최근 조회한  50개의 기록 중에 가장 조회가 많은 카테고리 2개를 가져온다
 			// 조회수, 좋아요 수, 평점의 가중치를 통해서 추천 진행
+//			List<Prompt> prompts = promptRepository.findClickPromptByMemberUuid(UUID.fromString(crntMemberUuid));
+			HashMap<String, Long> map = new HashMap<>();
+			long businessCnt = promptRepository.countAllByMemberUuidAndCategory(UUID.fromString(crntMemberUuid), Category.BUSINESS);
+			long etcCnt = promptRepository.countAllByMemberUuidAndCategory(UUID.fromString(crntMemberUuid), Category.ETC);
+			long funCnt = promptRepository.countAllByMemberUuidAndCategory(UUID.fromString(crntMemberUuid), Category.FUN);
+			long studyCnt = promptRepository.countAllByMemberUuidAndCategory(UUID.fromString(crntMemberUuid), Category.STUDY);
+			long programmingCnt = promptRepository.countAllByMemberUuidAndCategory(UUID.fromString(crntMemberUuid), Category.PROGRAMMING);
+
+			map.put(Category.BUSINESS.getDescription().toUpperCase(), businessCnt);
+			map.put(Category.ETC.getDescription().toUpperCase(), etcCnt);
+			map.put(Category.FUN.getDescription().toUpperCase(), funCnt);
+			map.put(Category.STUDY.getDescription().toUpperCase(), studyCnt);
+			map.put(Category.PROGRAMMING.getDescription().toUpperCase(), programmingCnt);
+
+			// 개수가 가장 많은 카테고리 2개 추출
+			Map<String, Long> sortedMap = map.entrySet()
+					.stream()
+					.sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+					.limit(2)
+					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+			sortedMap.forEach((category, cnt) -> log.info("category = " + category + " cnt = " + cnt));
+
+			// 가장 많은 개수를 가진 2개의 카테고리 추출
+			List<String> topCategories = sortedMap.keySet()
+					.stream()
+					.limit(2)
+					.collect(Collectors.toList());
+
+			// 각 카테고리에 해당하는 prompt 추출
+			List<Prompt> topPrompts = promptRepository.findAllByCategoryIn(topCategories);
+
+			// 추출된 prompt 출력 또는 처리
+			for (Prompt prompt : topPrompts) {
+				log.info("Prompt: " + prompt.getTitle());
+				// 추가적인 처리
+
+			}
 			return null;
 
 		} else {
