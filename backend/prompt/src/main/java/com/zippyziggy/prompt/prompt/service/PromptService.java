@@ -757,7 +757,7 @@ public class PromptService{
 			log.info("top1Prompts = " + top1Prompts);
 			log.info("top2Prompts = " + top2Prompts);
 
-			HashMap<Long, Double> score_map = new HashMap<>();
+			HashMap<Long, Double> score_top1_map = new HashMap<>();
 
 			for (RatingDto top1Prompt : top1Prompts) {
 				// 조회수와 좋아요 수 그리고 평점
@@ -769,22 +769,64 @@ public class PromptService{
 				double recommend_score = 0.3 * hitCount + 0.3 * likeCount + 0.4 * score;
 				log.info("hitCnt = " + hitCount + " likeCnt = " + likeCount + " score = " + score);
 				log.info("recommend_score" + recommend_score);
-				score_map.put(top1Prompt.getPrompId(), recommend_score);
+				score_top1_map.put(top1Prompt.getPrompId(), recommend_score);
 			}
 
-			// score_map을 내림차순으로 정렬
-			List<Map.Entry<Long, Double>> sortedScores = score_map.entrySet()
+			// score_top1_map을 내림차순으로 정렬
+			List<Map.Entry<Long, Double>> sortedTop1Scores = score_top1_map.entrySet()
 					.stream()
 					.sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
 					.limit(5)
 					.collect(Collectors.toList());
 
 			// 상위 5개의 Prompt 가져오기
-			List<Long> promptIds = sortedScores.stream()
+			List<Long> promptTop1Ids = sortedTop1Scores.stream()
 					.map(Map.Entry::getKey)
 					.collect(Collectors.toList());
 
+			List<Prompt> recommendedTop1Prompts = promptRepository.findAllByIdIn(promptTop1Ids);
 
+			log.info("recommendedPrompts = " + recommendedTop1Prompts);
+
+			///////////2번째 카테고리///////
+
+			HashMap<Long, Double> score_top2_map = new HashMap<>();
+
+			for (RatingDto top2Prompt : top2Prompts) {
+				// 조회수와 좋아요 수 그리고 평점
+				long hitCount = top2Prompt.getHit();
+				long likeCount = top2Prompt.getLikeCnt();
+				int score = top2Prompt.getScore();
+
+				// 간단한 추천 점수 계산 (예시: 조회수의 가중치 0.7, 좋아요 수의 가중치 0.3)
+				double recommend_score = 0.3 * hitCount + 0.3 * likeCount + 0.4 * score;
+				log.info("hitCnt = " + hitCount + " likeCnt = " + likeCount + " score = " + score);
+				log.info("recommend_score" + recommend_score);
+				score_top2_map.put(top2Prompt.getPrompId(), recommend_score);
+			}
+
+			// score_top2_map을 내림차순으로 정렬
+			List<Map.Entry<Long, Double>> sortedTop2Scores = score_top2_map.entrySet()
+					.stream()
+					.sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+					.limit(5)
+					.collect(Collectors.toList());
+
+			// 상위 5개의 Prompt 가져오기
+			List<Long> promptTop2Ids = sortedTop2Scores.stream()
+					.map(Map.Entry::getKey)
+					.collect(Collectors.toList());
+
+			List<Prompt> recommendedTop2Prompts = promptRepository.findAllByIdIn(promptTop2Ids);
+
+			log.info("recommendedTop2Prompts = " + recommendedTop2Prompts);
+
+			List<Prompt> combinedPrompts = new ArrayList<>();
+			combinedPrompts.addAll(recommendedTop1Prompts);
+			combinedPrompts.addAll(recommendedTop2Prompts);
+
+			Collections.shuffle(combinedPrompts);
+			log.info("combinedPrompts = " + combinedPrompts);
 
 			return null;
 
