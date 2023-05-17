@@ -1,5 +1,6 @@
 package com.zippyziggy.prompt.prompt.repository;
 
+import com.zippyziggy.prompt.prompt.model.Category;
 import com.zippyziggy.prompt.prompt.model.StatusCode;
 import java.util.List;
 import java.util.Optional;
@@ -36,4 +37,10 @@ public interface PromptRepository extends JpaRepository<Prompt, Long> {
     Long countAllByOriginPromptUuidAndStatusCode(UUID promptUuid, StatusCode statusCode);
 
     List<Prompt> findByStatusCode(StatusCode statusCode);
+
+    long count();
+
+    long countAllByMemberUuidAndCategory(UUID memberUuid, Category category);
+
+    List<Prompt> findAllByCategoryIn(List<String> categories );
 }

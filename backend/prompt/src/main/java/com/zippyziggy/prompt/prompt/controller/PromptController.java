@@ -263,6 +263,19 @@ public class PromptController {
 		return ResponseEntity.ok(promptService.bookmarkPromptByMember(crntMemberUuid, pageable));
 	}
 
+	@Operation(hidden = true)
+	@GetMapping("/members/bookmark/{crntMemberUuid}/extension")
+	public ResponseEntity<?> bookmarkPromptByMemberExtension(
+		@PathVariable String crntMemberUuid,
+		@RequestParam Integer page,
+		@RequestParam Integer size,
+		@RequestParam String sort
+	) {
+		final Sort sortBy = Sort.by(Sort.Direction.DESC, sort);
+		final Pageable pageable = PageRequest.of(page, size, sortBy);
+		return ResponseEntity.ok(promptService.bookmarkPromptByMemberAndExtension(crntMemberUuid, pageable));
+	}
+
 	@Operation(summary = "프롬프트 평가", description = "헤더에는 accessToken을 담고, promptUuid를 pathVariable로 전달 필요")
 	@PostMapping("/{promptUuid}/rating")
 	public ResponseEntity<?> ratingPrompt(@PathVariable UUID promptUuid,
@@ -383,4 +396,6 @@ public class PromptController {
 	) {
 		return ResponseEntity.ok(promptService.testSearch(keyword, pageable));
 	}
+
+
 }
