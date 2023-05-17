@@ -1,30 +1,135 @@
 ## 기술 스택 & 버전 정보
 
 1. 이슈 관리 : ![Jira](https://img.shields.io/badge/jira-%230A0FFF.svg?style=for-the-badge&logo=jira&logoColor=white)
+
 2. 형상 관리: ![GitLab](https://img.shields.io/badge/gitlab-%23181717.svg?style=for-the-badge&logo=gitlab&logoColor=white)
+
 3. 커뮤니케이션: ![Notion](https://img.shields.io/badge/Notion-%23000000.svg?style=for-the-badge&logo=notion&logoColor=white) ![Discord](https://img.shields.io/badge/discord-5865F2.svg?style=for-the-badge&logo=discord&logoColor=white)
+
 4. 개발 환경
 
-   - IDE : ![IntelliJ](https://img.shields.io/badge/IntelliJIDEA-000000.svg?style=for-the-badge&logo=intellij-idea&logoColor=white)2022.3.1	![Visual_Studio_Code](https://img.shields.io/badge/Visual%20Studio%20Code-0078d7.svg?style=for-the-badge&logo=visual-studio-code&logoColor=white)1.75.1
-   - DB : ![MySQL](https://img.shields.io/badge/MySQL-003545?style=for-the-badge&logo=mysql&logoColor=white)![AmazonRDS](https://img.shields.io/badge/AmazonRDS-527FFF?style=for-the-badge&logo=AmazonRDS&logoColor=white)  8.0.32 <img src="https://img.shields.io/badge/redis-DC382D?style=for-the-badge&logo=redis&logoColor=white"/>
+   - IDE : ![IntelliJ](https://img.shields.io/badge/IntelliJIDEA-000000.svg?style=for-the-badge&logo=intellij-idea&logoColor=white)2023.03	![Visual_Studio_Code](https://img.shields.io/badge/Visual%20Studio%20Code-0078d7.svg?style=for-the-badge&logo=visual-studio-code&logoColor=white)1.75.1
+   - DB : ![MySQL](https://img.shields.io/badge/MySQL-003545?style=for-the-badge&logo=mysql&logoColor=white)![AmazonRDS](https://img.shields.io/badge/AmazonRDS-527FFF?style=for-the-badge&logo=AmazonRDS&logoColor=white)  8.0.32 <img src="https://img.shields.io/badge/redis-DC382D?style=for-the-badge&logo=redis&logoColor=white"/>5.0.6
    - UI & UX : ![Figma](https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white)
-   - Server : ![AWS](https://img.shields.io/badge/AWS-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white) ![S3](https://img.shields.io/badge/S3-569A31?style=for-the-badge&logo=amazons3&logoColor=white) ![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=white) ![ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)![NGINX](https://img.shields.io/badge/nginx-009639?style=for-the-badge&logo=nginx&logoColor=white) 
+   - Server : ![AWS](https://img.shields.io/badge/AWS-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white) ![S3](https://img.shields.io/badge/S3-569A31?style=for-the-badge&logo=amazons3&logoColor=white) ![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=white) ![ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)20.04, 22.04![NGINX](https://img.shields.io/badge/nginx-009639?style=for-the-badge&logo=nginx&logoColor=white)1.18.0
 
-1. 상세
+5. 상세
 
-   - Backend : [![JAVA](https://camo.githubusercontent.com/3a1c7dafcdfce483e68f5fb95d057e9421c8109fd105e603542b1ff00fd7ae91/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f4a4156412d4646303030303f7374796c653d666f722d7468652d6261646765266c6f676f436f6c6f723d7768697465)](https://camo.githubusercontent.com/3a1c7dafcdfce483e68f5fb95d057e9421c8109fd105e603542b1ff00fd7ae91/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f4a4156412d4646303030303f7374796c653d666f722d7468652d6261646765266c6f676f436f6c6f723d7768697465) 11.0.17 [![Spring](https://camo.githubusercontent.com/57da5a02a135c27818a618285a57f7e54df63419d1f7ad598905a0bd27e780c7/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f537072696e67626f6f742d3644423333463f7374796c653d666f722d7468652d6261646765266c6f676f3d737072696e67626f6f74266c6f676f436f6c6f723d7768697465)](https://camo.githubusercontent.com/57da5a02a135c27818a618285a57f7e54df63419d1f7ad598905a0bd27e780c7/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f537072696e67626f6f742d3644423333463f7374796c653d666f722d7468652d6261646765266c6f676f3d737072696e67626f6f74266c6f676f436f6c6f723d7768697465)2.7.7 [![Gradle](https://camo.githubusercontent.com/e850f9c862ce515586c3859cab52395f8d096f0de68825fdaaf6b9bea572311e/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f477261646c652d3032333033413f7374796c653d666f722d7468652d6261646765266c6f676f3d677261646c65266c6f676f436f6c6f723d7768697465)](https://camo.githubusercontent.com/e850f9c862ce515586c3859cab52395f8d096f0de68825fdaaf6b9bea572311e/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f477261646c652d3032333033413f7374796c653d666f722d7468652d6261646765266c6f676f3d677261646c65266c6f676f436f6c6f723d7768697465)6.8.3 [![JWT](https://camo.githubusercontent.com/5af78a02d0f7a4b8a759f9580ce718287a0626f80a55c38ad0bac83e0b31f94d/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f4a57542d3030303030303f7374796c653d666f722d7468652d6261646765266c6f676f3d6a736f6e776562746f6b656e73266c6f676f436f6c6f723d7768697465)](https://camo.githubusercontent.com/5af78a02d0f7a4b8a759f9580ce718287a0626f80a55c38ad0bac83e0b31f94d/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f4a57542d3030303030303f7374796c653d666f722d7468652d6261646765266c6f676f3d6a736f6e776562746f6b656e73266c6f676f436f6c6f723d7768697465)0.11.2
+   - Backend : [![JAVA](https://camo.githubusercontent.com/3a1c7dafcdfce483e68f5fb95d057e9421c8109fd105e603542b1ff00fd7ae91/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f4a4156412d4646303030303f7374796c653d666f722d7468652d6261646765266c6f676f436f6c6f723d7768697465)](https://camo.githubusercontent.com/3a1c7dafcdfce483e68f5fb95d057e9421c8109fd105e603542b1ff00fd7ae91/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f4a4156412d4646303030303f7374796c653d666f722d7468652d6261646765266c6f676f436f6c6f723d7768697465) 11.0.17 [![Spring](https://camo.githubusercontent.com/57da5a02a135c27818a618285a57f7e54df63419d1f7ad598905a0bd27e780c7/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f537072696e67626f6f742d3644423333463f7374796c653d666f722d7468652d6261646765266c6f676f3d737072696e67626f6f74266c6f676f436f6c6f723d7768697465)](https://camo.githubusercontent.com/57da5a02a135c27818a618285a57f7e54df63419d1f7ad598905a0bd27e780c7/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f537072696e67626f6f742d3644423333463f7374796c653d666f722d7468652d6261646765266c6f676f3d737072696e67626f6f74266c6f676f436f6c6f723d7768697465)2.7.10 [![Gradle](https://camo.githubusercontent.com/e850f9c862ce515586c3859cab52395f8d096f0de68825fdaaf6b9bea572311e/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f477261646c652d3032333033413f7374796c653d666f722d7468652d6261646765266c6f676f3d677261646c65266c6f676f436f6c6f723d7768697465)](https://camo.githubusercontent.com/e850f9c862ce515586c3859cab52395f8d096f0de68825fdaaf6b9bea572311e/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f477261646c652d3032333033413f7374796c653d666f722d7468652d6261646765266c6f676f3d677261646c65266c6f676f436f6c6f723d7768697465)7.6.1 [![JWT](https://camo.githubusercontent.com/5af78a02d0f7a4b8a759f9580ce718287a0626f80a55c38ad0bac83e0b31f94d/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f4a57542d3030303030303f7374796c653d666f722d7468652d6261646765266c6f676f3d6a736f6e776562746f6b656e73266c6f676f436f6c6f723d7768697465)](https://camo.githubusercontent.com/5af78a02d0f7a4b8a759f9580ce718287a0626f80a55c38ad0bac83e0b31f94d/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f4a57542d3030303030303f7374796c653d666f722d7468652d6261646765266c6f676f3d6a736f6e776562746f6b656e73266c6f676f436f6c6f723d7768697465)0.11.2, ![Kafka](https://camo.githubusercontent.com/1b371597d577a5f430f0dbc8a356d8951f0b7a6d7dded5eb99e2b4cf1593397f/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f6b61666b612d3233314632303f7374796c653d666f722d7468652d6261646765266c6f676f3d6170616368656b61666b61266c6f676f436f6c6f723d7768697465)7.3.3 ![ElasticSearch](https://img.shields.io/badge/elasticsearch-005571.svg?style=for-the-badge&logo=elasticsearch&logoColor=white)8.7.0 ![logstash](https://img.shields.io/badge/logstash-005571.svg?style=for-the-badge&logo=logstash&logoColor=white)8.7.0 ![kibana](https://img.shields.io/badge/kibana-005571.svg?style=for-the-badge&logo=kibana&logoColor=white)8.7.0 ![springcloud](https://img.shields.io/badge/springcloud-6DB33F.svg?style=for-the-badge&logo=springcloud&logoColor=white)2021.06 ![rabbitmq](https://img.shields.io/badge/rabbitmq-FF6600.svg?style=for-the-badge&logo=rabbitmq&logoColor=white)3.11.13 ![grafana](https://img.shields.io/badge/grafana-F46800.svg?style=for-the-badge&logo=grafana&logoColor=white)9.5.2 ![prometheus](https://img.shields.io/badge/prometheus-E6522C.svg?style=for-the-badge&logo=prometheus&logoColor=white)
 
    - Frontend : [![HTML5](https://camo.githubusercontent.com/d63d473e728e20a286d22bb2226a7bf45a2b9ac6c72c59c0e61e9730bfe4168c/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f48544d4c352d4533344632363f7374796c653d666f722d7468652d6261646765266c6f676f3d68746d6c35266c6f676f436f6c6f723d7768697465)](https://camo.githubusercontent.com/d63d473e728e20a286d22bb2226a7bf45a2b9ac6c72c59c0e61e9730bfe4168c/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f48544d4c352d4533344632363f7374796c653d666f722d7468652d6261646765266c6f676f3d68746d6c35266c6f676f436f6c6f723d7768697465)[![CSS3](https://camo.githubusercontent.com/8cb8f844cc2f9092fba986892699e6cc673dc91f3b0b8feff83fd8a9b773ab49/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f637373332d3135373242363f7374796c653d666f722d7468652d6261646765266c6f676f3d63737333266c6f676f436f6c6f723d7768697465)](https://camo.githubusercontent.com/8cb8f844cc2f9092fba986892699e6cc673dc91f3b0b8feff83fd8a9b773ab49/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f637373332d3135373242363f7374796c653d666f722d7468652d6261646765266c6f676f3d63737333266c6f676f436f6c6f723d7768697465)[![JAVASCRIPT](https://camo.githubusercontent.com/5e432c8391fec2444961457c8b7cb92ed9858f786ca34525bcb7e02919e9e602/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f6a6176617363726970742d4637444631453f7374796c653d666f722d7468652d6261646765266c6f676f3d726561637474266c6f676f436f6c6f723d7768697465)](https://camo.githubusercontent.com/5e432c8391fec2444961457c8b7cb92ed9858f786ca34525bcb7e02919e9e602/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f6a6176617363726970742d4637444631453f7374796c653d666f722d7468652d6261646765266c6f676f3d726561637474266c6f676f436f6c6f723d7768697465)
 
-     [![React](https://camo.githubusercontent.com/20779f9d605be40d4f84bbc93a5fee22e86068e785a0c0ed8d90d3d15041a3fc/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f52656163742d3631444146423f7374796c653d666f722d7468652d6261646765266c6f676f3d5265616374266c6f676f436f6c6f723d626c61636b)](https://camo.githubusercontent.com/20779f9d605be40d4f84bbc93a5fee22e86068e785a0c0ed8d90d3d15041a3fc/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f52656163742d3631444146423f7374796c653d666f722d7468652d6261646765266c6f676f3d5265616374266c6f676f436f6c6f723d626c61636b) 18.2.0 [![TypeScript](https://camo.githubusercontent.com/6a138baf27a486e6fb68d759541144cd7ddfbff9839b41fb3f64b16458575a7f/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f547970655363726970742d3331373843363f7374796c653d666f722d7468652d6261646765266c6f676f3d74797065266c6f676f436f6c6f723d7768697465)](https://camo.githubusercontent.com/6a138baf27a486e6fb68d759541144cd7ddfbff9839b41fb3f64b16458575a7f/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f547970655363726970742d3331373843363f7374796c653d666f722d7468652d6261646765266c6f676f3d74797065266c6f676f436f6c6f723d7768697465) 18.0.27
+     [![React](https://camo.githubusercontent.com/20779f9d605be40d4f84bbc93a5fee22e86068e785a0c0ed8d90d3d15041a3fc/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f52656163742d3631444146423f7374796c653d666f722d7468652d6261646765266c6f676f3d5265616374266c6f676f436f6c6f723d626c61636b)](https://camo.githubusercontent.com/20779f9d605be40d4f84bbc93a5fee22e86068e785a0c0ed8d90d3d15041a3fc/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f52656163742d3631444146423f7374796c653d666f722d7468652d6261646765266c6f676f3d5265616374266c6f676f436f6c6f723d626c61636b) 18.2.0 [![TypeScript](https://camo.githubusercontent.com/6a138baf27a486e6fb68d759541144cd7ddfbff9839b41fb3f64b16458575a7f/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f547970655363726970742d3331373843363f7374796c653d666f722d7468652d6261646765266c6f676f3d74797065266c6f676f436f6c6f723d7768697465)](https://camo.githubusercontent.com/6a138baf27a486e6fb68d759541144cd7ddfbff9839b41fb3f64b16458575a7f/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f547970655363726970742d3331373843363f7374796c653d666f722d7468652d6261646765266c6f676f3d74797065266c6f676f436f6c6f723d7768697465) 4.8.3 ![Next.js](https://img.shields.io/badge/next.js-000000.svg?style=for-the-badge&logo=next.js&logoColor=white)13.3.0 ![Redux](https://img.shields.io/badge/redux-764ABC.svg?style=for-the-badge&logo=redux&logoColor=white)1.9.3 ![reactquery](https://img.shields.io/badge/reactquery-FF4154.svg?style=for-the-badge&logo=reactquery&logoColor=white)4.29.3 ![styled-components](https://img.shields.io/badge/styledcomponents-DB7093.svg?style=for-the-badge&logo=styledcomponents&logoColor=white)5.1.26 ![axios](https://img.shields.io/badge/axios-5A29E4.svg?style=for-the-badge&logo=axios&logoColor=white)1.3.6 
 
-   - CI/CD : [![docker](https://camo.githubusercontent.com/b184cf7adbab9f5464e80c0f5dd32c85393f6248499a57d743e619f4214391c4/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f646f636b65722d3234393645443f7374796c653d666f722d7468652d6261646765266c6f676f3d646f636b6572266c6f676f436f6c6f723d7768697465)](https://camo.githubusercontent.com/b184cf7adbab9f5464e80c0f5dd32c85393f6248499a57d743e619f4214391c4/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f646f636b65722d3234393645443f7374796c653d666f722d7468652d6261646765266c6f676f3d646f636b6572266c6f676f436f6c6f723d7768697465)20.10.23 [![Vue.js](https://camo.githubusercontent.com/afb2118755f7a25ec1e70bdd9f2d4be4f4b166d0cbbc0fc529f0ec1c450aa60d/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f6a656e6b696e732d4432343933393f7374796c653d666f722d7468652d6261646765266c6f676f3d6a656e6b696e73266c6f676f436f6c6f723d7768697465)](https://camo.githubusercontent.com/afb2118755f7a25ec1e70bdd9f2d4be4f4b166d0cbbc0fc529f0ec1c450aa60d/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f6a656e6b696e732d4432343933393f7374796c653d666f722d7468652d6261646765266c6f676f3d6a656e6b696e73266c6f676f436f6c6f723d7768697465) 2.375.2
+   - Extension :![rollup](https://img.shields.io/badge/rollup.js-EC4A3F.svg?style=for-the-badge&logo=rollup.js&logoColor=white)2.79.1 ![vite](https://img.shields.io/badge/vite-646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)3.1.3 ![chokidar](https://img.shields.io/badge/chokidar-000000.svg?style=for-the-badge&logo=chokidar&logoColor=white)3.5.3 ![WS](https://img.shields.io/badge/ws-000000.svg?style=for-the-badge&logo=s&logoColor=white)8.9.0
+   - App : ![Flutter](https://img.shields.io/badge/flutter-02569B.svg?style=for-the-badge&logo=flutter&logoColor=white)3.10
+
+   - CI/CD : [![docker](https://camo.githubusercontent.com/b184cf7adbab9f5464e80c0f5dd32c85393f6248499a57d743e619f4214391c4/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f646f636b65722d3234393645443f7374796c653d666f722d7468652d6261646765266c6f676f3d646f636b6572266c6f676f436f6c6f723d7768697465)](https://camo.githubusercontent.com/b184cf7adbab9f5464e80c0f5dd32c85393f6248499a57d743e619f4214391c4/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f646f636b65722d3234393645443f7374796c653d666f722d7468652d6261646765266c6f676f3d646f636b6572266c6f676f436f6c6f723d7768697465)23.0.5 [![Vue.js](https://camo.githubusercontent.com/afb2118755f7a25ec1e70bdd9f2d4be4f4b166d0cbbc0fc529f0ec1c450aa60d/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f6a656e6b696e732d4432343933393f7374796c653d666f722d7468652d6261646765266c6f676f3d6a656e6b696e73266c6f676f436f6c6f723d7768697465)](https://camo.githubusercontent.com/afb2118755f7a25ec1e70bdd9f2d4be4f4b166d0cbbc0fc529f0ec1c450aa60d/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f6a656e6b696e732d4432343933393f7374796c653d666f722d7468652d6261646765266c6f676f3d6a656e6b696e73266c6f676f436f6c6f723d7768697465) 2.387.2
 
 
 
 ## 배포 설정
 
-1. nginx
+1. 서버 접속
+1. 기본 설치
+
+```bash
+$ sudo apt install upgrade
+$ sudo apt install update
+
+# Java 설치
+$ sudo apt install openjdk-11-jdk
+
+# JAVA_HOME 설정
+# ~/.bashrc에 export 추가
+$ sudo vi ~/.bashrc
+export JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::")
+
+# 적용
+$ source ~/.bashrc
+
+# 방화벽 설정
+$ sudo ufw allow 22
+# 22 port를 열어놓지 않으면 ssh로 접근 불가능하므로 꼭 열어야 한다.
+$ sudo ufw enable
+# 상태 확인
+$ sudo ufw status
+```
+
+3. docker 설치 
+
+```bash
+$ sudo apt update
+
+# http 패키지 설치
+    $ sudo apt-get install -y ca-certificates \ 
+    curl \
+    software-properties-common \
+    apt-transport-https \
+    gnupg \
+    lsb-release
+    
+# 레포지토리 설정
+# Docker의 Official GPG Key 를 등록
+$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+# stable repository 를 등록
+$ echo \
+  "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+  
+# docker 엔진 설치
+$ sudo apt install docker-ce docker-ce-cli containerd.io
+
+# docker 그룹에 사용자 추가
+$ sudo usermod -aG docker ubuntu
+
+use admin
+db.createUser({ user: 'funteer', pwd: "{password}", roles: ['root'] })
+```
+
+4. jenkins 설치 및 실행
+
+```bash
+# Docker 이미지 다운로드
+$ docker pull jenkins/jenkins:lts-jdk11
+
+# 이미지 실행
+$ docker run -d -p 20001:8080 -v /var/jenkins:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock --name jenkins -u root jenkins/jenkins:lts-jdk11
+
+# 현재 실행되어 있는 container 확인
+$ docker ps
+
+# 컨테이너 내부 접근
+$ docker exec -it jenkins bash
+```
+
+5. Jenkins 내부에 docker 설치
+
+```bash
+$ curl https://get.docker.com/ > dockerinstall && chmod 777 dockerinstall && ./dockerinstall
+```
+
+6. ssl 설정
+
+```bash
+$ cd
+$ sudo mkdir certbot
+$ cd certbot
+$ sudo mkdir conf www logs
+$ sudo docker pull certbot/certbot
+$ sudo docker run -it --rm --name certbot -p 80:80 -v "/home/ubuntu/certbot/conf:/etc/letsencrypt" -v "/home/ubuntu/certbot/log:/var/log/letsencrypt" -v "/home/ubuntu/certbot/www:/var/www/certbot" certbot/certbot certonly
+```
+
+이후 standalone, agree, no, <domain_name> 순서로 입력
+
+7. nginx 설치 및 구성
+
+```bash
+$ sudo apt install nginx
+$ sudo service instsall nginx
+```
+
+- `/etc/nginx/site-avaliable/nginx.conf`
 
 ```bash
 server{
@@ -69,7 +174,362 @@ server{
 
 ```
 
-2. **kafka** docker-compose.yml
+8. Frontend dockerfile
+
+```dockerfile
+FROM node:16-alpine
+  
+RUN mkdir -p /usr/app
+WORKDIR /usr/app
+
+# Install dependencies based on the preferred package manager
+COPY ./ ./
+
+RUN npm i
+RUN npm run build
+
+EXPOSE 3000
+
+CMD ["npm","run", "start"]
+```
+
+9. Frontend jenkins shell script
+
+```shell
+#!/bin/bash
+set -e
+
+# 환경 변수 선언
+FRONT_IMAGE_NAME="zippyziggy/front"
+
+# gradle 빌드 및 Docker 이미지 생성
+cd frontend
+cd zippy-ziggy
+
+docker build -t $FRONT_IMAGE_NAME .
+
+# 기존 컨테이너 중지 및 삭제
+if [[ $(docker ps -q -f name=front) ]]; then
+  docker stop front
+fi
+if [[ $(docker ps -aq -f name=front) ]]; then
+  docker rm front
+fi
+
+# Docker 이미지 push 및 컨테이너 실행
+docker push $FRONT_IMAGE_NAME
+docker run -d -it --name front \
+  -p 3000:3000 \
+  $FRONT_IMAGE_NAME
+```
+
+10. Backend dockerfile
+
+```dockerfile
+FROM openjdk:11-jdk
+
+ADD build/libs/${service_name}-0.0.1-SNAPSHOT.jar app.jar
+
+ENTRYPOINT [ "java", "-jar", "/app.jar"]
+```
+
+11. Backend jenkins shell script
+
+- gateway service
+
+```bash
+#!/bin/bash
+set -e
+
+# 환경 변수 선언
+GATEWAY_IMAGE_NAME="zippyziggy/gateway"
+CONFIG_SERVER_URI="http://zippyziggy.kr:8888"
+RABBITMQ_HOST="rabbitmq"
+EUREKA_SERVER_URL="http://zippyziggy.kr:8761/eureka/"
+
+# gradle 빌드 및 Docker 이미지 생성
+cd backend/gateway
+chmod +x ./gradlew
+./gradlew build -x test
+docker build -t $GATEWAY_IMAGE_NAME .
+
+# 기존 컨테이너 중지 및 삭제
+if [[ $(docker ps -q -f name=gateway) ]]; then
+  docker stop gateway
+fi
+if [[ $(docker ps -aq -f name=gateway) ]]; then
+  docker rm gateway
+fi
+
+# Docker 이미지 push 및 컨테이너 실행
+docker push $GATEWAY_IMAGE_NAME
+docker run -d -it --name gateway \
+  -p 8000:8000 \
+  --network zippyziggy-network \
+  -e "spring.cloud.config.uri=$CONFIG_SERVER_URI" \
+  -e "spring.rabbitmq.host=$RABBITMQ_HOST" \
+  -e "eureka.client.serviceUrl.defaultZone=$EUREKA_SERVER_URL" \
+  $GATEWAY_IMAGE_NAME
+```
+
+
+
+- prompt, member, notice, search service
+
+```bash
+#!/bin/bash
+set -e
+
+# 환경 변수 선언
+${SERVICE_NAME}_IMAGE_NAME="zippyziggy/${service_name}"
+CONFIG_SERVER_URI="http://zippyziggy.kr:8888"
+RABBITMQ_HOST="rabbitmq"
+EUREKA_SERVER_URL="http://zippyziggy.kr:8761/eureka/"
+
+# gradle 빌드 및 Docker 이미지 생성
+cd backend/${service_name}
+chmod +x ./gradlew
+./gradlew clean build -x test
+docker build -t ${service_name}_IMAGE_NAME .
+
+# 기존 컨테이너 중지 및 삭제
+if [[ $(docker ps -q -f name=${service_name}) ]]; then
+  docker stop ${service_name}
+fi
+if [[ $(docker ps -aq -f name=${service_name}) ]]; then
+  docker rm ${service_name}
+fi
+
+# Docker 이미지 push 및 컨테이너 실행
+docker push ${service_name}_IMAGE_NAME
+docker run -d -it --name ${service_name} \
+  --network zippyziggy-network \
+  -e "spring.cloud.config.uri=$CONFIG_SERVER_URI" \
+  -e "spring.zipkin.base-url=http://zippyziggy.kr:9411" \
+  -e "spring.rabbitmq.host=$RABBITMQ_HOST" \
+  -e "eureka.client.serviceUrl.defaultZone=$EUREKA_SERVER_URL" \
+  ${service_name}_IMAGE_NAME
+```
+
+12. Backend Spring eureka server 
+
+```bash
+chmod +x ./gradlew
+./gradlew build -x test
+docker build -t zippyziggy/eureka .
+docker push zippyziggy/eureka
+docker run -d --name eureka -p 8761:8761 --network zippyziggy-network zippyziggy/eureka
+```
+
+13. Backend Config server
+
+```bash
+chmod +x ./gradlew
+./gradlew build -x test
+docker build -t zippyziggy/config-server .
+docker push zippyziggy/config-server
+docker run -d --name config-server -p 8888:8888 --network zippyziggy-network -e "spring.rabbitmq.host=rabbitmq" -e zippyziggy/config-server
+```
+
+
+
+
+
+## 기타 설정
+
+### Backend
+
+**S3**
+
+1. build.gradle
+
+```
+// S3
+implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.1.RELEASE'
+```
+
+1. S3 버킷 생성
+2. 사용자 추가 후 key 발급
+3. application.yml
+
+```
+cloud:
+  aws:
+    credentials:
+      access-key: {accesskey}
+      secret-key: {accesskey}
+    s3:
+      bucket: {bucketname}
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+```
+
+
+
+**DB**
+
+1. application.yml
+
+```
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: aws RDS url
+    username: 아이디
+    password: 비밀번호
+  rabbitmq:
+    host: rabbitmq host
+    port: 포트번호
+    username: 유저네임
+    password: 비밀번호
+```
+
+
+
+**JWT**
+
+1. build.gradle
+
+```
+//jwt
+implementation group: 'com.auth0', name: 'java-jwt', version: '4.2.1'
+```
+
+2. application.yml
+
+```
+jwt:
+  secret:
+    key: 임의 키 설정
+  access:
+    token:
+      expiration:
+        time: 만료시간
+  refresh:
+    token:
+      expiration:
+        time: 만료시간
+```
+
+
+
+**Redis(Sentinel 설정)**
+
+- build.gradle
+
+```
+// Redis
+implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+```
+
+- 설정 파일 생성
+
+```java
+sudo touch redis_6382.conf
+sudo touch redis_6383.conf
+sudo touch redis_6384.conf
+sudo touch sentinel_5000.conf
+sudo touch sentinel_5001.conf
+sudo touch sentinel_5002.conf
+```
+
+- redis_6382.conf
+
+```java
+// Listen을 0.0.0.0으로 변경
+bind 0.0.0.0
+
+// 포트 변경
+port 6382
+
+// 백그라운드 실행
+daemonize yes
+
+// 실행 pidfile
+pidfile /var/run/redis_6382.pid
+
+// 로그 저장 위치
+logfile "logs/redis_6382.log"
+
+// 비밀번호 설정
+masterauth ssafyE205!
+requirepass ssafyE205!
+
+// replica와 연결 확인 주기 설정
+repl-ping-replica-period 10
+
+// 이건 뭐지
+repl-timeout 60
+```
+
+- redis_6383, 6384.conf
+
+```java
+// 나머지는 위와 동일
+// 아래 조건만 추가한다
+slaveof zippyziggy.kr 6382
+replicaof zippyziggy.kr 6382
+```
+
+- sentinel_5000.conf
+
+```java
+bind 0.0.0.0
+
+port 5000
+
+daemonize yes
+
+pidfile /var/run/redis-sentinel_5000.pid
+
+logfile "logs/redis_5000.log"
+
+dir /home/ubuntu/redis/redis-5.0.6/
+
+sentinel monitor mymaster zippyziggy.kr 6382 2
+
+sentinel auth-pass mymaster ssafyE205!
+
+sentinel down-after-milliseconds mymaster 3000
+
+sentinel parallel-syncs mymaster 1
+
+sentinel failover-timeout mymaster 3000
+```
+
+- redis 실행
+  - redis 3개를 먼저 다 실행한 후 sentinel 실행
+
+```
+// redis 실행 명령어
+sudo redis-service redis_6382.conf
+sudo redis-service redis_6383.conf
+sudo redis-service redis_6384.conf
+
+// sentinel 실행 명령어
+sudo redis-sentinel redis_5000.conf
+sudo redis-sentinel redis_5001.conf
+sudo redis-sentinel redis_5002.conf
+```
+
+
+
+**Kafka**
+
+- ubuntu 20.04 사용
+
+- spring application 설정
+
+  ```java
+  // kafka
+  	implementation 'org.springframework.kafka:spring-kafka'
+  ```
+
+  - Producer, Consumer Config 별도 작성
+
+- `docker-compose.yml`
 
 ```yaml
 version: '2'
@@ -172,185 +632,121 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
 ```
 
+- 실행
 
-
-
-
-## 기타 설정
-
-### Backend
-
-**S3**
-
-1. build.gradle
-
-```
-// S3
-implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.1.RELEASE'
-```
-
-1. S3 버킷 생성
-2. 사용자 추가 후 key 발급
-3. application.yml
-
-```
-cloud:
-  aws:
-    credentials:
-      access-key: {accesskey}
-      secret-key: {accesskey}
-    s3:
-      bucket: {bucketname}
-    region:
-      static: ap-northeast-2
-    stack:
-      auto: false
+```bash
+docker compose -f docker-compose.yml up -d
 ```
 
 
 
-**DB**
+**RabbitMQ**
 
-1. application.yml
+- 실행
 
+```bash
+docker pull rabbitmq:management
+docker run -d --name rabbitmq --network zippyziggy-network -p 5672:5672 -p 15672:15672 -p 15671:15671 -p 5671:5671 -p 4369:4369 -e RABBITMQ_DEFAULT_USER=guest -e RABBITMQ_DEFAULT_PASS=guest rabbitmq:management
 ```
+
+- spring application.yaml
+
+```yaml
 spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://zippyziggy.cmme5aoanean.ap-northeast-2.rds.amazonaws.com:3306/zippyziggy?serverTimezone=Asia/Seoul&useSSL=false
-    username: 아이디
-    password: 비밀번호
   rabbitmq:
-    host: k8e205.p.ssafy.io
-    port: 포트번호
-    username: 유저네임
-    password: 비밀번호
+    host: rabbitmq host
+    port: 5672
+    username: id
+    password: password
 ```
 
 
 
-**JWT**
-
-1. build.gradle
-
-```
-//jwt
-implementation group: 'com.auth0', name: 'java-jwt', version: '4.2.1'
-```
-
-2. application.yml
-
-```
-jwt:
-  secret:
-    key: 임의 키 설정
-  access:
-    token:
-      expiration:
-        time: 만료시간
-  refresh:
-    token:
-      expiration:
-        time: 만료시간
-```
-
-
-
-**Redis(Sentinel 설정)**
+**Zipkin**
 
 - build.gradle
 
-```
-// Redis
-implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-```
-
-- 설정 파일 생성
-
 ```java
-sudo touch redis_6382.conf
-sudo touch redis_6383.conf
-sudo touch redis_6384.conf
-sudo touch sentinel_5000.conf
-sudo touch sentinel_5001.conf
-sudo touch sentinel_5002.conf
+// zipkin, sleuth
+	implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+	implementation 'org.springframework.cloud:spring-cloud-starter-zipkin:2.2.8.RELEASE'
 ```
 
-- redis_6382.conf
+- spring application.yml
 
-```java
-// Listen을 0.0.0.0으로 변경
-bind 0.0.0.0
-
-// 포트 변경
-port 6382
-
-// 백그라운드 실행
-daemonize yes
-
-// 실행 pidfile
-pidfile /var/run/redis_6382.pid
-
-// 로그 저장 위치
-logfile "logs/redis_6382.log"
-
-// 비밀번호 설정
-masterauth ssafyE205!
-requirepass ssafyE205!
-
-// replica와 연결 확인 주기 설정
-repl-ping-replica-period 10
-
-// 이건 뭐지
-repl-timeout 60
+```yaml
+spring:
+  zipkin:
+    base-url: host:9411
+    enabled: true
+  sleuth:
+    sampler:
+      probability: 1.0
 ```
 
-- redis_6383, 6384conf
+- 실행
 
-```java
-// 나머지는 위와 동일
-// 아래 조건만 추가한다
-slaveof zippyziggy.kr 6382
-replicaof zippyziggy.kr 6382
+```bash
+docker run -d --name zipkin -p 9411:9411 --network zippyziggy-network openzipkin/zipkin
 ```
 
-- sentinel_5000.conf
 
-```java
-bind 0.0.0.0
 
-port 5000
+**ELK**
 
-daemonize yes
+- 설치
 
-pidfile /var/run/redis-sentinel_5000.pid
+```bash
+sudo apt install elasticsearch
+sudo systemctl start elasticsearch
+sudo systemctl enable elasticsearch
+curl -X GET "localhost:9200"
+sudo apt install kibana
+sudo systemctl start kibana
+sudo systemctl enable kibana
 
-logfile "logs/redis_5000.log"
-
-dir /home/ubuntu/redis/redis-5.0.6/
-
-sentinel monitor mymaster zippyziggy.kr 6382 2
-
-sentinel auth-pass mymaster ssafyE205!
-
-sentinel down-after-milliseconds mymaster 3000
-
-sentinel parallel-syncs mymaster 1
-
-sentinel failover-timeout mymaster 3000
+# logstash 설치
+wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | sudo gpg --dearmor -o /usr/share/keyrings/elastic-keyring.gpg
+sudo apt-get install apt-transport-https
+echo "deb [signed-by=/usr/share/keyrings/elastic-keyring.gpg] https://artifacts.elastic.co/packages/8.x/apt stable main" | sudo tee -a /etc/apt/sources.list.d/elastic-8.x.list
+sudo apt-get update && sudo apt-get install logstash
 ```
 
-- redis 실행
-  - redis 3개를 먼저 다 실행한 후 sentinel 실행
+- `/etc/logstash/logstash.conf`
 
-```
-// redis 실행 명령어
-sudo redis-service redis_6382.conf
-sudo redis-service redis_6383.conf
-sudo redis-service redis_6384.conf
+```yaml
+input {
+  tcp {
+   port => 4560
+   codec => json_lines
+  }
+}
 
-// sentinel 실행 명령어
-sudo redis-sentinel redis_5000.conf
-sudo redis-sentinel redis_5001.conf
-sudo redis-sentinel redis_5002.conf
+filter {
+  mutate {
+    add_field => { "[@metadata][target]" => "log_message" }
+  }
+}
+
+
+output {
+  elasticsearch {
+    hosts => ["http://localhost:9200"]
+    index => "logstash-%{+YYYY.MM.dd}"
+    user => user
+    password => password
+  }
+
+  stdout {
+        codec => rubydebug
+  }
+}
 ```
+
+- 실행
+
+```bash
+# logstash 실행
+nohup /usr/share/logstash/bin/logstash -f /etc/logstash/logstash.conf --path.settings=/etc/logstash &
+```
+
