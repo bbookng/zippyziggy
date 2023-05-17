@@ -20,13 +20,14 @@ import {
 } from '@/styles/prompt/Detail.style';
 import { checkLoginCuring } from '@/utils/checkLogin';
 import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { FaAngleUp } from 'react-icons/fa';
 import { FiMaximize } from 'react-icons/fi';
 
-const DetailPrompt = () => {
+const DetailPrompt = ({ data }) => {
   const router = useRouter();
   const { promptUuid } = router.query;
   const { nickname } = useAppSelector((state) => state?.user);
@@ -96,15 +97,15 @@ const DetailPrompt = () => {
 
   // const isLoading = true;
   // Prompt 상세 가져오기
-  const { isLoading, data } = useQuery(['prompt', promptUuid], handleGetPromptDetail, {
-    enabled: !!promptUuid,
-    onSuccess(res) {
-      setIsMe(res?.data?.writer?.writerNickname === nickname);
-    },
-    onError: (err) => {
-      // console.log(err);
-    },
-  });
+  // const { isLoading, data } = useQuery(['prompt', promptUuid], handleGetPromptDetail, {
+  //   enabled: !!promptUuid,
+  //   onSuccess(res) {
+  //     setIsMe(res?.data?.writer?.writerNickname === nickname);
+  //   },
+  //   onError: (err) => {
+  //     // console.log(err);
+  //   },
+  // });
 
   // 좋아요
   const handleLike = async () => {
@@ -149,17 +150,17 @@ const DetailPrompt = () => {
     }
   };
 
-  useEffect(() => {
-    if (!isLoading && data.result === 'SUCCESS') {
-      window.addEventListener('scroll', handleScroll);
-      setIsLiked(data.data.isLiked);
-      setIsBookmarked(data.data.isBookmarked);
-      setLikeCnt(data.data.likeCnt);
-    }
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [isLoading]);
+  // useEffect(() => {
+  //   if (!isLoading && data.result === 'SUCCESS') {
+  //     window.addEventListener('scroll', handleScroll);
+  //     setIsLiked(data.data.isLiked);
+  //     setIsBookmarked(data.data.isBookmarked);
+  //     setLikeCnt(data.data.likeCnt);
+  //   }
+  //   return () => {
+  //     window.removeEventListener('scroll', handleScroll);
+  //   };
+  // }, [isLoading]);
 
   return (
     <>
@@ -173,76 +174,29 @@ const DetailPrompt = () => {
         />
       )}
       <Container>
-        {!isLoading && data.result === 'SUCCESS' && (
-          <>
-            <LeftContainer>
-              <TopBox>
-                <PromptTitle
-                  prompt={data.data}
-                  isLiked={isLiked}
-                  isBookmarked={isBookmarked}
-                  likeCnt={likeCnt}
-                  isMe={isMe}
-                  handleLike={handleLike}
-                  handleBookmark={handleBookmark}
-                  handleOpenDeleteModal={() => setIsOpenPromptDeleteModal(true)}
-                  handleMoveToUpdatePromptPage={handleMoveToUpdatePromptPage}
-                />
-              </TopBox>
-              <MobileTopContainer>
-                <SideBar
-                  uuid={promptUuid}
-                  isLiked={isLiked}
-                  isBookmarked={isBookmarked}
-                  likeCnt={likeCnt}
-                  isMe={isMe}
-                  isMobile
-                  handleLike={handleLike}
-                  handleBookmark={handleBookmark}
-                  handleOpenReportModal={() => setIsReportModal(true)}
-                  handleOpenDeleteModal={() => setIsOpenPromptDeleteModal(true)}
-                  handleMoveToUpdatePromptPage={handleMoveToUpdatePromptPage}
-                  handleMoveToCreatePromptForkPage={handleMoveToCreatePromptForkPage}
-                />
-              </MobileTopContainer>
-              <Tab itemList={itemList} tab={tab} handleIsSelected={handleIsSelectedTab} />
-              <div className="promptImageContainer">
-                <Image
-                  priority
-                  src={data.data.thumbnail}
-                  alt="프롬프트 이미지"
-                  width={100}
-                  height={100}
-                  className={`promptImage ${isImageFull ? '' : 'heightFull'}`}
-                />
-
-                <FiMaximize
-                  className="fullBtn"
-                  onClick={() => {
-                    setIsImageFull(!isImageFull);
-                  }}
-                />
-              </div>
-              <section id="0">
-                <Introduction prompt={data.data} />
-              </section>
-              <section id="1">
-                <TalkComponent promptUuid={promptUuid} size={4} />
-              </section>
-              <section id="2">
-                <CommentList id={promptUuid} type="prompt" size={5} />
-              </section>
-              <section id="3">
-                <ForkedPromptList promptUuid={promptUuid} size={4} />
-              </section>
-            </LeftContainer>
-            <RightContainer>
+        <>
+          <LeftContainer>
+            <TopBox>
+              <PromptTitle
+                prompt={data}
+                isLiked={isLiked}
+                isBookmarked={isBookmarked}
+                likeCnt={likeCnt}
+                isMe={isMe}
+                handleLike={handleLike}
+                handleBookmark={handleBookmark}
+                handleOpenDeleteModal={() => setIsOpenPromptDeleteModal(true)}
+                handleMoveToUpdatePromptPage={handleMoveToUpdatePromptPage}
+              />
+            </TopBox>
+            <MobileTopContainer>
               <SideBar
                 uuid={promptUuid}
                 isLiked={isLiked}
                 isBookmarked={isBookmarked}
                 likeCnt={likeCnt}
                 isMe={isMe}
+                isMobile
                 handleLike={handleLike}
                 handleBookmark={handleBookmark}
                 handleOpenReportModal={() => setIsReportModal(true)}
@@ -250,12 +204,57 @@ const DetailPrompt = () => {
                 handleMoveToUpdatePromptPage={handleMoveToUpdatePromptPage}
                 handleMoveToCreatePromptForkPage={handleMoveToCreatePromptForkPage}
               />
-            </RightContainer>
-            <MoveTopBtn scrollTop={!!scrollTop}>
-              <FaAngleUp className="icon" onClick={handleButtonClick} />
-            </MoveTopBtn>
-          </>
-        )}
+            </MobileTopContainer>
+            <Tab itemList={itemList} tab={tab} handleIsSelected={handleIsSelectedTab} />
+            <div className="promptImageContainer">
+              <Image
+                priority
+                src={data.thumbnail}
+                alt="프롬프트 이미지"
+                width={100}
+                height={100}
+                className={`promptImage ${isImageFull ? '' : 'heightFull'}`}
+              />
+
+              <FiMaximize
+                className="fullBtn"
+                onClick={() => {
+                  setIsImageFull(!isImageFull);
+                }}
+              />
+            </div>
+            <section id="0">
+              <Introduction prompt={data} />
+            </section>
+            <section id="1">
+              <TalkComponent promptUuid={promptUuid} size={4} />
+            </section>
+            <section id="2">
+              <CommentList id={promptUuid} type="prompt" size={5} />
+            </section>
+            <section id="3">
+              <ForkedPromptList promptUuid={promptUuid} size={4} />
+            </section>
+          </LeftContainer>
+          <RightContainer>
+            <SideBar
+              uuid={promptUuid}
+              isLiked={isLiked}
+              isBookmarked={isBookmarked}
+              likeCnt={likeCnt}
+              isMe={isMe}
+              handleLike={handleLike}
+              handleBookmark={handleBookmark}
+              handleOpenReportModal={() => setIsReportModal(true)}
+              handleOpenDeleteModal={() => setIsOpenPromptDeleteModal(true)}
+              handleMoveToUpdatePromptPage={handleMoveToUpdatePromptPage}
+              handleMoveToCreatePromptForkPage={handleMoveToCreatePromptForkPage}
+            />
+          </RightContainer>
+          <MoveTopBtn scrollTop={!!scrollTop}>
+            <FaAngleUp className="icon" onClick={handleButtonClick} />
+          </MoveTopBtn>
+        </>
       </Container>
       {isReportModal ? (
         <ReportModal
@@ -268,27 +267,28 @@ const DetailPrompt = () => {
   );
 };
 
-// 이게 먼저 실행되고 컴포넌트 함수가 실행될 것임
 export const getServerSideProps = wrapper.getServerSideProps((store) => async (context) => {
   // server-side에서 실행되니까 front의 store는 아래 구문으로 재정의된다!
   // Prompt 상세 요청 API
 
-  console.log('State on server', store.getState());
+  const instance = axios.create({
+    baseURL: `https://zippyziggy.kr/api`,
 
-  // const handleGetPromptDetail = async () => {
-  //   try {
-  //     const { data } = await httpAuth.get(`/prompts/${params.promptUuid}`);
-  //     return { result: 'SUCCESS', data };
-  //   } catch (err) {
-  //     return { result: 'FAIL', data: err };
-  //   }
-  // };
+    headers: {
+      'Content-Type': 'application/json',
+      // 'Access-Control-Allow-Origin': '*',
+      // 'Access-Control-Allow-Credentials': true,
+      // 'Access-Control-Allow-Methods': 'GET,OPTIONS,PATCH,DELETE,POST,PUT',
+      // 'Access-Control-Allow-Headers': '*',
+      // 'Access-Control-Expose-Headers': '*',
+    },
 
-  // const data = await handleGetPromptDetail();
-  console.log(store);
+    withCredentials: true,
+  });
+  const { data } = await instance.get(`/prompts/${context.params.promptUuid}`);
 
   return {
-    props: {},
+    props: { data },
   };
 });
 

@@ -9,33 +9,20 @@ import Paging from '@/components/Paging/Paging';
 import useDebounce from '@/hooks/useDebounce';
 import { getPromptList } from '@/core/prompt/promptAPI';
 import { FiPlus } from 'react-icons/fi';
+import { wrapper } from '@/core/store';
+import axios from 'axios';
 
-export default function Prompt() {
+function Prompt({ cardList, totalPromptsCnt, totalPageCnt }) {
+  console.log(cardList);
   const [category, setCategory] = useState<string>('ALL');
   const [sort, setSort] = useState<string>('likeCnt');
   const [keyword, setKeyword] = useState<string>('');
-  const [cardList, setCardList] = useState<Array<unknown>>([]);
-  const [totalPromptsCnt, setTotalPromptsCnt] = useState<number>(0);
   const router = useRouter();
   const page = useRef<number>(0);
   const debouncedKeyword = useDebounce(keyword);
 
   // 검색 요청
-  const handleSearch = async () => {
-    // keyword, category로 검색 요청하기
-    const requestData = {
-      page: page.current,
-      keyword: debouncedKeyword,
-      size: 6,
-      category,
-      sort,
-    };
-    const data = await getPromptList(requestData);
-    if (data.result === 'SUCCESS') {
-      setCardList(data.data.searchPromptList);
-      setTotalPromptsCnt(data.data.totalPromptsCnt);
-    }
-  };
+  const handleSearch = async () => {};
 
   // 검색어 입력시 요청 보냄
   const handleKeyword = (e) => {
@@ -138,3 +125,42 @@ export default function Prompt() {
     </Container>
   );
 }
+
+export const getServerSideProps = wrapper.getServerSideProps((store) => async (context) => {
+  // server-side에서 실행되니까 front의 store는 아래 구문으로 재정의된다!
+  // Prompt 상세 요청 API
+
+  const requestData = {
+    page: 0,
+    keyword: '',
+    size: 6,
+    category: 'ALL',
+    sort: 'likeCnt',
+  };
+  const instance = axios.create({
+    baseURL: `https://zippyziggy.kr/api`,
+
+    headers: {
+      'Content-Type': 'application/json',
+      // 'Access-Control-Allow-Origin': '*',
+      // 'Access-Control-Allow-Credentials': true,
+      // 'Access-Control-Allow-Methods': 'GET,OPTIONS,PATCH,DELETE,POST,PUT',
+      // 'Access-Control-Allow-Headers': '*',
+      // 'Access-Control-Expose-Headers': '*',
+    },
+
+    withCredentials: true,
+  });
+  const { data } = await instance.get(`/search/prompts`, { params: requestData });
+  const { totalPromptsCnt, totalPageCnt, searchPromptList } = data;
+  console.log(searchPromptList);
+  return {
+    props: {
+      cardList: searchPromptList,
+      totalPromptsCnt,
+      totalPageCnt,
+    },
+  };
+});
+
+export default Prompt;

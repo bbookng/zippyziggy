@@ -12,7 +12,6 @@ import {
 } from '@/core/user/userSlice';
 import { getGoogleAPI, getKakaoAPI } from '@/core/user/userAPI';
 import LottieAnimation from '@/components/LottieFiles/LoadingA';
-import { getGoogleApiSSR, getKakaoApiSSR } from '@/core/user/userAPISsr';
 
 interface SocialSignUpDataResponseDto {
   name: string;
