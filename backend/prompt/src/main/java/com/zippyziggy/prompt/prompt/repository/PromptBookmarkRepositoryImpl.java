@@ -1,11 +1,14 @@
 package com.zippyziggy.prompt.prompt.repository;
 
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.zippyziggy.prompt.prompt.model.Prompt;
 import com.zippyziggy.prompt.prompt.model.QPrompt;
 import com.zippyziggy.prompt.prompt.model.QPromptBookmark;
 import com.zippyziggy.prompt.prompt.model.StatusCode;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -37,7 +40,22 @@ public class PromptBookmarkRepositoryImpl implements PromptBookmarkCustomReposit
 
         long totalCount = query.fetchCount();
 
-        List<Prompt> promptList = query.orderBy(qPromptBookmark.regDt.desc())
+        OrderSpecifier orderSpecifier = new OrderSpecifier<>(Order.DESC, qPrompt.likeCnt);
+        String property = pageable.getSort().stream().collect(Collectors.toList()).get(0).getProperty();
+        switch (property) {
+            case "likeCnt":
+                orderSpecifier = new OrderSpecifier<>(Order.DESC, qPrompt.likeCnt);
+                break;
+            case "hit":
+                orderSpecifier = new OrderSpecifier<>(Order.DESC, qPrompt.hit);
+                break;
+            case "regDt":
+                orderSpecifier = new OrderSpecifier<>(Order.DESC, qPrompt.regDt);
+                break;
+        }
+
+        List<Prompt> promptList = query
+                .orderBy(orderSpecifier)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -45,4 +63,6 @@ public class PromptBookmarkRepositoryImpl implements PromptBookmarkCustomReposit
         return new PageImpl<>(promptList, pageable, totalCount);
 
     }
+
+
 }
