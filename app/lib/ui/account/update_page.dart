@@ -25,7 +25,6 @@ class UpdatePage extends StatefulWidget {
 class _UpdatePageState extends State<UpdatePage> {
   late File? _image;
   late String? _imageUrl;
-  final TextEditingController _nicknameController = TextEditingController();
   String nickname = '';
   bool nicknameCheck = true;
   final _formKey = GlobalKey<FormState>();
@@ -80,7 +79,7 @@ class _UpdatePageState extends State<UpdatePage> {
     final provider = Provider.of<UserProvider>(context, listen: false);
     final navProvider = Provider.of<NavigationProvider>(context, listen: false);
     navigator(name) {
-      Navigator.pushNamedAndRemoveUntil(context, name, (route) => false);
+      Navigator.pushReplacementNamed(context, name);
     }
 
     if (nickname.length > 10) {

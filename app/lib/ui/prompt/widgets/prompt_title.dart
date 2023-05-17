@@ -60,7 +60,7 @@ class _PromptTitleState extends State<PromptTitle> {
             children: [
               Text(
                 categoryMap[widget.prompt.category]!,
-                style: AppTheme.body2.copyWith(),
+                style: AppTheme.body2.copyWith(fontSize: 18),
               ),
               Row(
                 children: [
@@ -83,14 +83,14 @@ class _PromptTitleState extends State<PromptTitle> {
                     icon: Icon(
                       isLiked ? Icons.favorite : Icons.favorite_border_outlined,
                       color: Colors.red,
-                      size: 16,
+                      size: 18,
                     ),
                     padding: const EdgeInsets.symmetric(horizontal: 2),
                     constraints: const BoxConstraints(),
                   ),
                   Text(
                     '$likeCnt',
-                    style: AppTheme.body1.copyWith(fontSize: 16),
+                    style: AppTheme.body1.copyWith(fontSize: 18),
                   ),
                   IconButton(
                     onPressed: () async {
@@ -108,7 +108,7 @@ class _PromptTitleState extends State<PromptTitle> {
                           ? Icons.bookmark
                           : Icons.bookmark_border_outlined,
                       color: Colors.green,
-                      size: 16,
+                      size: 18,
                     ),
                     padding: const EdgeInsets.only(left: 10),
                     constraints: const BoxConstraints(),

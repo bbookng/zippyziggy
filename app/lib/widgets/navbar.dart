@@ -14,7 +14,6 @@ class BurgerNavigator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<UserProvider>(context);
-    final navigator = Navigator.of(context);
 
     return Drawer(
       child: Container(

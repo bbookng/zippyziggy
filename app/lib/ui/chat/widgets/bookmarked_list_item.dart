@@ -25,7 +25,6 @@ class _BookmarkedListItemState extends State<BookmarkedListItem> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<ChatProvider>(context);
-    final navigator = Navigator.of(context);
 
     return Card(
       child: Column(

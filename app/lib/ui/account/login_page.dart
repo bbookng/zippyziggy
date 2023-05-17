@@ -25,6 +25,7 @@ class _LoginPageState extends State<LoginPage> {
     final navProvider = Provider.of<NavigationProvider>(context, listen: false);
     final navigator = Navigator.of(context);
 
+    // 카카오 로그인
     handleKakaoLogin() async {
       final res = await provider.kakaoLogin();
       if (res["result"] == "SIGNUP") {
@@ -40,6 +41,12 @@ class _LoginPageState extends State<LoginPage> {
         return;
       }
     }
+
+    // 구글 로그인
+    // handleGoogleLogin() async {
+    //   final res = await provider.googleLogin();
+    //   print('로그인 페이지: $res');
+    // }
 
     return Scaffold(
       body: PageView(
@@ -71,7 +78,7 @@ class _LoginPageState extends State<LoginPage> {
                   // ),
                   // SocialLoginButton(
                   //   'Google_Logo.png',
-                  //   () {},
+                  //   handleGoogleLogin,
                   //   '구글로 시작하기',
                   //   Colors.white,
                   // ),

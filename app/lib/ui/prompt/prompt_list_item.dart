@@ -97,7 +97,7 @@ class _PromptListItemState extends State<PromptListItem> {
                       ? Icons.bookmark
                       : Icons.bookmark_border_outlined,
                   color: Colors.white,
-                  size: 20,
+                  size: 24,
                 ),
               ),
             ),

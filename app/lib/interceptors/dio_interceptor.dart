@@ -3,7 +3,6 @@ import 'package:zippy_ziggy/utils/routes/route_name.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class DioInterceptor extends Interceptor {
   static const storage = FlutterSecureStorage();
@@ -85,10 +84,6 @@ class DioInterceptor extends Interceptor {
       } on DioError {
         // print('[ERR] [${e.requestOptions.method}] refreshToken 만료');
         storage.deleteAll();
-        final SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.remove('nickname');
-        await prefs.remove('profileImg');
-        await prefs.remove('userUuid');
         // 로그인 페이지로 이동
         navigatorKey.currentState!.pushNamedAndRemoveUntil(
           RoutesName.login,

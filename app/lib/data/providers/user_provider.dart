@@ -1,10 +1,10 @@
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:zippy_ziggy/data/model/prompt_model.dart';
 import 'package:zippy_ziggy/data/model/user_model.dart';
 import 'package:zippy_ziggy/data/repository/user_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class UserProvider extends ChangeNotifier {
   static const storage = FlutterSecureStorage();
@@ -45,13 +45,27 @@ class UserProvider extends ChangeNotifier {
 
           return {"result": "LOGIN", "data": res["user"]};
         } catch (e) {
+          Fluttertoast.showToast(
+              msg: "로그인 실패",
+              backgroundColor: Colors.red,
+              textColor: Colors.white);
           return {"result": "FAIL", "data": e};
         }
       }
     } catch (err) {
+      Fluttertoast.showToast(
+          msg: "로그인 실패", backgroundColor: Colors.red, textColor: Colors.white);
       return {"result": "FAIL", "data": err};
     }
   }
+
+  // 구글로그인 API요청
+  // Future googleLogin() async {
+  //   try {
+  //     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+  //     print('구글 유저 : $googleUser');
+  //   } catch (e) {}
+  // }
 
   // 닉네임 중복검사
   Future<bool> getNickname(String nickname) async {
@@ -79,9 +93,15 @@ class UserProvider extends ChangeNotifier {
         userUuid = user!.userUuid;
         return true;
       } else {
+        Fluttertoast.showToast(
+            msg: "회원가입 실패",
+            backgroundColor: Colors.red,
+            textColor: Colors.white);
         return false;
       }
     } catch (err) {
+      Fluttertoast.showToast(
+          msg: "회원가입 실패", backgroundColor: Colors.red, textColor: Colors.white);
       return false;
     }
   }
@@ -97,9 +117,17 @@ class UserProvider extends ChangeNotifier {
         userUuid = user!.userUuid;
         return true;
       } else {
+        Fluttertoast.showToast(
+            msg: "회원정보수정 실패",
+            backgroundColor: Colors.red,
+            textColor: Colors.white);
         return false;
       }
     } catch (err) {
+      Fluttertoast.showToast(
+          msg: "회원정보수정 실패",
+          backgroundColor: Colors.red,
+          textColor: Colors.white);
       return false;
     }
   }
@@ -109,17 +137,22 @@ class UserProvider extends ChangeNotifier {
     try {
       final data = await _userRepository.postLogoutAPI();
       if (data['result'] == 'SUCCESS') {
-        final SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.remove('nickname');
-        await prefs.remove('profileImg');
-        await prefs.remove('userUuid');
+        nickname = null;
+        profileImg = null;
+        userUuid = null;
         storage.delete(key: "accessToken");
         storage.delete(key: "refreshToken");
         return true;
       } else {
+        Fluttertoast.showToast(
+            msg: "로그아웃 실패",
+            backgroundColor: Colors.red,
+            textColor: Colors.white);
         return false;
       }
     } catch (err) {
+      Fluttertoast.showToast(
+          msg: "로그아웃 실패", backgroundColor: Colors.red, textColor: Colors.white);
       return false;
     }
   }
