@@ -2,6 +2,7 @@ package com.zippyziggy.member.client;
 
 
 import com.zippyziggy.member.dto.response.MemberTalkList;
+import com.zippyziggy.member.dto.response.PromptCardListExtensionResponse;
 import com.zippyziggy.member.dto.response.PromptCardListResponse;
 import com.zippyziggy.member.dto.response.PromptCardResponse;
 import java.util.List;
@@ -22,6 +23,14 @@ public interface PromptClient {
 
     @GetMapping("/prompts/members/bookmark/{crntMemberUuid}")
     Optional<PromptCardListResponse> getPromptsBookmark(
+        @PathVariable("crntMemberUuid") String crntMemberUuid,
+        @RequestParam("page") Integer page,
+        @RequestParam("size") Integer size,
+        @RequestParam("sort") String sort
+    );
+
+    @GetMapping("/prompts/members/bookmark/{crntMemberUuid}/extension")
+    Optional<PromptCardListExtensionResponse> getPromptsBookmarkExtension(
         @PathVariable("crntMemberUuid") String crntMemberUuid,
         @RequestParam("page") Integer page,
         @RequestParam("size") Integer size,
