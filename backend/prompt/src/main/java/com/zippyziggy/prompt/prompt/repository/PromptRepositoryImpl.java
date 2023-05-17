@@ -30,6 +30,7 @@ public class PromptRepositoryImpl implements PromptCustomRepository{
                         qPrompt.likeCnt,
                         qRating.score
                         ))
+                .from(qPrompt)
                 .leftJoin(qRating)
                 .on(qPrompt.id.eq(qRating.id))
                 .where(qPrompt.category.eq(category))
