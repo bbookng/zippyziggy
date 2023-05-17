@@ -256,10 +256,9 @@ public class PromptService{
 
 			// 레디스 저장 로직
 			String key = "RecentPrompt" + crntMemberUuid;
-			Long data = prompt.getId();
-
+			Long id = prompt.getId();
 			// sorted set으로 저장
-			redisTemplate.opsForZSet().add(key, data, System.nanoTime());
+			redisTemplate.opsForZSet().add(key, id, System.nanoTime());
 			redisTemplate.opsForZSet().removeRange(key, 0, -11);
 			redisUtils.setExpireTime(key, 60 * 60 * 24 * 7);
 
@@ -585,11 +584,15 @@ public class PromptService{
 				log.info("redis 최근 프롬프트 조회");
 				CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 				Set<ZSetOperations.TypedTuple<Long>> set = redisTemplate.opsForZSet().reverseRangeWithScores(key, 0, -1);
-
+				log.info("ZsetOperation = " + set);
 				List<Long> promptIds = new ArrayList<>();
 
 				for (ZSetOperations.TypedTuple<Long> tuple : set) {
+					log.info("tupe = >>>> " + tuple);
+					Long temp = Long.valueOf(tuple.getValue());
+					log.info("정수를 롱타입으로" + temp);
 					Long value = tuple.getValue();
+					log.info("롱타입 그대로" + value);
 					promptIds.add(value);
 				}
 				log.info("promptIds = " + promptIds);
