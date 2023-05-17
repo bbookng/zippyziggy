@@ -1,5 +1,6 @@
 /* 소셜버튼 최초 클릭 타입들 시작 */
-import { WriterResponse } from '@pages/content/types';
+
+import { ExtensionSearchResult, Prompt } from '@pages/content/apis/search/models';
 
 export interface CheckAuthParams {
   code: string;
@@ -59,25 +60,8 @@ export interface SignUpResult {
   userUuid: string;
 }
 
-export interface BookmarkedPrompt {
-  promptUuid: string;
-  thumbnail: string;
-  title: string;
-  description: string;
-  writer: WriterResponse;
-  likeCnt: number;
-  commentCnt: number;
-  forkCnt: number;
-  talkCnt: number;
-  hit: number;
-  regDt: number;
-  updDt: number;
-  isBookmarked: boolean;
-  isLiked: boolean;
-}
+type OmitExtensionSearch = Omit<ExtensionSearchResult, 'extensionSearchPromptList'>;
 
-export interface BookmarkPromptResponse {
-  promptCardResponseList: Array<BookmarkedPrompt>;
-  totalPageCnt: number;
-  totalPromptsCnt: number;
+export interface ExtensionBookmarkResult extends OmitExtensionSearch {
+  promptCardResponseList: Array<Prompt>;
 }

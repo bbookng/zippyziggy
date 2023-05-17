@@ -6,12 +6,20 @@ interface PaginationProps {
   total: number;
   limit: number;
   page: number;
-  setPage: Dispatch<SetStateAction<number>>;
+  setPage: Dispatch<SetStateAction<any>>;
+  selectedCategory?: string;
 }
 
-const Pagination = ({ total, limit, page, setPage }: PaginationProps) => {
+const Pagination = ({ total, limit, page, setPage, selectedCategory }: PaginationProps) => {
   const numPages = Math.ceil(total / limit); // 총 페이지 수
   const currentPageGroup = Math.ceil(page / PAGE_PER_GROUP); // 현재 속한 페이지 그룹 1~10, 11~20 ...
+
+  const setCategoryPage = (pageNumber: number) => {
+    setPage((prevPages) => ({
+      ...prevPages,
+      [selectedCategory]: pageNumber,
+    }));
+  };
 
   if (total === 0) {
     return null;
@@ -25,9 +33,7 @@ const Pagination = ({ total, limit, page, setPage }: PaginationProps) => {
       <button
         className="ZP_pagination__button-prevGroup"
         type="button"
-        onClick={() => {
-          setPage(startPage - 1);
-        }}
+        onClick={() => setCategoryPage(startPage - 1)}
         disabled={currentPageGroup === 1}
       >
         <ArrowIcon name="leftDouble" size="20px" />
@@ -35,7 +41,7 @@ const Pagination = ({ total, limit, page, setPage }: PaginationProps) => {
       <button
         className="ZP_pagination__button-prev"
         type="button"
-        onClick={() => setPage(page - 1)}
+        onClick={() => setCategoryPage(page - 1)}
         disabled={page === 1}
       >
         <ArrowIcon name="left" size="14px" />
@@ -46,7 +52,7 @@ const Pagination = ({ total, limit, page, setPage }: PaginationProps) => {
             className="ZP_pagination__button-page"
             type="button"
             key={pageNumber}
-            onClick={() => setPage(pageNumber)}
+            onClick={() => setCategoryPage(pageNumber)}
             aria-current={page === pageNumber ? 'page' : null}
           >
             {pageNumber}
@@ -56,7 +62,7 @@ const Pagination = ({ total, limit, page, setPage }: PaginationProps) => {
       <button
         className="ZP_pagination__button-next"
         type="button"
-        onClick={() => setPage(page + 1)}
+        onClick={() => setCategoryPage(page + 1)}
         disabled={page === numPages || total === undefined}
       >
         <ArrowIcon name="right" size="14px" />
@@ -64,7 +70,7 @@ const Pagination = ({ total, limit, page, setPage }: PaginationProps) => {
       <button
         className="ZP_pagination__button-nextGroup"
         type="button"
-        onClick={() => setPage(endPage + 1)}
+        onClick={() => setCategoryPage(endPage + 1)}
         disabled={currentPageGroup === Math.ceil(numPages / PAGE_PER_GROUP) || total === undefined}
       >
         <ArrowIcon name="rightDouble" size="20px" />

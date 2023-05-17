@@ -11,7 +11,6 @@ import {
   MK_RESIGN,
   MK_SIGN_OUT,
 } from '@pages/constants';
-import logOnDev from '@pages/content/utils/@shared/logging';
 
 reloadOnUpdate('pages/background');
 
@@ -30,34 +29,6 @@ chrome.runtime.onStartup.addListener(() => {
   chrome.storage.local.remove(CHROME_SEARCH_KEY);
   chrome.storage.local.remove(CHROME_PAGE_KEY);
 });
-
-const waitForGPTSiteToLoad = (tabId, callback) => {
-  chrome.tabs.get(tabId, (tab) => {
-    if (tab?.status === 'complete') {
-      callback();
-    } else {
-      setTimeout(() => waitForGPTSiteToLoad(tabId, callback), 100);
-    }
-  });
-};
-
-const sendDataToGPTSite = (data) => {
-  chrome.tabs.create({ url: CHAT_GPT_URL }, (tab) => {
-    const contentScriptReadyListener = (message, sender) => {
-      if (sender.tab.id === tab.id && message.type === 'contentScriptReady') {
-        // content script가 준비된 경우 메시지 전송
-        chrome.runtime.sendMessage({ type: 'promptCardPlay', data }, () => {
-          logOnDev.log('zippy to GPT 프롬프트 데이터 전송완료');
-        });
-
-        // 리스너 제거
-        chrome.runtime.onMessage.removeListener(contentScriptReadyListener);
-      }
-    };
-    // contentScriptReady 메시지를 기다립니다.
-    chrome.runtime.onMessage.addListener(contentScriptReadyListener);
-  });
-};
 
 let dataFromPromptCardPlay;
 let newTab;

@@ -102,11 +102,28 @@ if (currentUrl.startsWith(ZIPPY_SITE_URL)) {
       for (const node of [...mutation.addedNodes]) {
         const $targetElement = node as HTMLElement;
         if (typeof $targetElement.className === 'object') return;
-
-        if ($targetElement.className?.startsWith('Detailstyle__LeftContainer')) {
+        if (
+          $targetElement.className?.startsWith('Detailstyle__Container') ||
+          $targetElement.className?.startsWith('Detailstyle__LeftContainer')
+        ) {
           const $promptPlayDesktop = document.querySelector('#promptPlayDesktop') as HTMLElement;
-          const $promptPlayMobile = document.querySelector('#promptPlayMobile');
-          const { uuid } = $promptPlayDesktop.dataset;
+          const $promptPlayMobile = document.querySelector('#promptPlayMobile') as HTMLElement;
+          if ($promptPlayDesktop) {
+            $promptPlayDesktop.addEventListener('click', () => {
+              chrome.runtime.sendMessage({
+                type: MK_DATA_FROM_PROMPT_CARD_PLAY,
+                data: { title, prefix, example, suffix, uuid },
+              });
+            });
+          }
+
+          $promptPlayMobile.addEventListener('click', () => {
+            chrome.runtime.sendMessage({
+              type: MK_DATA_FROM_PROMPT_CARD_PLAY,
+              data: { title, prefix, example, suffix, uuid },
+            });
+          });
+          const { uuid } = $promptPlayDesktop.dataset ?? {};
           const title = document.querySelector('.title')?.textContent;
           const $ComponentStyleSubContainer = document.querySelectorAll(
             '[class^=ComponentStyle__SubContainer]'
@@ -115,20 +132,6 @@ if (currentUrl.startsWith(ZIPPY_SITE_URL)) {
           const prefix = $colorBox.querySelector('span:first-of-type')?.textContent ?? '';
           const example = $colorBox.querySelector('span.example')?.textContent ?? '';
           const suffix = $colorBox.querySelector('span:last-of-type')?.textContent ?? '';
-
-          $promptPlayDesktop.addEventListener('click', () => {
-            chrome.runtime.sendMessage({
-              type: MK_DATA_FROM_PROMPT_CARD_PLAY,
-              data: { title, prefix, example, suffix, uuid },
-            });
-          });
-
-          $promptPlayMobile.addEventListener('click', () => {
-            chrome.runtime.sendMessage({
-              type: MK_DATA_FROM_PROMPT_CARD_PLAY,
-              data: { title, prefix, example, suffix, uuid },
-            });
-          });
         }
         if ($targetElement.className?.startsWith('CardStyle__Conatiner')) {
           const promptUuid = $targetElement.dataset.uuid;

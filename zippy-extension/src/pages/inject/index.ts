@@ -9,8 +9,8 @@ import {
   TARGET_LANGUAGE_PLACEHOLDER,
   ZIPPY_SITE_URL,
   ZP_PROMPT_TITLE_HOLDER_ID,
-} from '@pages/constants';
-import { sanitizeInput } from '@src/utils';
+} from "@pages/constants";
+import { sanitizeInput } from "@src/utils";
 
 const ZIPPY = (window.ZIPPYZIGGY = {
   init() {
@@ -107,9 +107,9 @@ window.addEventListener('message', function (event) {
       } = event.data;
 
       const prompt =
-        `프롬프트 상세 링크 ${ZIPPY_SITE_URL}/prompts/${uuid}\n\n답변은 아래의 형식에 맞춰서 답변해줘.\n1. [🔗프롬프트 상세정보](프롬프트 상세 링크)를 첫줄에 출력\n2. 공백 한줄 출력후 답변을 출력\n\n${
-          prefix || ''
-        } ${PROMPT_PLACEHOLDER} ${suffix || ''}${TARGET_LANGUAGE_PLACEHOLDER}`.trim();
+          `${ZIPPY_SITE_URL}/prompts/${uuid}\n${
+            prefix || ''
+          } ${PROMPT_PLACEHOLDER} ${suffix || ''}${TARGET_LANGUAGE_PLACEHOLDER}`.trim();
       ZIPPY.selectedPrompt = prompt;
 
       const $title = document.querySelector(`#${ZP_PROMPT_TITLE_HOLDER_ID}`) as HTMLElement;

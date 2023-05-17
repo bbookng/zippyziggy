@@ -1,5 +1,4 @@
 import React from 'react';
-import { Prompt } from '@pages/content/types';
 import {
   CHAT_GPT_URL,
   PROMPT_PLACEHOLDER,
@@ -9,6 +8,7 @@ import {
 } from '@pages/constants';
 import { formatAgo, formatDateTime, formatHumanReadableNumber } from '@src/utils';
 import { category } from '@pages/content/components/PromptContainer';
+import { Prompt } from '@pages/content/apis/search/models';
 
 interface PromptCardProps {
   prompt: Prompt;
@@ -40,10 +40,9 @@ const PromptCard = ({ prompt }: PromptCardProps) => {
     const message = {
       type: 'selectPrompt',
       data: {
-        prompt:
-          `프롬프트 상세 링크 ${ZIPPY_SITE_URL}/prompts/${promptUuid}\n\n답변은 아래의 형식에 맞춰서 답변해줘.\n1. [🔗프롬프트 상세정보](프롬프트 상세 링크)를 첫줄에 출력\n2. 공백 한줄 출력후 답변을 출력\n\n${
-            prefix || ''
-          } ${PROMPT_PLACEHOLDER} ${suffix || ''}${TARGET_LANGUAGE_PLACEHOLDER}`.trim(),
+        prompt: `${ZIPPY_SITE_URL}/prompts/${promptUuid}\n${prefix || ''} ${PROMPT_PLACEHOLDER} ${
+          suffix || ''
+        }${TARGET_LANGUAGE_PLACEHOLDER}`.trim(),
       },
     };
 

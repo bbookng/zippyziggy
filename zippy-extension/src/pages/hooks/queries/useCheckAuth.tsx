@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
-import { CheckAuthResult, SignUpResult } from '@pages/content/apis/auth/models';
-import { checkAuth } from '@pages/content/apis/auth';
+import { CheckAuthResult, SignUpResult } from '@pages/content/apis/member/models';
+import { checkAuth } from '@pages/content/apis/member';
 import { useModalContext } from '@pages/content/context/ModalContext';
 import SignUpModalContent from '@pages/content/components/Modal/ModalContents/SignUpModalContent';
 import useChromeStorage from '@pages/hooks/@shared/useChromeStorage';

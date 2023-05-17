@@ -1,9 +1,9 @@
 import React, { Dispatch, SetStateAction, useEffect } from 'react';
 import { useModalContext } from '@pages/content/context/ModalContext';
-import { SignUpResult } from '@pages/content/apis/auth/models';
+import { SignUpResult } from '@pages/content/apis/member/models';
 import { ZIPPY_SITE_URL, ZP_AUTH_BUTTON_ID } from '@pages/constants';
 import AuthModalContent from '@pages/content/components/Modal/ModalContents/AuthModalContent';
-import { getMyInfo } from '@pages/content/apis/auth';
+import { getMyInfo } from '@pages/content/apis/member';
 import logo from '@assets/img/icon16.png';
 
 interface UserInfoProps {

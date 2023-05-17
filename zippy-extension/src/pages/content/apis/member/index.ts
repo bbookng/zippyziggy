@@ -1,13 +1,13 @@
 import { api, authApi } from '@pages/content/utils/apis/axios-instance';
 import {
-  BookmarkPromptResponse,
   CheckAuthParams,
   CheckAuthResponse,
   CheckAuthResult,
   CheckSignUpResponse,
+  ExtensionBookmarkResult,
   SignUpResponse,
   SignUpResult,
-} from '@pages/content/apis/auth/models';
+} from '@pages/content/apis/member/models';
 import withErrorHandling from '@pages/content/utils/apis/withErrorHandling';
 
 const MEMBER_API_ENDPOINT = '/members';
@@ -137,9 +137,12 @@ export const signUp = withErrorHandling(async (formData: FormData): Promise<Sign
 });
 
 export const getBookmarkList = withErrorHandling(
-  async (uuid: string, params: { page: number; size: number }): Promise<BookmarkPromptResponse> => {
-    const { data } = await authApi.get<BookmarkPromptResponse>(
-      `${MEMBER_API_ENDPOINT}/prompts/bookmark/${uuid}`,
+  async (
+    uuid: string,
+    params: { page: number; size: number }
+  ): Promise<ExtensionBookmarkResult> => {
+    const { data } = await authApi.get<ExtensionBookmarkResult>(
+      `${MEMBER_API_ENDPOINT}/prompts/bookmark/${uuid}/extension`,
       {
         params,
       }
