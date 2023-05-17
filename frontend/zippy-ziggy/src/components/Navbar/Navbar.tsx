@@ -194,7 +194,9 @@ const Navbar = ({ toggleTheme }) => {
   };
 
   useEffect(() => {
-    getToken();
+    if (!localStorage.getItem('accessToken')) {
+      getToken();
+    }
   }, []);
 
   useEffect(() => {
@@ -258,31 +260,31 @@ const Navbar = ({ toggleTheme }) => {
         >
           <span>🐣다운로드🐣</span>
         </NavOption>
-        <div className="iconSet">
-          <NavOption
-            onClick={toggleTheme}
-            onKeyDown={toggleTheme}
-            tabIndex={navOptions.length}
-            role="button"
-            className="themeBtn"
-          >
-            <FiSun />
-          </NavOption>
-        </div>
+        <NavOption
+          onClick={toggleTheme}
+          onKeyDown={toggleTheme}
+          tabIndex={navOptions.length + 1}
+          role="button"
+          className="themeBtn iconSet"
+        >
+          <FiSun />
+        </NavOption>
       </NavList>
 
       {userState?.isLogin ? (
         <NavUser>
-          <NavOption
-            onClick={handleNoticeBtn}
-            onKeyDown={handleNoticeBtn}
-            tabIndex={navOptions.length}
-            role="button"
-            className="themeBtn noticeBtn"
-          >
-            <FiBell />
-            <div className="noticeCount">{noticeListSize > 9 ? '+' : noticeListSize}</div>
-          </NavOption>
+          <ul>
+            <NavOption
+              onClick={handleNoticeBtn}
+              onKeyDown={handleNoticeBtn}
+              tabIndex={navOptions.length + 2}
+              role="button"
+              className="themeBtn noticeBtn"
+            >
+              <FiBell />
+              <div className="noticeCount">{noticeListSize > 9 ? '+' : noticeListSize}</div>
+            </NavOption>
+          </ul>
           <Link
             href={{ pathname: `/profile/${userState.userUuid}`, query: { mypage: true } }}
             style={{ display: 'flex' }}

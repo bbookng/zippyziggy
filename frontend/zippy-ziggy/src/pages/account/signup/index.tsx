@@ -20,6 +20,8 @@ import checkImageFile from '@/utils/checkImageFile';
 
 import Link from 'next/link';
 import { postCongratulationAlarms } from '@/core/notice/noticeAPI';
+import axios from 'axios';
+import imgComp from '@/utils/imgComp';
 
 const LoginContainer = styled.div`
   width: 100%;
@@ -85,12 +87,37 @@ export default function SignUp() {
 
   const inputRef = useRef(null); // useRef를 사용하여 input element를 참조합니다
 
+  async function getFile(url: string) {
+    try {
+      const {
+        data: { type, arrayBuffer },
+      } = await axios.get('/file', { params: { url } });
+      const blob = new Blob([Uint8Array.from(arrayBuffer)], { type });
+      const arr = url.split('/');
+      setFile(
+        new File([blob], `profiletImg.${arr[arr.length - 1].split('.')[1]}`, {
+          type: `image/${arr[arr.length - 1].split('.')[1]}`,
+        })
+      );
+    } catch {
+      ('');
+    }
+  }
+
+  useEffect(() => {
+    if (typeof profileImg === 'string') {
+      getFile(profileImg);
+    }
+  }, [profileImg]);
+
   // 파일 선택
   const registerImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const imgFile = e.target.files[0];
+    setFile(imgFile);
     const result = await checkImageFile(imgFile);
     if (result.result) {
-      setFile(imgFile); // 파일 이미지 변경
+      setFile(imgFile);
+      // 파일 이미지 변경
     }
   };
 
@@ -125,8 +152,13 @@ export default function SignUp() {
     };
 
     // user 정보 넣기
-    const fileToAppend = file || new File([new Blob()], 'empty_image.png', { type: 'image/png' });
-    formData.append('file', fileToAppend);
+    if (file) {
+      const imageFile = await imgComp({ image: file, maxSizeMB: 0.5, maxWidthOrHeight: 128 });
+      formData.append('file', imageFile);
+    } else {
+      const fileToAppend = file || new File([new Blob()], 'empty_image.png', { type: 'image/png' });
+      formData.append('file', fileToAppend);
+    }
     formData.append('user', new Blob([JSON.stringify(value)], { type: 'application/json' }));
 
     // 회원가입 요청

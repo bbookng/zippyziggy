@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 // 컴포넌트들을 import
 import Title from '@/components/Typography/Title';
@@ -21,6 +21,11 @@ import ProfileImage from '@/components/Image/ProfileImage';
 import { useQuery } from '@tanstack/react-query';
 import { deleteUserAPI, putUserAPI } from '@/core/user/userAPI';
 import Modal from '@/components/Modal/Modal';
+import imgComp from '@/utils/imgComp';
+import axios from 'axios';
+import Toastify from 'toastify-js';
+import toastifyCSS from '@/assets/toastify.json';
+import message from '@/assets/message.json';
 
 const LoginContainer = styled.div`
   width: 100%;
@@ -83,9 +88,27 @@ export default function Modify() {
   // 모달
   const [isOpenCommentDeleteModal, setIsOpenCommentDeleteModal] = useState<boolean>(false);
 
+  async function getFile(url: string) {
+    try {
+      const {
+        data: { type, arrayBuffer },
+      } = await axios.get('/file', { params: { url } });
+      const blob = new Blob([Uint8Array.from(arrayBuffer)], { type });
+      const arr = url.split('/');
+      setFile(
+        new File([blob], `profiletImg.${arr[arr.length - 1].split('.')[1]}`, {
+          type: `image/${arr[arr.length - 1].split('.')[1]}`,
+        })
+      );
+    } catch {
+      ('');
+    }
+  }
+
   // Prompt 상세 요청 API
   const handleGetUserDetail = async () => {
     const res = await httpAuth.get(`/members/profile`);
+    getFile(res.data.profileImg);
     setBeforeFileUrl(res.data.profileImg);
     setBeforeNickname(res.data.nickname);
     return res;
@@ -109,8 +132,14 @@ export default function Modify() {
     const formData = new FormData();
 
     // user 정보 넣기
-    const fileToAppend = file || new File([new Blob()], 'empty_image.png', { type: 'image/png' });
-    formData.append('file', fileToAppend);
+    if (file) {
+      const imageFile = await imgComp({ image: file, maxSizeMB: 0.5, maxWidthOrHeight: 128 });
+      formData.append('file', imageFile);
+    } else {
+      const fileToAppend = file || new File([new Blob()], 'empty_image.png', { type: 'image/png' });
+      formData.append('file', fileToAppend);
+    }
+
     if (nickname) {
       formData.append('nickname', nickname);
     }
@@ -127,7 +156,21 @@ export default function Modify() {
       setBeforeNickname(result.nickname);
       setBeforeFileUrl(result.profileImg);
       setStatusNickname('success');
+      Toastify({
+        text: message.UpdateProfileSuccess,
+        duration: 1000,
+        position: 'center',
+        stopOnFocus: true,
+        style: toastifyCSS.success,
+      }).showToast();
     } else {
+      Toastify({
+        text: message.UpdateProfileFail,
+        duration: 1000,
+        position: 'center',
+        stopOnFocus: true,
+        style: toastifyCSS.fail,
+      }).showToast();
       setStatusNickname('error');
     }
   };

@@ -136,7 +136,7 @@ function App({ Component, pageProps }: AppProps) {
           sizes="16x16"
           href="/images/favicons/favicon-16x16.png"
         />
-
+        <link rel="icon" href="/favicon.ico" />
         {/* <link rel="manifest" href="/manifest.json" /> */}
         <meta name="msapplication-TileColor" content="#ffffff" />
         <meta name="msapplication-TileImage" content="/ms-icon-144x144.png" />
@@ -152,9 +152,6 @@ function App({ Component, pageProps }: AppProps) {
       </Head>
       <PersistGate persistor={persistor}>
         {/* loading={<div></div>}  */}
-        <Head>
-          <meta property="og:meta" content="메타테그감지%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" />
-        </Head>
         <QueryClientProvider client={queryClient}>
           <ThemeProvider theme={colorTheme === 'dark' ? darkTheme : lightTheme}>
             <GlobalStyle />

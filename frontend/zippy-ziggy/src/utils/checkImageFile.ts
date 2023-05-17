@@ -24,18 +24,18 @@ const checkImageFile = (file: File, maxSize = 5) => {
     }).showToast();
     return { result: false, message: 'impossibleType' };
   }
-  // 파일 용량이 너무 큰 경우 체크
-  if (fileSize > maxSize * 1024 * 1024) {
-    Toastify({
-      text: message.CheckImageSize,
-      duration: 1000,
-      position: 'center',
-      stopOnFocus: true,
-      style: toastifyCSS.fail,
-    }).showToast();
-    return { result: false, message: 'impossibleSize' };
-  }
-  // 파일 용량 체크 // 3MB
+  // // 파일 용량이 너무 큰 경우 체크
+  // if (fileSize > maxSize * 1024 * 1024) {
+  //   Toastify({
+  //     text: message.CheckImageSize,
+  //     duration: 1000,
+  //     position: 'center',
+  //     stopOnFocus: true,
+  //     style: toastifyCSS.fail,
+  //   }).showToast();
+  //   return { result: false, message: 'impossibleSize' };
+  // }
+  // // 파일 용량 체크 // 3MB
   return { result: true, message: 'true' };
 };
 

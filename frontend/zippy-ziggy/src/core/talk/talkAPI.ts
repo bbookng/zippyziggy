@@ -60,9 +60,12 @@ export const putTalksCommentAPI = async (requestData: {
  * @param crntMemberUuid
  * @returns { result: 'SUCCESS', data: res.data }
  */
-export const deleteTalksCommentAPI = async (commentId: string, crntMemberUuid: string) => {
+export const deleteTalksCommentAPI = async (requestData: {
+  id: string | string[] | number;
+  commentId: number;
+}) => {
   try {
-    const res = await httpAuth.delete(`/talks/${commentId}/comments/${crntMemberUuid}`);
+    const res = await httpAuth.delete(`/talks/${requestData.id}/comments/${requestData.commentId}`);
     if (res.status === 204) {
       Toastify({
         text: message.DeleteCommentSuccess,
@@ -253,9 +256,9 @@ export const getTalksAPI = async (talkId: string) => {
  */
 export const deleteTalksAPI = async (reqeustData: { talkId: string | string[]; router }) => {
   try {
-    const res = await httpAuth.delete(`/talks/${reqeustData.talkId}/comments`);
+    const res = await httpAuth.delete(`/talks/${reqeustData.talkId}`);
     const { router } = reqeustData;
-    router.push(`/prompts`);
+    router.push(`/talks`);
     if (res.status === 204) {
       Toastify({
         text: message.DeleteTalkSuccess,
