@@ -274,6 +274,28 @@ public class MemberController {
     }
 
     /**
+     * 멤버가 북마크를 누른 프롬프트 조회(extension)
+     */
+    @GetMapping("/prompts/bookmark/{crntMemberUuid}/extension")
+    @Operation(summary = "멤버의 북마크 프롬프트 조회(extension)", description = "마이 프로필에서 북마크한 프롬프트를 조회한다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
+    public ResponseEntity<?> findPromptsBookmarkExtension(
+        @PathVariable String crntMemberUuid,
+        @RequestParam(required = false, defaultValue = "0") int page,
+        @RequestParam(required = false, defaultValue = "10") int size,
+        @RequestParam(required = false, defaultValue = "likeCnt") String sort
+    ) {
+            PromptCardListExtensionResponse promptCardListExtensionResponse = promptClient
+                .getPromptsBookmarkExtension(crntMemberUuid, page, size, sort)
+                .orElseThrow(NotExistPromptList::new);
+            return ResponseEntity.ok(promptCardListExtensionResponse);
+    }
+
+    /**
      * 멤버가 생성한 프롬프트 조회
      */
     @GetMapping("/prompts/profile/{crntMemberUuid}")
