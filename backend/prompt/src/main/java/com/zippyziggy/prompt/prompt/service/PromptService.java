@@ -784,9 +784,6 @@ public class PromptService{
 					.map(Map.Entry::getKey)
 					.collect(Collectors.toList());
 
-			List<Prompt> recommendedPrompts = promptRepository.findAllByPromptIdIn(promptIds);
-
-			log.info("recommendedPrompts = " + recommendedPrompts);
 
 
 			return null;

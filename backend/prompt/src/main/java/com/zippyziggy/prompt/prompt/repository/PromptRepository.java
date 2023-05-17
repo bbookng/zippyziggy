@@ -42,5 +42,4 @@ public interface PromptRepository extends JpaRepository<Prompt, Long>, PromptCus
 
     long countAllByMemberUuidAndCategory(UUID memberUuid, Category category);
 
-    List<Prompt> findAllByPromptIdIn(List<Long> promptsIds);
 }
