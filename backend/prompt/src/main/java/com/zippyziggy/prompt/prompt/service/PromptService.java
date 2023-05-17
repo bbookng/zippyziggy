@@ -835,7 +835,7 @@ public class PromptService{
     }
 
 	public List<Prompt> testSearch(String keyword, Pageable pageable) {
-		return promptRepository.findByTitleContainsAndDescriptionContainsAndPrefixContainsAndSuffixContainsAndExampleContains(
+		return promptRepository.findByTitleContainsOrDescriptionContainsOrPrefixContainsOrSuffixContainsOrExampleContains(
 			keyword, keyword, keyword, keyword, keyword, pageable);
 	}
 }

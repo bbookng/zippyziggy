@@ -95,7 +95,7 @@ dependencies {
 	implementation 'com.sun.jersey.contribs:jersey-apache-client4:1.19.4'
 
 	// logstash
-	implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
+	implementation 'net.logstash.logback:logstash-logback-encoder:7.1.1'
 }
 
 dependencyManagement {
