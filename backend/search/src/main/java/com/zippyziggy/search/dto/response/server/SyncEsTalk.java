@@ -14,6 +14,7 @@ public class SyncEsTalk {
     private Long regDt;
     private Long likeCnt;
     private Long hit;
+    private String model;
 
     private List<EsMessage> esMessages;
 }

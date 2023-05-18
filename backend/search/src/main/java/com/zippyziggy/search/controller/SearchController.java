@@ -5,6 +5,7 @@ import com.zippyziggy.search.dto.response.SearchPromptList;
 import com.zippyziggy.search.dto.response.SearchTalkList;
 import com.zippyziggy.search.service.EsPromptService;
 import com.zippyziggy.search.service.EsTalkService;
+import io.micrometer.core.annotation.Timed;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -27,6 +28,7 @@ public class SearchController {
         @ApiResponse(responseCode = "500", description = "서버 에러")
     })
     @GetMapping("/prompts")
+    @Timed(value = "ZippyZiggy 프롬프트 검색", longTask = true)
     public ResponseEntity<SearchPromptList> searchPrompts(
         @RequestHeader(required = false) String crntMemberUuid,
         @RequestParam(required = false) String keyword,

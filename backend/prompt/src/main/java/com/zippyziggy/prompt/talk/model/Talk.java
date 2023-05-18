@@ -18,6 +18,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.zippyziggy.prompt.talk.dto.request.EsTalkRequest;
+import com.zippyziggy.prompt.talk.dto.response.TalkListResponse;
 import com.zippyziggy.prompt.talk.dto.response.TalkResponse;
 
 import com.zippyziggy.prompt.prompt.dto.response.MemberResponse;
@@ -63,6 +64,8 @@ public class Talk {
 	@OneToMany(mappedBy = "talk", cascade = CascadeType.ALL)
 	private List<Message> messages;
 
+	private String model;
+
 	public void setPrompt(Prompt prompt) {
 		this.prompt = prompt;
 	}
@@ -79,6 +82,7 @@ public class Talk {
 		return Talk.builder()
 			.memberUuid(crntMemberUuid)
 			.title(data.getTitle())
+			.model(data.getModel())
 			.regDt(LocalDateTime.now())
 			.likeCnt(0L)
 			.hit(0L)
@@ -89,6 +93,7 @@ public class Talk {
 		List<MessageResponse> messageResponses = this.messages.stream()
 				.map(m -> m.toMessageResponse()).collect(Collectors.toList());
 		return TalkResponse.builder()
+				.talkId(this.id)
 				.title(this.title)
 				.regDt(this.regDt)
 				.memberUuid(this.memberUuid)
@@ -107,7 +112,8 @@ public class Talk {
 			.collect(Collectors.toList());
 
 		return TalkDetailResponse.builder()
-			.title(this.getTitle())
+			.title(this.title)
+			.model(this.model)
 			.isLiked(isLiked)
 			.likeCnt(likeCnt)
 			.regDt(regDt)
@@ -126,13 +132,34 @@ public class Talk {
 
 		return EsTalkRequest.builder()
 				.talkId(this.id)
-				.promptUuid(this.getPrompt().getPromptUuid().toString())
 				.memberUuid(this.getMemberUuid().toString())
 				.title(this.getTitle())
 				.regDt(this.regDt.atZone(ZoneId.systemDefault()).toInstant().getEpochSecond())
 				.likeCnt(this.likeCnt)
 				.hit(this.hit)
+				.model(this.model)
 				.esMessages(messageResponses)
 				.build();
+	}
+
+	public TalkListResponse from(
+		String question,
+		String answer,
+		MemberResponse member,
+		Long likeCnt,
+		Long commentCnt,
+		Boolean isLiked
+	) {
+		return TalkListResponse.builder()
+			.talkId(this.id)
+			.title(this.title)
+			.model(this.model)
+			.question(question)
+			.answer(answer)
+			.writer(member.toWriterResponse())
+			.likeCnt(likeCnt)
+			.commentCnt(commentCnt)
+			.isLiked(isLiked)
+			.build();
 	}
 }

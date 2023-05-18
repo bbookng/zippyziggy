@@ -87,6 +87,18 @@ class MemberApplicationTests {
 		}
 
 		System.out.println("set = " + set);
+	}
+
+	@Test
+	public void redisSetTest() {
+
+		String key = "test";
+
+		redisTemplate.opsForSet().add(key, "1", "2", "3");
+		Set<String> members = redisTemplate.opsForSet().members(key);
+		System.out.println("members = " + members);
+
 
 	}
+
 }
