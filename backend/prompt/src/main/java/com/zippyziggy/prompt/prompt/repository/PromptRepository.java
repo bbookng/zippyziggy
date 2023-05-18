@@ -42,9 +42,7 @@ public interface PromptRepository extends JpaRepository<Prompt, Long>, PromptCus
 
     long countAllByMemberUuidAndCategory(UUID memberUuid, Category category);
 
-    List<Prompt> findAllByIdAndStatusCode(List<Long> id ,StatusCode statusCode);
-
-    List<Prompt> findAllByIdAndStatusCodeIn(List<Long> ids, StatusCode... statusCodes);
+    Prompt findByIdAndStatusCode(Long id ,StatusCode statusCode);
 
     List<Prompt> findAllByIdIn(List<Long> promptsIds);
 }
