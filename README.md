@@ -186,7 +186,21 @@
 
 ## ERD 다이어그램
 
-![ZippyZiggy](assets/ZippyZiggy.png)
+### Prompt
+
+![prompt](assets/prompt.png)
+
+
+
+### member
+
+![member](assets/member.png)
+
+
+
+### notice
+
+![notice](assets/notice.png)
 
 ## API 명세서
 
