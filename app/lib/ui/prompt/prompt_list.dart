@@ -73,6 +73,7 @@ class _PromptListState extends State<PromptList> {
           sort: _sort,
           size: size,
         );
+        FocusScope.of(context).nextFocus();
       },
     );
   }
@@ -93,67 +94,74 @@ class _PromptListState extends State<PromptList> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          // 윗공간
-          const SizedBox(
-            height: 20,
-          ),
-
-          // 카테고리 드랍다운
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Container(
-                width: MediaQuery.of(context).size.width * 0.5,
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: CustomDropdown(
-                  title: '카테고리',
-                  itemList: categoryList,
-                  selectedValue: 'ALL',
-                  onSelected: (String value) {
-                    handleChangeCategory(value);
-                  },
-                ),
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width * 0.5,
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: CustomDropdown(
-                  title: '정렬',
-                  itemList: sortList,
-                  selectedValue: 'likeCnt',
-                  onSelected: (String value) {
-                    handleChangeSort(value);
-                  },
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-
-          // 검색창
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: DebouncedSearchBar(
-              content: _keyword,
-              onChangeContent: (value) {
-                setState(() {
-                  _keyword = value;
-                });
-              },
-              handleSearch: handleGetPrompt,
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        body: Column(
+          children: [
+            // 윗공간
+            const SizedBox(
+              height: 20,
             ),
-          ),
 
-          // 프롬프트 목록들
-          Expanded(
-            child: _promptListView(),
-          )
-        ],
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                // 카테고리 드랍다운
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: CustomDropdown(
+                    title: '카테고리',
+                    itemList: categoryList,
+                    selectedValue: 'ALL',
+                    onSelected: (String value) {
+                      handleChangeCategory(value);
+                    },
+                  ),
+                ),
+
+                // 정렬 드랍다운
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: CustomDropdown(
+                    title: '정렬',
+                    itemList: sortList,
+                    selectedValue: 'likeCnt',
+                    onSelected: (String value) {
+                      handleChangeSort(value);
+                    },
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+
+            // 검색창
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: DebouncedSearchBar(
+                content: _keyword,
+                onChangeContent: (value) {
+                  setState(() {
+                    _keyword = value;
+                  });
+                },
+                handleSearch: handleGetPrompt,
+              ),
+            ),
+
+            // 프롬프트 목록들
+            Expanded(
+              child: _promptListView(),
+            )
+          ],
+        ),
       ),
     );
   }

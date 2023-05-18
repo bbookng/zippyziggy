@@ -13,12 +13,12 @@ if (flutterRoot == null) {
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
 if (flutterVersionCode == null) {
-    flutterVersionCode = '4'
+    flutterVersionCode = '6'
 }
 
 def flutterVersionName = localProperties.getProperty('flutter.versionName')
 if (flutterVersionName == null) {
-    flutterVersionName = '1.0.1'
+    flutterVersionName = '1.0.3'
 }
 
 def keystoreProperties = new Properties()
@@ -33,7 +33,7 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 def kakaoNativeKey = localProperties.getProperty('KAKAO_NATIVE_KEY')
 
-
+\
 android {
     namespace "com.example.app"
     compileSdkVersion flutter.compileSdkVersion

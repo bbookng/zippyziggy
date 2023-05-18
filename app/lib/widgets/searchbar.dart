@@ -30,7 +30,7 @@ class _DebouncedSearchBarState extends State<DebouncedSearchBar> {
     widget.onChangeContent(_content);
     if (_debounce.isActive) _debounce.cancel();
     _debounce = Timer(
-        const Duration(milliseconds: 500), () => widget.handleSearch(true));
+        const Duration(milliseconds: 600), () => widget.handleSearch(true));
   }
 
   @override
@@ -40,7 +40,7 @@ class _DebouncedSearchBarState extends State<DebouncedSearchBar> {
     _searchController.addListener(() {
       _onChangeContent(_searchController.text);
     });
-    _debounce = Timer(const Duration(milliseconds: 500), () {});
+    _debounce = Timer(const Duration(milliseconds: 600), () {});
   }
 
   @override

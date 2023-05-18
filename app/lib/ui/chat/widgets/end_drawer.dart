@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:zippy_ziggy/app_theme.dart';
 import 'package:zippy_ziggy/ui/chat/widgets/bookmarked_list.dart';
+import 'package:zippy_ziggy/ui/chat/widgets/recent_list.dart';
 
 class EndDrawer extends StatefulWidget {
   const EndDrawer({
@@ -17,6 +18,9 @@ class _EndDrawerState extends State<EndDrawer> with TickerProviderStateMixin {
   final List<Tab> myTabs = <Tab>[
     const Tab(
       text: '북마크 목록',
+    ),
+    const Tab(
+      text: '최근 사용 목록',
     ),
   ];
 
@@ -53,6 +57,7 @@ class _EndDrawerState extends State<EndDrawer> with TickerProviderStateMixin {
               controller: _tabController,
               children: const [
                 BookmarkedList(),
+                RecentList(),
               ],
             ),
           )

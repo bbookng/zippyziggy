@@ -42,22 +42,25 @@ class PromptIntroduction extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: Row(children: [
-            Flexible(
-              fit: FlexFit.tight,
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-                color: Colors.grey.withOpacity(0.2),
-                child: Text(
-                  prompt.description!,
-                  style: AppTheme.body1.copyWith(
-                    color: Colors.white,
+          child: Row(
+            children: [
+              if (prompt.description != null)
+                Flexible(
+                  fit: FlexFit.tight,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 14, vertical: 12),
+                    color: Colors.grey.withOpacity(0.2),
+                    child: Text(
+                      prompt.description!,
+                      style: AppTheme.body1.copyWith(
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-          ]),
+            ],
+          ),
         ),
         const SizedBox(
           height: 20,

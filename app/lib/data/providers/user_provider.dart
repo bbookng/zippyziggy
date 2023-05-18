@@ -198,6 +198,23 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
+  // 최근 프롬프트 목록 조회
+  Future<bool> getRecentPromptList({userUuid, size}) async {
+    isLoading = true;
+    notifyListeners();
+    try {
+      Map<String, dynamic> data =
+          await _userRepository.getRecentPromptListAPI(userUuid);
+      _promptList = data["promptList"];
+      return true;
+    } catch (e) {
+      return false;
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
   // AccessToken으로 내 정보 가져오기
   Future<bool> getMyInfo() async {
     try {

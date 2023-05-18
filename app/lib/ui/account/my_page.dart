@@ -84,7 +84,7 @@ class _MyPageState extends State<MyPage> with TickerProviderStateMixin {
                   delegate: SliverChildListDelegate(
                     [
                       SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.78,
+                        height: MediaQuery.of(context).size.height - 190,
                         child: TabBarView(
                           controller: _tabController,
                           children: const [

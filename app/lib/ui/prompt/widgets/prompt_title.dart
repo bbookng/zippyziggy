@@ -58,10 +58,11 @@ class _PromptTitleState extends State<PromptTitle> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                categoryMap[widget.prompt.category]!,
-                style: AppTheme.body2.copyWith(fontSize: 18),
-              ),
+              if (widget.prompt.category != null)
+                Text(
+                  categoryMap[widget.prompt.category]!,
+                  style: AppTheme.body2.copyWith(fontSize: 18),
+                ),
               Row(
                 children: [
                   IconButton(
@@ -124,15 +125,16 @@ class _PromptTitleState extends State<PromptTitle> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.75,
-                child: Text(
-                  widget.prompt.title!,
-                  style: AppTheme.headline.copyWith(),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
+              if (widget.prompt.title != null)
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.75,
+                  child: Text(
+                    widget.prompt.title!,
+                    style: AppTheme.headline.copyWith(),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                  ),
                 ),
-              ),
             ],
           ),
           const SizedBox(
@@ -140,21 +142,22 @@ class _PromptTitleState extends State<PromptTitle> {
           ),
 
           // 마지막 업데이트
-          Row(
-            children: [
-              const Text(
-                '마지막 업데이트: ',
-                style: AppTheme.caption,
-              ),
-              Text(
-                DateFormat('yyyy.MM.dd').format(
-                  DateTime.fromMillisecondsSinceEpoch(
-                      widget.prompt.updDt! * 1000),
+          if (widget.prompt.updDt != null)
+            Row(
+              children: [
+                const Text(
+                  '마지막 업데이트: ',
+                  style: AppTheme.caption,
                 ),
-                style: AppTheme.caption,
-              ),
-            ],
-          ),
+                Text(
+                  DateFormat('yyyy.MM.dd').format(
+                    DateTime.fromMillisecondsSinceEpoch(
+                        widget.prompt.updDt! * 1000),
+                  ),
+                  style: AppTheme.caption,
+                ),
+              ],
+            ),
           const SizedBox(
             height: 20,
           ),

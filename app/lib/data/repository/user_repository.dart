@@ -199,6 +199,21 @@ class UserRepository {
     return returnData;
   }
 
+  // GET : 유저의 최근 조회한 프롬프트 목록 조회
+  Future<Map<String, dynamic>> getRecentPromptListAPI(String userUuid) async {
+    await Future.delayed(const Duration(milliseconds: 500));
+    Response response =
+        await _dioService.get("/members/prompts/recent/$userUuid", null);
+    final promptsData = response.data as List;
+    List<PromptModel> promptList =
+        promptsData.map((json) => PromptModel.fromJson(json)).toList();
+
+    Map<String, dynamic> returnData = {
+      "promptList": promptList,
+    };
+    return returnData;
+  }
+
   // GET : AccessToken으로 내 정보 조회
   Future<Map<String, dynamic>> getMyInfoAPI() async {
     Response response = await _dioService.get("/members/profile", null);
