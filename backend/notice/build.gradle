@@ -57,6 +57,11 @@ dependencies {
 	implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
 	implementation 'org.springframework.cloud:spring-cloud-starter-zipkin:2.2.8.RELEASE'
 
+	// monitoring
+	implementation 'io.micrometer:micrometer-registry-prometheus'
+
+	// logstash
+	implementation 'net.logstash.logback:logstash-logback-encoder:7.1.1'
 }
 
 dependencyManagement {
