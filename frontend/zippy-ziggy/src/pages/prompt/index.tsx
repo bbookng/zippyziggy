@@ -23,6 +23,16 @@ const FooterBox = styled.div`
   height: 4.25rem;
 `;
 
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 99;
+  background-color: var(--colors-black-50);
+`;
+
 const initialState = {
   prompt1: '',
   prompt2: '',
@@ -282,6 +292,7 @@ function PromptCreate() {
         sequence={guideSequence}
         targetElementRef={guideElementRef[guideSequence]}
       />
+      {isShowGuide && <Overlay onClick={() => setIsShowGuide(false)} />}
     </>
   );
 }

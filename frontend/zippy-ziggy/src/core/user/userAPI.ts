@@ -246,6 +246,25 @@ export const getPromptsBookmarkAPI = async (requestData: {
 };
 
 /**
+ * 맴버가 생성한 프롬프트 조회
+ * @param id
+ * @param page
+ * @param size
+ * @returns
+ */
+export const getPromptsRecommendAPI = async () => {
+  try {
+    const res = await httpAuth.get(`/prompts/recommender`);
+    if (res.status === 200) {
+      return { result: 'SUCCESS', data: res.data };
+    }
+    return { result: 'FAIL', data: res.data };
+  } catch (err) {
+    return { result: 'FAIL', data: err };
+  }
+};
+
+/**
  * 맴버가 생성한 톡 조회
  * @param id
  * @param page

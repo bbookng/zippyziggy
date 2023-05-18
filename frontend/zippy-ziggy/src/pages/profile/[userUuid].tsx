@@ -4,6 +4,7 @@ import Title from '@/components/Typography/Title';
 import {
   getPromptsBookmarkAPI,
   getPromptsMemberAPI,
+  getPromptsRecommendAPI,
   getTalksProfileAPI,
   getUserAPI,
   postUserLogoutAPI,
@@ -22,6 +23,7 @@ import Paging from '@/components/Paging/Paging';
 import Footer from '@/components/Footer/Footer';
 import Paragraph from '@/components/Typography/Paragraph';
 import { links } from '@/utils/links';
+import ProfileRecommendPromptList from '@/components/DetailPrompt/ProfileRecommendPromptList';
 
 const ProfileContainer = styled.div`
   width: 100%;
@@ -50,6 +52,7 @@ const ProfilePromptContainer = styled.div`
 
   .promptBtns {
     display: flex;
+    flex-flow: wrap;
     justify-content: flex-start;
     align-items: center;
     margin-bottom: 24px;
@@ -73,11 +76,12 @@ export default function Index() {
   const [profileImg, setProfileImg] = useState('');
   const router = useRouter();
   const { userUuid, mypage } = router.query as { userUuid: string; mypage: string };
-  const [isSelectedBtn, setIsSelectedBtn] = useState<'prompt' | 'bookmark'>('prompt');
+  const [isSelectedBtn, setIsSelectedBtn] = useState<'prompt' | 'bookmark' | 'recommend'>('prompt');
   const [cardList, setCardList] = useState<Array<unknown>>([]);
   const [totalPromptsCnt, setTotalPromptsCnt] = useState<number>(0);
   const page = useRef<number>(0);
   const [isMyPage, setIsMyPage] = useState<boolean>(false);
+  const [isDownload, setIsDownload] = useState<boolean>(false);
   // 1단계 : 유저 정보 받아오기
   const handleUserAPI = async () => {
     const result = await getUserAPI(userUuid);
@@ -178,6 +182,14 @@ export default function Index() {
     handleTalksProfile();
   };
 
+  useEffect(() => {
+    const zippy = document.documentElement.getAttribute('zippy');
+    if (zippy === 'true') {
+      setIsDownload(true);
+    } else {
+      setIsDownload(false);
+    }
+  }, []);
   return (
     <ProfileContainer>
       <ProfileHeaderContainer>
@@ -226,7 +238,7 @@ export default function Index() {
             >
               <FiLink2 className="icon" size="20" style={{ marginLeft: '8px' }} />
               <span className="flex1" style={{ marginLeft: '8px' }}>
-                GPT 확장 설치하기
+                {isDownload ? 'GPT 확장이 설치됨' : 'GPT 확장 설치하기'}
               </span>
             </IconButton>
           </div>
@@ -242,6 +254,7 @@ export default function Index() {
             color="whiteColor100"
             fontColor="blackColor70"
             padding="0 24px"
+            margin="4px"
             width="1"
             onClick={() => setIsSelectedBtn('prompt')}
           >
@@ -252,27 +265,47 @@ export default function Index() {
             display="inline-block"
             color="whiteColor100"
             fontColor="blackColor70"
-            margin="0 0 0 12px"
+            margin="4px"
             padding="0 32px"
             width="1"
             onClick={() => setIsSelectedBtn('bookmark')}
           >
             북마크
           </Button>
+          {isMyPage ? (
+            <Button
+              isRound
+              display="inline-block"
+              color="whiteColor100"
+              fontColor="blackColor70"
+              margin="4px"
+              padding="0 32px"
+              width="1"
+              onClick={() => setIsSelectedBtn('recommend')}
+            >
+              추천
+            </Button>
+          ) : null}
         </div>
         <ProfilePromptList
-          className={isSelectedBtn === 'bookmark' && 'invisible'}
+          className={isSelectedBtn === 'prompt' ? 'visible' : 'invisible'}
           userUuid={userUuid}
           size={6}
           getData={getPromptsMemberAPI}
         />
 
         <ProfilePromptList
-          className={isSelectedBtn === 'prompt' && 'invisible'}
+          className={isSelectedBtn === 'bookmark' ? 'visible' : 'invisible'}
           userUuid={userUuid}
           size={6}
           getData={getPromptsBookmarkAPI}
         />
+        {isMyPage ? (
+          <ProfileRecommendPromptList
+            className={isSelectedBtn === 'recommend' ? 'visible' : 'invisible'}
+            size={6}
+          />
+        ) : null}
       </ProfilePromptContainer>
       <ProfileTalkContainer>
         <Title>대화</Title>

@@ -13,27 +13,33 @@ const toastDevelop = (messageType: 'DevelopUseAdd' | 'DevelopNone') => {
   let remainingSeconds = 1;
   Toastify({
     text: message[messageType],
-    duration: 3000,
+    duration: 2000,
     position: 'center',
     stopOnFocus: true,
     style: toastifyCSS.fail,
+    onClick: () => {
+      Router.push(links.downloadLink);
+    },
   }).showToast();
 
   const countdownInterval = setInterval(() => {
     remainingSeconds--;
     Toastify({
-      text: `다운로드 탭을 클릭하여 확장을 다운로드 해보세요!`,
-      duration: 2000,
+      text: `🖱클릭하여 설치페이지로 이동해주세요!`,
+      duration: 3000,
       position: 'center',
       stopOnFocus: true,
       style: toastifyCSS.fail,
+      onClick: () => {
+        Router.push(links.downloadLink);
+      },
     }).showToast();
 
     if (remainingSeconds === 0) {
       clearInterval(countdownInterval);
       // Router.push(links.downloadLink); // '/' 페이지로 이동
     }
-  }, 3200);
+  }, 2000);
 
   return () => {
     clearInterval(countdownInterval);

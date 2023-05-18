@@ -158,12 +158,12 @@ const Navbar = ({ toggleTheme }) => {
     connectSSE();
 
     return () => {
-      if (!token && eventSource !== undefined) {
+      if (!userState.isLogin && eventSource !== undefined) {
         eventSource.close();
         setListening(false);
       }
     };
-  }, [token]);
+  }, [token, userState.isLogin]);
 
   const getToken = async () => {
     const result = await getTokenAPI();

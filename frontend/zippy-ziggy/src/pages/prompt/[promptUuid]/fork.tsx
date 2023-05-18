@@ -200,7 +200,6 @@ export default function PromptUpdate() {
         <TitleWrapper isNext={isNext}>
           <div className="title">프롬프트 포크</div>
           <div className="help">
-            <AiFillQuestionCircle className="icon" />
             <div>포크로 쉽게 변경해서 쓰세요</div>
           </div>
         </TitleWrapper>

@@ -90,7 +90,7 @@ export default function SideBar({
             className="btn btn2"
             onClick={handleMoveToCreatePromptForkPage}
           >
-            수정해서 사용하기
+            포크해서 사용하기
             <FaArrowRight className="icon" />
           </Button>
           {/* <Button buttonType="outline" className="btn btn3">
