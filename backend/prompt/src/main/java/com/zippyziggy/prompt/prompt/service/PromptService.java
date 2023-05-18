@@ -588,17 +588,20 @@ public class PromptService{
 				List<Long> promptIds = new ArrayList<>();
 
 				for (ZSetOperations.TypedTuple<Integer> tuple : set) {
-					log.info("tupe = >>>> " + tuple);
-					log.info("tupe = >>>> " + tuple.getValue());
-					Integer temp = tuple.getValue();
-					log.info("정수를 롱타입으로" + temp);
+					log.info("value = >>>> " + tuple.getValue());
 					Long value = Long.valueOf(tuple.getValue());
-					log.info("롱타입 그대로" + value);
 					promptIds.add(value);
 				}
 				log.info("promptIds = " + promptIds);
+				List<Prompt> prompts = promptRepository.findAllById(promptIds);
+
+//				for (Long promptId: promptIds) {
+//					Prompt prompt = promptRepository.findById(promptId).get();
+//					prompts.add(prompt);
+//				}
+
 				List<PromptCardResponse> promptCardResponses = new ArrayList<>();
-				List<Prompt> prompts = promptRepository.findAllByIdIn(promptIds);
+
 				for (Prompt prompt : prompts) {
 					long commentCnt = promptCommentRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
 					long forkCnt = promptRepository.countAllByOriginPromptUuidAndStatusCode(prompt.getPromptUuid(), StatusCode.OPEN);
