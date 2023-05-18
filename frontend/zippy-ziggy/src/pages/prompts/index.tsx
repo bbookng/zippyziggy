@@ -102,7 +102,7 @@ export default function Prompt() {
   useEffect(() => {
     handleSearch();
   }, [category, sort, debouncedKeyword, page]);
-  console.log(category, sort, debouncedKeyword, page);
+
   return (
     <Container>
       <SearchBox>
