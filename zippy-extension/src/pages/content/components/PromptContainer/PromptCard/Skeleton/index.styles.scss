@@ -1,0 +1,59 @@
+$backgroundColor: var(--black-color-10);
+
+@mixin background($color) {
+  background: $color linear-gradient(
+                  100deg,
+                  rgba(255, 255, 255, 0) 40%,
+                  rgba(255, 255, 255, 0.5) 50%,
+                  rgba(255, 255, 255, 0) 60%
+  );
+  background-size: 200% 100%;
+  background-position-x: 180%;
+  animation: 1s loading ease-in-out infinite;
+  animation-delay: -0.5s;
+}
+
+.ZP_prompt-card__skeleton {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  padding: 1rem 0.75rem 0.75rem 0.75rem;
+  background-color: var(--background-color);
+  border-radius: var(--borders-radius-base);
+  & > * {
+    margin-bottom: 1rem;
+  }
+
+  @keyframes loading {
+    to {
+      background-position-x: -20%;
+    }
+  }
+
+  .ZP_prompt-card__skeleton__caption {
+    @include background($backgroundColor);
+    border-radius: var(--borders-radius-base);
+    overflow: hidden;
+    height: 1.5rem;
+    width: 35%;
+  }
+
+  .ZP_prompt-card__skeleton__title {
+    @include background($backgroundColor);
+    margin: 0 0 1rem;
+    font-size: 1.5rem;
+    line-height: 1.5rem;
+    height: 3.5rem;
+    border-radius: 4px;
+    animation-delay: -0.3s;
+    width: 70%;
+  }
+
+  .ZP_prompt-card__skeleton__content {
+    @include background($backgroundColor);
+    padding: 2rem 1.8rem;
+    height: 4rem;
+    border-radius: 4px;
+    animation-delay: -0.4s;
+  }
+}

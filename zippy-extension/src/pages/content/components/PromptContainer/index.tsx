@@ -22,6 +22,7 @@ import { useQuery } from '@tanstack/react-query';
 import { SignUpResult } from '@pages/content/apis/member/models';
 import { getBookmarkList } from '@pages/content/apis/member';
 import { searchPrompts } from '@pages/content/apis/search';
+import Skeleton from '@pages/content/components/PromptContainer/PromptCard/Skeleton';
 
 export const category: Array<Category> = [
   { id: 'all', text: '전체', value: 'ALL' },
@@ -178,9 +179,7 @@ const PromptContainer = () => {
                       // eslint-disable-next-line react/no-array-index-key
                       .map((_, index) => (
                         // eslint-disable-next-line react/no-array-index-key
-                        <div key={index} style={{ height: '300px' }}>
-                          {}
-                        </div>
+                        <Skeleton key={index} />
                       ))
                   );
                 }
@@ -213,9 +212,7 @@ const PromptContainer = () => {
                     // eslint-disable-next-line react/no-array-index-key
                     .map((_, index) => (
                       // eslint-disable-next-line react/no-array-index-key
-                      <div key={index} style={{ height: '300px' }}>
-                        {}
-                      </div>
+                      <Skeleton key={index} />
                     ))
                 );
               }
