@@ -14,6 +14,7 @@ import com.zippyziggy.prompt.prompt.repository.PromptBookmarkRepository;
 import com.zippyziggy.prompt.prompt.repository.PromptCommentRepository;
 import com.zippyziggy.prompt.prompt.repository.PromptLikeRepository;
 import com.zippyziggy.prompt.prompt.repository.PromptRepository;
+import com.zippyziggy.prompt.talk.dto.request.EsTalkRequest;
 import com.zippyziggy.prompt.talk.dto.request.TalkRequest;
 import com.zippyziggy.prompt.talk.dto.response.MemberTalk;
 import com.zippyziggy.prompt.talk.dto.response.MemberTalkList;
@@ -79,15 +80,19 @@ public class TalkService {
 		talkRepository.save(talk);
 		List<Message> messageList = data.getMessages().stream().map(message -> Message.from(message, talk)).collect(
 				Collectors.toList());
+
 		talk.setMessages(messageList);
+		EsTalkRequest esTalkRequest = talk.toEsTalkRequest();
+
 		if (data.getPromptUuid() != null) {
 			talk.setPrompt(promptRepository
-				.findByPromptUuidAndStatusCode(UUID.fromString(data.getPromptUuid()), StatusCode.OPEN)
-				.orElseThrow(PromptNotFoundException::new));
+					.findByPromptUuidAndStatusCode(UUID.fromString(data.getPromptUuid()), StatusCode.OPEN)
+					.orElseThrow(PromptNotFoundException::new));
+			esTalkRequest.setPromptUuid(data.getPromptUuid());
 		}
 
 		// 생성 시 search 서비스에 Elasticsearch INSERT 요청
-		kafkaProducer.sendTalkCreateMessage("create-talk-topic", talk.toEsTalkRequest());
+		kafkaProducer.sendTalkCreateMessage("create-talk-topic", esTalkRequest);
 
 		return talk.toTalkResponse();
 	}
@@ -165,7 +170,7 @@ public class TalkService {
 	}
 
 	public List<TalkListResponse> getTalks(CircuitBreaker circuitBreaker, List<Talk> talks, String crntMemberUuid) {
-		List<TalkListResponse> talkListResponses = talks.stream().map(t -> {
+		List<TalkListResponse> talkListResponses = talks.stream().map(talk -> {
 
 			boolean isTalkLiked;
 
@@ -173,23 +178,21 @@ public class TalkService {
 				isTalkLiked = false;
 			} else {
 				isTalkLiked = talkLikeRepository
-						.findByTalk_IdAndMemberUuid(t.getId(), UUID.fromString(crntMemberUuid)) != null ? true : false;
+						.findByTalk_IdAndMemberUuid(talk.getId(), UUID.fromString(crntMemberUuid)).isPresent();
 			}
-			Long talkLikeCnt = talkLikeRepository.countAllByTalkId(t.getId());
-			Long talkCommentCnt = talkCommentRepository.countAllByTalk_Id(t.getId());
-			String question = messageRepository.findFirstByTalkIdAndRole(t.getId(), Role.USER).getContent().toString();
-			String answer = messageRepository.findFirstByTalkIdAndRole(t.getId(), Role.ASSISTANT).getContent().toString();
-			MemberResponse memberResponse = circuitBreaker.run(() -> memberClient.getMemberInfo(t.getMemberUuid()));
+			Long talkLikeCnt = talkLikeRepository.countAllByTalkId(talk.getId());
+			Long talkCommentCnt = talkCommentRepository.countAllByTalk_Id(talk.getId());
+			String question = messageRepository.findFirstByTalkIdAndRole(talk.getId(), Role.USER).getContent().toString();
+			String answer = messageRepository.findFirstByTalkIdAndRole(talk.getId(), Role.ASSISTANT).getContent().toString();
+			MemberResponse memberResponse = circuitBreaker.run(() -> memberClient.getMemberInfo(talk.getMemberUuid()));
 
-			return TalkListResponse.from(
-				t.getId(),
-				t.getTitle(),
-				question,
-				answer,
-				memberResponse,
-				talkLikeCnt,
-				talkCommentCnt,
-				isTalkLiked);
+			return talk.from(
+					question,
+					answer,
+					memberResponse,
+					talkLikeCnt,
+					talkCommentCnt,
+					isTalkLiked);
 
 		}).collect(Collectors.toList());
 		return talkListResponses;
@@ -214,14 +217,14 @@ public class TalkService {
 		final Boolean talkLikeExist = talkLikeRepository.existsByTalk_IdAndMemberUuid(talkId, crntMemberUuid);
 
 		Talk talk = talkRepository.findById(talkId)
-			.orElseThrow(TalkNotFoundException::new);
+				.orElseThrow(TalkNotFoundException::new);
 
 		if (!talkLikeExist) {
 			// 톡 좋아요 조회
 			TalkLike talkLike = TalkLike.builder()
-				.talk(talk)
-				.memberUuid(crntMemberUuid)
-				.regDt(LocalDateTime.now()).build();
+					.talk(talk)
+					.memberUuid(crntMemberUuid)
+					.regDt(LocalDateTime.now()).build();
 
 			// 톡 - 사용자 좋아요 관계 생성
 			talkLikeRepository.save(talkLike);
@@ -234,8 +237,8 @@ public class TalkService {
 
 			// 프롬프트 - 사용자 좋아요 취소
 			final TalkLike talkLike = talkLikeRepository
-				.findByTalk_IdAndMemberUuid(talkId, crntMemberUuid)
-				.orElseThrow(TalkNotFoundException::new);
+					.findByTalk_IdAndMemberUuid(talkId, crntMemberUuid)
+					.orElseThrow(TalkNotFoundException::new);
 			talkLikeRepository.delete(talkLike);
 
 			// 프롬프트 좋아요 개수 1 감소
@@ -305,10 +308,10 @@ public class TalkService {
 	}
 
     public MemberTalkList findTalksByMemberUuid(
-		String crntMemberUuid,
-		int page,
-		int size,
-		String sort
+			String crntMemberUuid,
+			int page,
+			int size,
+			String sort
 	) {
 		final Sort sortBy = Sort.by(Sort.Direction.DESC, sort);
 		final Pageable pageable = PageRequest.of(page, size, sortBy);

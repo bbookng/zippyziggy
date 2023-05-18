@@ -13,33 +13,30 @@ import com.zippyziggy.prompt.prompt.dto.request.PromptCntRequest;
 import com.zippyziggy.prompt.prompt.dto.request.PromptRatingRequest;
 import com.zippyziggy.prompt.prompt.dto.request.PromptReportRequest;
 import com.zippyziggy.prompt.prompt.dto.request.PromptRequest;
-import com.zippyziggy.prompt.prompt.dto.response.ChatGptResponse;
-import com.zippyziggy.prompt.prompt.dto.response.GptApiResponse;
-import com.zippyziggy.prompt.prompt.dto.response.MemberResponse;
-import com.zippyziggy.prompt.prompt.dto.response.PromptCardListResponse;
-import com.zippyziggy.prompt.prompt.dto.response.PromptCardResponse;
-import com.zippyziggy.prompt.prompt.dto.response.PromptDetailResponse;
-import com.zippyziggy.prompt.prompt.dto.response.PromptReportResponse;
-import com.zippyziggy.prompt.prompt.dto.response.PromptResponse;
-import com.zippyziggy.prompt.prompt.dto.response.SearchPromptResponse;
+import com.zippyziggy.prompt.prompt.dto.response.*;
 import com.zippyziggy.prompt.prompt.exception.AwsUploadException;
 import com.zippyziggy.prompt.prompt.exception.ForbiddenMemberException;
 import com.zippyziggy.prompt.prompt.exception.PromptNotFoundException;
 import com.zippyziggy.prompt.prompt.exception.RatingAlreadyExistException;
 import com.zippyziggy.prompt.prompt.exception.ReportAlreadyExistException;
 import com.zippyziggy.prompt.prompt.model.*;
-import com.zippyziggy.prompt.prompt.repository.*;
+import com.zippyziggy.prompt.prompt.repository.PromptBookmarkRepository;
+import com.zippyziggy.prompt.prompt.repository.PromptClickRepository;
+import com.zippyziggy.prompt.prompt.repository.PromptCommentRepository;
+import com.zippyziggy.prompt.prompt.repository.PromptLikeRepository;
+import com.zippyziggy.prompt.prompt.repository.PromptReportRepository;
+import com.zippyziggy.prompt.prompt.repository.PromptRepository;
+import com.zippyziggy.prompt.prompt.repository.RatingRepository;
 import com.zippyziggy.prompt.prompt.util.RedisUtils;
+import com.zippyziggy.prompt.recommender.service.RecommenderService;
 import com.zippyziggy.prompt.talk.dto.response.PromptTalkListResponse;
 import com.zippyziggy.prompt.talk.dto.response.TalkListResponse;
 import com.zippyziggy.prompt.talk.repository.TalkRepository;
 import com.zippyziggy.prompt.talk.service.TalkService;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -72,15 +69,18 @@ public class PromptService{
 	private final AwsS3Uploader awsS3Uploader;
 	private final MemberClient memberClient;
 	private final CircuitBreakerFactory circuitBreakerFactory;
+
 	private final PromptRepository promptRepository;
 	private final PromptLikeRepository promptLikeRepository;
 	private final PromptBookmarkRepository promptBookmarkRepository;
 	private final PromptCommentRepository promptCommentRepository;
-	private final TalkService talkService;
 	private final TalkRepository talkRepository;
 	private final RatingRepository ratingRepository;
 	private final PromptReportRepository promptReportRepository;
 	private final PromptClickRepository promptClickRepository;
+
+	private final TalkService talkService;
+	private final RecommenderService recommenderService;
 
 	private final KafkaProducer kafkaProducer;
 
@@ -255,22 +255,11 @@ public class PromptService{
 		if (!crntMemberUuid.equals("defaultValue")) {
 
 			// 레디스 저장 로직
-			long commentCnt = promptCommentRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
-			long forkCnt = promptRepository.countAllByOriginPromptUuidAndStatusCode(prompt.getPromptUuid(), StatusCode.OPEN);
-			long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
-
-			PromptCardResponse promptCardResponse = PromptCardResponse.from(writerInfo, prompt, commentCnt, forkCnt, talkCnt, isBookmarked, isLiked);
-
 			String key = "RecentPrompt" + crntMemberUuid;
-			String data = null;
-			try {
-				data = objectMapper.writeValueAsString(promptCardResponse);
-			} catch (Exception e) {
-				log.error("Json 파싱 에러");
-			}
+			Long id = prompt.getId();
 			// sorted set으로 저장
-			redisTemplate.opsForZSet().add(key, data, System.nanoTime());
-			redisTemplate.opsForZSet().removeRange(key, 0, -6);
+			redisTemplate.opsForZSet().add(key, id, System.nanoTime());
+			redisTemplate.opsForZSet().removeRange(key, 0, -11);
 			redisUtils.setExpireTime(key, 60 * 60 * 24 * 7);
 
 			PromptClick promptClick = PromptClick.builder()
@@ -438,11 +427,14 @@ public class PromptService{
     북마크 조회하기
      */
 	public PromptCardListResponse bookmarkPromptByMember(String crntMemberUuid, Pageable pageable) {
+		log.info(String.valueOf(pageable.getSort()));
 		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
 
 		Page<Prompt> prompts = promptBookmarkRepository.findAllPromptsByMemberUuid(UUID.fromString(crntMemberUuid), pageable);
 		long totalPromptsCnt = prompts.getTotalElements();
 		int totalPageCnt = prompts.getTotalPages();
+
+
 		List<PromptCardResponse> promptCardResponses = new ArrayList<>();
 
 		for (Prompt prompt : prompts) {
@@ -452,16 +444,51 @@ public class PromptService{
 
 			MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid()));
 
-			boolean isBookmarded = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
+			boolean isBookmarked = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
 					? true : false;
 			boolean isLiked = promptLikeRepository.findByPromptAndMemberUuid(prompt, UUID.fromString(crntMemberUuid)) != null
 					? true : false;
 
-			PromptCardResponse promptCardResponse = PromptCardResponse.from(writerInfo, prompt, commentCnt, forkCnt, talkCnt, isBookmarded, isLiked);
+			PromptCardResponse promptCardResponse = PromptCardResponse.from(writerInfo, prompt, commentCnt, forkCnt, talkCnt, isBookmarked, isLiked);
 			promptCardResponses.add(promptCardResponse);
 
 		}
 		return PromptCardListResponse.from(totalPromptsCnt, totalPageCnt, promptCardResponses);
+	}
+
+	/*
+    북마크 조회하기(extension)
+     */
+	public PromptCardListExtensionResponse bookmarkPromptByMemberAndExtension(String crntMemberUuid, Pageable pageable) {
+		log.info(String.valueOf(pageable.getSort()));
+		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
+
+		Page<Prompt> prompts = promptBookmarkRepository.findAllPromptsByMemberUuid(UUID.fromString(crntMemberUuid), pageable);
+		long totalPromptsCnt = prompts.getTotalElements();
+		int totalPageCnt = prompts.getTotalPages();
+
+
+		List<PromptBookmarkResponse> promptBookmarkResponses = new ArrayList<>();
+
+		for (Prompt prompt : prompts) {
+			long commentCnt = promptCommentRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
+			long forkCnt = promptRepository.countAllByOriginPromptUuidAndStatusCode(prompt.getPromptUuid(), StatusCode.OPEN);
+			long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
+
+			MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid()));
+
+			boolean isBookmarked = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
+					? true : false;
+			boolean isLiked = promptLikeRepository.findByPromptAndMemberUuid(prompt, UUID.fromString(crntMemberUuid)) != null
+					? true : false;
+
+			PromptBookmarkResponse promptCardResponse = PromptBookmarkResponse.from(writerInfo, prompt, commentCnt, forkCnt, talkCnt, isBookmarked, isLiked);
+			promptBookmarkResponses.add(promptCardResponse);
+
+		}
+
+		return PromptCardListExtensionResponse.from(totalPromptsCnt, totalPageCnt, promptBookmarkResponses);
+
 	}
 
 
@@ -544,7 +571,7 @@ public class PromptService{
 	}
 
 	/*
-    최근 조회한 프롬프트 5개 조회
+    최근 조회한 프롬프트 10개 조회
      */
 	public List<PromptCardResponse> recentPrompts(String crntMemberUuid) {
 		if (crntMemberUuid.equals("defaultValue")) {
@@ -555,21 +582,45 @@ public class PromptService{
 
 			if (redisUtils.isExists(key)) {
 				log.info("redis 최근 프롬프트 조회");
-				Set<ZSetOperations.TypedTuple<String>> set = redisTemplate.opsForZSet().reverseRangeWithScores(key, 0, -1);
+				CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
+				Set<ZSetOperations.TypedTuple<Integer>> set = redisTemplate.opsForZSet().reverseRangeWithScores(key, 0, -1);
+				log.info("ZsetOperation = " + set);
+				List<Long> promptIds = new ArrayList<>();
+
+				for (ZSetOperations.TypedTuple<Integer> tuple : set) {
+					log.info("value = >>>> " + tuple.getValue());
+					Long value = Long.valueOf(tuple.getValue());
+					promptIds.add(value);
+				}
+				log.info("promptIds = " + promptIds);
+
+				List<Prompt> prompts = new ArrayList<>();
+				for (Long promptId: promptIds) {
+					Prompt prompt = promptRepository.findByIdAndStatusCode(promptId, StatusCode.OPEN);
+					if (prompt != null) {
+						prompts.add(prompt);
+					}
+				}
+				log.info("prompts = " + prompts);
 
 				List<PromptCardResponse> promptCardResponses = new ArrayList<>();
 
-				for (ZSetOperations.TypedTuple<String> tuple : set) {
-					String value = tuple.getValue();
-					double score = tuple.getScore();
-					PromptCardResponse promptCardResponse = null;
-					try {
-						promptCardResponse = objectMapper.readValue(value, PromptCardResponse.class);
-					} catch (Exception e) {
-						log.error("Json 파싱 에러");
-					}
+				for (Prompt prompt : prompts) {
+					long commentCnt = promptCommentRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
+					long forkCnt = promptRepository.countAllByOriginPromptUuidAndStatusCode(prompt.getPromptUuid(), StatusCode.OPEN);
+					long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
+
+					MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid()));
+
+					boolean isBookmarked = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
+							? true : false;
+					boolean isLiked = promptLikeRepository.findByPromptAndMemberUuid(prompt, UUID.fromString(crntMemberUuid)) != null
+							? true : false;
+
+					PromptCardResponse promptCardResponse = PromptCardResponse.from(writerInfo, prompt, commentCnt, forkCnt, talkCnt, isBookmarked, isLiked);
 					promptCardResponses.add(promptCardResponse);
 				}
+
 				return promptCardResponses;
 
 			} else {
@@ -597,12 +648,12 @@ public class PromptService{
 			long forkCnt = promptRepository.countAllByOriginPromptUuidAndStatusCode(prompt.getPromptUuid(), StatusCode.OPEN);
 			long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
 
-			boolean isBookmarded = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
+			boolean isBookmarked = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
 					? true : false;
 			boolean isLiked = promptLikeRepository.findByPromptAndMemberUuid(prompt, UUID.fromString(crntMemberUuid)) != null
 					? true : false;
 
-			PromptCardResponse promptCardResponse = PromptCardResponse.from(writerInfo, prompt, commentCnt, forkCnt, talkCnt, isBookmarded, isLiked);
+			PromptCardResponse promptCardResponse = PromptCardResponse.from(writerInfo, prompt, commentCnt, forkCnt, talkCnt, isBookmarked, isLiked);
 			promptCardResponses.add(promptCardResponse);
 		}
 
@@ -673,5 +724,197 @@ public class PromptService{
 		kafkaProducer.sendNotification("send-notification", newNotice);
 
 		return newNotice;
+	}
+
+    public List<PromptCardResponse> findRecommendedPrompts(String crntMemberUuid) {
+		CircuitBreaker circuitBreaker = circuitBreakerFactory.create("circuitBreaker");
+		Long memberId = circuitBreaker.run(() -> memberClient.getLongId(crntMemberUuid));
+		long count = promptRepository.count();
+		log.info("count = " + count);
+		// 프롬프트 개수 200개 이상일 경우 ES 추천 알고리즘 적용
+		if (count < 200) {
+			// 최근 조회한  50개의 기록 중에 가장 조회가 많은 카테고리 2개를 가져온다
+			// 조회수, 좋아요 수, 평점의 가중치를 통해서 추천 진행
+			HashMap<String, Long> map = new HashMap<>();
+			long businessCnt = promptRepository.countAllByMemberUuidAndCategory(UUID.fromString(crntMemberUuid), Category.BUSINESS);
+			long etcCnt = promptRepository.countAllByMemberUuidAndCategory(UUID.fromString(crntMemberUuid), Category.ETC);
+			long funCnt = promptRepository.countAllByMemberUuidAndCategory(UUID.fromString(crntMemberUuid), Category.FUN);
+			long studyCnt = promptRepository.countAllByMemberUuidAndCategory(UUID.fromString(crntMemberUuid), Category.STUDY);
+			long programmingCnt = promptRepository.countAllByMemberUuidAndCategory(UUID.fromString(crntMemberUuid), Category.PROGRAMMING);
+
+			map.put(Category.BUSINESS.getDescription().toUpperCase(), businessCnt);
+			map.put(Category.ETC.getDescription().toUpperCase(), etcCnt);
+			map.put(Category.FUN.getDescription().toUpperCase(), funCnt);
+			map.put(Category.STUDY.getDescription().toUpperCase(), studyCnt);
+			map.put(Category.PROGRAMMING.getDescription().toUpperCase(), programmingCnt);
+
+			// 개수가 가장 많은 카테고리 2개 추출
+			Map<String, Long> sortedMap = map.entrySet()
+					.stream()
+					.sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+					.limit(2)
+					.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+			sortedMap.forEach((category, cnt) -> log.info("category = " + category + " cnt = " + cnt));
+
+			// 가장 많은 개수를 가진 2개의 카테고리 추출
+			List<String> topCategories = sortedMap.keySet()
+					.stream()
+					.limit(2)
+					.collect(Collectors.toList());
+
+			// 각 카테고리에 해당하는 prompt 추출
+			List<RatingDto> top1Prompts = promptRepository.findAllByCategory(Category.valueOf(topCategories.get(0)));
+			List<RatingDto> top2Prompts = promptRepository.findAllByCategory(Category.valueOf(topCategories.get(1)));
+
+			log.info("top1Prompts = " + top1Prompts);
+			log.info("top2Prompts = " + top2Prompts);
+
+			HashMap<Long, Double> score_top1_map = new HashMap<>();
+
+			for (RatingDto top1Prompt : top1Prompts) {
+				// 조회수와 좋아요 수 그리고 평점
+				long hitCount = top1Prompt.getHit();
+				long likeCount = top1Prompt.getLikeCnt();
+				int score = top1Prompt.getScore() == null ? 3 : top1Prompt.getScore();
+
+				// 간단한 추천 점수 계산 (예시: 조회수의 가중치 0.7, 좋아요 수의 가중치 0.3)
+				double recommend_score = 0.3 * hitCount + 0.3 * likeCount + 0.4 * score;
+				log.info("hitCnt = " + hitCount + " likeCnt = " + likeCount + " score = " + score);
+				log.info("recommend_score" + recommend_score);
+				score_top1_map.put(top1Prompt.getPrompId(), recommend_score);
+			}
+
+			// score_top1_map을 내림차순으로 정렬
+			List<Map.Entry<Long, Double>> sortedTop1Scores = score_top1_map.entrySet()
+					.stream()
+					.sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+					.limit(5)
+					.collect(Collectors.toList());
+
+			// 상위 5개의 Prompt 가져오기
+			List<Long> promptTop1Ids = sortedTop1Scores.stream()
+					.map(Map.Entry::getKey)
+					.collect(Collectors.toList());
+
+			List<Prompt> recommendedTop1Prompts = promptRepository.findAllByIdIn(promptTop1Ids);
+
+			log.info("recommendedPrompts = " + recommendedTop1Prompts);
+
+			///////////2번째 카테고리///////
+
+			HashMap<Long, Double> score_top2_map = new HashMap<>();
+
+			for (RatingDto top2Prompt : top2Prompts) {
+				// 조회수와 좋아요 수 그리고 평점
+				long hitCount = top2Prompt.getHit();
+				long likeCount = top2Prompt.getLikeCnt();
+				int score = top2Prompt.getScore() == null ? 3 : top2Prompt.getScore();
+
+				// 간단한 추천 점수 계산 (예시: 조회수의 가중치 0.7, 좋아요 수의 가중치 0.3)
+				double recommend_score = 0.3 * hitCount + 0.3 * likeCount + 0.4 * score;
+				log.info("hitCnt = " + hitCount + " likeCnt = " + likeCount + " score = " + score);
+				log.info("recommend_score" + recommend_score);
+				score_top2_map.put(top2Prompt.getPrompId(), recommend_score);
+			}
+
+			// score_top2_map을 내림차순으로 정렬
+			List<Map.Entry<Long, Double>> sortedTop2Scores = score_top2_map.entrySet()
+					.stream()
+					.sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+					.limit(5)
+					.collect(Collectors.toList());
+
+			// 상위 5개의 Prompt 가져오기
+			List<Long> promptTop2Ids = sortedTop2Scores.stream()
+					.map(Map.Entry::getKey)
+					.collect(Collectors.toList());
+
+			List<Prompt> recommendedTop2Prompts = promptRepository.findAllByIdIn(promptTop2Ids);
+
+			log.info("recommendedTop2Prompts = " + recommendedTop2Prompts);
+
+			List<Prompt> combinedPrompts = new ArrayList<>();
+			combinedPrompts.addAll(recommendedTop1Prompts);
+			combinedPrompts.addAll(recommendedTop2Prompts);
+
+			Collections.shuffle(combinedPrompts);
+			log.info("combinedPrompts = " + combinedPrompts);
+
+			List<PromptCardResponse> promptCardResponses = new ArrayList<>();
+
+			for (Prompt prompt : combinedPrompts) {
+				long commentCnt = promptCommentRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
+				long forkCnt = promptRepository.countAllByOriginPromptUuidAndStatusCode(prompt.getPromptUuid(), StatusCode.OPEN);
+				long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
+
+				MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid()));
+
+				boolean isBookmarked = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
+						? true : false;
+				boolean isLiked = promptLikeRepository.findByPromptAndMemberUuid(prompt, UUID.fromString(crntMemberUuid)) != null
+						? true : false;
+
+				PromptCardResponse promptCardResponse = PromptCardResponse.from(writerInfo, prompt, commentCnt, forkCnt, talkCnt, isBookmarked, isLiked);
+				promptCardResponses.add(promptCardResponse);
+
+			}
+
+			return promptCardResponses;
+
+		} else {
+
+			// Elastic Search 기반 추천 알고리즘
+			final List<Long> ub = recommenderService.userBasedRecommend(memberId);
+			final List<Long> ib = recommenderService.itemBasedRecommend(memberId);
+
+			Set<Long> promptIdSet = new HashSet<>();
+			for (int i=0; i<10; i++) {
+				promptIdSet.add(ub.get(i));
+				promptIdSet.add(ib.get(i));
+			}
+
+			List<Long> promptIds = List.copyOf(promptIdSet);
+
+
+			List<PromptCardResponse> promptCardResponses = new ArrayList<>();
+			for (int i=0; i<10; i++) {
+				Prompt prompt = promptRepository.findById(promptIds.get(i))
+						.orElseThrow(PromptNotFoundException::new);
+
+				long commentCnt = promptCommentRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
+				long forkCnt = promptRepository.countAllByOriginPromptUuidAndStatusCode(prompt.getPromptUuid(), StatusCode.OPEN);
+				long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
+
+				MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid()));
+
+				boolean isBookmarked = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
+						? true : false;
+				boolean isLiked = promptLikeRepository.findByPromptAndMemberUuid(prompt, UUID.fromString(crntMemberUuid)) != null
+						? true : false;
+
+				PromptCardResponse promptCardResponse = PromptCardResponse.from(writerInfo, prompt, commentCnt, forkCnt, talkCnt, isBookmarked, isLiked);
+				promptCardResponses.add(promptCardResponse);
+			}
+
+			return promptCardResponses;
+
+		}
+
+
+
+    }
+
+	public List<PromptResponse> testSearch(String keyword, Pageable pageable) {
+		List<Prompt> prompts = promptRepository
+			.findByTitleContainsOrDescriptionContainsOrPrefixContainsOrSuffixContainsOrExampleContains(
+			keyword, keyword, keyword, keyword, keyword, pageable);
+
+		List<PromptResponse> promptResponses = new ArrayList<>();
+		for (Prompt prompt : prompts) {
+			PromptResponse promptResponse = PromptResponse.from(prompt);
+			promptResponses.add(promptResponse);
+		}
+		return promptResponses;
 	}
 }

@@ -25,6 +25,7 @@ spring:
       max-lifetime: 178000
 
 
+
 eureka:
   instance:
     instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
@@ -32,7 +33,9 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     service-url:
-      defaultZone: http://zippyziggy.kr:8761/eureka
+      defaultZone: http://zippyziggy.kr:8761
+
+
 
 springdoc:
   swagger-ui:
@@ -44,3 +47,11 @@ management:
     web:
       exposure:
         include: health, busrefresh, prometheus
+
+logging:
+  level:
+    com.example: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+  config:
+    classpath: logback.xml

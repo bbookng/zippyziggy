@@ -2,18 +2,18 @@ package com.zippyziggy.prompt.common.aws;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -82,8 +82,28 @@ public class AwsS3Uploader {
 		amazonS3Client.deleteObject(bucket, directory + "/" + fileName);
 	}
 
-	public void uploadCsv(String path, File file) {
-		amazonS3Client.putObject(bucket, path, file);
+	public void uploadCsv(String key, File file) {
+		amazonS3Client.putObject(bucket, key, file);
 	}
 
+	public void downloadCsv(String key) {
+		// Create a GetObjectRequest specifying the bucket name and object key
+		GetObjectRequest getObjectRequest = new GetObjectRequest(bucket, key);
+
+		// Create a file object
+		File file = new File("mahout-prompt-click.csv");
+		try {
+			if (file.createNewFile()) {
+				log.info("File created");
+			} else {
+				log.info("File already exists");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		// Call the getObject() method to retrieve the S3 object and save it to the file
+		amazonS3Client.getObject(getObjectRequest, file);
+		log.info("S3 object has been successfully converted to a file.");
+	}
 }
