@@ -99,7 +99,7 @@ spring:
           uri: lb://MEMBER
           predicates:
             - Path=/api/members/auth/kakao/callback
-            - Method= GET
+            - Method=GET
           filters:
             - RewritePath=/api/(?<segment>.*), /$\{segment}
 
@@ -111,6 +111,14 @@ spring:
           filters:
             - RewritePath=/api/(?<segment>.*), /$\{segment}
             - AuthorizationHeaderFilter
+
+        - id: member
+          uri: lb://MEMBER
+          predicates:
+            - Path=/api/members/actuator/**
+            - Method=GET, POST
+          filters:
+            - RewritePath=/api/prompts/actuator/(?<segment>.*), /actuator/$\{segment}
 
         - id: member
           uri: lb://MEMBER
@@ -166,11 +174,27 @@ spring:
         - id: prompt
           uri: lb://PROMPT
           predicates:
+            - Path=/api/prompts/actuator/**
+            - Method=GET, POST
+          filters:
+            - RewritePath=/api/prompts/actuator/(?<segment>.*), /actuator/$\{segment}
+
+        - id: prompt
+          uri: lb://PROMPT
+          predicates:
             - Path=/api/prompts/{promptUuid}/**
             - Method=GET, POST, PUT, DELETE, OPTIONS
           filters:
             - PromptAuthorizationHeaderFilter
             - RewritePath=/api/(?<segment>.*), /$\{segment}
+
+        - id: search
+          uri: lb://SEARCH
+          predicates:
+            - Path=/api/search/actuator/**
+            - Method=GET, POST
+          filters:
+            - RewritePath=/api/prompts/actuator/(?<segment>.*), /actuator/$\{segment}
 
         - id: talks
           uri: lb://PROMPT
@@ -231,6 +255,14 @@ spring:
         - id: notice
           uri: lb://NOTICE
           predicates:
+            - Path=/api/notice/actuator/**
+            - Method=GET, POST
+          filters:
+            - RewritePath=/api/prompts/actuator/(?<segment>.*), /actuator/$\{segment}
+
+        - id: notice
+          uri: lb://NOTICE
+          predicates:
             - Path=/api/notice/**
             - Method=GET, POST, PUT, DELETE, OPTIONS
           filters:
@@ -260,3 +292,16 @@ springdoc:
       name: notice
       url: http://zippyziggy.kr:${server.port}/v3/api-docs/notice
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, busrefresh, info, prometheus
+
+logging:
+  level:
+    com.example: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+  config:
+    classpath: logback.xml
