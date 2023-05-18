@@ -20,6 +20,8 @@ import com.zippyziggy.member.service.VisitedMemberCountService;
 import com.zippyziggy.member.util.CookieUtils;
 import com.zippyziggy.member.util.RedisUtils;
 import com.zippyziggy.member.util.SecurityUtil;
+
+import com.zippyziggy.member.exception.NotExistPromptList;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -240,19 +242,13 @@ public class MemberController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
-    public ResponseEntity<?> findPromptsLike(@PathVariable String crntMemberUuid,
+    public ResponseEntity<PromptCardListResponse> findPromptsLike(@PathVariable String crntMemberUuid,
                              @RequestParam("page") Integer page,
                              @RequestParam("size") Integer size) {
-        try {
 
-            PromptCardListResponse promptsLike = promptClient.getPromptsLike(crntMemberUuid, page, size);
-            if (promptsLike == null) {
-                return ResponseEntity.ok("좋아요를 누른 프롬프트가 존재하지 않습니다.");
-            }
+            PromptCardListResponse promptsLike = promptClient.getPromptsLike(crntMemberUuid, page, size).orElseThrow(NotExistPromptList::new);
             return ResponseEntity.ok(promptsLike);
-        } catch (Exception e) {
-            return ResponseEntity.ok("좋아요를 누른 프롬프트가 존재하지 않습니다.");
-        }
+
     }
 
     /**
@@ -265,18 +261,38 @@ public class MemberController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
-    public ResponseEntity<?> findPromptsBookmark(@PathVariable String crntMemberUuid,
-                                          @RequestParam("page") Integer page,
-                                          @RequestParam("size") Integer size) {
-        try {
-            PromptCardListResponse promptsBookmark = promptClient.getPromptsBookmark(crntMemberUuid, page, size);
-            if (promptsBookmark == null) {
-                return ResponseEntity.ok("북마크를 누른 프롬프트가 존재하지 않습니다.");
-            }
+    public ResponseEntity<PromptCardListResponse> findPromptsBookmark(
+        @PathVariable String crntMemberUuid,
+        @RequestParam(required = false, defaultValue = "0") int page,
+        @RequestParam(required = false, defaultValue = "10") int size,
+        @RequestParam(required = false, defaultValue = "likeCnt") String sort
+    ) {
+            PromptCardListResponse promptsBookmark = promptClient
+                .getPromptsBookmark(crntMemberUuid, page, size, sort)
+                .orElseThrow(NotExistPromptList::new);
             return ResponseEntity.ok(promptsBookmark);
-        } catch (Exception e) {
-            return ResponseEntity.ok("북마크를 누른 프롬프트가 존재하지 않습니다.");
-        }
+    }
+
+    /**
+     * 멤버가 북마크를 누른 프롬프트 조회(extension)
+     */
+    @GetMapping("/prompts/bookmark/{crntMemberUuid}/extension")
+    @Operation(summary = "멤버의 북마크 프롬프트 조회(extension)", description = "마이 프로필에서 북마크한 프롬프트를 조회한다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
+            @ApiResponse(responseCode = "500", description = "서버 에러")
+    })
+    public ResponseEntity<?> findPromptsBookmarkExtension(
+        @PathVariable String crntMemberUuid,
+        @RequestParam(required = false, defaultValue = "0") int page,
+        @RequestParam(required = false, defaultValue = "10") int size,
+        @RequestParam(required = false, defaultValue = "likeCnt") String sort
+    ) {
+            PromptCardListExtensionResponse promptCardListExtensionResponse = promptClient
+                .getPromptsBookmarkExtension(crntMemberUuid, page, size, sort)
+                .orElseThrow(NotExistPromptList::new);
+            return ResponseEntity.ok(promptCardListExtensionResponse);
     }
 
     /**
@@ -289,18 +305,13 @@ public class MemberController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청"),
             @ApiResponse(responseCode = "500", description = "서버 에러")
     })
-    public ResponseEntity<?> findPrompts(@PathVariable String crntMemberUuid,
+    public ResponseEntity<PromptCardListResponse> findPrompts(@PathVariable String crntMemberUuid,
                                           @RequestParam("page") Integer page,
                                           @RequestParam("size") Integer size) {
-        try {
-            PromptCardListResponse promptsBookmark = promptClient.getPrompts(crntMemberUuid, page, size);
-            if (promptsBookmark == null) {
-                return ResponseEntity.ok("생성한 프롬프트가 존재하지 않습니다.");
-            }
+            PromptCardListResponse promptsBookmark = promptClient.getPrompts(crntMemberUuid, page, size)
+                .orElseThrow(NotExistPromptList::new);
             return ResponseEntity.ok(promptsBookmark);
-        } catch (Exception e) {
-            return ResponseEntity.ok("생성한 프롬프트가 존재하지 않습니다.");
-        }
+
     }
 
 
@@ -914,6 +925,11 @@ public class MemberController {
     @GetMapping("/ids")
     public ResponseEntity<List<MemberIdResponse>> findAllMemberIds() {
         return ResponseEntity.ok(memberService.findAll());
+    }
+
+    @GetMapping("/long/{memberUuid}")
+    public ResponseEntity<Long> findLongId(@PathVariable String memberUuid) {
+        return ResponseEntity.ok(memberService.findLongIdByMemberUuid(memberUuid));
     }
 
 }
