@@ -597,7 +597,9 @@ public class PromptService{
 				List<Prompt> prompts = new ArrayList<>();
 				for (Long promptId: promptIds) {
 					Prompt prompt = promptRepository.findByIdAndStatusCode(promptId, StatusCode.OPEN);
-					prompts.add(prompt);
+					if (prompt != null) {
+						prompts.add(prompt);
+					}
 				}
 				log.info("prompts = " + prompts);
 
