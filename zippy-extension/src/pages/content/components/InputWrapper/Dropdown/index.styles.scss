@@ -38,6 +38,12 @@
     background-color: var(--background-dropdown);
     box-shadow: rgba(0, 0, 0, 0.1) 0 0 0 1px, rgba(0, 0, 0, 0.1) 0 4px 11px 0;
 
+    &.ZP_action-write li {
+      justify-content: center;
+      width: 110px;
+      padding: 0.25rem 0.5rem;
+    }
+
     li {
       display: flex;
       width: 120px;
@@ -48,6 +54,8 @@
       border-radius: 0.25rem;
       overflow: clip;
       transition: background-color 0.2s ease-in-out 0s;
+
+
 
       &:hover{
         background-color: var(--background-color-hover);

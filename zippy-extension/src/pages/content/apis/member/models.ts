@@ -1,4 +1,7 @@
 /* 소셜버튼 최초 클릭 타입들 시작 */
+
+import { ExtensionSearchResult, Prompt } from '@pages/content/apis/search/models';
+
 export interface CheckAuthParams {
   code: string;
   redirect: string;
@@ -55,4 +58,10 @@ export interface SignUpResult {
   nickname: string;
   profileImg: string;
   userUuid: string;
+}
+
+type OmitExtensionSearch = Omit<ExtensionSearchResult, 'extensionSearchPromptList'>;
+
+export interface ExtensionBookmarkResult extends OmitExtensionSearch {
+  promptCardResponseList: Array<Prompt>;
 }

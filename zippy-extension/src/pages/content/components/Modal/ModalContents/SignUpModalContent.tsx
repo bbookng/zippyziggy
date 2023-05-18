@@ -1,9 +1,9 @@
 import React, { FormEvent, useState } from 'react';
 import { useModalContext } from '@pages/content/context/ModalContext';
-import { checkNicknameDuplicate, signUp } from '@pages/content/apis/auth';
+import { checkNicknameDuplicate, signUp } from '@pages/content/apis/member';
 import useChromeStorage from '@pages/hooks/@shared/useChromeStorage';
 import { CHROME_USERINFO_KEY } from '@pages/constants';
-import { SignUpResult } from '@pages/content/apis/auth/models';
+import { SignUpResult } from '@pages/content/apis/member/models';
 import Logo from '@pages/content/components/PromptContainer/Logo';
 import delayPromise from '@pages/content/utils/@shared/delay-promise';
 
@@ -21,8 +21,6 @@ const statusMessages = {
   error: { color: 'dangerColor', text: '중복된 닉네임이 있어요!' },
   success: { color: 'successColor', text: '검증에 성공했어요!' },
 };
-
-const skipLoopCycleOnce = async () => delayPromise(1);
 
 const SignUpModalContent = ({ userData }: SignUpModalContentProps) => {
   const [userData1, setUserData] = useChromeStorage<SignUpResult>(
@@ -65,8 +63,8 @@ const SignUpModalContent = ({ userData }: SignUpModalContentProps) => {
     const signUpResult = await signUp(formData);
 
     setUserData(signUpResult);
-    // userData 세팅을 기다리는 해키한 코드
-    await skipLoopCycleOnce();
+    // 디바운스 대기
+    await delayPromise(600);
     closeModal();
   };
 

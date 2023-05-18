@@ -16,7 +16,7 @@ export const findTargetElement = ($parent: Element, isPlus: boolean) => {
 
   if (isPlus) {
     $target = $parent.querySelector(
-      'div.px-2.py-10.relative.w-full.flex.flex-col.h-full'
+      'div.px-2.relative.w-full.flex.flex-col.h-full.py-2.md\\:py-6'
     ) as HTMLElement;
   } else {
     $target = $parent.querySelector(

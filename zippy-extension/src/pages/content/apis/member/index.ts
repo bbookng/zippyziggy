@@ -4,9 +4,10 @@ import {
   CheckAuthResponse,
   CheckAuthResult,
   CheckSignUpResponse,
+  ExtensionBookmarkResult,
   SignUpResponse,
   SignUpResult,
-} from '@pages/content/apis/auth/models';
+} from '@pages/content/apis/member/models';
 import withErrorHandling from '@pages/content/utils/apis/withErrorHandling';
 
 const MEMBER_API_ENDPOINT = '/members';
@@ -134,3 +135,18 @@ export const signUp = withErrorHandling(async (formData: FormData): Promise<Sign
   } = data;
   return { profileImg, nickname, userUuid };
 });
+
+export const getBookmarkList = withErrorHandling(
+  async (
+    uuid: string,
+    params: { page: number; size: number }
+  ): Promise<ExtensionBookmarkResult> => {
+    const { data } = await authApi.get<ExtensionBookmarkResult>(
+      `${MEMBER_API_ENDPOINT}/prompts/bookmark/${uuid}/extension`,
+      {
+        params,
+      }
+    );
+    return data;
+  }
+);

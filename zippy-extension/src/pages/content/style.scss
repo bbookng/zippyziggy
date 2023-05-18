@@ -36,7 +36,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.5);
+    background-color: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(2px);
     z-index: 9999;
     cursor: default;
@@ -44,7 +44,7 @@
 }
 
 #ZP-overlayRoot {
-  & > div{
+  & > div {
     position: fixed;
     display: flex;
     flex-direction: column;
@@ -63,10 +63,10 @@
   }
 }
 
-#ZP_inputSection{
+#ZP_inputSection {
   animation: slideUp 0.3s forwards;
 
-  &.hide{
+  &.hide {
     animation: slideDown 0.3s forwards;
   }
 }
@@ -89,7 +89,7 @@
   font-size: var(--fonts-body-sm);
   font-weight: var(--fonts-heading);
 
-  img{
+  img {
     width: 12px;
     height: 12px;
   }
@@ -100,18 +100,19 @@
 #ZP_toTopButton {
   display: block;
   transform: translateX(-120%);
+
   &.hide {
     display: none;
   }
 }
 
 // 필터
-.ZP_prompt-container__filter{
+.ZP_prompt-container__filter {
   ul {
     display: flex;
     justify-content: space-evenly;
     width: 100%;
-    max-width: 25rem;
+    max-width: 30rem;
     background-color: var(--background-color);
     border-radius: var(--borders-radius-base);
     overflow: hidden;
@@ -132,6 +133,17 @@
     &:hover {
       font-weight: 800;
       color: var(--black-color-90);
+      background-color: var(--background-color-hover);
+    }
+  }
+
+  li.bookmark {
+    fill: var(--black-color-50);
+    &.active,
+    &:active,
+    &:hover {
+      font-weight: 800;
+      fill: var(--GPT-color);
       background-color: var(--background-color-hover);
     }
   }

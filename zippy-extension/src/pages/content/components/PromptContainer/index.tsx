@@ -2,21 +2,27 @@ import '../../style.scss';
 import CategoryFilter from '@pages/content/components/PromptContainer/CategoryFilter';
 import SearchBar from '@pages/content/components/PromptContainer/SearchBar';
 import SortFilter from '@pages/content/components/PromptContainer/SortFilter';
-import { useMemo, useState } from 'react';
-import { Category, SearchResult, Sort } from '@pages/content/types';
+import React, { useEffect, useState } from 'react';
+import { Category, Sort } from '@pages/content/types';
 import {
   CHROME_CATEGORY_KEY,
+  CHROME_CHECK_BOOKMARK_KEY,
   CHROME_PAGE_KEY,
   CHROME_SEARCH_KEY,
   CHROME_SORT_KEY,
+  CHROME_USERINFO_KEY,
   LIMIT,
 } from '@pages/constants';
 import useChromeStorage from '@pages/hooks/@shared/useChromeStorage';
 import Pagination from '@pages/content/components/PromptContainer/Pagination';
 import PromptCard from '@pages/content/components/PromptContainer/PromptCard';
-import useFetch from '@pages/hooks/@shared/useFetch';
 import useDebounce from '@pages/hooks/@shared/useDebounce';
 import UserInfo from '@pages/content/components/PromptContainer/UserInfo';
+import { useQuery } from '@tanstack/react-query';
+import { SignUpResult } from '@pages/content/apis/member/models';
+import { getBookmarkList } from '@pages/content/apis/member';
+import { searchPrompts } from '@pages/content/apis/search';
+import Skeleton from '@pages/content/components/PromptContainer/PromptCard/Skeleton';
 
 export const category: Array<Category> = [
   { id: 'all', text: '전체', value: 'ALL' },
@@ -37,6 +43,16 @@ const defaultCategory = category[0].value;
 const defaultSort = sort[0].value;
 
 const PromptContainer = () => {
+  const [isBookmark, setIsBookmark] = useChromeStorage<boolean>(CHROME_CHECK_BOOKMARK_KEY, false);
+  const [userData, setUserData] = useChromeStorage<SignUpResult>(
+    CHROME_USERINFO_KEY,
+    {
+      userUuid: '',
+      profileImg: '',
+      nickname: '',
+    },
+    'sync'
+  );
   const [selectedCategory, setCategory] = useChromeStorage<Category['value']>(
     CHROME_CATEGORY_KEY,
     defaultCategory
@@ -48,30 +64,74 @@ const PromptContainer = () => {
   const [searchTerm, setSearchTerm] = useChromeStorage<string>(CHROME_SEARCH_KEY, '');
   // const [searchTerm, setSearchTerm] = useState('');
   const debouncedSearchTerm = useDebounce(searchTerm);
-
-  const [page, setPage] = useChromeStorage<number>(CHROME_PAGE_KEY, 1);
+  const [searchPage, setSearchPage] = useChromeStorage<{
+    ALL: number;
+    STUDY: number;
+    FUN: number;
+    BUSINESS: number;
+    PROGRAMMING: number;
+    ETC: number;
+    BOOKMARK: number;
+  }>(CHROME_PAGE_KEY, {
+    ALL: 1,
+    STUDY: 1,
+    FUN: 1,
+    BUSINESS: 1,
+    PROGRAMMING: 1,
+    ETC: 1,
+    BOOKMARK: 1,
+  });
   const [limit, setLimit] = useState(LIMIT);
 
-  const memoizedParams = useMemo(() => {
-    return {
-      category: selectedCategory,
-      keyword: debouncedSearchTerm,
-      sort: selectedSort,
-      page: page - 1,
-      size: limit,
-    };
-  }, [debouncedSearchTerm, page, selectedCategory, selectedSort, limit]);
+  // 검색
+  const { data: searchResult, isLoading: isSearchLoading } = useQuery(
+    [
+      'search',
+      searchPage[selectedCategory] - 1,
+      limit,
+      debouncedSearchTerm,
+      selectedSort,
+      selectedCategory,
+    ],
+    () => {
+      const params = {
+        category: selectedCategory,
+        keyword: debouncedSearchTerm,
+        sort: selectedSort,
+        page: searchPage[selectedCategory] - 1,
+        size: limit,
+      };
+      return searchPrompts(params);
+    },
+    {
+      enabled: !isBookmark,
+    }
+  );
 
-  const {
-    data: searchResult,
-    loading,
-    error,
-  } = useFetch<SearchResult>({
-    url: `/search/extension`,
-    params: memoizedParams,
-    autoFetch: true,
-    auth: true,
-  });
+  // 북마크
+  const { data: bookmarkResult, isLoading: isBookmarkLoading } = useQuery(
+    ['bookmark', searchPage[selectedCategory] - 1, limit, selectedSort],
+    () => {
+      const path = userData?.userUuid;
+      const params = {
+        page: searchPage[selectedCategory] - 1,
+        size: limit,
+        sort: selectedSort,
+      };
+      return getBookmarkList(path, params);
+    },
+    {
+      enabled: isBookmark && userData?.userUuid?.length > 0,
+    }
+  );
+
+  useEffect(() => {
+    if (!userData) {
+      setCategory('ALL');
+      setIsBookmark(false);
+      setSelectedSort('likeCnt');
+    }
+  }, [setCategory, setIsBookmark, setSelectedSort, userData]);
 
   const isNewChatPage = !window.location.href.includes('/c/');
 
@@ -85,17 +145,25 @@ const PromptContainer = () => {
             category={category}
             selectedCategory={selectedCategory}
             setSelectedCategory={setCategory}
-            setPage={setPage}
+            isBookmark={isBookmark}
+            setIsBookmark={setIsBookmark}
+            userData={userData}
           />
-          <UserInfo />
+          <UserInfo userData={userData} setUserData={setUserData} />
         </section>
-        <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+        {isBookmark || <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />}
 
         <section className="ZP_prompt-container__main">
           <div className="ZP_prompt-container__category-wrapper">
             <h2 className="ZP_prompt-container__search-info">
-              {`${category.find((item) => item.value === selectedCategory)?.text} ${
-                debouncedSearchTerm.trim().length > 0 ? `/ ${debouncedSearchTerm}` : ''
+              {`${
+                isBookmark
+                  ? '📗 북마크'
+                  : category.find((item) => item.value === selectedCategory)?.text
+              } ${
+                !isBookmark && debouncedSearchTerm.trim().length > 0
+                  ? `/ ${debouncedSearchTerm}`
+                  : ''
               }`}
             </h2>
             <SortFilter sort={sort} selectedSort={selectedSort} setSelectedSort={setSelectedSort} />
@@ -103,35 +171,95 @@ const PromptContainer = () => {
 
           <ul className="ZP_prompt-container__prompt-card-list">
             {(() => {
-              if (loading) {
+              if (!isBookmark) {
+                if (isSearchLoading) {
+                  return (
+                    Array(12)
+                      .fill((v, index) => index)
+                      // eslint-disable-next-line react/no-array-index-key
+                      .map((_, index) => (
+                        // eslint-disable-next-line react/no-array-index-key
+                        <Skeleton key={index} />
+                      ))
+                  );
+                }
+                if (searchResult?.totalPromptsCnt === 0) {
+                  return <div>결과가 없습니다.</div>;
+                }
+
+                return searchResult?.extensionSearchPromptList?.map((prompt) => {
+                  const queryKeyItems = {
+                    page: searchPage[selectedCategory] - 1,
+                    limit,
+                    debouncedSearchTerm,
+                    selectedSort,
+                    selectedCategory,
+                  };
+                  return (
+                    <PromptCard
+                      name="searchCard"
+                      key={prompt.promptUuid}
+                      prompt={prompt}
+                      queryKeyItems={queryKeyItems}
+                    />
+                  );
+                });
+              }
+              if (isBookmarkLoading) {
                 return (
                   Array(12)
                     .fill((v, index) => index)
                     // eslint-disable-next-line react/no-array-index-key
                     .map((_, index) => (
-                      <div key={index} style={{ height: '300px' }}>
-                        로딩중...
-                      </div>
+                      // eslint-disable-next-line react/no-array-index-key
+                      <Skeleton key={index} />
                     ))
                 );
               }
-              if (searchResult?.totalPromptsCnt === 0) {
+              if (bookmarkResult?.totalPromptsCnt === 0) {
                 return <div>결과가 없습니다.</div>;
               }
-              return searchResult?.extensionSearchPromptList?.map((prompt) => (
-                <PromptCard key={prompt.promptUuid} prompt={prompt} />
-              ));
+
+              return bookmarkResult?.promptCardResponseList?.map((prompt) => {
+                const queryKeyItems = {
+                  page: searchPage[selectedCategory] - 1,
+                  limit,
+                  debouncedSearchTerm,
+                  selectedSort,
+                  selectedCategory,
+                };
+                return (
+                  <PromptCard
+                    name="bookmarkCard"
+                    key={prompt.promptUuid}
+                    prompt={prompt}
+                    queryKeyItems={queryKeyItems}
+                  />
+                );
+              });
             })()}
           </ul>
         </section>
-        {loading || (
-          <Pagination
-            total={searchResult?.totalPromptsCnt}
-            limit={limit}
-            page={page}
-            setPage={setPage}
-          />
-        )}
+        {isSearchLoading ||
+          (!isBookmark && searchResult?.totalPromptsCnt > 0 && (
+            <Pagination
+              total={searchResult?.totalPromptsCnt}
+              limit={limit}
+              page={searchPage[selectedCategory]}
+              setPage={setSearchPage}
+              selectedCategory={selectedCategory}
+            />
+          ))}
+        {isBookmarkLoading ||
+          (isBookmark && bookmarkResult?.totalPromptsCnt > 0 && (
+            <Pagination
+              total={bookmarkResult?.totalPromptsCnt}
+              limit={limit}
+              page={searchPage[selectedCategory]}
+              setPage={setSearchPage}
+              selectedCategory="BOOKMARK"
+            />
+          ))}
       </div>
     );
   }

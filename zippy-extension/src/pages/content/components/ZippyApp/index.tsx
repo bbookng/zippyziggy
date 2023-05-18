@@ -65,9 +65,11 @@ if (currentUrl.startsWith(CHAT_GPT_URL)) {
   });
 }
 
+// 지피지기 사이트에서 적용할 로직
 if (currentUrl.startsWith(ZIPPY_SITE_URL)) {
   logOnDev.log('지피지기 kr 로직');
-
+  // 프론트엔드에서 확장이 설치되었는지 확인을 하기위해 심는 attribute
+  document.documentElement.setAttribute('zippy', 'true');
   // 로그아웃 연동
   intervalForFindElement('[class^=userUuid__ProfileHeaderContainer]', ($authContainer: Element) => {
     const $signOutButton = $authContainer.querySelector('#logout');
@@ -100,32 +102,37 @@ if (currentUrl.startsWith(ZIPPY_SITE_URL)) {
       for (const node of [...mutation.addedNodes]) {
         const $targetElement = node as HTMLElement;
         if (typeof $targetElement.className === 'object') return;
-        if ($targetElement.className?.startsWith('Detailstyle__LeftContainer')) {
+        if (
+          $targetElement.className?.startsWith('Detailstyle__Container') ||
+          $targetElement.className?.startsWith('Detailstyle__LeftContainer')
+        ) {
           const $promptPlayDesktop = document.querySelector('#promptPlayDesktop') as HTMLElement;
-          const $promptPlayMobile = document.querySelector('#promptPlayMobile');
-          const { uuid } = $promptPlayDesktop.dataset;
-          const title = document.querySelector('.title')?.textContent;
-          const $ComponentStyleSubContainer = document.querySelectorAll(
-            '[class^=ComponentStyle__SubContainer]'
-          );
-          const $colorBox = $ComponentStyleSubContainer[2].querySelector('.colorBox');
-          const prefix = $colorBox.querySelector('span:first-of-type')?.textContent ?? '';
-          const example = $colorBox.querySelector('span.example')?.textContent ?? '';
-          const suffix = $colorBox.querySelector('span:last-of-type')?.textContent ?? '';
+          const $promptPlayMobile = document.querySelector('#promptPlayMobile') as HTMLElement;
+          if ($promptPlayDesktop || $promptPlayMobile) {
+            const { uuid } = $promptPlayDesktop.dataset;
+            const title = document.querySelector('.title')?.textContent;
+            const $ComponentStyleSubContainer = document.querySelectorAll(
+              '[class^=ComponentStyle__SubContainer]'
+            );
+            const $colorBox = $ComponentStyleSubContainer[2].querySelector('.colorBox');
+            const prefix = $colorBox.querySelector('span:first-of-type')?.textContent ?? '';
+            const example = $colorBox.querySelector('span.example')?.textContent ?? '';
+            const suffix = $colorBox.querySelector('span:last-of-type')?.textContent ?? '';
 
-          $promptPlayDesktop.addEventListener('click', () => {
-            chrome.runtime.sendMessage({
-              type: MK_DATA_FROM_PROMPT_CARD_PLAY,
-              data: { title, prefix, example, suffix, uuid },
+            $promptPlayDesktop.addEventListener('click', () => {
+              chrome.runtime.sendMessage({
+                type: MK_DATA_FROM_PROMPT_CARD_PLAY,
+                data: { title, prefix, example, suffix, uuid },
+              });
             });
-          });
 
-          $promptPlayMobile.addEventListener('click', () => {
-            chrome.runtime.sendMessage({
-              type: MK_DATA_FROM_PROMPT_CARD_PLAY,
-              data: { title, prefix, example, suffix, uuid },
+            $promptPlayMobile.addEventListener('click', () => {
+              chrome.runtime.sendMessage({
+                type: MK_DATA_FROM_PROMPT_CARD_PLAY,
+                data: { title, prefix, example, suffix, uuid },
+              });
             });
-          });
+          }
         }
         if ($targetElement.className?.startsWith('CardStyle__Conatiner')) {
           const promptUuid = $targetElement.dataset.uuid;
@@ -142,6 +149,6 @@ if (currentUrl.startsWith(ZIPPY_SITE_URL)) {
     }
   });
 
-  const nextJSElement = document.getElementById('__next');
-  if (nextJSElement) observer.observe(nextJSElement, { subtree: true, childList: true });
+  const { body } = document;
+  if (body) observer.observe(body, { subtree: true, childList: true });
 }

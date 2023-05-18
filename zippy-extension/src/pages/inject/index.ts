@@ -1,5 +1,6 @@
 /* eslint-disable */
 import {
+  CHAT_GPT_URL,
   DEFAULT_TARGET_LANGUAGE,
   ENDPOINT_CONVERSATION_URL,
   LAST_TARGET_LANGUAGE_KEY,
@@ -8,8 +9,8 @@ import {
   TARGET_LANGUAGE_PLACEHOLDER,
   ZIPPY_SITE_URL,
   ZP_PROMPT_TITLE_HOLDER_ID,
-} from '@pages/constants';
-import { sanitizeInput } from '@src/utils';
+} from "@pages/constants";
+import { sanitizeInput } from "@src/utils";
 
 const ZIPPY = (window.ZIPPYZIGGY = {
   init() {
@@ -80,7 +81,7 @@ const ZIPPY = (window.ZIPPYZIGGY = {
 
 ZIPPY.init();
 
-window.addEventListener('message', function (event) {
+window.addEventListener('message', (event) => {
   const { data } = event;
   switch (data.type) {
     case 'changeLanguage': {
@@ -95,22 +96,43 @@ window.addEventListener('message', function (event) {
       ZIPPY.selectedPrompt = prompt;
       break;
     }
+    case 'cancelPrompt':
+    case 'renderInputPortals': {
+      ZIPPY.selectedPrompt = null;
+      break;
+    }
     case MK_DATA_FROM_PROMPT_CARD_PLAY: {
       const {
         data: { title, suffix, prefix, example, uuid },
       } = event.data;
 
       const prompt =
-        `프롬프트 상세 링크 ${ZIPPY_SITE_URL}/prompts/${uuid}\n\n답변은 아래의 형식에 맞춰서 답변해줘.\n1. [🔗프롬프트 상세정보](프롬프트 상세 링크)를 첫줄에 출력\n2. 공백 한줄 출력후 답변을 출력\n\n${
-          prefix || ''
-        } ${PROMPT_PLACEHOLDER} ${suffix || ''}${TARGET_LANGUAGE_PLACEHOLDER}`.trim();
+          `${ZIPPY_SITE_URL}/prompts/${uuid}\n${
+            prefix || ''
+          } ${PROMPT_PLACEHOLDER} ${suffix || ''}${TARGET_LANGUAGE_PLACEHOLDER}`.trim();
       ZIPPY.selectedPrompt = prompt;
 
-      const $title = document.querySelector(`#${ZP_PROMPT_TITLE_HOLDER_ID}`);
+      const $title = document.querySelector(`#${ZP_PROMPT_TITLE_HOLDER_ID}`) as HTMLElement;
       $title.textContent = `📟 ${title}`;
-
+      $title.dataset.promptUuid = uuid;
       const $textarea = document.querySelector(`form textarea`) as HTMLTextAreaElement;
       $textarea.placeholder = `예시) ${example}`;
+      $textarea.style.overflowY = 'visible';
+      $textarea.style.height = 'fit-content';
+
+      const $cancelPromptButton = document.createElement('button');
+      $cancelPromptButton.textContent = 'X';
+      $cancelPromptButton.style.display = 'block';
+      $cancelPromptButton.addEventListener('click', () => {
+        window.postMessage({ type: 'cancelPrompt' }, CHAT_GPT_URL);
+        $title.textContent = null;
+        $title.dataset.promptUuid = '';
+        $textarea.placeholder = 'Send a message.';
+        $textarea.style.height = 'fit-content';
+        $cancelPromptButton.style.display = 'none';
+      });
+      $title.parentElement.appendChild($cancelPromptButton);
+
       break;
     }
     default:
