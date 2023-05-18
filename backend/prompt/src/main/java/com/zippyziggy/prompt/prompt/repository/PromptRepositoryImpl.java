@@ -3,10 +3,7 @@ package com.zippyziggy.prompt.prompt.repository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.zippyziggy.prompt.prompt.dto.response.RatingDto;
-import com.zippyziggy.prompt.prompt.model.Category;
-import com.zippyziggy.prompt.prompt.model.Prompt;
-import com.zippyziggy.prompt.prompt.model.QPrompt;
-import com.zippyziggy.prompt.prompt.model.QRating;
+import com.zippyziggy.prompt.prompt.model.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -33,7 +30,7 @@ public class PromptRepositoryImpl implements PromptCustomRepository{
                 .from(qPrompt)
                 .leftJoin(qRating)
                 .on(qPrompt.id.eq(qRating.id))
-                .where(qPrompt.category.eq(category))
+                .where(qPrompt.category.eq(category).and(qPrompt.statusCode.eq(StatusCode.OPEN)))
                 .fetch();
     }
 
