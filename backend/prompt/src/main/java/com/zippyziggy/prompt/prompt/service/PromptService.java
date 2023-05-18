@@ -593,7 +593,13 @@ public class PromptService{
 					promptIds.add(value);
 				}
 				log.info("promptIds = " + promptIds);
-				List<Prompt> prompts = promptRepository.findAllById(promptIds);
+
+				List<Prompt> prompts2 = promptRepository.findAllByIdAndStatusCodeIn(promptIds, StatusCode.OPEN);
+				log.info("prompts2 = " + prompts2);
+
+				List<Prompt> prompts1 = promptRepository.findAllByIdAndStatusCode(promptIds, StatusCode.OPEN);
+				log.info("prompts1 = " + prompts1);
+
 
 //				for (Long promptId: promptIds) {
 //					Prompt prompt = promptRepository.findById(promptId).get();
@@ -602,21 +608,21 @@ public class PromptService{
 
 				List<PromptCardResponse> promptCardResponses = new ArrayList<>();
 
-				for (Prompt prompt : prompts) {
-					long commentCnt = promptCommentRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
-					long forkCnt = promptRepository.countAllByOriginPromptUuidAndStatusCode(prompt.getPromptUuid(), StatusCode.OPEN);
-					long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
-
-					MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid()));
-
-					boolean isBookmarked = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
-							? true : false;
-					boolean isLiked = promptLikeRepository.findByPromptAndMemberUuid(prompt, UUID.fromString(crntMemberUuid)) != null
-							? true : false;
-
-					PromptCardResponse promptCardResponse = PromptCardResponse.from(writerInfo, prompt, commentCnt, forkCnt, talkCnt, isBookmarked, isLiked);
-					promptCardResponses.add(promptCardResponse);
-				}
+//				for (Prompt prompt : prompts) {
+//					long commentCnt = promptCommentRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
+//					long forkCnt = promptRepository.countAllByOriginPromptUuidAndStatusCode(prompt.getPromptUuid(), StatusCode.OPEN);
+//					long talkCnt = talkRepository.countAllByPromptPromptUuid(prompt.getPromptUuid());
+//
+//					MemberResponse writerInfo = circuitBreaker.run(() -> memberClient.getMemberInfo(prompt.getMemberUuid()));
+//
+//					boolean isBookmarked = promptBookmarkRepository.findByMemberUuidAndPrompt(UUID.fromString(crntMemberUuid), prompt) != null
+//							? true : false;
+//					boolean isLiked = promptLikeRepository.findByPromptAndMemberUuid(prompt, UUID.fromString(crntMemberUuid)) != null
+//							? true : false;
+//
+//					PromptCardResponse promptCardResponse = PromptCardResponse.from(writerInfo, prompt, commentCnt, forkCnt, talkCnt, isBookmarked, isLiked);
+//					promptCardResponses.add(promptCardResponse);
+//				}
 
 				return promptCardResponses;
 
