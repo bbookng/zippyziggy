@@ -81,7 +81,7 @@ const ZIPPY = (window.ZIPPYZIGGY = {
 
 ZIPPY.init();
 
-window.addEventListener('message', function (event) {
+window.addEventListener('message', (event) => {
   const { data } = event;
   switch (data.type) {
     case 'changeLanguage': {

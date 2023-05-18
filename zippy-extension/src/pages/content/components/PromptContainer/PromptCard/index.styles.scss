@@ -19,14 +19,25 @@
 
     &:hover .ZP_prompt-container__actions-wrapper--hover {
       visibility: visible;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     &:hover .ZP_prompt-container__actions-wrapper--hover button:hover {
-      background-color: red;
+      background-color: var(--dark-color-30);
+      color: var(--black-color-90);
+      fill: var(--black-color-90);
+      stroke: var(--black-color-90);
     }
 
     .ZP_prompt-container__actions-wrapper--hover {
       visibility: hidden;
+      position: absolute;
+      inset: 1rem 0.5rem auto auto;
+      color: var(--black-color-50);
+      fill: var(--black-color-50);
+      stroke: var(--black-color-50);
     }
 
 
@@ -64,16 +75,6 @@
 
         & > div:first-of-type {
           margin-right: 0.5rem;
-        }
-
-        // grid 2개
-        @media (min-width: 1024px) {
-          flex-direction: row;
-        }
-
-        // grid 4개
-        @media (min-width: 1440px) {
-          flex-direction: column;
         }
       }
 
@@ -131,13 +132,39 @@
 
       .ZP_prompt-container__actions-wrapper {
         display: flex;
-
-        .ZP_prompt-container__like {
-          margin-right: 0.5rem;
+        justify-content: space-between;
+        width: fit-content;
+        padding-right: 0.125rem;
+        & > *:not(:last-child) {
+          margin-right: 0.875rem;
         }
 
-        .ZP_prompt-container__bookmark {
+        .ZP_prompt-container__like,
+        .ZP_prompt-container__comment,
+        .ZP_prompt-container__view, {
+          display: flex;
+          align-items: center;
+          color: var(--black-color-30);
+          span{
+            min-width: 1rem;
+          }
 
+          svg {
+            fill: var(--black-color-30);
+            stroke: var(--black-color-30);
+            margin-right: 0.25rem;
+          }
+        }
+
+        .ZP_prompt-container__like{
+          &.like {
+            svg {
+              fill: var(--GPT-color);
+            }
+          }
+        }
+        .ZP_prompt-container__comment{
+          margin-right: 0.375rem;
         }
       }
     }
@@ -147,4 +174,8 @@
 .caption {
   font-size: var(--fonts-body-xm);
   color: var(--black-color-30);
+}
+
+.middot {
+  margin: 0 0.5rem;
 }

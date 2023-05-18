@@ -187,9 +187,24 @@ const PromptContainer = () => {
                 if (searchResult?.totalPromptsCnt === 0) {
                   return <div>결과가 없습니다.</div>;
                 }
-                return searchResult?.extensionSearchPromptList?.map((prompt) => (
-                  <PromptCard key={prompt.promptUuid} prompt={prompt} />
-                ));
+
+                return searchResult?.extensionSearchPromptList?.map((prompt) => {
+                  const queryKeyItems = {
+                    page: searchPage[selectedCategory] - 1,
+                    limit,
+                    debouncedSearchTerm,
+                    selectedSort,
+                    selectedCategory,
+                  };
+                  return (
+                    <PromptCard
+                      name="searchCard"
+                      key={prompt.promptUuid}
+                      prompt={prompt}
+                      queryKeyItems={queryKeyItems}
+                    />
+                  );
+                });
               }
               if (isBookmarkLoading) {
                 return (
@@ -208,9 +223,23 @@ const PromptContainer = () => {
                 return <div>결과가 없습니다.</div>;
               }
 
-              return bookmarkResult?.promptCardResponseList?.map((prompt) => (
-                <PromptCard key={prompt.promptUuid} prompt={prompt} />
-              ));
+              return bookmarkResult?.promptCardResponseList?.map((prompt) => {
+                const queryKeyItems = {
+                  page: searchPage[selectedCategory] - 1,
+                  limit,
+                  debouncedSearchTerm,
+                  selectedSort,
+                  selectedCategory,
+                };
+                return (
+                  <PromptCard
+                    name="bookmarkCard"
+                    key={prompt.promptUuid}
+                    prompt={prompt}
+                    queryKeyItems={queryKeyItems}
+                  />
+                );
+              });
             })()}
           </ul>
         </section>

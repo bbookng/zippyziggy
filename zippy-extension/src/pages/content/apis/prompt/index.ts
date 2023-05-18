@@ -1,4 +1,4 @@
-import { api } from '@pages/content/utils/apis/axios-instance';
+import { api, authApi } from '@pages/content/utils/apis/axios-instance';
 import withErrorHandling from '@pages/content/utils/apis/withErrorHandling';
 import { PromptDetailResponse, PromptDetailResult } from '@pages/content/apis/prompt/models';
 
@@ -14,3 +14,11 @@ export const getPromptDetail = withErrorHandling(
     return { title, prefix, example, suffix, uuid };
   }
 );
+
+export const toggleLikePrompt = withErrorHandling(async (uuid: string) => {
+  await authApi.post(`${PROMPT_API_ENDPOINT}/${uuid}/like`);
+});
+
+export const toggleBookmarkPrompt = withErrorHandling(async (uuid: string) => {
+  await authApi.post(`${PROMPT_API_ENDPOINT}/${uuid}/bookmark`);
+});

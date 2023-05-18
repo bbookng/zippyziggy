@@ -36,7 +36,6 @@ const CHROME_CHECK_BOOKMARK_KEY = 'ZP_isBookmark';
 const CHROME_SORT_KEY = 'ZP_sort';
 const CHROME_SEARCH_KEY = 'ZP_searchTerm';
 const CHROME_LANGUAGE_KEY = 'ZP_language';
-const CHROME_BOOKMARK_PAGE_KEY = 'ZP_bookmarkPage';
 const CHROME_PAGE_KEY = 'ZP_page';
 const CHROME_USERINFO_KEY = 'ZP_userData';
 
@@ -78,7 +77,6 @@ export {
   CHROME_SEARCH_KEY,
   CHROME_LANGUAGE_KEY,
   CHROME_PAGE_KEY,
-  CHROME_BOOKMARK_PAGE_KEY,
   CHROME_USERINFO_KEY,
   LIMIT,
   PAGE_PER_GROUP,
