@@ -12,6 +12,8 @@ const ZIPPY_SITE_URL = 'https://zippyziggy.kr';
 const ZIPPY_API_URL = 'https://zippyziggy.kr/api';
 const JSON_SERVER_URL = 'http://localhost:3003/data';
 const CHAT_GPT_URL = 'https://chat.openai.com/';
+const ZP_NOTION_URL = 'https://uncovered-runner-74a.notion.site/043dd9c85a434f039d8a05abb997e32a';
+const ZP_CANNY_URL = 'https://zippyziggy.canny.io/';
 const ENDPOINT_CONVERSATION_URL = 'https://chat.openai.com/backend-api/conversation';
 
 /* HTML ID */
@@ -57,6 +59,8 @@ export {
   ZIPPY_API_URL,
   ZIPPY_SITE_URL,
   FLAGKIT_CDN_URL,
+  ZP_NOTION_URL,
+  ZP_CANNY_URL,
   ENDPOINT_CONVERSATION_URL,
   JSON_SERVER_URL,
   ZP_ROOT_ID,

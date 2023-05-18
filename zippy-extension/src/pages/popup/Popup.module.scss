@@ -36,7 +36,7 @@
         margin-right: 0.5rem;
       }
 
-      &:first-of-type{
+      &:not(:last-of-type){
         margin-bottom: 0.5rem;
       }
       &:hover {
