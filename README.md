@@ -4,9 +4,24 @@
 
 ![image-20230518155213962](assets/image-20230518155213962.png)
 
----
 
-## 💻 프로젝트 소개
+
+## 목차
+
+- ZippyZiggy
+
+  - [목차](#목차)
+  - [프로젝트 소개](#프로젝트-소개)
+
+  - [서비스 화면](#서비스-화면)
+  - [와이어프레임](#와이어프레임)
+  - [ERD 다이어그램](#erd-다이어그램)
+
+  - [API 명세서](#api-명세서)
+
+    
+
+## 프로젝트 소개
 
 1. 개발 기간: 2023.04.10 ~ 2023.05.19 (총 6주)
 2. 인원(총 6인)
@@ -51,56 +66,11 @@
   - SSE (Server Sends Event)를 활용한 실시간 알림 기능
   - ChatGPT용 확장 프로그램 제공
   - 프롬프트 포크 기능
-  - 앱을 통한 ChatAPI 채팅 기능
   - 브라우저 크기별 반응형 웹 페이지
 
----
-
-## 기술 스택
-
-### 💻 Front-end
-
-[![React](https://camo.githubusercontent.com/20779f9d605be40d4f84bbc93a5fee22e86068e785a0c0ed8d90d3d15041a3fc/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f52656163742d3631444146423f7374796c653d666f722d7468652d6261646765266c6f676f3d5265616374266c6f676f436f6c6f723d626c61636b)](https://camo.githubusercontent.com/20779f9d605be40d4f84bbc93a5fee22e86068e785a0c0ed8d90d3d15041a3fc/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f52656163742d3631444146423f7374796c653d666f722d7468652d6261646765266c6f676f3d5265616374266c6f676f436f6c6f723d626c61636b) [![TypeScript](https://camo.githubusercontent.com/6a138baf27a486e6fb68d759541144cd7ddfbff9839b41fb3f64b16458575a7f/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f547970655363726970742d3331373843363f7374796c653d666f722d7468652d6261646765266c6f676f3d74797065266c6f676f436f6c6f723d7768697465)](https://camo.githubusercontent.com/6a138baf27a486e6fb68d759541144cd7ddfbff9839b41fb3f64b16458575a7f/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f547970655363726970742d3331373843363f7374796c653d666f722d7468652d6261646765266c6f676f3d74797065266c6f676f436f6c6f723d7768697465) ![Next.js](https://img.shields.io/badge/next.js-000000.svg?style=for-the-badge&logo=next.js&logoColor=white) ![Redux](https://img.shields.io/badge/redux-764ABC.svg?style=for-the-badge&logo=redux&logoColor=white)![reactquery](https://img.shields.io/badge/reactquery-FF4154.svg?style=for-the-badge&logo=reactquery&logoColor=white) ![styled-components](https://img.shields.io/badge/styledcomponents-DB7093.svg?style=for-the-badge&logo=styledcomponents&logoColor=white) ![axios](https://img.shields.io/badge/axios-5A29E4.svg?style=for-the-badge&logo=axios&logoColor=white)
 
 
-
-### 💻 Back-end
-
-[![JAVA](https://camo.githubusercontent.com/3a1c7dafcdfce483e68f5fb95d057e9421c8109fd105e603542b1ff00fd7ae91/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f4a4156412d4646303030303f7374796c653d666f722d7468652d6261646765266c6f676f436f6c6f723d7768697465)](https://camo.githubusercontent.com/3a1c7dafcdfce483e68f5fb95d057e9421c8109fd105e603542b1ff00fd7ae91/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f4a4156412d4646303030303f7374796c653d666f722d7468652d6261646765266c6f676f436f6c6f723d7768697465) [![Spring](https://camo.githubusercontent.com/57da5a02a135c27818a618285a57f7e54df63419d1f7ad598905a0bd27e780c7/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f537072696e67626f6f742d3644423333463f7374796c653d666f722d7468652d6261646765266c6f676f3d737072696e67626f6f74266c6f676f436f6c6f723d7768697465)](https://camo.githubusercontent.com/57da5a02a135c27818a618285a57f7e54df63419d1f7ad598905a0bd27e780c7/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f537072696e67626f6f742d3644423333463f7374796c653d666f722d7468652d6261646765266c6f676f3d737072696e67626f6f74266c6f676f436f6c6f723d7768697465) [![Gradle](https://camo.githubusercontent.com/e850f9c862ce515586c3859cab52395f8d096f0de68825fdaaf6b9bea572311e/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f477261646c652d3032333033413f7374796c653d666f722d7468652d6261646765266c6f676f3d677261646c65266c6f676f436f6c6f723d7768697465)](https://camo.githubusercontent.com/e850f9c862ce515586c3859cab52395f8d096f0de68825fdaaf6b9bea572311e/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f477261646c652d3032333033413f7374796c653d666f722d7468652d6261646765266c6f676f3d677261646c65266c6f676f436f6c6f723d7768697465) [![JWT](https://camo.githubusercontent.com/5af78a02d0f7a4b8a759f9580ce718287a0626f80a55c38ad0bac83e0b31f94d/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f4a57542d3030303030303f7374796c653d666f722d7468652d6261646765266c6f676f3d6a736f6e776562746f6b656e73266c6f676f436f6c6f723d7768697465)](https://camo.githubusercontent.com/5af78a02d0f7a4b8a759f9580ce718287a0626f80a55c38ad0bac83e0b31f94d/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f4a57542d3030303030303f7374796c653d666f722d7468652d6261646765266c6f676f3d6a736f6e776562746f6b656e73266c6f676f436f6c6f723d7768697465) ![Kafka](https://camo.githubusercontent.com/1b371597d577a5f430f0dbc8a356d8951f0b7a6d7dded5eb99e2b4cf1593397f/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f6b61666b612d3233314632303f7374796c653d666f722d7468652d6261646765266c6f676f3d6170616368656b61666b61266c6f676f436f6c6f723d7768697465) ![ElasticSearch](https://img.shields.io/badge/elasticsearch-005571.svg?style=for-the-badge&logo=elasticsearch&logoColor=white) 
-
-![logstash](https://img.shields.io/badge/logstash-005571.svg?style=for-the-badge&logo=logstash&logoColor=white) ![kibana](https://img.shields.io/badge/kibana-005571.svg?style=for-the-badge&logo=kibana&logoColor=white) ![springcloud](https://img.shields.io/badge/springcloud-6DB33F.svg?style=for-the-badge&logo=springcloud&logoColor=white) ![rabbitmq](https://img.shields.io/badge/rabbitmq-FF6600.svg?style=for-the-badge&logo=rabbitmq&logoColor=white) ![grafana](https://img.shields.io/badge/grafana-F46800.svg?style=for-the-badge&logo=grafana&logoColor=white) ![prometheus](https://img.shields.io/badge/prometheus-E6522C.svg?style=for-the-badge&logo=prometheus&logoColor=white)
-
-
-
-### 💻 Extension
-
-![rollup](https://img.shields.io/badge/rollup.js-EC4A3F.svg?style=for-the-badge&logo=rollup.js&logoColor=white) ![vite](https://img.shields.io/badge/vite-646CFF.svg?style=for-the-badge&logo=vite&logoColor=white) ![chokidar](https://img.shields.io/badge/chokidar-000000.svg?style=for-the-badge&logo=chokidar&logoColor=white) ![WS](https://img.shields.io/badge/ws-000000.svg?style=for-the-badge&logo=s&logoColor=white)
-
-
-
-### 📱 App
-
-![Flutter](https://img.shields.io/badge/flutter-02569B.svg?style=for-the-badge&logo=flutter&logoColor=white) 
-
-
-
-### 💾 DB
-
-![MySQL](https://img.shields.io/badge/MySQL-003545?style=for-the-badge&logo=mysql&logoColor=white)![AmazonRDS](https://img.shields.io/badge/AmazonRDS-527FFF?style=for-the-badge&logo=AmazonRDS&logoColor=white) <img src="https://img.shields.io/badge/redis-DC382D?style=for-the-badge&logo=redis&logoColor=white"/>
-
-
-
-### ⚙CI/CD
-
-[![docker](https://camo.githubusercontent.com/b184cf7adbab9f5464e80c0f5dd32c85393f6248499a57d743e619f4214391c4/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f646f636b65722d3234393645443f7374796c653d666f722d7468652d6261646765266c6f676f3d646f636b6572266c6f676f436f6c6f723d7768697465)](https://camo.githubusercontent.com/b184cf7adbab9f5464e80c0f5dd32c85393f6248499a57d743e619f4214391c4/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f646f636b65722d3234393645443f7374796c653d666f722d7468652d6261646765266c6f676f3d646f636b6572266c6f676f436f6c6f723d7768697465) [![Vue.js](https://camo.githubusercontent.com/afb2118755f7a25ec1e70bdd9f2d4be4f4b166d0cbbc0fc529f0ec1c450aa60d/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f6a656e6b696e732d4432343933393f7374796c653d666f722d7468652d6261646765266c6f676f3d6a656e6b696e73266c6f676f436f6c6f723d7768697465)](https://camo.githubusercontent.com/afb2118755f7a25ec1e70bdd9f2d4be4f4b166d0cbbc0fc529f0ec1c450aa60d/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f6a656e6b696e732d4432343933393f7374796c653d666f722d7468652d6261646765266c6f676f3d6a656e6b696e73266c6f676f436f6c6f723d7768697465) 
-
-
-
----
-
-## ✏ 서비스 화면
-
-## 💻 웹
+## 서비스 화면
 
 #### 메인 화면
 
@@ -204,49 +174,7 @@
 
 
 
-## 📱 앱
-
-### 로그인
-
-: 앱에서도 웹과 동일하게 소셜로그인 구현하였습니다.
-
-![로그인](assets/로그인-1684398512006-7.gif)
-
-
-
-### 마이페이지
-
-: 마이페이지를 통해 북마크 하거나 생성한 프롬프트를 확인할 수 있습니다. 회원 정보도 기본적으로 수정가능하며 로그아웃 기능을 제공합니다.
-
-![마이페이지 및 마무](assets/마이페이지 및 마무.gif)
-
-
-
-### 프롬프트 조회 및 검색
-
-: 프롬프트 목록을 조회할 수 있으며 카테고리, 조회수, 추천수 등으로 기본적으로 정렬이 가능합니다. 검색 기능도 제공하여 프롬프트를 조회할 수 있습니다.
-
-![프롬프트](assets/프롬프트-1684398671588-10.gif)
-
-
-
-### 채팅
-
-: 프롬프트 사용하기를 눌러 채팅이 가능하다. 물론 중간에 북마크한 다른 프롬프트를 적용해서 새롭게 채팅이 가능합니다. 코드는 코드 블럭으로 구성되어 드래그로 숨겨진 내용도 모두 확인이 가능합니다.
-
-![채팅](assets/채팅-1684398843080-12.gif)
-
-
-
-## ⚙ 아키텍처
-
-![아키텍처](assets/아키텍처.png)
-
-
-
----
-
-## 🎨 와이어프레임
+## 와이어프레임
 
 ![image-20230412225617316](assets/image-20230412225617316.png)
 
@@ -254,9 +182,9 @@
 
 [Figma](https://www.figma.com/file/HduIr84qMUsibOfiwKlAOo/%EC%A7%80%ED%94%BC%EC%A7%80%EA%B8%B0?node-id=0-1)
 
----
 
-## 💾 ERD 다이어그램
+
+## ERD 다이어그램
 
 ### Prompt
 
@@ -274,9 +202,9 @@
 
 ![notice](assets/notice.png)
 
----
 
-## 🔊 API 명세서
+
+## API 명세서
 
 ##### [API 명세서 링크](https://www.notion.so/API-639a6aa5dfcb408eb116dd2f8991e32d?pvs=4)
 
