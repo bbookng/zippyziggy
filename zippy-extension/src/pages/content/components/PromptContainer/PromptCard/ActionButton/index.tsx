@@ -73,7 +73,9 @@ const ActionButton = ({ name, type, promptUuid, fill, queryKeyItems }: ActionBut
         const data = oldData as any;
         const previousPromptList =
           name === 'searchCard' ? data.extensionSearchPromptList : data.promptCardResponseList;
+
         let newExtensionSearchPromptList;
+
         if (name === 'searchCard') {
           newExtensionSearchPromptList = [...previousPromptList].map((prompt) => {
             if (prompt.promptUuid === promptUuid) {
@@ -85,8 +87,14 @@ const ActionButton = ({ name, type, promptUuid, fill, queryKeyItems }: ActionBut
             return prompt;
           });
         } else {
-          newExtensionSearchPromptList = [...previousPromptList].filter((prompt) => {
-            return promptUuid !== prompt.promptUuid;
+          newExtensionSearchPromptList = [...previousPromptList].map((prompt) => {
+            if (prompt.promptUuid === promptUuid) {
+              return {
+                ...prompt,
+                isBookmarked: !prompt.isBookmarked,
+              };
+            }
+            return prompt;
           });
         }
         return name === 'searchCard'
