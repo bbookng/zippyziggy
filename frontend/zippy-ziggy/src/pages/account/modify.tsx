@@ -248,6 +248,7 @@ export default function Modify() {
             className="nickNameInput"
             type="text"
             id="nickname"
+            maxLength={10}
             placeholder={beforeNickname}
             value={nickname}
             onChange={(e) => setFormNickname(e.target.value)}
