@@ -129,6 +129,18 @@ export default function Modify() {
   // 정보변경 버튼 선택
   const handleSignupBtnClick = async (event) => {
     event.preventDefault();
+
+    if (/^[ㄱ-ㅎ|ㅏ-ㅣ|가-힣|a-z|A-Z|0-9]*$/.test(nickname) === false) {
+      Toastify({
+        text: message.ValidationFailNickname,
+        duration: 1000,
+        position: 'center',
+        stopOnFocus: true,
+        style: toastifyCSS.error,
+      }).showToast();
+      return;
+    }
+
     const formData = new FormData();
 
     // user 정보 넣기
