@@ -1,0 +1,29 @@
+server:
+  port: 0
+
+spring:
+  application:
+    name: search
+
+eureka:
+  instance:
+    instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://k8e205.p.ssafy.io:8761/eureka
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, busrefresh, info, prometheus
+
+logging:
+  level:
+    com.example: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+  config:
+    classpath: logback.xml
