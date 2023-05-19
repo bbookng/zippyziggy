@@ -24,6 +24,7 @@ import Footer from '@/components/Footer/Footer';
 import Paragraph from '@/components/Typography/Paragraph';
 import { links } from '@/utils/links';
 import ProfileRecommendPromptList from '@/components/DetailPrompt/ProfileRecommendPromptList';
+import { setIsZippy } from '@/core/zippy/zippySlice';
 
 const ProfileContainer = styled.div`
   width: 100%;
@@ -81,7 +82,18 @@ export default function Index() {
   const [totalPromptsCnt, setTotalPromptsCnt] = useState<number>(0);
   const page = useRef<number>(0);
   const [isMyPage, setIsMyPage] = useState<boolean>(false);
-  const [isDownload, setIsDownload] = useState<boolean>(false);
+
+  const zippyState = useAppSelector((state) => state.zippy); // 다운로드 정보
+
+  useEffect(() => {
+    const zippy = document.documentElement.getAttribute('zippy');
+    if (zippy === 'true') {
+      dispatch(setIsZippy(true));
+    } else {
+      dispatch(setIsZippy(false));
+    }
+  }, []);
+
   // 1단계 : 유저 정보 받아오기
   const handleUserAPI = async () => {
     const result = await getUserAPI(userUuid);
@@ -182,14 +194,6 @@ export default function Index() {
     handleTalksProfile();
   };
 
-  useEffect(() => {
-    const zippy = document.documentElement.getAttribute('zippy');
-    if (zippy === 'true') {
-      setIsDownload(true);
-    } else {
-      setIsDownload(false);
-    }
-  }, []);
   return (
     <ProfileContainer>
       <ProfileHeaderContainer>
@@ -238,7 +242,7 @@ export default function Index() {
             >
               <FiLink2 className="icon" size="20" style={{ marginLeft: '8px' }} />
               <span className="flex1" style={{ marginLeft: '8px' }}>
-                {isDownload ? 'GPT 확장이 설치됨' : 'GPT 확장 설치하기'}
+                {zippyState.isZippy ? 'GPT 확장이 설치됨' : 'GPT 확장 설치하기'}
               </span>
             </IconButton>
           </div>

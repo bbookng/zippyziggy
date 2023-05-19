@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { getDate } from '@/lib/utils';
 import { FaHeart, FaBookmark, FaPlayCircle, FaRegHeart, FaRegBookmark } from 'react-icons/fa';
@@ -7,6 +7,11 @@ import { BsFillPlayFill, BsPlayFill } from 'react-icons/bs';
 import { useRouter } from 'next/router';
 import { bookmarkPrompt, likePrompt } from '@/core/prompt/promptAPI';
 import toastDevelop from '@/utils/toastDevelop';
+import Toastify from 'toastify-js';
+import message from '@/assets/message.json';
+import toastifyCSS from '@/assets/toastify.json';
+import { useAppDispatch, useAppSelector } from '@/hooks/reduxHook';
+import { setIsZippy } from '@/core/zippy/zippySlice';
 import { Body, Conatiner, Content, Footer, Infos, Title } from './CardStyle';
 
 interface PromptType {
@@ -46,6 +51,19 @@ export default function PromptCard({ image, title, description, url, prompt }: P
   const [isLiked, setIsLiked] = useState<boolean>(prompt ? prompt?.isLiked : true);
   const [isBookmarked, setIsBookmarked] = useState<boolean>(prompt ? prompt?.isBookmarked : true);
   const [likeCnt, setLikeCnt] = useState<number>(prompt ? prompt?.likeCnt : 0);
+
+  const zippyState = useAppSelector((state) => state.zippy); // 다운로드 정보
+  const dispatch = useAppDispatch();
+
+  // 다운로드 정보 로드
+  useEffect(() => {
+    const zippy = document.documentElement.getAttribute('zippy');
+    if (zippy === 'true') {
+      dispatch(setIsZippy(true));
+    } else {
+      dispatch(setIsZippy(false));
+    }
+  }, []);
 
   // 유저 프로필 페이지 이동
   const handleMoveToUser = () => {
@@ -159,7 +177,17 @@ export default function PromptCard({ image, title, description, url, prompt }: P
                 className="item"
                 onClick={(e) => {
                   e.preventDefault();
-                  toastDevelop('DevelopUseAdd');
+                  if (zippyState.isZippy === true) {
+                    Toastify({
+                      text: '⏱GPT 사이트로 이동 중 입니다',
+                      duration: 3000,
+                      position: 'center',
+                      stopOnFocus: true,
+                      style: toastifyCSS.fail,
+                    }).showToast();
+                  } else {
+                    toastDevelop('DevelopUseAdd');
+                  }
                   // handlePlay();
                 }}
               >

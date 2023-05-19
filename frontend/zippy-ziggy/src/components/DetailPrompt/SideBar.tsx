@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   FaArrowRight,
   FaBookmark,
@@ -11,6 +11,11 @@ import {
 import { FiFlag } from 'react-icons/fi';
 import toastDevelop from '@/utils/toastDevelop';
 import { checkLoginCuring } from '@/utils/checkLogin';
+import Toastify from 'toastify-js';
+import message from '@/assets/message.json';
+import toastifyCSS from '@/assets/toastify.json';
+import { useAppDispatch, useAppSelector } from '@/hooks/reduxHook';
+import { setIsZippy } from '@/core/zippy/zippySlice';
 import Button from '../Button/Button';
 import { ActionBox, ButtonBox, Container, EditBox } from './SideBarStyle';
 
@@ -45,6 +50,19 @@ export default function SideBar({
   handleMoveToUpdatePromptPage,
   handleMoveToCreatePromptForkPage,
 }: PropsType) {
+  const zippyState = useAppSelector((state) => state.zippy); // 다운로드 정보
+  const dispatch = useAppDispatch();
+
+  // 다운로드 정보 로드
+  useEffect(() => {
+    const zippy = document.documentElement.getAttribute('zippy');
+    if (zippy === 'true') {
+      dispatch(setIsZippy(true));
+    } else {
+      dispatch(setIsZippy(false));
+    }
+  }, []);
+
   return (
     <Container className="sidebar">
       <ActionBox>
@@ -78,7 +96,17 @@ export default function SideBar({
             className="btn btn1"
             onClick={(e) => {
               e.preventDefault();
-              toastDevelop('DevelopUseAdd');
+              if (zippyState.isZippy === true) {
+                Toastify({
+                  text: '⏱GPT 사이트로 이동 중 입니다',
+                  duration: 3000,
+                  position: 'center',
+                  stopOnFocus: true,
+                  style: toastifyCSS.fail,
+                }).showToast();
+              } else {
+                toastDevelop('DevelopUseAdd');
+              }
               // handlePlay();
             }}
           >
