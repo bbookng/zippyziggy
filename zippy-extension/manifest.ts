@@ -7,6 +7,7 @@ const manifest: chrome.runtime.ManifestV3 = {
   manifest_version: 3,
   short_name: '지피지기',
   name: '지피지기 - ChatGPT 확장프로그램',
+  default_locale: 'ko',
   version: packageJson.version,
   description: packageJson.description,
   options_page: 'src/pages/options/index.html',

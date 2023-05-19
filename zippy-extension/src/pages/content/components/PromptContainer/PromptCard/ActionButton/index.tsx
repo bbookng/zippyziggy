@@ -107,6 +107,7 @@ const ActionButton = ({ name, type, promptUuid, fill, queryKeyItems }: ActionBut
   const { mutate: toggleLike } = useMutation(['toggleLike'], () => toggleLikePrompt(promptUuid), {
     onMutate: () => updateLike(promptUuid, fill),
   });
+
   const { mutate: toggleBookmark } = useMutation(
     ['toggleLike'],
     () => toggleBookmarkPrompt(promptUuid),

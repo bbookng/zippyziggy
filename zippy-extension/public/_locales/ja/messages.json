@@ -1,0 +1,134 @@
+{
+  "extensionName": {
+    "message": "Drag GPT - Dragと簡単にAIを始めよう！"
+  },
+  "extensionDescription": {
+    "message": "選択したコンテンツをChatGPTに簡単に問い合わせることができます。ドラッグしてボタンをクリックしてください。"
+  },
+  "dragGPT": {
+    "message": "Drag GPT"
+  },
+  "noApiKeyPage_openAIApiKey_placeholder": {
+    "message": "OpenAI APIキー"
+  },
+  "noApiKeyPage_checkingApiKey": {
+    "message": "APIキーを確認中です..."
+  },
+  "noApiKeyPage_howToGetApiKey": {
+    "message": "OpenAIのAPIキーを取得する方法は？"
+  },
+  "noApiKeyPage_howToGetApiKeyDetail1": {
+    "message": "{OpenAIアカウントにサインアップ}します。"
+  },
+  "noApiKeyPage_howToGetApiKeyDetail2": {
+    "message": "{APIキーのページ}に移動します。"
+  },
+  "noApiKeyPage_howToGetApiKeyDetail3": {
+    "message": "新しいシークレットキーを作成してAPIキーを生成します。"
+  },
+  "noApiKeyPage_howToGetApiKeyDetail4": {
+    "message": "キーをコピーして入力フィールドに貼り付け、保存をクリックします。"
+  },
+  "footer_EmailText": {
+    "message": "機能提案/バグ報告"
+  },
+  "noApiKeyPage_saveButtonText": {
+    "message": "保存"
+  },
+  "quickChattingPage_sendButtonText": {
+    "message": "送信"
+  },
+  "quickChattingPage_chattingPlaceholder": {
+    "message": "例：こんにちは！"
+  },
+  "quickChattingPage_backButtonText": {
+    "message": "戻る"
+  },
+  "quickChattingPage_resetButtonText": {
+    "message": "リセット"
+  },
+  "quickChattingPage_copyButtonText_copied": {
+    "message": "コピーしました！"
+  },
+  "quickChattingPage_copyButtonText_copy": {
+    "message": "最後の応答をコピー"
+  },
+  "slotListPage_newSlotButtonText": {
+    "message": "新規スロット"
+  },
+  "slotListPage_quickChatButtonText": {
+    "message": "クイックチャット"
+  },
+  "slotListPage_resetApiKeyButtonText": {
+    "message": "APIキーをリセット"
+  },
+  "slotListPage_promptSlotsTitle": {
+    "message": "プロンプトスロット"
+  },
+  "slotListPage_resetApiKeyConfirmMessage": {
+    "message": "よろしいですか？"
+  },
+  "slotListItem_deleteButtonText": {
+    "message": "削除"
+  },
+  "slotListItem_editButtonText": {
+    "message": "編集"
+  },
+  "slotListItem_promptGeneratorButton": {
+    "message": "プロンプトジェネレーター"
+  },
+  "slotDetail_promptSlotName": {
+    "message": "プロンプトスロット名"
+  },
+  "slotDetail_promptSlotName_placeholder": {
+    "message": "例：コードレビュー"
+  },
+  "slotDetail_writePromptTitle": {
+    "message": "ChatGPTのプロンプトを入力してください（最大2000文字）"
+  },
+  "slotDetail_promptInputPlaceholder": {
+    "message": "例：あなたはコードレビュアーです。"
+  },
+  "slotDetail_temperatureTitle": {
+    "message": "無作為性 (temperature: 0~2)"
+  },
+  "slotDetail_saveButtonText": {
+    "message": "保存"
+  },
+  "slotDetail_cancelButtonText": {
+    "message": "キャンセル"
+  },
+  "responseMessageBox_responseTitle": {
+    "message": "応答"
+  },
+  "responseMessageBox_copyButtonText_copy": {
+    "message": "最後の応答をコピー"
+  },
+  "responseMessageBox_copyButtonText_copied": {
+    "message": "コピーしました！"
+  },
+  "responseMessageBox_sendButtonText": {
+    "message": "送信"
+  },
+  "responseMessageBox_messageInputPlacepolder": {
+    "message": "例：要約！"
+  },
+  "errorMessageBox_errorTitle": {
+    "message": "エラー"
+  },
+  "errorMessageBox_unknownError": {
+    "message": "不明なエラー"
+  },
+  "promptGenerator_backButton": {
+    "message": "戻る"
+  },
+  "promptGenerator_guideMessage": {
+    "message": "希望するプロンプトがありますが、使用方法がわからない場合は、プロンプト作成を任せてみませんか？"
+  },
+  "promptGenerator_placeholder": {
+    "message": "コンバージョンを増やすマーケティングコピーを生成するプロンプト。"
+  },
+  "promptGenerator_generateButton": {
+    "message": "生成"
+  }
+}
