@@ -1,0 +1,95 @@
+@import "./CategoryFilter/index.styles.scss";
+@import "./Logo/index.styles.scss";
+@import "./PromptCard/ActionButton/index.styles.scss";
+@import "./PromptCard/Skeleton/index.styles.scss";
+@import "./PromptCard/index.styles.scss";
+@import "./SearchBar/index.styles.scss";
+@import "./SortFilter/index.styles.scss";
+@import "./UserInfo/index.styles.scss";
+@import "./Pagination/index.styles.scss";
+
+// ##### 프롬프트 컨테이너 시작
+#ZP_promptContainerPortals {
+  display: flex;
+  margin: 1.5rem 1rem 0 1rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  text-align: center;
+  gap: 0.625rem;
+  align-items: flex-start;
+  max-width: 100%;
+  height: 100%;
+}
+
+#ZP_authButton {
+  display: flex;
+  align-items: center;
+  color: var(--black-color-70);
+  font-size: 0.9rem;
+  transition: box-shadow .25s ease,transform .25s ease, color .5s ease;
+  padding: 0.5rem;
+  border-radius: var(--borders-radius-base);
+  background-color: var(--background-color);
+  height: 2rem;
+
+  img{
+    margin-right: 0.25rem;
+  }
+
+  &:hover {
+    color: var(--black-color-100);
+    transform: translate3d(0,-3px,0);
+    background-color: var(--background-color-hover);
+  }
+}
+
+.ZP_prompt-container__inner {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  flex: 1 1 0;
+  gap: 0.875rem;
+  min-width: 0;
+
+  // 로고, 카테고리 필터, 유저정보
+  .ZP_prompt-container__header {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+}
+
+
+// 현재 검색정보, 정렬 필터, 프롬프트 리스트
+.ZP_prompt-container__main {
+  width: 100%;
+  // 현재 검색정보, 정렬 필터
+  .ZP_prompt-container__category-wrapper {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+
+    // 현재 검색 정보
+    .ZP_prompt-container__search-info {
+      align-self: flex-end;
+    }
+  }
+}
+
+// 프롬프트 리스트
+.ZP_prompt-container__prompt-card-list {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 0.875rem;
+  margin-bottom: 2rem;
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  @media (min-width: 1440px) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+//프롬프트 컨테이너 끝 #####
