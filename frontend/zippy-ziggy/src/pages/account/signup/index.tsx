@@ -229,7 +229,6 @@ export default function SignUp() {
               accept="image/*"
               onChange={registerImage}
               ref={inputRef}
-              maxLength={10}
               style={{ display: 'none' }}
             />
           </label>
@@ -240,6 +239,7 @@ export default function SignUp() {
             id="nickname"
             placeholder="닉네임을 입력해주세요"
             value={nickname}
+            maxLength={10}
             onChange={(e) => setBeforeNickname(e.target.value)}
             required
           />
