@@ -241,6 +241,17 @@ export const StyledTalksWrap = styled.div`
     line-height: 1.5rem;
     background-color: rgba(64, 65, 79, var(--tw-bg-opacity));
     .messagesContainer {
+      .Container *:not(code) {
+        font-size: revert;
+      }
+      .Container table {
+        th {
+          border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        td {
+          border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+      }
       -webkit-text-size-adjust: 100%;
       font-feature-settings: normal;
       font-variation-settings: normal;
@@ -278,6 +289,17 @@ export const StyledTalksWrap = styled.div`
     background-color: rgba(52, 53, 65, var(--tw-bg-opacity));
     color: rgba(236, 236, 241, var(--tw-text-opacity));
     .messagesContainer {
+      .Container *:not(code) {
+        font-size: revert;
+      }
+      .Container table {
+        th {
+          border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        td {
+          border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+      }
       -webkit-text-size-adjust: 100%;
       font-feature-settings: normal;
       font-variation-settings: normal;
