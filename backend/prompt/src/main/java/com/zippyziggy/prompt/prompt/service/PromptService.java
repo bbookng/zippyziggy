@@ -683,7 +683,7 @@ public class PromptService{
 		ChatGptMessage chatGptMessage = new ChatGptMessage("user", content);
 		chatGptMessages.add(chatGptMessage);
 		ChatGptRequest request = new ChatGptRequest(MODEL, chatGptMessages);
-
+		log.info("chatGpt request = " + request);
 		// call the API
 		ChatGptResponse response = restTemplate.postForObject(URL, request, ChatGptResponse.class);
 
