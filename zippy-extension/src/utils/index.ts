@@ -5,17 +5,20 @@ const sanitizeInput = (input: string) => {
 };
 
 // 날짜 시간 포맷 YYYY 년 MM월 DD일
-const formatDateTime = (timestamp: number) => {
+const formatDateTime = (timestamp: number, countryCode: string) => {
   const fullDate = new Date(timestamp);
 
   if (!fullDate || fullDate.toString() === 'Invalid Date') {
     return '';
   }
 
-  const date = fullDate.toISOString().split('T')[0].split('-');
-  const [year, month, day] = date;
+  const formatter = new Intl.DateTimeFormat(countryCode, {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
 
-  return `${year}년 ${month}월 ${day}일`;
+  return formatter.format(fullDate);
 };
 
 // 타임스탬프를  N {unit} 전 형태로 포맷

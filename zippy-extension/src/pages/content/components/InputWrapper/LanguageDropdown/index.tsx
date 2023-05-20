@@ -8,6 +8,7 @@ import useBrowserName from '@pages/hooks/@shared/useBrowserName';
 import BrowserIcon from '@pages/content/components/InputWrapper/LanguageDropdown/BrowserIcon';
 import SearchBar from '@pages/content/components/PromptContainer/SearchBar';
 import splitKorean from '@pages/content/utils/@shared/split-korean';
+import t from '@src/chrome/i18n';
 
 const LanguageDropbox = () => {
   const { setIsExpand, isExpand } = useContext(DropdownContext);
@@ -54,7 +55,7 @@ const LanguageDropbox = () => {
           ) : (
             <>
               <BrowserIcon name={browserName} />
-              <span style={{ marginLeft: '0.375rem' }}>언어감지</span>
+              <span style={{ marginLeft: '0.375rem' }}>{`${t('languageDropdown_browser')}`}</span>
             </>
           )}
         </div>
@@ -63,13 +64,13 @@ const LanguageDropbox = () => {
         <SearchBar
           searchTerm={searchLanguage}
           setSearchTerm={setSearchLanguage}
-          placeholder="검색"
+          placeholder={`${t('languageDropdown_search')}`}
         />
         <ul className="ZP_language-items">
           <li className={`ZP_language-item-wrapper ${selectedLanguage === -1 && 'active'}`}>
             <button type="button" className="ZP_language-item" onClick={handleLanguageDetection}>
               <BrowserIcon name={browserName} />
-              <span style={{ marginLeft: '0.375rem' }}>언어감지</span>
+              <span style={{ marginLeft: '0.375rem' }}>{`${t('languageDropdown_browser')}`}</span>
             </button>
           </li>
           {countryData

@@ -12,6 +12,7 @@ import logo from '@assets/img/icon16.png';
 import { findRegenerateButton } from '@pages/content/utils/extension/add-ui-to-prompt-portals';
 import { authApi } from '@pages/content/utils/apis/axios-instance';
 import throttle from '@pages/content/utils/@shared/throttle';
+import t from '@src/chrome/i18n';
 
 export const removeFormParentClasses = (formParent) => {
   const $formParent = formParent;
@@ -155,7 +156,7 @@ export const createShareButton = () => {
                   12.0973 20.875 11.9028 20.7463 11.8027L12.4034 5.31385Z"
                   fill="currentColor"/>
     </svg>
-                            대화내용 공유하기`;
+                            ${t('shareButton_default')} ${t('shareButton_ready')}`;
   } else {
     $shareButtonContent.innerHTML = `
     <svg width="1.2rem" height="1.2rem" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -242,7 +243,10 @@ const resetShareButton = (shareButton: HTMLElement) => {
                   fill="currentColor"/>
     </svg>`;
   } else {
-    $shareButton.innerHTML = $shareButton.innerHTML.replace(/공유 중.../g, '공유하기');
+    $shareButton.innerHTML = $shareButton.innerHTML.replace(
+      new RegExp(t('shareButton_loading'), 'g'),
+      t('shareButton_ready')
+    );
   }
 };
 
@@ -258,14 +262,17 @@ const updateShareButtonState = ($shareButton) => {
     $shareButton.children[0].textContent = '...';
     ($shareButton.children[0] as HTMLElement).style.width = '1.2rem';
   } else {
-    $shareButton.innerHTML = $shareButton.innerHTML.replace(/공유하기/g, '공유 중...');
+    $shareButton.innerHTML = $shareButton.innerHTML.replace(
+      new RegExp(t('shareButton_ready'), 'g'),
+      t('shareButton_loading')
+    );
   }
   $shareButton.style.cursor = 'initial';
 };
 
 const getConversationData = async (model) => {
   const $threadContainer = document.getElementsByClassName(
-    'flex flex-col items-center text-sm dark:bg-gray-800'
+    'flex flex-col text-sm dark:bg-gray-800'
   )[0] as HTMLElement;
 
   const isChatGptPlus = isChatGptPlusUser();
@@ -315,7 +322,7 @@ const handleShareButtonClick = async ($shareButton) => {
 
     window.open(`${ZIPPY_SITE_URL}/talks/${talkId}`, '_blank');
   } catch (err) {
-    alert('대화내용 공유에 실패했습니다.');
+    alert(t('errorMessage_conversationsShare'));
   } finally {
     isRequesting = false;
     resetShareButton($shareButton);

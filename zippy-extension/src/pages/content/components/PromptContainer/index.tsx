@@ -23,20 +23,21 @@ import { SignUpResult } from '@pages/content/apis/member/models';
 import { getBookmarkList } from '@pages/content/apis/member';
 import { searchPrompts } from '@pages/content/apis/search';
 import Skeleton from '@pages/content/components/PromptContainer/PromptCard/Skeleton';
+import t from '@src/chrome/i18n';
 
 export const category: Array<Category> = [
-  { id: 'all', text: '전체', value: 'ALL' },
-  { id: 'study', text: '학업', value: 'STUDY' },
-  { id: 'fun', text: '오락', value: 'FUN' },
-  { id: 'business', text: '비즈니스', value: 'BUSINESS' },
-  { id: 'programming', text: '개발', value: 'PROGRAMMING' },
-  { id: 'etc', text: '기타', value: 'ETC' },
+  { id: 'all', text: t('filterCategory_all'), value: 'ALL' },
+  { id: 'study', text: t('filterCategory_study'), value: 'STUDY' },
+  { id: 'fun', text: t('filterCategory_fun'), value: 'FUN' },
+  { id: 'business', text: t('filterCategory_business'), value: 'BUSINESS' },
+  { id: 'programming', text: t('filterCategory_programming'), value: 'PROGRAMMING' },
+  { id: 'etc', text: t('filterCategory_etc'), value: 'ETC' },
 ];
 
 const sort: Array<Sort> = [
-  { id: 'like', text: '좋아요', value: 'likeCnt' },
-  { id: 'view', text: '조회수', value: 'hit' },
-  { id: 'latest', text: '최신순', value: 'regDt' },
+  { id: 'like', text: t('sortCategory_like'), value: 'likeCnt' },
+  { id: 'view', text: t('sortCategory_mostView'), value: 'hit' },
+  { id: 'latest', text: t('sortCategory_latest'), value: 'regDt' },
 ];
 
 const defaultCategory = category[0].value;
@@ -158,7 +159,7 @@ const PromptContainer = () => {
             <h2 className="ZP_prompt-container__search-info">
               {`${
                 isBookmark
-                  ? '📗 북마크'
+                  ? `📗 ${t('filterCategory_bookmark')}`
                   : category.find((item) => item.value === selectedCategory)?.text
               } ${
                 !isBookmark && debouncedSearchTerm.trim().length > 0
@@ -184,7 +185,7 @@ const PromptContainer = () => {
                   );
                 }
                 if (searchResult?.totalPromptsCnt === 0) {
-                  return <div>결과가 없습니다.</div>;
+                  return <div>{t('errorMessage_noContent')}</div>;
                 }
 
                 return searchResult?.extensionSearchPromptList?.map((prompt) => {
@@ -217,7 +218,7 @@ const PromptContainer = () => {
                 );
               }
               if (bookmarkResult?.totalPromptsCnt === 0) {
-                return <div>결과가 없습니다.</div>;
+                return <div>{t('errorMessage_noContent')}</div>;
               }
 
               return bookmarkResult?.promptCardResponseList?.map((prompt) => {

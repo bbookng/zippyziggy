@@ -6,6 +6,7 @@ import { CHROME_USERINFO_KEY } from '@pages/constants';
 import { SignUpResult } from '@pages/content/apis/member/models';
 import Logo from '@pages/content/components/PromptContainer/Logo';
 import delayPromise from '@pages/content/utils/@shared/delay-promise';
+import t from '@src/chrome/i18n';
 
 interface SignUpModalContentProps {
   userData: {
@@ -18,12 +19,12 @@ interface SignUpModalContentProps {
 
 const statusMessages = {
   default: { color: 'transparent', text: '\u00A0' },
-  error: { color: 'dangerColor', text: '중복된 닉네임이 있어요!' },
+  error: { color: 'dangerColor', text: t('signUpModal_duplicateNicknameMessage') },
   success: { color: 'successColor', text: '검증에 성공했어요!' },
 };
 
 const SignUpModalContent = ({ userData }: SignUpModalContentProps) => {
-  const [userData1, setUserData] = useChromeStorage<SignUpResult>(
+  const [u, setUserData] = useChromeStorage<SignUpResult>(
     CHROME_USERINFO_KEY,
     {
       userUuid: '',
@@ -75,16 +76,17 @@ const SignUpModalContent = ({ userData }: SignUpModalContentProps) => {
         <span>
           <img src={profileImg} alt={name} />
         </span>
-        {name}님 반가워요!
+        {`${t('signUpModal_welcomePrefix')}`} {name}
+        {`${t('signUpModal_welcomeSuffix')}`}
       </h3>
-      <p className="signup__desc">닉네임을 설정하고 회원가입을 완료하세요!</p>
+      <p className="signup__desc">{`${t('signUpModal_introduce')}`}</p>
 
       <form className="signup__form" onSubmit={handleSignupSubmit}>
         <input
           className="signup__nickname-input"
           type="text"
           id="nickname"
-          placeholder="닉네임을 입력해주세요"
+          placeholder={`${t('signUpModal_placeholder')}`}
           value={nickname}
           onChange={(e) => setNickname(e.target.value)}
           required
@@ -93,7 +95,7 @@ const SignUpModalContent = ({ userData }: SignUpModalContentProps) => {
           {statusMessages[nicknameStatus].text}
         </p>
         <button type="submit" className="signup__submit-button">
-          회원가입
+          {`${t('signUpModal_signUpButton')}`}
         </button>
       </form>
     </div>

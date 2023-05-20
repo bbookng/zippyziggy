@@ -5,12 +5,14 @@ import { ZIPPY_SITE_URL, ZP_AUTH_BUTTON_ID } from '@pages/constants';
 import AuthModalContent from '@pages/content/components/Modal/ModalContents/AuthModalContent';
 import { getMyInfo } from '@pages/content/apis/member';
 import logo from '@assets/img/icon16.png';
+import t from '@src/chrome/i18n';
 
 interface UserInfoProps {
   userData: SignUpResult;
   setUserData: Dispatch<SetStateAction<SignUpResult>>;
 }
-const UserInfo = ({ userData, setUserData }) => {
+
+const UserInfo = ({ userData, setUserData }: UserInfoProps) => {
   const { openModal, setModalContent } = useModalContext();
 
   // 내 정보 얻어오기
@@ -33,12 +35,15 @@ const UserInfo = ({ userData, setUserData }) => {
           target="_blank"
           rel="noreferrer"
         >
-          <p>환영합니다!</p>
+          <p>{`${t('welcomeMessage_prefix')}`}</p>
           <div className="user-info">
             <span>
               <img src={userData?.profileImg} alt={userData?.nickname} />
             </span>
-            <p>{userData?.nickname}님</p>
+            <p>
+              {userData?.nickname}
+              {`${t('welcomeMessage_suffix')}`}
+            </p>
           </div>
         </a>
       ) : (
@@ -51,7 +56,7 @@ const UserInfo = ({ userData, setUserData }) => {
           }}
         >
           <img src={logo} alt="지피지기" />
-          계정연동
+          {`${t('authButton')}`}
         </button>
       )}
     </div>

@@ -5,14 +5,17 @@
  * @param {string} selector - 웹페이지에서 찾고자 하는 요소의 CSS 선택자
  * @param {(element: Element) => void} callback - 찾은 요소를 인자로 받아 실행할 콜백 함수
  */
-const intervalForFindElement = (selector: string, callback: (element: Element) => void): void => {
+const intervalForFindElement = (
+  selector: string,
+  callback: (element: HTMLElement) => void
+): void => {
   const interval = setInterval(() => {
-    const element = document.querySelector(selector);
+    const element = document.querySelector(selector) as HTMLElement;
     if (element) {
       clearInterval(interval);
       callback(element);
     }
-  }, 10);
+  }, 50);
 };
 
 export default intervalForFindElement;

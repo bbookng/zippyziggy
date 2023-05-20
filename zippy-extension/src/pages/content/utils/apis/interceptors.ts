@@ -4,7 +4,7 @@ import { CHROME_USERINFO_KEY, ZIPPY_API_URL } from '@pages/constants';
 import logOnDev from '@pages/content/utils/@shared/logging';
 import { api } from './axios-instance';
 
-const getAccessToken = () => {
+export const getAccessToken = () => {
   return new Promise((resolve, reject) => {
     chrome.storage.sync.get('accessToken', (result) => {
       if (chrome.runtime.lastError) {

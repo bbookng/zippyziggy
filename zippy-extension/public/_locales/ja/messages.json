@@ -1,134 +1,204 @@
 {
   "extensionName": {
-    "message": "Drag GPT - Dragと簡単にAIを始めよう！"
+    "message": "ZippyZiggy - ChatGPTのプロンプトを共有して簡単に使ってみてください!"
   },
   "extensionDescription": {
-    "message": "選択したコンテンツをChatGPTに簡単に問い合わせることができます。ドラッグしてボタンをクリックしてください。"
+    "message": "クリックするだけで簡単に事前に作成したプロンプトを適用してChatGPTと会話できます!"
   },
-  "dragGPT": {
-    "message": "Drag GPT"
+  "authButton": {
+    "message": "アカウント連携"
   },
-  "noApiKeyPage_openAIApiKey_placeholder": {
-    "message": "OpenAI APIキー"
+  "shareButton_default": {
+    "message": "会話の内容"
   },
-  "noApiKeyPage_checkingApiKey": {
-    "message": "APIキーを確認中です..."
+  "shareButton_ready": {
+    "message": "共有する"
   },
-  "noApiKeyPage_howToGetApiKey": {
-    "message": "OpenAIのAPIキーを取得する方法は？"
+  "shareButton_loading": {
+    "message": "共有中..."
   },
-  "noApiKeyPage_howToGetApiKeyDetail1": {
-    "message": "{OpenAIアカウントにサインアップ}します。"
+  "signInModal_introduce": {
+    "message": "もっと多くの機能を使ってみてください!"
   },
-  "noApiKeyPage_howToGetApiKeyDetail2": {
-    "message": "{APIキーのページ}に移動します。"
+  "signUpModal_introduce": {
+    "message": "ニックネームを設定して、会員登録を完了してください!"
   },
-  "noApiKeyPage_howToGetApiKeyDetail3": {
-    "message": "新しいシークレットキーを作成してAPIキーを生成します。"
+  "signUpModal_placeholder": {
+    "message": "ニックネームを入力してください。"
   },
-  "noApiKeyPage_howToGetApiKeyDetail4": {
-    "message": "キーをコピーして入力フィールドに貼り付け、保存をクリックします。"
+  "signUpModal_signUpButton": {
+    "message": "会員登録"
   },
-  "footer_EmailText": {
-    "message": "機能提案/バグ報告"
+  "signUpModal_welcomePrefix": {
+    "message": "ようこそ、"
   },
-  "noApiKeyPage_saveButtonText": {
-    "message": "保存"
+  "signUpModal_welcomeSuffix": {
+    "message": "さん!"
   },
-  "quickChattingPage_sendButtonText": {
-    "message": "送信"
+  "signUpModal_duplicateNicknameMessage": {
+    "message": "重複したニックネームがあります!"
   },
-  "quickChattingPage_chattingPlaceholder": {
-    "message": "例：こんにちは！"
+  "filterCategory" : {
+    "message": "カテゴリー"
   },
-  "quickChattingPage_backButtonText": {
-    "message": "戻る"
+  "filterCategory_all" : {
+    "message": "全て"
   },
-  "quickChattingPage_resetButtonText": {
-    "message": "リセット"
+  "filterCategory_study" : {
+    "message": "学習"
   },
-  "quickChattingPage_copyButtonText_copied": {
-    "message": "コピーしました！"
+  "filterCategory_fun" : {
+    "message": "エンタメ"
   },
-  "quickChattingPage_copyButtonText_copy": {
-    "message": "最後の応答をコピー"
+  "filterCategory_business" : {
+    "message": "ビジネス"
   },
-  "slotListPage_newSlotButtonText": {
-    "message": "新規スロット"
+  "filterCategory_programming" : {
+    "message": "開発"
   },
-  "slotListPage_quickChatButtonText": {
-    "message": "クイックチャット"
+  "filterCategory_etc" : {
+    "message": "その他"
   },
-  "slotListPage_resetApiKeyButtonText": {
-    "message": "APIキーをリセット"
+  "filterCategory_bookmark" : {
+    "message": "ブックマーク"
   },
-  "slotListPage_promptSlotsTitle": {
-    "message": "プロンプトスロット"
+  "sortCategory_like" : {
+    "message": "人気順"
   },
-  "slotListPage_resetApiKeyConfirmMessage": {
-    "message": "よろしいですか？"
+  "sortCategory_mostView" : {
+    "message": "閲覧数"
   },
-  "slotListItem_deleteButtonText": {
-    "message": "削除"
+  "sortCategory_latest" : {
+    "message": "新着順"
   },
-  "slotListItem_editButtonText": {
-    "message": "編集"
+  "welcomeMessage_prefix": {
+    "message": "ようこそ!"
   },
-  "slotListItem_promptGeneratorButton": {
-    "message": "プロンプトジェネレーター"
+  "welcomeMessage_suffix": {
+    "message": "さん"
   },
-  "slotDetail_promptSlotName": {
-    "message": "プロンプトスロット名"
+  "searchInput_placeholder": {
+    "message": "検索語を入力してください。"
   },
-  "slotDetail_promptSlotName_placeholder": {
-    "message": "例：コードレビュー"
+  "actionDropdown_continueText": {
+    "message": "続けて書く"
   },
-  "slotDetail_writePromptTitle": {
-    "message": "ChatGPTのプロンプトを入力してください（最大2000文字）"
+  "actionDropdown_rewriteText": {
+    "message": "再作成"
   },
-  "slotDetail_promptInputPlaceholder": {
-    "message": "例：あなたはコードレビュアーです。"
+  "actionDropdown_exemplifyText": {
+    "message": "例示"
   },
-  "slotDetail_temperatureTitle": {
-    "message": "無作為性 (temperature: 0~2)"
+  "actionDropdown_clarifyText": {
+    "message": "明確に"
   },
-  "slotDetail_saveButtonText": {
-    "message": "保存"
+  "actionDropdown_expandText": {
+    "message": "詳細に"
   },
-  "slotDetail_cancelButtonText": {
-    "message": "キャンセル"
+  "actionDropdown_shortenText": {
+    "message": "要約"
   },
-  "responseMessageBox_responseTitle": {
-    "message": "応答"
+  "actionDropdown_explainText": {
+    "message": "説明"
   },
-  "responseMessageBox_copyButtonText_copy": {
-    "message": "最後の応答をコピー"
+  "actionDropdown_continueValue": {
+    "message": "答えを続けてください"
   },
-  "responseMessageBox_copyButtonText_copied": {
-    "message": "コピーしました！"
+  "actionDropdown_rewriteValue": {
+    "message": "再度答えてください"
   },
-  "responseMessageBox_sendButtonText": {
-    "message": "送信"
+  "actionDropdown_exemplifyValue": {
+    "message": "例を挙げてもらえますか？"
   },
-  "responseMessageBox_messageInputPlacepolder": {
-    "message": "例：要約！"
+  "actionDropdown_clarifyValue": {
+    "message": "もっと明確に答えてください"
   },
-  "errorMessageBox_errorTitle": {
-    "message": "エラー"
+  "actionDropdown_expandValue": {
+    "message": "詳しく答えてください"
   },
-  "errorMessageBox_unknownError": {
-    "message": "不明なエラー"
+  "actionDropdown_shortenValue": {
+    "message": "答えを要約してください"
   },
-  "promptGenerator_backButton": {
-    "message": "戻る"
+  "actionDropdown_explainValue": {
+    "message": "回答の詳しい説明をお願いします"
   },
-  "promptGenerator_guideMessage": {
-    "message": "希望するプロンプトがありますが、使用方法がわからない場合は、プロンプト作成を任せてみませんか？"
+  "languageDropdown_search": {
+    "message": "検索"
   },
-  "promptGenerator_placeholder": {
-    "message": "コンバージョンを増やすマーケティングコピーを生成するプロンプト。"
+  "languageDropdown_browser": {
+    "message": "言語検出"
   },
-  "promptGenerator_generateButton": {
-    "message": "生成"
+  "languageDropdown_ko": {
+    "message": "韓国語"
+  },
+  "languageDropdown_en": {
+    "message": "英語"
+  },
+  "languageDropdown_ja": {
+    "message": "日本語"
+  },
+  "languageDropdown_zhTW": {
+    "message": "繁体字"
+  },
+  "languageDropdown_zhCN": {
+    "message": "簡体字"
+  },
+  "languageDropdown_ur": {
+    "message": "ウルドゥ語"
+  },
+  "languageDropdown_es": {
+    "message": "スペイン語"
+  },
+  "languageDropdown_fr": {
+    "message": "フランス語"
+  },
+  "languageDropdown_de": {
+    "message": "ドイツ語"
+  },
+  "languageDropdown_ru": {
+    "message": "ロシア語"
+  },
+  "languageDropdown_pt": {
+    "message": "ポルトガル語"
+  },
+  "languageDropdown_it": {
+    "message": "イタリア語"
+  },
+  "languageDropdown_vi": {
+    "message": "ベトナム語"
+  },
+  "languageDropdown_th": {
+    "message": "タイ語"
+  },
+  "languageDropdown_id": {
+    "message": "インドネシア語"
+  },
+  "popup_zippyziggyLink": {
+    "message": "ウェブサイトを見る"
+  },
+  "popup_GPTLink": {
+    "message": "ChatGPTで使ってみる"
+  },
+  "popup_cannyLink": {
+    "message": "バグ報告と機能要求"
+  },
+  "popup_notionLink": {
+    "message": "パッチノート"
+  },
+  "popup_version": {
+    "message": "バージョン"
+  },
+  "popup_buildTime": {
+    "message": "ビルド時間"
+  },
+  "errorMessage_conversationsShare": {
+    "message": "会話の共有に失敗しました。"
+  },
+  "errorMessage_noContent": {
+    "message": "結果がありません。"
+  },
+  "errorMessage_noAuthentication": {
+    "message": "この機能を利用するにはログインしてください。"
   }
+
 }

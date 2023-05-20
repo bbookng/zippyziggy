@@ -1,134 +1,203 @@
 {
   "extensionName": {
-    "message": "Drag GPT - 便捷启动AI的Drag！"
+    "message": "ZippyZiggy - 分享并轻松使用ChatGPT提示!"
   },
   "extensionDescription": {
-    "message": "您可以通过拖动并单击按钮，轻松地向ChatGPT询问或请求所选内容。"
+    "message": "只需点击一下，就可以应用预写的提示与ChatGPT聊天!"
   },
-  "dragGPT": {
-    "message": "Drag GPT"
+  "authButton": {
+    "message": "账户链接"
   },
-  "noApiKeyPage_openAIApiKey_placeholder": {
-    "message": "OpenAI API密钥"
+  "shareButton_default": {
+    "message": "对话内容"
   },
-  "noApiKeyPage_checkingApiKey": {
-    "message": "正在发送请求，检查API密钥..."
+  "shareButton_ready": {
+    "message": "分享"
   },
-  "noApiKeyPage_howToGetApiKey": {
-    "message": "如何获取OpenAI API密钥？"
+  "shareButton_loading": {
+    "message": "正在分享..."
   },
-  "noApiKeyPage_howToGetApiKeyDetail1": {
-    "message": "{注册}OpenAI帐户。"
+  "signInModal_introduce": {
+    "message": "试试更多功能!"
   },
-  "noApiKeyPage_howToGetApiKeyDetail2": {
-    "message": "导航到{API密钥页面}。"
+  "signUpModal_introduce": {
+    "message": "设置一个昵称并完成注册!"
   },
-  "noApiKeyPage_howToGetApiKeyDetail3": {
-    "message": "创建一个新的密钥来生成API密钥。"
+  "signUpModal_placeholder": {
+    "message": "输入你的昵称。"
   },
-  "noApiKeyPage_howToGetApiKeyDetail4": {
-    "message": "复制密钥并粘贴到输入字段中，然后单击保存。"
+  "signUpModal_signUpButton": {
+    "message": "注册"
   },
-  "footer_EmailText": {
-    "message": "功能建议/错误报告"
+  "signUpModal_welcomePrefix": {
+    "message": "欢迎，"
   },
-  "noApiKeyPage_saveButtonText": {
-    "message": "保存"
+  "signUpModal_welcomeSuffix": {
+    "message": "!"
   },
-  "quickChattingPage_sendButtonText": {
-    "message": "发送"
+  "signUpModal_duplicateNicknameMessage": {
+    "message": "昵称已被占用!"
   },
-  "quickChattingPage_chattingPlaceholder": {
-    "message": "例如：你好！"
+  "filterCategory" : {
+    "message": "分类"
   },
-  "quickChattingPage_backButtonText": {
-    "message": "返回"
+  "filterCategory_all" : {
+    "message": "全部"
   },
-  "quickChattingPage_resetButtonText": {
-    "message": "重置"
+  "filterCategory_study" : {
+    "message": "学习"
   },
-  "quickChattingPage_copyButtonText_copied": {
-    "message": "已复制！"
+  "filterCategory_fun" : {
+    "message": "娱乐"
   },
-  "quickChattingPage_copyButtonText_copy": {
-    "message": "复制最后回复"
+  "filterCategory_business" : {
+    "message": "商务"
   },
-  "slotListPage_newSlotButtonText": {
-    "message": "新槽位"
+  "filterCategory_programming" : {
+    "message": "开发"
   },
-  "slotListPage_quickChatButtonText": {
-    "message": "快速聊天"
+  "filterCategory_etc" : {
+    "message": "其他"
   },
-  "slotListPage_resetApiKeyButtonText": {
-    "message": "重置API密钥"
+  "filterCategory_bookmark" : {
+    "message": "书签"
   },
-  "slotListPage_promptSlotsTitle": {
-    "message": "提示槽位"
+  "sortCategory_like" : {
+    "message": "按热度"
   },
-  "slotListPage_resetApiKeyConfirmMessage": {
-    "message": "确定吗？"
+  "sortCategory_mostView" : {
+    "message": "最多浏览"
   },
-  "slotListItem_deleteButtonText": {
-    "message": "删除"
+  "sortCategory_latest" : {
+    "message": "最新"
   },
-  "slotListItem_editButtonText": {
-    "message": "编辑"
+  "welcomeMessage_prefix": {
+    "message": "欢迎!"
   },
-  "slotListItem_promptGeneratorButton": {
-    "message": "提示生成器"
+  "welcomeMessage_suffix": {
+    "message": ""
   },
-  "slotDetail_promptSlotName": {
-    "message": "提示槽位名称"
+  "searchInput_placeholder": {
+    "message": "输入搜索关键词。"
   },
-  "slotDetail_promptSlotName_placeholder": {
-    "message": "例如：代码审查"
+  "actionDropdown_continueText": {
+    "message": "继续写"
   },
-  "slotDetail_writePromptTitle": {
-    "message": "为ChatGPT编写提示文本（最多2000个字符）"
+  "actionDropdown_rewriteText": {
+    "message": "重写"
   },
-  "slotDetail_promptInputPlaceholder": {
-    "message": "例如：你是一个代码审核者。"
+  "actionDropdown_exemplifyText": {
+    "message": "举例"
   },
-  "slotDetail_temperatureTitle": {
-    "message": "随机性 (temperature: 0~2)"
+  "actionDropdown_clarifyText": {
+    "message": "澄清"
   },
-  "slotDetail_saveButtonText": {
-    "message": "保存"
+  "actionDropdown_expandText": {
+    "message": "扩展"
   },
-  "slotDetail_cancelButtonText": {
-    "message": "取消"
+  "actionDropdown_shortenText": {
+    "message": "缩短"
   },
-  "responseMessageBox_responseTitle": {
-    "message": "回复"
+  "actionDropdown_explainText": {
+    "message": "解释"
   },
-  "responseMessageBox_copyButtonText_copy": {
-    "message": "复制最后回复"
+  "actionDropdown_continueValue": {
+    "message": "请继续回答"
   },
-  "responseMessageBox_copyButtonText_copied": {
-    "message": "已复制！"
+  "actionDropdown_rewriteValue": {
+    "message": "请重新回答"
   },
-  "responseMessageBox_sendButtonText": {
-    "message": "发送"
+  "actionDropdown_exemplifyValue": {
+    "message": "可以给出示例吗？"
   },
-  "responseMessageBox_messageInputPlacepolder": {
-    "message": "例如：总结！"
+  "actionDropdown_clarifyValue": {
+    "message": "请更清楚地回答"
   },
-  "errorMessageBox_errorTitle": {
-    "message": "错误"
+  "actionDropdown_expandValue": {
+    "message": "请详细回答"
   },
-  "errorMessageBox_unknownError": {
-    "message": "未知错误"
+  "actionDropdown_shortenValue": {
+    "message": "请总结您的回答"
   },
-  "promptGenerator_backButton": {
-    "message": "返回"
+  "actionDropdown_explainValue": {
+    "message": "请解释您的回答"
   },
-  "promptGenerator_guideMessage": {
-    "message": "如果您有所需的提示但不知道如何输入以使用它，则何不将提示创建委托给我们？"
+  "languageDropdown_search": {
+    "message": "搜索"
   },
-  "promptGenerator_placeholder": {
-    "message": "生成营销文案以提高转化率的提示。"
+  "languageDropdown_browser": {
+    "message": "检测语言"
   },
-  "promptGenerator_generateButton": {
-    "message": "生成"
+  "languageDropdown_ko": {
+    "message": "韩语"
+  },
+  "languageDropdown_en": {
+    "message": "英语"
+  },
+  "languageDropdown_ja": {
+    "message": "日语"
+  },
+  "languageDropdown_zhTW": {
+    "message": "繁体"
+  },
+  "languageDropdown_zhCN": {
+    "message": "简体"
+  },
+  "languageDropdown_ur": {
+    "message": "乌尔都语"
+  },
+  "languageDropdown_es": {
+    "message": "西班牙语"
+  },
+  "languageDropdown_fr": {
+    "message": "法语"
+  },
+  "languageDropdown_de": {
+    "message": "德语"
+  },
+  "languageDropdown_ru": {
+    "message": "俄语"
+  },
+  "languageDropdown_pt": {
+    "message": "葡萄牙语"
+  },
+  "languageDropdown_it": {
+    "message": "意大利语"
+  },
+  "languageDropdown_vi": {
+    "message": "越南语"
+  },
+  "languageDropdown_th": {
+    "message": "泰语"
+  },
+  "languageDropdown_id": {
+    "message": "印尼语"
+  },
+  "popup_zippyziggyLink": {
+    "message": "访问网站"
+  },
+  "popup_GPTLink": {
+    "message": "试用ChatGPT"
+  },
+  "popup_cannyLink": {
+    "message": "报告错误和请求功能"
+  },
+  "popup_notionLink": {
+    "message": "补丁说明"
+  },
+  "popup_version": {
+    "message": "版本"
+  },
+  "popup_buildTime": {
+    "message": "构建时间"
+  },
+  "errorMessage_conversationsShare": {
+    "message": "对话内容分享失败。"
+  },
+  "errorMessage_noContent": {
+    "message": "没有结果。"
+  },
+  "errorMessage_noAuthentication": {
+    "message": "请登录后使用此功能。"
   }
 }

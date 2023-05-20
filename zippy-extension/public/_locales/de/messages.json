@@ -1,203 +1,203 @@
 {
   "extensionName": {
-    "message": "ZippyZiggy - Share and easily use ChatGPT prompts!"
+    "message": "ZippyZiggy - Teile und verwende ChatGPT-Prompts einfach!"
   },
   "extensionDescription": {
-    "message": "Apply pre-written prompts with a simple click to chat with ChatGPT!"
+    "message": "Wende vorgeschriebene Prompts mit einem einfachen Klick an, um mit ChatGPT zu chatten!"
   },
   "authButton": {
-    "message": "Join/Sign up"
+    "message": "Registrieren"
   },
   "shareButton_default": {
-    "message": "Conversation"
+    "message": "Gesprächsinhalte"
   },
   "shareButton_ready": {
-    "message": "Share"
+    "message": "Aktie"
   },
   "shareButton_loading": {
-    "message": "Sharing..."
+    "message": "Teilen..."
   },
   "signInModal_introduce": {
-    "message": "Try out more features!"
+    "message": "Probiere weitere Funktionen aus!"
   },
   "signUpModal_introduce": {
-    "message": "Set a nickname and complete your registration!"
+    "message": "Vergebe einen Spitznamen und vervollständige deine Registrierung!"
   },
   "signUpModal_placeholder": {
-    "message": "Enter your nickname."
+    "message": "Gib deinen Spitznamen ein."
   },
   "signUpModal_signUpButton": {
-    "message": "Sign Up"
+    "message": "Registrieren"
   },
   "signUpModal_welcomePrefix": {
-    "message": "Welcome,"
+    "message": "Willkommen,"
   },
   "signUpModal_welcomeSuffix": {
     "message": "!"
   },
   "signUpModal_duplicateNicknameMessage": {
-    "message": "This nickname is already taken!"
+    "message": "Dieser Spitzname ist bereits vergeben!"
   },
   "filterCategory" : {
-    "message": "Category"
+    "message": "Kategorie"
   },
   "filterCategory_all" : {
-    "message": "All"
+    "message": "Alle"
   },
   "filterCategory_study" : {
-    "message": "Study"
+    "message": "Studium"
   },
   "filterCategory_fun" : {
-    "message": "Fun"
+    "message": "Unterhaltung"
   },
   "filterCategory_business" : {
-    "message": "Business"
+    "message": "Geschäftlich"
   },
   "filterCategory_programming" : {
-    "message": "Dev"
+    "message": "Entwicklung"
   },
   "filterCategory_etc" : {
-    "message": "Etc"
+    "message": "Sonstiges"
   },
   "filterCategory_bookmark" : {
-    "message": "Bookmark"
+    "message": "Lesezeichen"
   },
   "sortCategory_like" : {
-    "message": "Likes"
+    "message": "Beliebtheit"
   },
   "sortCategory_mostView" : {
-    "message": "Most Views"
+    "message": "angesehen"
   },
   "sortCategory_latest" : {
-    "message": "Latest"
+    "message": "Neueste"
   },
   "welcomeMessage_prefix": {
-    "message": "Welcome!"
+    "message": "Willkommen!"
   },
   "welcomeMessage_suffix": {
     "message": ""
   },
   "searchInput_placeholder": {
-    "message": "Enter search keywords."
+    "message": "Gib Suchbegriffe ein."
   },
   "actionDropdown_continueText": {
-    "message": "Continue"
+    "message": "fortsetzen"
   },
   "actionDropdown_rewriteText": {
-    "message": "Rewrite"
+    "message": "Umschreiben"
   },
   "actionDropdown_exemplifyText": {
-    "message": "Exemplify"
+    "message": "Beispiel"
   },
   "actionDropdown_clarifyText": {
-    "message": "Clarify"
+    "message": "Klärung"
   },
   "actionDropdown_expandText": {
-    "message": "Expand"
+    "message": "Erweitern"
   },
   "actionDropdown_shortenText": {
-    "message": "Shorten"
+    "message": "Kürzen"
   },
   "actionDropdown_explainText": {
-    "message": "Explain"
+    "message": "Erklären"
   },
   "actionDropdown_continueValue": {
-    "message": "Please continue it"
+    "message": "Bitte fahre fort"
   },
   "actionDropdown_rewriteValue": {
-    "message": "Please rewrite it"
+    "message": "Bitte schreibe es um"
   },
   "actionDropdown_exemplifyValue": {
-    "message": "Please exemplify it"
+    "message": "Bitte gib ein Beispiel"
   },
   "actionDropdown_clarifyValue": {
-    "message": "Please clarify it"
+    "message": "Bitte kläre es"
   },
   "actionDropdown_expandValue": {
-    "message": "Please expand it"
+    "message": "Bitte erweitere es"
   },
   "actionDropdown_shortenValue": {
-    "message": "Please shorten it"
+    "message": "Bitte kürze es"
   },
   "actionDropdown_explainValue": {
-    "message": "Please explain it"
+    "message": "Bitte erkläre es"
   },
   "languageDropdown_search": {
-    "message": "Search"
+    "message": "Suche"
   },
   "languageDropdown_browser": {
-    "message": "Default"
+    "message": "Standard"
   },
   "languageDropdown_ko": {
-    "message": "Korean"
+    "message": "Koreanisch"
   },
   "languageDropdown_en": {
-    "message": "English"
+    "message": "Englisch"
   },
   "languageDropdown_ja": {
-    "message": "Japanese"
+    "message": "Japanisch"
   },
   "languageDropdown_zhTW": {
-    "message": "Traditional"
+    "message": "Traditionell"
   },
   "languageDropdown_zhCN": {
-    "message": "Simplified"
+    "message": "Vereinfacht"
   },
   "languageDropdown_ur": {
     "message": "Urdu"
   },
   "languageDropdown_es": {
-    "message": "Spanish"
+    "message": "Spanisch"
   },
   "languageDropdown_fr": {
-    "message": "French"
+    "message": "Französisch"
   },
   "languageDropdown_de": {
-    "message": "German"
+    "message": "Deutsch"
   },
   "languageDropdown_ru": {
-    "message": "Russian"
+    "message": "Russisch"
   },
   "languageDropdown_pt": {
-    "message": "Portuguese"
+    "message": "Portugiesisch"
   },
   "languageDropdown_it": {
-    "message": "Italian"
+    "message": "Italienisch"
   },
   "languageDropdown_vi": {
-    "message": "Vietnamese"
+    "message": "Vietnamesisch"
   },
   "languageDropdown_th": {
-    "message": "Thai"
+    "message": "Thailändisch"
   },
   "languageDropdown_id": {
-    "message": "Indonesian"
+    "message": "Indonesisch"
   },
   "popup_zippyziggyLink": {
-    "message": "Visit ZippyZiggy Website"
+    "message": "Besuche die ZippyZiggy-Website"
   },
   "popup_GPTLink": {
-    "message": "Try in ChatGPT"
+    "message": "Probiere es in ChatGPT aus"
   },
   "popup_cannyLink": {
-    "message": "Report bugs and request features"
+    "message": "Melde Fehler und fordere Funktionen an"
   },
   "popup_notionLink": {
     "message": "Patch Notes"
   },
   "popup_version": {
-    "message": "version"
+    "message": "Version"
   },
   "popup_buildTime": {
-    "message": "build time"
+    "message": "Build-Zeit"
   },
   "errorMessage_conversationsShare": {
-    "message": "Failed to share the conversation."
+    "message": "Konversation konnte nicht geteilt werden."
   },
   "errorMessage_noContent": {
-    "message": "No results found."
+    "message": "Keine Ergebnisse gefunden."
   },
   "errorMessage_noAuthentication": {
-    "message": "Please log in to use this feature."
+    "message": "Bitte melden Sie sich an, um diese Funktion zu nutzen."
   }
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { CHAT_GPT_URL } from '@pages/constants';
 import Logo from '@pages/content/components/PromptContainer/Logo';
+import t from '@src/chrome/i18n';
 
 const GOOGLE_AUTH_URL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${
   import.meta.env.VITE_GOOGLE_CLIENT_ID
@@ -16,7 +17,7 @@ const AuthModalContent = () => {
   return (
     <div id="authModalLinkWrapper">
       <Logo />
-      <h1>더 많은 기능을 이용해보세요!</h1>
+      <h1>{`${t('signInModal_introduce')}`}</h1>
       <div>
         <a
           href={`${KAKAO_AUTH_URL}`}

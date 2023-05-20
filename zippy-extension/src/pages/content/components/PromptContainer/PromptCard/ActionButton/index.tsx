@@ -2,6 +2,7 @@ import React, { MouseEvent } from 'react';
 import { ZIPPY_SITE_URL } from '@pages/constants';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toggleBookmarkPrompt, toggleLikePrompt } from '@pages/content/apis/prompt';
+import { getAccessToken } from '@pages/content/utils/apis/interceptors';
 
 interface ActionButtonProps {
   name: string;
@@ -21,10 +22,9 @@ const ActionButton = ({ name, type, promptUuid, fill, queryKeyItems }: ActionBut
   const { limit, selectedSort, selectedCategory, page, debouncedSearchTerm } = queryKeyItems;
   const queryClient = useQueryClient();
 
-  const updateLike = (promptUuid: string, fill: boolean) => {
+  const updateLike = async (promptUuid: string, fill: boolean) => {
     // fill 이 true면 좋아요 -> 좋아요 취소 동작
     // false면 좋아요 동작
-
     const queryKey =
       name === 'searchCard'
         ? ['search', page, limit, debouncedSearchTerm, selectedSort, selectedCategory]
@@ -121,13 +121,23 @@ const ActionButton = ({ name, type, promptUuid, fill, queryKeyItems }: ActionBut
     window.open(`${ZIPPY_SITE_URL}/prompts/${promptUuid}`, '_blank');
   };
 
-  const handleBookmarkClick = (e: MouseEvent<HTMLButtonElement>) => {
+  const handleBookmarkClick = async (e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
+    const accessToken = await getAccessToken();
+    if (!accessToken) {
+      alert('test');
+      return;
+    }
     toggleBookmark();
   };
 
-  const handleLikeClick = (e: MouseEvent<HTMLButtonElement>) => {
+  const handleLikeClick = async (e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
+    const accessToken = await getAccessToken();
+    if (!accessToken) {
+      alert('test');
+      return;
+    }
     toggleLike();
   };
 

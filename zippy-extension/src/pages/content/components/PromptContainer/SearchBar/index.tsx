@@ -1,4 +1,5 @@
 import React, { ChangeEvent, Dispatch, SetStateAction } from 'react';
+import t from '@src/chrome/i18n';
 
 interface SearchBarProps {
   searchTerm: string;
@@ -8,7 +9,7 @@ interface SearchBarProps {
 const SearchBar = ({
   searchTerm,
   setSearchTerm,
-  placeholder = '검색어를 입력해주세요',
+  placeholder = t('searchInput_placeholder'),
 }: SearchBarProps) => {
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);

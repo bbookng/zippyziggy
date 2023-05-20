@@ -9,8 +9,8 @@ import {
   TARGET_LANGUAGE_PLACEHOLDER,
   ZIPPY_SITE_URL,
   ZP_PROMPT_TITLE_HOLDER_ID,
-} from "@pages/constants";
-import { sanitizeInput } from "@src/utils";
+} from '@pages/constants';
+import { sanitizeInput } from '@src/utils';
 
 const ZIPPY = (window.ZIPPYZIGGY = {
   init() {
@@ -48,21 +48,25 @@ const ZIPPY = (window.ZIPPYZIGGY = {
 
         // 프롬프트를 선택했을 때
         if (template) {
-          const inputPrompt = body.messages[0].content.parts[0];
+          const inputPrompt = body.messages?.[0].content.parts?.[0];
           const targetLanguage = this.targetLanguage
             ? this.targetLanguage
             : DEFAULT_TARGET_LANGUAGE;
 
           const completedPrompt = template
             .replaceAll(PROMPT_PLACEHOLDER, inputPrompt)
-            .replaceAll(TARGET_LANGUAGE_PLACEHOLDER, `\n\n Please write in ${targetLanguage}`);
-          body.messages[0].content.parts[0] = completedPrompt;
+            .replaceAll(TARGET_LANGUAGE_PLACEHOLDER, `\n\nPlease write in ${targetLanguage}`);
+          if (body.messages?.[0]) {
+            body.messages[0].content.parts[0] = completedPrompt;
+          }
           this.selectedPrompt = null;
         }
 
         // 프롬프트를 선택하지 않고 출력 언어만 바꿀때
         if (!template && this.targetLanguage) {
-          body.messages[0].content.parts[0] += `\n\n Please write in ${this.targetLanguage}`;
+          if (body.messages?.[0]) {
+            body.messages[0].content.parts[0] += `\n\nPlease write in ${this.targetLanguage}`;
+          }
         }
 
         options.body = JSON.stringify(body);
@@ -106,17 +110,16 @@ window.addEventListener('message', (event) => {
         data: { title, suffix, prefix, example, uuid },
       } = event.data;
 
-      const prompt =
-          `${ZIPPY_SITE_URL}/prompts/${uuid}\n${
-            prefix || ''
-          } ${PROMPT_PLACEHOLDER} ${suffix || ''}${TARGET_LANGUAGE_PLACEHOLDER}`.trim();
+      const prompt = `${ZIPPY_SITE_URL}/prompts/${uuid}\n${prefix || ''} ${PROMPT_PLACEHOLDER} ${
+        suffix || ''
+      }${TARGET_LANGUAGE_PLACEHOLDER}`.trim();
       ZIPPY.selectedPrompt = prompt;
 
       const $title = document.querySelector(`#${ZP_PROMPT_TITLE_HOLDER_ID}`) as HTMLElement;
       $title.textContent = `📟 ${title}`;
       $title.dataset.promptUuid = uuid;
       const $textarea = document.querySelector(`form textarea`) as HTMLTextAreaElement;
-      $textarea.placeholder = `예시) ${example}`;
+      $textarea.placeholder = `ex) ${example}`;
       $textarea.style.overflowY = 'visible';
       $textarea.style.height = 'fit-content';
 

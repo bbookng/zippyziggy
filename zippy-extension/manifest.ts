@@ -5,11 +5,11 @@ import packageJson from './package.json';
  */
 const manifest: chrome.runtime.ManifestV3 = {
   manifest_version: 3,
-  short_name: '지피지기',
-  name: '지피지기 - ChatGPT 확장프로그램',
+  short_name: 'ZippyZiggy',
+  name: '__MSG_extensionName__',
   default_locale: 'ko',
   version: packageJson.version,
-  description: packageJson.description,
+  description: '__MSG_extensionDescription__',
   options_page: 'src/pages/options/index.html',
   background: {
     service_worker: 'src/pages/background/index.js',

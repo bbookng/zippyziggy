@@ -4,8 +4,6 @@ import {
   CHAT_GPT_URL,
   MK_DATA_FROM_PROMPT_CARD_PLAY,
   MK_REQUEST_DATA,
-  MK_RESIGN,
-  MK_SIGN_OUT,
   ZIPPY_SITE_URL,
   ZP_BACKDROP_ID,
   ZP_OVERLAY_ID,
@@ -17,6 +15,17 @@ import ContentScript from '@pages/content/components/ZippyApp/ZippyApp';
 import { getPromptDetail } from '@pages/content/apis/prompt';
 import intervalForFindElement from '@pages/content/utils/extension/intervalForFindElement';
 import logOnDev from '@pages/content/utils/@shared/logging';
+import {
+  makePromptData,
+  markExtensionInstalled,
+  registerLogoutIntegrationEvent,
+  registerResignIntegrationEvent,
+  sendMessage,
+  shouldRenderLogout,
+  shouldRenderPlayButton,
+  shouldRenderPromptList,
+  shouldRenderResign,
+} from '@pages/content/utils/extension/funcsInContent';
 
 refreshOnUpdate('pages/content');
 
@@ -68,73 +77,64 @@ if (currentUrl.startsWith(CHAT_GPT_URL)) {
 // 지피지기 사이트에서 적용할 로직
 if (currentUrl.startsWith(ZIPPY_SITE_URL)) {
   logOnDev.log('지피지기 kr 로직');
-  // 프론트엔드에서 확장이 설치되었는지 확인을 하기위해 심는 attribute
-  document.documentElement.setAttribute('zippy', 'true');
-  // 로그아웃 연동
-  intervalForFindElement('[class^=userUuid__ProfileHeaderContainer]', ($authContainer: Element) => {
-    const $signOutButton = $authContainer.querySelector('#logout');
-    if ($signOutButton) {
-      $signOutButton.addEventListener('click', () => {
-        const name = document.querySelector('h1').textContent;
-        chrome.runtime.sendMessage({ type: MK_SIGN_OUT, name });
-      });
-    }
-  });
-
-  // 탈퇴 연동
-  intervalForFindElement('[class^=ModalStyle__ModalContent]', ($authContainer: Element) => {
-    if ($authContainer) {
-      const resignButton = $authContainer.querySelector('.btnBox > button:last-of-type');
-      const isResignModal =
-        $authContainer.querySelector('.modalTitle')?.textContent === '회원 탈퇴';
-
-      if (isResignModal) {
-        resignButton.addEventListener('click', () => {
-          const name = (document.querySelector('.nickNameInput') as HTMLInputElement).placeholder;
-          chrome.runtime.sendMessage({ type: MK_RESIGN, name });
-        });
-      }
-    }
-  });
-
+  // 프론트엔드에서 확장이 설치되었는지 확인을 하기위해 attribute 심기
+  markExtensionInstalled('zippy', 'true');
+  let reload = true;
   const observer = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
       for (const node of [...mutation.addedNodes]) {
         const $targetElement = node as HTMLElement;
-        if (typeof $targetElement.className === 'object') return;
-        if (
-          $targetElement.className?.startsWith('Detailstyle__Container') ||
-          $targetElement.className?.startsWith('Detailstyle__LeftContainer')
-        ) {
+        // svg인 경우 넘어가기
+        if ($targetElement.nodeName === 'svg') return;
+
+        // 로그아웃 연동
+        if (shouldRenderLogout($targetElement)) registerLogoutIntegrationEvent();
+
+        // 탈퇴 연동
+        if (shouldRenderResign($targetElement)) {
+          registerResignIntegrationEvent();
+        }
+
+        // 프롬프트 상세페이지의 사용하기 버튼 연동
+        if (shouldRenderPlayButton($targetElement)) {
+          // 다른 페이지에서 프롬프트 상세페이지로 진입했을 때는 observer 가 등록되어있는 돔의 변화가 있지만
           const $promptPlayDesktop = document.querySelector('#promptPlayDesktop') as HTMLElement;
           const $promptPlayMobile = document.querySelector('#promptPlayMobile') as HTMLElement;
-          if ($promptPlayDesktop || $promptPlayMobile) {
-            const { uuid } = $promptPlayDesktop.dataset;
-            const title = document.querySelector('.title')?.textContent;
-            const $ComponentStyleSubContainer = document.querySelectorAll(
-              '[class^=ComponentStyle__SubContainer]'
-            );
-            const $colorBox = $ComponentStyleSubContainer[2].querySelector('.colorBox');
-            const prefix = $colorBox.querySelector('span:first-of-type')?.textContent ?? '';
-            const example = $colorBox.querySelector('span.example')?.textContent ?? '';
-            const suffix = $colorBox.querySelector('span:last-of-type')?.textContent ?? '';
+          // 이벤트가 등록됐다고 체크하는 class
+          $promptPlayDesktop?.classList.add('zp');
+          $promptPlayMobile?.classList.add('zp');
+          const data = makePromptData();
 
-            $promptPlayDesktop.addEventListener('click', () => {
-              chrome.runtime.sendMessage({
-                type: MK_DATA_FROM_PROMPT_CARD_PLAY,
-                data: { title, prefix, example, suffix, uuid },
-              });
-            });
-
-            $promptPlayMobile.addEventListener('click', () => {
-              chrome.runtime.sendMessage({
-                type: MK_DATA_FROM_PROMPT_CARD_PLAY,
-                data: { title, prefix, example, suffix, uuid },
-              });
-            });
+          if ($promptPlayDesktop) {
+            data.uuid = $promptPlayDesktop.dataset.uuid;
+            sendMessage(MK_DATA_FROM_PROMPT_CARD_PLAY, $promptPlayDesktop, data);
           }
+
+          if ($promptPlayMobile) {
+            data.uuid = $promptPlayMobile.dataset.uuid;
+            sendMessage(MK_DATA_FROM_PROMPT_CARD_PLAY, $promptPlayMobile, data);
+          }
+        } else {
+          // 프롬프트 상세페이지에서 새로고침했을땐 script 태그를 제외하면 인식이 안되는 경우가 대부분이라서 interval 로 버튼을 찾아서 이벤트를 등록
+          const data = makePromptData();
+
+          intervalForFindElement('#promptPlayDesktop', ($promptPlayDesktop) => {
+            // zp class가 있으면 mutation에 감지되어서 이벤트가 이미 등록되었기때문에 return
+            if ($promptPlayDesktop?.classList.contains('zp')) return;
+            data.uuid = $promptPlayDesktop.dataset.uuid;
+            sendMessage(MK_DATA_FROM_PROMPT_CARD_PLAY, $promptPlayDesktop, data);
+          });
+
+          intervalForFindElement('#promptPlayMobile', ($promptPlayMobile) => {
+            // zp class가 있으면 mutation에 감지되어서 이벤트가 이미 등록되었기때문에 return
+            if ($promptPlayMobile.classList.contains('zp')) return;
+            data.uuid = $promptPlayMobile.dataset.uuid;
+            sendMessage(MK_DATA_FROM_PROMPT_CARD_PLAY, $promptPlayMobile, data);
+          });
         }
-        if ($targetElement.className?.startsWith('CardStyle__Conatiner')) {
+
+        // 프롬프트 리스트의 플레이버튼 연동
+        if (shouldRenderPromptList($targetElement)) {
           const promptUuid = $targetElement.dataset.uuid;
           const $playButton = $targetElement.querySelector('#promptCardPlay');
           $playButton.addEventListener('click', async () => {
@@ -144,6 +144,29 @@ if (currentUrl.startsWith(ZIPPY_SITE_URL)) {
               data: { title, prefix, example, suffix, uuid },
             });
           });
+          $playButton.classList.add('zp');
+        }
+        if ($targetElement.baseURI === `${ZIPPY_SITE_URL}/prompts`) {
+          if (reload) {
+            const promptUuids = document.querySelectorAll('[class^=CardStyle__Conatiner]');
+            const $playButtons = document.querySelectorAll('#promptCardPlay');
+
+            $playButtons.forEach((button, index) => {
+              const promptUuid = (promptUuids[index] as HTMLElement).dataset.uuid;
+              if (!button.classList.contains('zp')) {
+                button.addEventListener('click', async () => {
+                  const { title, prefix, example, suffix, uuid } = await getPromptDetail(
+                    promptUuid
+                  );
+                  await chrome.runtime.sendMessage({
+                    type: MK_DATA_FROM_PROMPT_CARD_PLAY,
+                    data: { title, prefix, example, suffix, uuid },
+                  });
+                });
+              }
+            });
+          }
+          reload = false;
         }
       }
     }

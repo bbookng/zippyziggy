@@ -1,29 +1,96 @@
+import t from '@src/chrome/i18n';
+
 const countryData = [
-  { code: 'KR', koreanName: '한국어', englishName: 'Korean', navigatorLanguage: 'ko-KR' },
-  { code: 'US', koreanName: '영어', englishName: 'English', navigatorLanguage: 'en-US' },
-  { code: 'JP', koreanName: '일본어', englishName: 'Japanese', navigatorLanguage: 'ja-JP' },
+  {
+    code: 'KR',
+    koreanName: t('languageDropdown_ko'),
+    englishName: 'Korean',
+    navigatorLanguage: 'ko-KR',
+  },
+  {
+    code: 'US',
+    koreanName: t('languageDropdown_en'),
+    englishName: 'English',
+    navigatorLanguage: 'en-US',
+  },
+  {
+    code: 'JP',
+    koreanName: t('languageDropdown_ja'),
+    englishName: 'Japanese',
+    navigatorLanguage: 'ja-JP',
+  },
   {
     code: 'CN',
-    koreanName: '중국어(번체)',
+    koreanName: t('languageDropdown_zhTW'),
     englishName: 'Chinese (Traditional)',
     navigatorLanguage: 'zh-TW',
   },
   {
     code: 'CN',
-    koreanName: '중국어(간체)',
+    koreanName: t('languageDropdown_zhCN'),
     englishName: 'Chinese (Simplified)',
     navigatorLanguage: 'zh-CN',
   },
-  { code: 'PK', koreanName: '우르두어', englishName: 'Urdu', navigatorLanguage: 'ur-PK' },
-  { code: 'ES', koreanName: '스페인어', englishName: 'Spanish', navigatorLanguage: 'es-ES' },
-  { code: 'FR', koreanName: '프랑스어', englishName: 'French', navigatorLanguage: 'fr-FR' },
-  { code: 'DE', koreanName: '독일어', englishName: 'German', navigatorLanguage: 'de-DE' },
-  { code: 'RU', koreanName: '러시아어', englishName: 'Russian', navigatorLanguage: 'ru-RU' },
-  { code: 'PT', koreanName: '포르투갈어', englishName: 'Portuguese', navigatorLanguage: 'pt-PT' },
-  { code: 'IT', koreanName: '이탈리아어', englishName: 'Italian', navigatorLanguage: 'it-IT' },
-  { code: 'VN', koreanName: '베트남어', englishName: 'Vietnamese', navigatorLanguage: 'vi-VN' },
-  { code: 'TH', koreanName: '태국어', englishName: 'Thai', navigatorLanguage: 'th-TH' },
-  { code: 'ID', koreanName: '인도네시아어', englishName: 'Indonesian', navigatorLanguage: 'id-ID' },
+  {
+    code: 'PK',
+    koreanName: t('languageDropdown_ur'),
+    englishName: 'Urdu',
+    navigatorLanguage: 'ur-PK',
+  },
+  {
+    code: 'ES',
+    koreanName: t('languageDropdown_es'),
+    englishName: 'Spanish',
+    navigatorLanguage: 'es-ES',
+  },
+  {
+    code: 'FR',
+    koreanName: t('languageDropdown_fr'),
+    englishName: 'French',
+    navigatorLanguage: 'fr-FR',
+  },
+  {
+    code: 'DE',
+    koreanName: t('languageDropdown_de'),
+    englishName: 'German',
+    navigatorLanguage: 'de-DE',
+  },
+  {
+    code: 'RU',
+    koreanName: t('languageDropdown_ru'),
+    englishName: 'Russian',
+    navigatorLanguage: 'ru-RU',
+  },
+  {
+    code: 'PT',
+    koreanName: t('languageDropdown_pt'),
+    englishName: 'Portuguese',
+    navigatorLanguage: 'pt-PT',
+  },
+  {
+    code: 'IT',
+    koreanName: t('languageDropdown_it'),
+    englishName: 'Italian',
+    navigatorLanguage: 'it-IT',
+  },
+  {
+    code: 'VN',
+    koreanName: t('languageDropdown_vi'),
+    englishName: 'Vietnamese',
+    navigatorLanguage: 'vi-VN',
+  },
+  {
+    code: 'TH',
+    koreanName: t('languageDropdown_th'),
+    englishName: 'Thai',
+    navigatorLanguage: 'th-TH',
+  },
+  {
+    code: 'ID',
+    koreanName: t('languageDropdown_id'),
+    englishName: 'Indonesian',
+    navigatorLanguage: 'id-ID',
+  },
 ];
 
 export default countryData;

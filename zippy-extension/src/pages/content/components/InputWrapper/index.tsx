@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ActionWritingButton from '@pages/content/components/InputWrapper/ActionWritingButton';
 import LanguageDropbox from '@pages/content/components/InputWrapper/LanguageDropdown';
+import useChromeStorage from '@pages/hooks/@shared/useChromeStorage';
+import { CHROME_ACTIONS_KEY } from '@pages/constants';
+import t from '@src/chrome/i18n';
 import ActionGroup from './ActionGroup';
 import OutputSettingGroup from './OutputSettingGroup';
 
@@ -12,17 +15,52 @@ export interface SelectOption {
 }
 
 const options: Array<SelectOption> = [
-  { id: 0, value: 'continue', text: '계속 작성', prompt: '답변을 이어서 계속 작성해줘' },
-  { id: 1, value: 'rewrite', text: '다시 작성', prompt: '다시 답변해줘' },
-  { id: 2, value: 'exemplify', text: '예시 제시', prompt: '예시를 제시해줄래?' },
-  { id: 3, value: 'clarify', text: '명확하게', prompt: '좀 더 명확하게 답변해줘' },
-  { id: 4, value: 'expand', text: '자세하게', prompt: '좀 더 자세하게 답변해줘' },
-  { id: 5, value: 'shorten', text: '요약해서', prompt: '답변을 요약해줘' },
-  { id: 6, value: 'explain', text: '설명해줘', prompt: '답변에 대해서 부가설명 부탁해' },
+  {
+    id: 0,
+    value: 'shorten',
+    text: t('actionDropdown_shortenText'),
+    prompt: t('actionDropdown_shortenValue'),
+  },
+  {
+    id: 1,
+    value: 'expand',
+    text: t('actionDropdown_expandText'),
+    prompt: t('actionDropdown_expandValue'),
+  },
+  {
+    id: 2,
+    value: 'continue',
+    text: t('actionDropdown_continueText'),
+    prompt: t('actionDropdown_continueValue'),
+  },
+  {
+    id: 3,
+    value: 'rewrite',
+    text: t('actionDropdown_rewriteText'),
+    prompt: t('actionDropdown_rewriteValue'),
+  },
+  {
+    id: 4,
+    value: 'exemplify',
+    text: t('actionDropdown_exemplifyText'),
+    prompt: t('actionDropdown_exemplifyValue'),
+  },
+  {
+    id: 5,
+    value: 'clarify',
+    text: t('actionDropdown_clarifyText'),
+    prompt: t('actionDropdown_clarifyValue'),
+  },
+  {
+    id: 6,
+    value: 'explain',
+    text: t('actionDropdown_explainText'),
+    prompt: t('actionDropdown_explainValue'),
+  },
 ];
 
 const InputWrapper = () => {
-  const [selectedOption, setSelectedOption] = useState(0);
+  const [selectedOption, setSelectedOption] = useChromeStorage<number>(CHROME_ACTIONS_KEY, 0);
   const handleActionChange = (e: React.MouseEvent<HTMLLIElement>) => {
     setSelectedOption(+e.currentTarget.dataset.index);
   };

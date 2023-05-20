@@ -1,134 +1,204 @@
 {
   "extensionName": {
-    "message": "지피지기 - ChatGPT 프롬프트를 공유하고 쉽게 사용해보세요!"
+    "message": "ZippyZiggy - ChatGPT 프롬프트를 공유하고 쉽게 사용해보세요!"
   },
   "extensionDescription": {
-    "message": "드래그 후 버튼 클릭만으로 간단하게 선택한 내용을 ChatGPT에게 물어보거나 요청할 수 있어요!"
+    "message": "클릭으로 간단하게 미리 작성된 프롬프트를 적용하여 ChatGPT와 대화할 수 있어요!"
   },
-  "dragGPT": {
-    "message": "드래그 GPT"
+  "authButton": {
+    "message": "계정연동"
   },
-  "noApiKeyPage_openAIApiKey_placeholder": {
-    "message": "OpenAI API 키"
+  "shareButton_default": {
+    "message": "대화내용"
   },
-  "noApiKeyPage_checkingApiKey": {
-    "message": "API 키 확인을 위해\n테스트 요청을 날려보는 중..."
+  "shareButton_ready": {
+    "message": "공유하기"
   },
-  "noApiKeyPage_howToGetApiKey": {
-    "message": "OpenAI의 API 키는 어떻게 얻나요?"
+  "shareButton_loading": {
+    "message": "공유 중..."
   },
-  "noApiKeyPage_howToGetApiKeyDetail1": {
-    "message": "OpenAI 계정이 없다면 {회원가입}이 필요합니다."
+  "signInModal_introduce": {
+    "message": "더 많은 기능을 이용해보세요!"
   },
-  "noApiKeyPage_howToGetApiKeyDetail2": {
-    "message": "{API Key 페이지}로 이동하세요."
+  "signUpModal_introduce": {
+    "message": "닉네임을 설정하고 회원가입을 완료하세요!"
   },
-  "noApiKeyPage_howToGetApiKeyDetail3": {
-    "message": "API key 생성을 위해 Create a new secret key 버튼을 눌러주세요."
+  "signUpModal_placeholder": {
+    "message": "닉네임을 입력해주세요."
   },
-  "noApiKeyPage_howToGetApiKeyDetail4": {
-    "message": "키를 복사하고 입력 후 저장 버튼을 누르면 시작할 수 있습니다!"
+  "signUpModal_signUpButton": {
+    "message": "회원가입"
   },
-  "footer_EmailText": {
-    "message": "기능 제안 / 버그 제보"
+  "signUpModal_welcomePrefix": {
+    "message": "반가워요,"
   },
-  "noApiKeyPage_saveButtonText": {
-    "message": "저장"
+  "signUpModal_welcomeSuffix": {
+    "message": "님!"
   },
-  "quickChattingPage_sendButtonText": {
-    "message": "전송"
+  "signUpModal_duplicateNicknameMessage": {
+    "message": "중복된 닉네임이 있어요!"
   },
-  "quickChattingPage_chattingPlaceholder": {
-    "message": "ex. 안녕!"
+  "filterCategory" : {
+    "message": "카테고리"
   },
-  "quickChattingPage_backButtonText": {
-    "message": "뒤로가기"
+  "filterCategory_all" : {
+   "message": "전체"
   },
-  "quickChattingPage_resetButtonText": {
-    "message": "대화 초기화"
+  "filterCategory_study" : {
+   "message": "학업"
   },
-  "quickChattingPage_copyButtonText_copy": {
-    "message": "마지막 응답 복사"
+  "filterCategory_fun" : {
+   "message": "오락"
   },
-  "quickChattingPage_copyButtonText_copied": {
-    "message": "복사됨!"
+  "filterCategory_business" : {
+   "message": "비즈니스"
   },
-  "slotListPage_newSlotButtonText": {
-    "message": "슬롯 추가"
+  "filterCategory_programming" : {
+   "message": "개발"
   },
-  "slotListPage_quickChatButtonText": {
-    "message": "빠른 대화"
+  "filterCategory_etc" : {
+   "message": "기타"
   },
-  "slotListPage_resetApiKeyButtonText": {
-    "message": "API키 초기화"
+  "filterCategory_bookmark" : {
+    "message": "북마크"
   },
-  "slotListPage_promptSlotsTitle": {
-    "message": "프롬프트 슬롯"
+  "sortCategory_like" : {
+    "message": "좋아요"
   },
-  "slotListPage_resetApiKeyConfirmMessage": {
-    "message": "정말 API 키를 초기화 하시겠어요?"
+  "sortCategory_mostView" : {
+    "message": "조회수"
   },
-  "slotListItem_deleteButtonText": {
-    "message": "삭제"
+  "sortCategory_latest" : {
+    "message": "최신순"
   },
-  "slotListItem_editButtonText": {
-    "message": "수정"
+  "welcomeMessage_prefix": {
+    "message": "환영합니다!"
   },
-  "slotListItem_promptGeneratorButton": {
-    "message": "프롬프트 생성기"
+  "welcomeMessage_suffix": {
+    "message": "님"
   },
-  "slotDetail_promptSlotName": {
-    "message": "프롬프트 슬롯 이름"
+  "searchInput_placeholder": {
+    "message": "검색어를 입력해주세요."
   },
-  "slotDetail_promptSlotName_placeholder": {
-    "message": "ex. 영-한 번역용"
+  "actionDropdown_shortenText": {
+    "message": "요약해서"
   },
-  "slotDetail_writePromptTitle": {
-    "message": "ChatGPT 요청에 사용할 사전 프롬프트를\n작성해주세요.(최대 2000자)"
+  "actionDropdown_expandText": {
+    "message": "자세하게"
   },
-  "slotDetail_promptInputPlaceholder": {
-    "message": "ex. 영어 문장 혹은 단어의 한국어 뜻을 알려줘."
+  "actionDropdown_continueText": {
+    "message": "계속 작성"
   },
-  "slotDetail_temperatureTitle": {
-    "message": "무작위성 (temperature: 0~2)"
+  "actionDropdown_rewriteText": {
+    "message": "다시 작성"
   },
-  "slotDetail_saveButtonText": {
-    "message": "저장"
+  "actionDropdown_exemplifyText": {
+    "message": "예시 제시"
   },
-  "slotDetail_cancelButtonText": {
-    "message": "취소"
+  "actionDropdown_clarifyText": {
+    "message": "명확하게"
   },
-  "responseMessageBox_responseTitle": {
-    "message": "답변"
+  "actionDropdown_explainText": {
+    "message": "설명해줘"
   },
-  "responseMessageBox_copyButtonText_copy": {
-    "message": "마지막 응답 복사"
+  "actionDropdown_continueValue": {
+    "message": "답변을 이어서 계속 작성해줘"
   },
-  "responseMessageBox_copyButtonText_copied": {
-    "message": "복사됨!"
+  "actionDropdown_rewriteValue": {
+    "message": "다시 답변해줘"
   },
-  "responseMessageBox_sendButtonText": {
-    "message": "전송"
+  "actionDropdown_exemplifyValue": {
+    "message": "예시를 제시해줄래?"
   },
-  "responseMessageBox_messageInputPlacepolder": {
-    "message": "ex. 위 내용을 알기 쉽게 요약해줘"
+  "actionDropdown_clarifyValue": {
+    "message": "좀 더 명확하게 답변해줘"
   },
-  "errorMessageBox_errorTitle": {
-    "message": "에러"
+  "actionDropdown_expandValue": {
+    "message": "좀 더 자세하게 답변해줘"
   },
-  "errorMessageBox_unknownError": {
-    "message": "알 수 없는 에러"
+  "actionDropdown_shortenValue": {
+    "message": "답변을 요약해줘"
   },
-  "promptGenerator_backButton": {
-    "message": "뒤로가기"
+  "actionDropdown_explainValue": {
+    "message": "답변에 대해서 부가설명 부탁해"
   },
-  "promptGenerator_guideMessage": {
-    "message": "원하는 프롬프트가 있는데 어떻게 입력해야 사용할 수 있을지 모르겠다면? 프롬프트 생성을 맡겨보세요!"
+  "languageDropdown_search": {
+    "message": "검색"
   },
-  "promptGenerator_placeholder": {
-    "message": "전환율을 높이기 위한 마케팅 문구를 생성하는 프롬프트"
+  "languageDropdown_browser": {
+    "message": "언어감지"
   },
-  "promptGenerator_generateButton": {
-    "message": "생성하기"
+  "languageDropdown_ko": {
+    "message": "한국어"
+  },
+  "languageDropdown_en": {
+    "message": "영어"
+  },
+  "languageDropdown_ja": {
+    "message": "일본어"
+  },
+  "languageDropdown_zhTW": {
+    "message": "중국어(번체)"
+  },
+  "languageDropdown_zhCN": {
+    "message": "중국어(간체)"
+  },
+  "languageDropdown_ur": {
+    "message": "우르두어"
+  },
+  "languageDropdown_es": {
+    "message": "스페인어"
+  },
+  "languageDropdown_fr": {
+    "message": "프랑스어"
+  },
+  "languageDropdown_de": {
+    "message": "독일어"
+  },
+  "languageDropdown_ru": {
+    "message": "러시아어"
+  },
+  "languageDropdown_pt": {
+    "message": "포르투갈어"
+  },
+  "languageDropdown_it": {
+    "message": "이탈리아어"
+  },
+  "languageDropdown_vi": {
+    "message": "베트남어"
+  },
+  "languageDropdown_th": {
+    "message": "태국어"
+  },
+  "languageDropdown_id": {
+    "message": "인도네시아어"
+  },
+  "popup_zippyziggyLink": {
+    "message": "웹사이트 둘러보기"
+  },
+  "popup_GPTLink": {
+    "message": "ChatGPT에서 사용해보기"
+  },
+  "popup_cannyLink": {
+    "message": "버그 제보 및 기능 요청"
+  },
+  "popup_notionLink": {
+    "message": "패치 노트"
+  },
+  "popup_version": {
+    "message": "버전"
+  },
+  "popup_buildTime": {
+    "message": "빌드시간"
+  },
+  "errorMessage_conversationsShare": {
+    "message": "대화내용 공유에 실패했습니다."
+  },
+  "errorMessage_noContent": {
+    "message": "결과가 없습니다."
+  },
+  "errorMessage_noAuthentication": {
+    "message": "로그인 후 사용하실 수 있습니다."
   }
+
 }
