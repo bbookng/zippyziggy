@@ -1,69 +1,47 @@
 package com.zippyziggy.prompt.prompt.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zippyziggy.prompt.common.aws.AwsS3Uploader;
 import com.zippyziggy.prompt.common.kafka.KafkaProducer;
 import com.zippyziggy.prompt.prompt.client.MemberClient;
-import com.zippyziggy.prompt.prompt.dto.request.AppChatGptRequest;
-import com.zippyziggy.prompt.prompt.dto.request.ChatGptMessage;
-import com.zippyziggy.prompt.prompt.dto.request.ChatGptRequest;
-import com.zippyziggy.prompt.prompt.dto.request.GptApiRequest;
-import com.zippyziggy.prompt.prompt.dto.request.NoticeRequest;
-import com.zippyziggy.prompt.prompt.dto.request.PromptCntRequest;
-import com.zippyziggy.prompt.prompt.dto.request.PromptRatingRequest;
-import com.zippyziggy.prompt.prompt.dto.request.PromptReportRequest;
-import com.zippyziggy.prompt.prompt.dto.request.PromptRequest;
+import com.zippyziggy.prompt.prompt.dto.request.*;
 import com.zippyziggy.prompt.prompt.dto.response.*;
-import com.zippyziggy.prompt.prompt.exception.AwsUploadException;
-import com.zippyziggy.prompt.prompt.exception.ForbiddenMemberException;
-import com.zippyziggy.prompt.prompt.exception.PromptNotFoundException;
-import com.zippyziggy.prompt.prompt.exception.RatingAlreadyExistException;
-import com.zippyziggy.prompt.prompt.exception.ReportAlreadyExistException;
+import com.zippyziggy.prompt.prompt.exception.*;
 import com.zippyziggy.prompt.prompt.model.*;
-import com.zippyziggy.prompt.prompt.repository.PromptBookmarkRepository;
-import com.zippyziggy.prompt.prompt.repository.PromptClickRepository;
-import com.zippyziggy.prompt.prompt.repository.PromptCommentRepository;
-import com.zippyziggy.prompt.prompt.repository.PromptLikeRepository;
-import com.zippyziggy.prompt.prompt.repository.PromptReportRepository;
-import com.zippyziggy.prompt.prompt.repository.PromptRepository;
-import com.zippyziggy.prompt.prompt.repository.RatingRepository;
+import com.zippyziggy.prompt.prompt.repository.*;
 import com.zippyziggy.prompt.prompt.util.RedisUtils;
 import com.zippyziggy.prompt.recommender.service.RecommenderService;
 import com.zippyziggy.prompt.talk.dto.response.PromptTalkListResponse;
 import com.zippyziggy.prompt.talk.dto.response.TalkListResponse;
 import com.zippyziggy.prompt.talk.repository.TalkRepository;
 import com.zippyziggy.prompt.talk.service.TalkService;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
-import java.util.stream.Collectors;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 @Slf4j
 public class PromptService{
-
 	private static final String VIEWCOOKIENAME = "alreadyViewCookie";
 	private static final String MODEL = "gpt-3.5-turbo";
 	private static final String URL = "https://api.openai.com/v1/chat/completions";
@@ -91,10 +69,6 @@ public class PromptService{
 
 	@Autowired
 	private final RestTemplate restTemplate;
-
-	@Value("${chatgpt.api-key}")
-	private String apiKey;
-
 
 	// Exception 처리 필요
 	public PromptResponse createPrompt(PromptRequest data, UUID crntMemberUuid, @Nullable MultipartFile thumbnail) {
@@ -701,15 +675,13 @@ public class PromptService{
     }
 
     public GptApiResponse getChatGptAnswer(AppChatGptRequest data) {
-		log.info(apiKey);
 
 		// create a request
 		ChatGptRequest request = new ChatGptRequest(MODEL, data);
-		log.info("request = " + request);
+
 		// call the API
-		restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
 		ChatGptResponse response = restTemplate.postForObject(URL, request, ChatGptResponse.class);
-		log.info("response = " + response);
+
 		if (response == null || response.getChoices() == null || response.getChoices().isEmpty()) {
 			return new GptApiResponse("No response");
 		}
