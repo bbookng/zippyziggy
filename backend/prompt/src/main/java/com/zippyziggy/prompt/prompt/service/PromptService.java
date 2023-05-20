@@ -88,7 +88,7 @@ public class PromptService{
 	private final RedisTemplate redisTemplate;
 
 	@Autowired
-	private RestTemplate restTemplate;
+	private final RestTemplate openaiRestTemplate;
 
 	// Exception 처리 필요
 	public PromptResponse createPrompt(PromptRequest data, UUID crntMemberUuid, @Nullable MultipartFile thumbnail) {
@@ -683,8 +683,8 @@ public class PromptService{
 		ChatGptRequest request = new ChatGptRequest(MODEL, chatGptMessages);
 		log.info("chatGpt request = " + request);
 		// call the API
-		ChatGptResponse response = restTemplate.postForObject(URL, request, ChatGptResponse.class);
-
+		ChatGptResponse response = openaiRestTemplate.postForObject(URL, request, ChatGptResponse.class);
+		log.info("response = " + response);
 		if (response == null || response.getChoices() == null || response.getChoices().isEmpty()) {
 			return new GptApiResponse("No response");
 		}
@@ -697,15 +697,10 @@ public class PromptService{
     public GptApiResponse getChatGptAnswer(AppChatGptRequest data) {
 		// create a request
 		ChatGptRequest request = new ChatGptRequest(MODEL, data);
-
+		log.info("request = " + request);
 		// call the API
-		ChatGptResponse response = null;
-		try {
-		response = restTemplate.postForObject(URL, request, ChatGptResponse.class);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
+		ChatGptResponse response = openaiRestTemplate.postForObject(URL, request, ChatGptResponse.class);
+		log.info("response = " + response);
 		if (response == null || response.getChoices() == null || response.getChoices().isEmpty()) {
 			return new GptApiResponse("No response");
 		}
