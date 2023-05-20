@@ -86,9 +86,7 @@ public class PromptService{
 
 	private final RedisUtils redisUtils;
 	private final RedisTemplate redisTemplate;
-	private final ObjectMapper objectMapper;
 
-	@Qualifier("openaiRestTemplate")
 	@Autowired
 	private RestTemplate restTemplate;
 
@@ -701,7 +699,12 @@ public class PromptService{
 		ChatGptRequest request = new ChatGptRequest(MODEL, data);
 
 		// call the API
-		ChatGptResponse response = restTemplate.postForObject(URL, request, ChatGptResponse.class);
+		ChatGptResponse response = null;
+		try {
+		response = restTemplate.postForObject(URL, request, ChatGptResponse.class);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 		if (response == null || response.getChoices() == null || response.getChoices().isEmpty()) {
 			return new GptApiResponse("No response");
