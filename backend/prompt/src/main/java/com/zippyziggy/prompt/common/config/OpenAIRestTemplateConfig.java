@@ -8,7 +8,7 @@ import org.springframework.web.client.RestTemplate;
 
 @Configuration
 public class OpenAIRestTemplateConfig {
-    @Value("${chatgpt.api-key}")
+    @Value("${openai.api-key}")
     private String apiKey;
 
     @Bean
