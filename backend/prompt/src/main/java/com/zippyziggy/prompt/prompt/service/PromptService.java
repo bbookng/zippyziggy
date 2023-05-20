@@ -45,6 +45,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.data.domain.Page;
@@ -90,6 +91,9 @@ public class PromptService{
 
 	@Autowired
 	private final RestTemplate restTemplate;
+
+	@Value("${chatgpt.api-key}")
+	private String apiKey;
 
 
 	// Exception 처리 필요
@@ -697,6 +701,8 @@ public class PromptService{
     }
 
     public GptApiResponse getChatGptAnswer(AppChatGptRequest data) {
+		log.info(apiKey);
+
 		// create a request
 		ChatGptRequest request = new ChatGptRequest(MODEL, data);
 		log.info("request = " + request);
