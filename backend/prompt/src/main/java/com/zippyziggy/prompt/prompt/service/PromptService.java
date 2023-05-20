@@ -51,6 +51,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -88,7 +89,8 @@ public class PromptService{
 	private final RedisTemplate redisTemplate;
 
 	@Autowired
-	private final RestTemplate openaiRestTemplate;
+	private final RestTemplate restTemplate;
+
 
 	// Exception 처리 필요
 	public PromptResponse createPrompt(PromptRequest data, UUID crntMemberUuid, @Nullable MultipartFile thumbnail) {
@@ -683,7 +685,7 @@ public class PromptService{
 		ChatGptRequest request = new ChatGptRequest(MODEL, chatGptMessages);
 		log.info("chatGpt request = " + request);
 		// call the API
-		ChatGptResponse response = openaiRestTemplate.postForObject(URL, request, ChatGptResponse.class);
+		ChatGptResponse response = restTemplate.postForObject(URL, request, ChatGptResponse.class);
 		log.info("response = " + response);
 		if (response == null || response.getChoices() == null || response.getChoices().isEmpty()) {
 			return new GptApiResponse("No response");
@@ -699,7 +701,8 @@ public class PromptService{
 		ChatGptRequest request = new ChatGptRequest(MODEL, data);
 		log.info("request = " + request);
 		// call the API
-		ChatGptResponse response = openaiRestTemplate.postForObject(URL, request, ChatGptResponse.class);
+		restTemplate.setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+		ChatGptResponse response = restTemplate.postForObject(URL, request, ChatGptResponse.class);
 		log.info("response = " + response);
 		if (response == null || response.getChoices() == null || response.getChoices().isEmpty()) {
 			return new GptApiResponse("No response");
