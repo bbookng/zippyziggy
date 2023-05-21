@@ -62,7 +62,7 @@ export const sequenceText = [
 export const sequenceForkText = [
   {
     title: '가이드 1/6',
-    content: '프롬프트는 질문을 쉽고 정확하게 할 수 있는 질문표현방법입니다!',
+    content: '포크하기는 다른 사람이 쓴 프롬프트를 수정하여 사용할 수 있어요!',
   },
   {
     title: '가이드 2/6',
