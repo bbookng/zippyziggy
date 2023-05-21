@@ -1,6 +1,8 @@
+import { links } from '@/utils/links';
 import Image from 'next/image';
 import Link from 'next/link';
 import { AiFillGithub, AiFillInstagram, AiFillYoutube } from 'react-icons/ai';
+import { RxNotionLogo } from 'react-icons/rx';
 import styled from 'styled-components';
 
 const StyledFooter = styled.footer`
@@ -113,7 +115,7 @@ const Footer = () => {
             <h4>Zippy Ziggy</h4>
             <ul>
               <li>
-                <Link href="/tutorial">사이트 소개</Link>
+                <Link href="/">사이트 소개</Link>
               </li>
               <li>
                 <Link href="/prompts">프롬프트 공유</Link>
@@ -155,9 +157,7 @@ const Footer = () => {
             <h4>고객센터</h4>
             <ul>
               <li>
-                <Link href="https://uncovered-runner-74a.notion.site/043dd9c85a434f039d8a05abb997e32a">
-                  공지사항
-                </Link>
+                <Link href={links.noticeLink}>공지사항</Link>
               </li>
               <li>
                 <Link href="https://forms.gle/Lk4aTW94MNmam2my7">문의사항</Link>
@@ -174,11 +174,11 @@ const Footer = () => {
           <div className="footer-col">
             <h4>follow us</h4>
             <div className="social-links">
-              <Link href="/">
+              <Link href={links.youtube}>
                 <AiFillYoutube className="social-icon" />
               </Link>
-              <Link href="/">
-                <AiFillGithub className="social-icon" />
+              <Link href={links.noticeLink}>
+                <RxNotionLogo className="social-icon" />
               </Link>
             </div>
           </div>
