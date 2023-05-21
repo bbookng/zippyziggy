@@ -55,10 +55,11 @@ const usePromptListPortal = () => {
     ) => {
       const observer = new MutationObserver((mutations) => {
         for (const mutation of mutations) {
-          const targetElement = mutation.target as HTMLElement;
-
+          const $targetElement = mutation.target as HTMLElement;
           if (!document.querySelector('h1.text-4xl')) {
-            if (targetElement.className === 'flex flex-col items-center text-sm dark:bg-gray-800') {
+            if (
+              $targetElement.className === 'flex flex-col items-center text-sm dark:bg-gray-800'
+            ) {
               const $ZPPromptContainer = document.querySelector(
                 `#${ZP_PROMPT_CONTAINER_ID}`
               ) as HTMLElement;
@@ -66,12 +67,12 @@ const usePromptListPortal = () => {
             }
           }
           // 대상 요소가 포탈을 생성해야 하는지 판단
-          if (shouldCreatePromptContainerPortal(targetElement, isNewChatPageRef)) {
+          if (shouldCreatePromptContainerPortal($targetElement, isNewChatPageRef)) {
             createPromptContainerPortal();
             return;
           }
           // 필요없는 div 제거
-          hideEmptyDiv(targetElement);
+          hideEmptyDiv($targetElement);
         }
       });
       observer.observe(document.getElementById('__next'), { subtree: true, childList: true });

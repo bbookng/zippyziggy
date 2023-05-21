@@ -118,7 +118,7 @@ const PromptCard = ({ name, prompt, queryKeyItems }: PromptCardProps) => {
             />
           </div>
           <div className="ZP_prompt-container__content-wrapper">
-            <h3 className="ZP_prompt-container__title" title={title}>
+            <h3 className="ZP_prompt-container__title" title={title} translate="yes">
               {title}
             </h3>
             <p className="ZP_prompt-container__category caption">
@@ -126,7 +126,7 @@ const PromptCard = ({ name, prompt, queryKeyItems }: PromptCardProps) => {
                 category.find((item) => item.value === promptCategory).text ?? ''
               }`}
             </p>
-            <p className="ZP_prompt-container__description" title={description}>
+            <p className="ZP_prompt-container__description" title={description} translate="yes">
               {description}
             </p>
             <div className="ZP_prompt-container__info-wrapper">
@@ -145,7 +145,7 @@ const PromptCard = ({ name, prompt, queryKeyItems }: PromptCardProps) => {
               <span>
                 <img src={writerResponse?.writerImg} alt={writerResponse?.writerNickname} />
               </span>
-              <span>{writerResponse?.writerNickname}</span>
+              <span translate="no">{writerResponse?.writerNickname}</span>
             </div>
             <div className="ZP_prompt-container__actions-wrapper">
               {/* 조회수 */}

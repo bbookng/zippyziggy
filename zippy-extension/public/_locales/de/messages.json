@@ -199,5 +199,8 @@
   },
   "errorMessage_noAuthentication": {
     "message": "Bitte melden Sie sich an, um diese Funktion zu nutzen."
+  },
+  "confirmMessage_conversationsShare": {
+    "message": "Möchten Sie den Dialog mit ZippyZiggy teilen?"
   }
 }

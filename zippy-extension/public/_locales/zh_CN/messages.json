@@ -199,5 +199,8 @@
   },
   "errorMessage_noAuthentication": {
     "message": "请登录后使用此功能。"
+  },
+  "confirmMessage_conversationsShare": {
+    "message": "确认要将对话内容分享给ZippyZiggy吗？"
   }
 }

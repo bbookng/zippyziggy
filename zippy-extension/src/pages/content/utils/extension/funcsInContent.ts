@@ -37,6 +37,11 @@ export const shouldRenderPromptList = (element: HTMLElement) => {
   return element.className?.startsWith('CardStyle__Conatiner');
 };
 
+export const shouldRenderPromptCardInTalkPage = (element: HTMLElement) => {
+  if (element.nodeName !== 'DIV') return false;
+  return element.className?.startsWith('Detailstyle__LeftContainer');
+};
+
 // 탈퇴, 로그아웃 공통 로직
 export const addIntegrationEvent = (selector, messageType, getTextCallback) => {
   const $eventTargetElement = document.querySelector(selector);

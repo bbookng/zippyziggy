@@ -23,6 +23,7 @@ import {
   sendMessage,
   shouldRenderLogout,
   shouldRenderPlayButton,
+  shouldRenderPromptCardInTalkPage,
   shouldRenderPromptList,
   shouldRenderResign,
 } from '@pages/content/utils/extension/funcsInContent';
@@ -79,7 +80,8 @@ if (currentUrl.startsWith(ZIPPY_SITE_URL)) {
   logOnDev.log('지피지기 kr 로직');
   // 프론트엔드에서 확장이 설치되었는지 확인을 하기위해 attribute 심기
   markExtensionInstalled('zippy', 'true');
-  let reload = true;
+  let promptsReload = true;
+  let talksReload = true;
   const observer = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
       for (const node of [...mutation.addedNodes]) {
@@ -136,7 +138,7 @@ if (currentUrl.startsWith(ZIPPY_SITE_URL)) {
         // 프롬프트 리스트의 플레이버튼 연동
         if (shouldRenderPromptList($targetElement)) {
           const promptUuid = $targetElement.dataset.uuid;
-          const $playButton = $targetElement.querySelector('#promptCardPlay');
+          const $playButton = $targetElement.querySelector('.item.promptCardPlay');
           $playButton.addEventListener('click', async () => {
             const { title, prefix, example, suffix, uuid } = await getPromptDetail(promptUuid);
             await chrome.runtime.sendMessage({
@@ -147,10 +149,9 @@ if (currentUrl.startsWith(ZIPPY_SITE_URL)) {
           $playButton.classList.add('zp');
         }
         if ($targetElement.baseURI === `${ZIPPY_SITE_URL}/prompts`) {
-          if (reload) {
+          if (promptsReload) {
             const promptUuids = document.querySelectorAll('[class^=CardStyle__Conatiner]');
             const $playButtons = document.querySelectorAll('#promptCardPlay');
-
             $playButtons.forEach((button, index) => {
               const promptUuid = (promptUuids[index] as HTMLElement).dataset.uuid;
               if (!button.classList.contains('zp')) {
@@ -166,7 +167,43 @@ if (currentUrl.startsWith(ZIPPY_SITE_URL)) {
               }
             });
           }
-          reload = false;
+          promptsReload = false;
+        }
+
+        if (shouldRenderPromptCardInTalkPage($targetElement)) {
+          const promptUuid = (
+            $targetElement.querySelector('[class^=CardStyle__Conatiner]') as HTMLElement
+          ).dataset.uuid;
+          const $playButton = $targetElement.querySelector('.item.promptCardPlay');
+
+          $playButton.addEventListener('click', async () => {
+            const { title, prefix, example, suffix, uuid } = await getPromptDetail(promptUuid);
+            await chrome.runtime.sendMessage({
+              type: MK_DATA_FROM_PROMPT_CARD_PLAY,
+              data: { title, prefix, example, suffix, uuid },
+            });
+          });
+          $playButton.classList.add('zp');
+        }
+
+        if ($targetElement.baseURI.startsWith(`${ZIPPY_SITE_URL}/talks`)) {
+          if (talksReload) {
+            const promptUuid = (
+              $targetElement.querySelector('[class^=CardStyle__Conatiner]') as HTMLElement
+            ).dataset.uuid;
+            const $playButton = $targetElement.querySelector('.item.promptCardPlay');
+
+            $playButton.addEventListener('click', async () => {
+              const { title, prefix, example, suffix, uuid } = await getPromptDetail(promptUuid);
+              await chrome.runtime.sendMessage({
+                type: MK_DATA_FROM_PROMPT_CARD_PLAY,
+                data: { title, prefix, example, suffix, uuid },
+              });
+            });
+            $playButton.classList.add('zp');
+          }
+
+          talksReload = false;
         }
       }
     }

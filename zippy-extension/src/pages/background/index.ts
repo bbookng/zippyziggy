@@ -1,6 +1,7 @@
 import reloadOnUpdate from 'virtual:reload-on-update-in-background-script';
 import {
   CHAT_GPT_URL,
+  CHROME_ACTIONS_KEY,
   CHROME_CATEGORY_KEY,
   CHROME_PAGE_KEY,
   CHROME_SEARCH_KEY,
@@ -28,6 +29,7 @@ chrome.runtime.onStartup.addListener(() => {
   chrome.storage.local.remove(CHROME_SORT_KEY);
   chrome.storage.local.remove(CHROME_SEARCH_KEY);
   chrome.storage.local.remove(CHROME_PAGE_KEY);
+  chrome.storage.local.remove(CHROME_ACTIONS_KEY);
 });
 
 let dataFromPromptCardPlay;

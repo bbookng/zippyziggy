@@ -199,6 +199,8 @@
   },
   "errorMessage_noAuthentication": {
     "message": "로그인 후 사용하실 수 있습니다."
+  },
+  "confirmMessage_conversationsShare": {
+    "message": "대화내용을 ZippyZiggy에 공유하시겠습니까?"
   }
-
 }

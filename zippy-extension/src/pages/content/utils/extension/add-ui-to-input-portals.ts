@@ -316,11 +316,13 @@ const handleShareButtonClick = async ($shareButton) => {
   if (!conversationData) return;
 
   try {
-    const {
-      data: { talkId },
-    } = await authApi.post('/talks', conversationData);
+    if (window.confirm(t('confirmMessage_conversationsShare'))) {
+      const {
+        data: { talkId },
+      } = await authApi.post('/talks', conversationData);
 
-    window.open(`${ZIPPY_SITE_URL}/talks/${talkId}`, '_blank');
+      window.open(`${ZIPPY_SITE_URL}/talks/${talkId}`, '_blank');
+    }
   } catch (err) {
     alert(t('errorMessage_conversationsShare'));
   } finally {

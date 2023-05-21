@@ -38,37 +38,37 @@
   "signUpModal_duplicateNicknameMessage": {
     "message": "重複したニックネームがあります!"
   },
-  "filterCategory" : {
+  "filterCategory": {
     "message": "カテゴリー"
   },
-  "filterCategory_all" : {
+  "filterCategory_all": {
     "message": "全て"
   },
-  "filterCategory_study" : {
+  "filterCategory_study": {
     "message": "学習"
   },
-  "filterCategory_fun" : {
+  "filterCategory_fun": {
     "message": "エンタメ"
   },
-  "filterCategory_business" : {
+  "filterCategory_business": {
     "message": "ビジネス"
   },
-  "filterCategory_programming" : {
+  "filterCategory_programming": {
     "message": "開発"
   },
-  "filterCategory_etc" : {
+  "filterCategory_etc": {
     "message": "その他"
   },
-  "filterCategory_bookmark" : {
+  "filterCategory_bookmark": {
     "message": "ブックマーク"
   },
-  "sortCategory_like" : {
+  "sortCategory_like": {
     "message": "人気順"
   },
-  "sortCategory_mostView" : {
+  "sortCategory_mostView": {
     "message": "閲覧数"
   },
-  "sortCategory_latest" : {
+  "sortCategory_latest": {
     "message": "新着順"
   },
   "welcomeMessage_prefix": {
@@ -199,6 +199,8 @@
   },
   "errorMessage_noAuthentication": {
     "message": "この機能を利用するにはログインしてください。"
+  },
+  "confirmMessage_conversationsShare": {
+    "message": "会話内容をZippyZiggyと共有しますか？"
   }
-
 }

@@ -199,5 +199,8 @@
   },
   "errorMessage_noAuthentication": {
     "message": "Please log in to use this feature."
+  },
+  "confirmMessage_conversationsShare": {
+    "message": "Do you want to share the conversation with ZippyZiggy?"
   }
 }
