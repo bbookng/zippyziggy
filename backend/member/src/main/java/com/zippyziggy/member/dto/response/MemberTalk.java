@@ -15,6 +15,7 @@ public class MemberTalk {
     private Integer hit;
     private String question;
     private String answer;
+    private String model;
 
     @Builder
     public MemberTalk(
@@ -26,7 +27,8 @@ public class MemberTalk {
             Long commentCnt,
             Long likeCnt,
             String question,
-            String answer
+            String answer,
+            String model
     ) {
         this.writer = writer;
         this.talkId = talkId;
@@ -37,5 +39,6 @@ public class MemberTalk {
         this.likeCnt = likeCnt;
         this.question = question;
         this.answer = answer;
+        this.model = model;
     }
 }
