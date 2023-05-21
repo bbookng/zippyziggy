@@ -49,5 +49,8 @@ public interface PromptClient {
     @GetMapping("/talks/members/profile/{crntMemberUuid}")
     MemberTalkList getTalks(
             @PathVariable("crntMemberUuid") String crntMemberUuid,
-            Pageable pageable);
+            @RequestParam("page") Integer page,
+            @RequestParam("size") Integer size,
+            @RequestParam("sort") String sort
+    );
 }
