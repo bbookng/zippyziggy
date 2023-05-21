@@ -10,4 +10,5 @@ export const links = {
   noticeLink,
   notification: '/notification',
   canny: 'https://zippyziggy.canny.io/',
+  youtube: 'https://youtu.be/y5e62YD9vhc',
 };
