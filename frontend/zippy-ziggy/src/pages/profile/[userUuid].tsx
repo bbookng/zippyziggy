@@ -104,7 +104,7 @@ export default function Index() {
     //    2. 유저정보가 있지만, null로 들어오는 경우 (삭제된 유저)
     if (
       (mypage === 'true' && result?.result === 'FAIL') ||
-      (result?.result === 'SUCCESS' && (result?.nickname === null || result?.profileImg === null))
+      (result?.result === 'SUCCESS' && result?.userUuid === '')
     ) {
       localStorage.clear();
       dispatch(setUserReset());
@@ -121,7 +121,7 @@ export default function Index() {
     // 유저정보가 있을 경우
     if (result?.result === 'SUCCESS') {
       // 데이터가 null로 오는 경우 profile 404 페이지로 이동
-      if (result?.nickname === null || result?.profileImg === null) {
+      if (result?.userUuid === '') {
         router.replace('/profile');
         return false;
       }
@@ -142,7 +142,7 @@ export default function Index() {
     };
     const data = await getTalksProfileAPI(requestData);
     if (data.result === 'SUCCESS') {
-      setCardList(data.data.searchTalkList);
+      setCardList(data.data.memberTalkList);
       setTotalPromptsCnt(data.data.totalTalksCnt);
     }
     return true;
@@ -152,7 +152,7 @@ export default function Index() {
   const handleProfileData = async () => {
     // 유저가 없을 시 더이상 데이터를 받아오지 않음
     const result = await handleUserAPI();
-    if (result) {
+    if (!result) {
       return;
     }
     await handleTalksProfile();
