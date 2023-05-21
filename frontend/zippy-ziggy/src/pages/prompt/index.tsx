@@ -1,4 +1,5 @@
 import Button from '@/components/Button/Button';
+import { sequenceText, useGuide, useTestAPI } from '@/components/CreatePrompt/CreateCommon';
 import CreateFooter from '@/components/CreatePrompt/CreateFooter';
 import CreatePart1 from '@/components/CreatePrompt/CreatePrompt_1';
 import CreatePart2 from '@/components/CreatePrompt/CreatePrompt_2';
@@ -50,53 +51,18 @@ function PromptCreate() {
   const router = useRouter();
   const { nickname } = useAppSelector((state) => state.user);
   const [testContent, setTestContent] = useState<string | null>('위의 테스트 버튼을 눌러주세요!');
-  const [GPTIsLoading, setGPTIsLoading] = useState<boolean>(false);
-  const textList = [
-    'GPT에게 요청중입니다',
-    '잠시만 기다려주세요',
-    '최대 1분 이상 소요될 수 있습니다',
-    '너무 긴 답변은 잘릴 수도 있어요',
-  ];
-  const [text, setText] = useState<string>(textList[0]);
 
-  // 가이드 순서 설정
-  const [guideSequence, setGuideSequence] = useState<number>(0);
-  const [isShowGuide, setIsShowGuide] = useState<boolean>(false);
-  const guideElementRef = [
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-    useRef(null),
-  ];
+  const { isTestLoading, loadingText, startLoadingText, endLoadingText } = useTestAPI();
 
-  const sequenceText = [
-    {
-      title: '가이드 1/6',
-      content: '프롬프트는 질문을 쉽고 정확하게 할 수 있는 질문표현방법입니다!',
-    },
-    {
-      title: '가이드 2/6',
-      content: '앞 프롬프트에는 질문의 앞에 붙어 질문을 도와줄 수 있어요.',
-    },
-    {
-      title: '가이드 3/6',
-      content: '질문 예시는 Chat-gpt에게 물어볼 질문입니다. 사용자가 바꿀 수 있어요!',
-    },
-    {
-      title: '가이드 4/6',
-      content: '뒤 프롬프트에는 질문의 뒤에 붙어  질문을 도와줄 수 있어요.',
-    },
-    {
-      title: '가이드 5/6',
-      content: '앞 프롬프트, 질문, 뒤 프롬프트가 합쳐져서 다음과 같이 GPT에게 질문하게 됩니다!',
-    },
-    {
-      title: '가이드 6/6',
-      content: '테스트 버튼을 눌러 Chat-gpt가 대답을 잘 하는지 확인해보세요!',
-    },
-  ];
+  const {
+    guideSequence,
+    isShowGuide,
+    setIsShowGuide,
+    guideElementRef,
+    nextGuide,
+    preGuide,
+    skipGuide,
+  } = useGuide();
 
   // react-hook-form 설정
   const { setValue, getValues, watch } = useForm({
@@ -118,20 +84,14 @@ function PromptCreate() {
 
   // 프롬프트 테스트 요청
   const handleTest = async () => {
-    setGPTIsLoading(true);
-    let i = 1;
-    const loadingText = setInterval(() => {
-      setText(textList[i % textList.length]);
-      i++;
-    }, 2000);
+    startLoadingText();
     const requestData = {
       prefix: prompt1,
       example,
       suffix: prompt2,
     };
     const test = await testPrompt(requestData);
-    setGPTIsLoading(false);
-    clearInterval(loadingText);
+    endLoadingText();
     if (test.result === 'SUCCESS') {
       setTestContent(test.data.apiResult.trim());
     } else {
@@ -252,9 +212,9 @@ function PromptCreate() {
           prompt2={prompt2}
           example={example}
           possible
-          text={text}
+          text={loadingText}
           testContent={testContent}
-          isLoading={GPTIsLoading}
+          isLoading={isTestLoading}
           handleTest={handleTest}
           handleChange={handleChange}
         />
@@ -270,29 +230,13 @@ function PromptCreate() {
       <GuideBalloon
         isShow={isShowGuide}
         sequenceText={sequenceText}
-        handleNextBtn={() => {
-          if (sequenceText.length - 1 === guideSequence) {
-            setGuideSequence(0);
-            setIsShowGuide(false);
-            return;
-          }
-          setGuideSequence(guideSequence + 1);
-        }}
-        handlePrevBtn={() => {
-          if (guideSequence === 0) {
-            setGuideSequence(0);
-            return;
-          }
-          setGuideSequence(guideSequence - 1);
-        }}
-        handleSkipBtn={() => {
-          setGuideSequence(0);
-          setIsShowGuide(false);
-        }}
+        handleNextBtn={nextGuide}
+        handlePrevBtn={preGuide}
+        handleSkipBtn={skipGuide}
         sequence={guideSequence}
         targetElementRef={guideElementRef[guideSequence]}
       />
-      {isShowGuide && <Overlay onClick={() => setIsShowGuide(false)} />}
+      {isShowGuide && <Overlay onClick={() => skipGuide()} />}
     </>
   );
 }
