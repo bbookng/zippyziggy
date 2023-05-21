@@ -5,14 +5,13 @@ import com.zippyziggy.member.dto.response.MemberTalkList;
 import com.zippyziggy.member.dto.response.PromptCardListExtensionResponse;
 import com.zippyziggy.member.dto.response.PromptCardListResponse;
 import com.zippyziggy.member.dto.response.PromptCardResponse;
-import java.util.List;
-import java.util.Optional;
-
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
+import java.util.Optional;
 
 @FeignClient(name="prompt")
 public interface PromptClient {
