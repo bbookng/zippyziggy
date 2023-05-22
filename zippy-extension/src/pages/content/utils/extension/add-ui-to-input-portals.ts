@@ -104,14 +104,14 @@ export const setInputWrapperStyle = (parent) => {
   const $parent = parent;
   $parent.style.paddingTop = 0;
   $parent.style.paddingRight = '1rem';
-  $parent.style.border = '1px solid #10C600';
+  $parent.classList.add('ZP_inputFocus');
 
   const handleFocus = () => {
-    $parent.style.border = '1px solid #10C600';
+    $parent.classList.add('ZP_inputFocus');
   };
 
   const handleBlur = () => {
-    $parent.style.border = '1px solid transparent';
+    $parent.classList.remove('ZP_inputFocus');
   };
 
   document.querySelector('textarea')?.addEventListener('focus', handleFocus);

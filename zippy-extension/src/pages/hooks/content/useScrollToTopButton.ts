@@ -9,12 +9,12 @@ export default function useScrollToTopButton(
 
   useEffect(() => {
     const onScroll = () => {
-      const toTopButton = document.querySelector(`#${ZP_TO_TOP_BUTTON_ID}`) as HTMLElement;
-      if (!toTopButton) return;
+      const $toTopButton = document.querySelector(`#${ZP_TO_TOP_BUTTON_ID}`) as HTMLElement;
+      if (!$toTopButton) return;
       if (targetElementRef.current.scrollTop === 0) {
-        toTopButton.style.display = 'none';
+        $toTopButton.style.display = 'none';
       } else {
-        toTopButton.style.display = 'block';
+        $toTopButton.style.display = 'block';
       }
     };
     const findTargetElement = () => {
@@ -23,9 +23,9 @@ export default function useScrollToTopButton(
         // eslint-disable-next-line prefer-destructuring
         targetElementRef.current = targetElement.children[0];
         targetElementRef.current.addEventListener('scroll', onScroll);
-        const toTopButton = document.querySelector(`#${ZP_TO_TOP_BUTTON_ID}`) as HTMLElement;
-        if (targetElementRef.current.scrollTop === 0) {
-          toTopButton.style.display = 'none';
+        const $toTopButton = document.querySelector(`#${ZP_TO_TOP_BUTTON_ID}`) as HTMLElement;
+        if (targetElementRef.current.scrollTop === 0 && $toTopButton) {
+          $toTopButton.style.display = 'none';
         }
       } else {
         setTimeout(findTargetElement, 500);

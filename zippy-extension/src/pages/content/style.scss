@@ -106,6 +106,10 @@
   }
 }
 
+.ZP_inputFocus {
+  border: 1px solid var(--input-focus-color) !important;
+}
+
 // 필터
 .ZP_prompt-container__filter {
   ul {
