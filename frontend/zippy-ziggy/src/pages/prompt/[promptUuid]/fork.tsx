@@ -17,7 +17,7 @@ import imgComp from '@/utils/imgComp';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { AiFillQuestionCircle } from 'react-icons/ai';
 import styled from 'styled-components';
@@ -58,6 +58,8 @@ export default function PromptUpdate() {
     image: null,
     category: '',
   };
+
+  const refArray = [useRef(null), useRef(null), useRef(null)];
 
   // react-hook-form 설정
   const { setValue, getValues, watch } = useForm({
@@ -103,12 +105,25 @@ export default function PromptUpdate() {
     enabled: !!promptUuid,
   });
 
+  // textarea 높이 변경
+  const handleRefChange = () => {
+    refArray[0].current.style.height = 'auto';
+    refArray[0].current.style.height = `${refArray[0].current.scrollHeight}px`;
+    refArray[1].current.style.height = 'auto';
+    refArray[1].current.style.height = `${refArray[1].current.scrollHeight}px`;
+    refArray[2].current.style.height = 'auto';
+    refArray[2].current.style.height = `${refArray[2].current.scrollHeight}px`;
+  };
+
   useEffect(() => {
     watch();
     if (!isLoading) {
       setValue('prompt1', data?.data?.messageResponse?.prefix || '');
       setValue('prompt2', data?.data?.messageResponse?.suffix || '');
       setValue('example', data?.data?.messageResponse?.example || '');
+      refArray[0].current.value = data?.data?.messageResponse?.prefix || '';
+      refArray[1].current.value = data?.data?.messageResponse?.suffix || '';
+      refArray[2].current.value = data?.data?.messageResponse?.example || '';
       setValue('title', data?.data?.title);
       setValue('content', data?.data?.description);
       setValue('category', data?.data?.category);
@@ -116,6 +131,7 @@ export default function PromptUpdate() {
         setPreview(data?.data?.thumbnail);
         getFile(data?.data?.thumbnail);
       }
+      handleRefChange();
     }
   }, [isLoading]);
 
@@ -218,7 +234,7 @@ export default function PromptUpdate() {
                 setIsShowGuide(true);
               }}
             >
-              작성이 처음이신가요?
+              포크가 처음이신가요?
             </div>
           </div>
         </TitleWrapper>
@@ -252,6 +268,7 @@ export default function PromptUpdate() {
           prompt1={prompt1}
           prompt2={prompt2}
           example={example}
+          refArray={refArray}
           possible
           text={loadingText}
           testContent={testContent}

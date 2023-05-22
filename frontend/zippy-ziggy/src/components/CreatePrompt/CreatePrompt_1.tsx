@@ -27,6 +27,7 @@ interface PropTypes {
   isLoading?: boolean;
   handleChange: (e: unknown, string: string) => void;
   handleTest?: () => void;
+  refArray?: any;
 }
 
 export default function CreatePart1({
@@ -40,6 +41,7 @@ export default function CreatePart1({
   isLoading,
   handleChange,
   handleTest,
+  refArray,
 }: PropTypes) {
   return (
     <Container>
@@ -59,6 +61,7 @@ export default function CreatePart1({
             id="prompt1"
             value={prompt1}
             maxLength={6000}
+            ref={refArray && refArray[0]}
             onChange={(e) => handleChange(e, 'prompt1')}
             placeholder="질문의 앞에 붙을 프롬프트를 작성해주세요."
             disabled={!possible}
@@ -82,6 +85,7 @@ export default function CreatePart1({
               maxLength={6000}
               onChange={(e) => handleChange(e, 'example')}
               id="example"
+              ref={refArray && refArray[1]}
               disabled={!possible}
             />
           </div>
@@ -102,6 +106,7 @@ export default function CreatePart1({
             onChange={(e) => handleChange(e, 'prompt2')}
             placeholder="질문의 뒤에 붙을 프롬프트를 작성해주세요."
             id="prompt2"
+            ref={refArray && refArray[2]}
             disabled={!possible}
           />
         </div>
