@@ -125,6 +125,12 @@
   "languageDropdown_search": {
     "message": "Suche"
   },
+  "languageDropdown_select": {
+    "message": "Sprachauswahl"
+  },
+  "languageDropdown_no": {
+    "message": "Nicht ausgewählt"
+  },
   "languageDropdown_browser": {
     "message": "Standard"
   },

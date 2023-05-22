@@ -125,6 +125,12 @@
   "languageDropdown_search": {
     "message": "搜索"
   },
+  "languageDropdown_select": {
+    "message": "语言选择"
+  },
+  "languageDropdown_no": {
+    "message": "未设置"
+  },
   "languageDropdown_browser": {
     "message": "检测语言"
   },

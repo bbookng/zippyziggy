@@ -1,4 +1,4 @@
-import { MK_RESIGN, MK_SIGN_OUT } from '@pages/constants';
+import { MK_RESIGN, MK_SIGN_OUT, ZIPPY_SITE_URL } from '@pages/constants';
 
 export const sendMessage = (type: string, element: HTMLElement, data: any) => {
   element.addEventListener('click', () => {
@@ -39,7 +39,12 @@ export const shouldRenderPromptList = (element: HTMLElement) => {
 
 export const shouldRenderPromptCardInTalkPage = (element: HTMLElement) => {
   if (element.nodeName !== 'DIV') return false;
-  return element.className?.startsWith('Detailstyle__LeftContainer');
+  return (
+    (element.className?.startsWith('Detailstyle__Container') &&
+      element.baseURI.startsWith(`${ZIPPY_SITE_URL}/talks`)) ||
+    (element.className?.startsWith('Detailstyle__LeftContainer') &&
+      element.baseURI.startsWith(`${ZIPPY_SITE_URL}/talks`))
+  );
 };
 
 // 탈퇴, 로그아웃 공통 로직

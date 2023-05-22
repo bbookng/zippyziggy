@@ -11,11 +11,14 @@ import splitKorean from '@pages/content/utils/@shared/split-korean';
 import t from '@src/chrome/i18n';
 
 const LanguageDropbox = () => {
-  const { setIsExpand, isExpand } = useContext(DropdownContext);
+  const { setIsExpand } = useContext(DropdownContext);
   const [searchLanguage, setSearchLanguage] = useState('');
   const [selectedLanguage, setSelectedLanguage] = useChromeStorage<number>(CHROME_LANGUAGE_KEY, 0);
   const browserName = useBrowserName();
 
+  const handleLanguageClear = () => {
+    setSelectedLanguage(-2);
+  };
   const handleLanguageDetection = () => {
     setSelectedLanguage(-1);
   };
@@ -26,10 +29,14 @@ const LanguageDropbox = () => {
   };
 
   useEffect(() => {
-    const targetLanguage =
+    let targetLanguage =
       selectedLanguage > -1
         ? countryData[selectedLanguage]?.englishName
         : countryData.find((item) => item.navigatorLanguage === navigator.language)?.englishName;
+
+    if (selectedLanguage === -2) {
+      targetLanguage = 'no';
+    }
 
     const message = {
       type: 'changeLanguage',
@@ -43,7 +50,7 @@ const LanguageDropbox = () => {
     <Dropdown>
       <Dropdown.Trigger className="ZP_language-select">
         <div className="ZP_language-label">
-          {selectedLanguage > -1 ? (
+          {selectedLanguage > -1 && (
             <>
               <FlagKit
                 code={countryData[selectedLanguage]?.code}
@@ -52,11 +59,15 @@ const LanguageDropbox = () => {
               />
               {countryData[selectedLanguage]?.koreanName}
             </>
-          ) : (
+          )}
+          {selectedLanguage === -1 && (
             <>
               <BrowserIcon name={browserName} />
               <span style={{ marginLeft: '0.375rem' }}>{`${t('languageDropdown_browser')}`}</span>
             </>
+          )}
+          {selectedLanguage === -2 && (
+            <span style={{ marginLeft: '0.375rem' }}>{`${t('languageDropdown_select')}`}</span>
           )}
         </div>
       </Dropdown.Trigger>
@@ -67,6 +78,16 @@ const LanguageDropbox = () => {
           placeholder={`${t('languageDropdown_search')}`}
         />
         <ul className="ZP_language-items">
+          <li className={`ZP_language-item-wrapper ${selectedLanguage === -2 && 'active'}`}>
+            <button
+              type="button"
+              className="ZP_language-item"
+              onClick={handleLanguageClear}
+              style={{ justifyContent: 'center' }}
+            >
+              {t('languageDropdown_no')}
+            </button>
+          </li>
           <li className={`ZP_language-item-wrapper ${selectedLanguage === -1 && 'active'}`}>
             <button type="button" className="ZP_language-item" onClick={handleLanguageDetection}>
               <BrowserIcon name={browserName} />

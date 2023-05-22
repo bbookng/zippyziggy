@@ -125,6 +125,12 @@
   "languageDropdown_search": {
     "message": "検索"
   },
+  "languageDropdown_select": {
+    "message": "言語選択"
+  },
+  "languageDropdown_no": {
+    "message": "設定なし"
+  },
   "languageDropdown_browser": {
     "message": "言語検出"
   },

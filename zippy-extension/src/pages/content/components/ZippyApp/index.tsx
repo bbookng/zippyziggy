@@ -86,6 +86,7 @@ if (currentUrl.startsWith(ZIPPY_SITE_URL)) {
     for (const mutation of mutations) {
       for (const node of [...mutation.addedNodes]) {
         const $targetElement = node as HTMLElement;
+
         // svg인 경우 넘어가기
         if ($targetElement.nodeName === 'svg') return;
 
@@ -139,6 +140,7 @@ if (currentUrl.startsWith(ZIPPY_SITE_URL)) {
         if (shouldRenderPromptList($targetElement)) {
           const promptUuid = $targetElement.dataset.uuid;
           const $playButton = $targetElement.querySelector('.item.promptCardPlay');
+          console.log($targetElement);
           $playButton.addEventListener('click', async () => {
             const { title, prefix, example, suffix, uuid } = await getPromptDetail(promptUuid);
             await chrome.runtime.sendMessage({
@@ -173,34 +175,34 @@ if (currentUrl.startsWith(ZIPPY_SITE_URL)) {
         if (shouldRenderPromptCardInTalkPage($targetElement)) {
           const promptUuid = (
             $targetElement.querySelector('[class^=CardStyle__Conatiner]') as HTMLElement
-          ).dataset.uuid;
+          )?.dataset?.uuid;
           const $playButton = $targetElement.querySelector('.item.promptCardPlay');
 
-          $playButton.addEventListener('click', async () => {
+          $playButton?.addEventListener('click', async () => {
             const { title, prefix, example, suffix, uuid } = await getPromptDetail(promptUuid);
             await chrome.runtime.sendMessage({
               type: MK_DATA_FROM_PROMPT_CARD_PLAY,
               data: { title, prefix, example, suffix, uuid },
             });
           });
-          $playButton.classList.add('zp');
+          $playButton?.classList?.add('zp');
         }
 
         if ($targetElement.baseURI.startsWith(`${ZIPPY_SITE_URL}/talks`)) {
           if (talksReload) {
             const promptUuid = (
               $targetElement.querySelector('[class^=CardStyle__Conatiner]') as HTMLElement
-            ).dataset.uuid;
+            )?.dataset?.uuid;
             const $playButton = $targetElement.querySelector('.item.promptCardPlay');
 
-            $playButton.addEventListener('click', async () => {
+            $playButton?.addEventListener('click', async () => {
               const { title, prefix, example, suffix, uuid } = await getPromptDetail(promptUuid);
               await chrome.runtime.sendMessage({
                 type: MK_DATA_FROM_PROMPT_CARD_PLAY,
                 data: { title, prefix, example, suffix, uuid },
               });
             });
-            $playButton.classList.add('zp');
+            $playButton?.classList?.add('zp');
           }
 
           talksReload = false;

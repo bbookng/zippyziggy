@@ -1,6 +1,6 @@
 // global constants
 
-const DEFAULT_TARGET_LANGUAGE = 'Korean';
+const DEFAULT_TARGET_LANGUAGE = 'English';
 
 /* Placeholder */
 const PROMPT_PLACEHOLDER = '[PROMPT]';
