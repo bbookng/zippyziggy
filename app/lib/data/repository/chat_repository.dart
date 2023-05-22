@@ -16,4 +16,10 @@ class ChatRepository {
 
     return response.data;
   }
+
+  // POST : ChatGPT SSE API
+  Future SSEChatGPTAPI(List<Map<String, String>> messages) async {
+    final response = await _dioService.chat(messages);
+    return response;
+  }
 }

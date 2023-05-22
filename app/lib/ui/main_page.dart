@@ -21,11 +21,11 @@ class MainPage extends StatelessWidget {
             listen: false,
           ).setNavigationItem(NavigationItem.main);
         },
-        children: const [
+        children: [
           Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+              children: const [
                 Text("메인페이지입니당"),
               ],
             ),
