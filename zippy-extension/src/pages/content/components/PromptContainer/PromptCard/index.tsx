@@ -50,9 +50,9 @@ const PromptCard = ({ name, prompt, queryKeyItems }: PromptCardProps) => {
     const message = {
       type: 'selectPrompt',
       data: {
-        prompt: `${ZIPPY_SITE_URL}/prompts/${promptUuid}\n${prefix || ''} ${PROMPT_PLACEHOLDER} ${
-          suffix || ''
-        }${TARGET_LANGUAGE_PLACEHOLDER}`.trim(),
+        prompt: `${ZIPPY_SITE_URL}/prompts/${promptUuid}\n위의 링크는 무시하세요.\n\n${
+          prefix || ''
+        } ${PROMPT_PLACEHOLDER} ${suffix || ''}${TARGET_LANGUAGE_PLACEHOLDER}`.trim(),
       },
     };
 

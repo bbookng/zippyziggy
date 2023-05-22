@@ -9,8 +9,8 @@ import {
   TARGET_LANGUAGE_PLACEHOLDER,
   ZIPPY_SITE_URL,
   ZP_PROMPT_TITLE_HOLDER_ID,
-} from '@pages/constants';
-import { sanitizeInput } from '@src/utils';
+} from "@pages/constants";
+import { sanitizeInput } from "@src/utils";
 
 const ZIPPY = (window.ZIPPYZIGGY = {
   init() {
@@ -110,7 +110,7 @@ window.addEventListener('message', (event) => {
         data: { title, suffix, prefix, example, uuid },
       } = event.data;
 
-      const prompt = `${ZIPPY_SITE_URL}/prompts/${uuid}\n${prefix || ''} ${PROMPT_PLACEHOLDER} ${
+      const prompt = `${ZIPPY_SITE_URL}/prompts/${uuid}\n위의 링크는 무시하세요.\n\n${prefix || ''} ${PROMPT_PLACEHOLDER} ${
         suffix || ''
       }${TARGET_LANGUAGE_PLACEHOLDER}`.trim();
       ZIPPY.selectedPrompt = prompt;

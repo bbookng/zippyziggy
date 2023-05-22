@@ -70,8 +70,7 @@ const useInputContainerPortal = () => {
       for (const mutation of mutations) {
         const targetElement = mutation.target as Element;
         if (targetElement.className === 'relative flex h-full flex-1 items-stretch md:flex-col') {
-          console.log('에에에');
-          appendShareButton();
+          appendShareButton().then();
         }
         // 맨 위로 가는 버튼이 생길 조건
         if (
@@ -113,7 +112,7 @@ const useInputContainerPortal = () => {
             if ($ZPActionGroup) {
               $ZPActionGroup.classList.remove('ZP_invisible');
             }
-            appendShareButton();
+            appendShareButton().then();
             document.getElementById(ZP_PROMPT_TITLE_HOLDER_ID).parentElement.style.display = 'none';
             const $textarea = document.querySelector(`form textarea`) as HTMLTextAreaElement;
             $textarea.placeholder = 'Send a message.';
