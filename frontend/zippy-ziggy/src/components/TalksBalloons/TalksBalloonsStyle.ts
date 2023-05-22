@@ -213,6 +213,44 @@ const StyledGPT = css`
   --tw-backdrop-sepia: ;
 `;
 
+const StyledCommon = css`
+  .messagesContainer {
+    .Container *:not(code) {
+      font-size: revert;
+    }
+    .Container a {
+      text-decoration: underline;
+    }
+    .Container table {
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      th {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+      th,
+      td {
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        padding: 0.5rem;
+      }
+    }
+    -webkit-text-size-adjust: 100%;
+    font-feature-settings: normal;
+    font-variation-settings: normal;
+    tab-size: 4;
+
+    color-scheme: dark;
+    color: rgba(236, 236, 241, var(--tw-text-opacity));
+    border: 0 solid #d9d9e3;
+    box-sizing: border-box;
+
+    margin: auto;
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+`;
+
 export const StyledTalksContainer = styled.div`
   display: flex;
 `;
@@ -240,35 +278,7 @@ export const StyledTalksWrap = styled.div`
     font-size: 1rem;
     line-height: 1.5rem;
     background-color: rgba(64, 65, 79, var(--tw-bg-opacity));
-    .messagesContainer {
-      .Container *:not(code) {
-        font-size: revert;
-      }
-      .Container table {
-        th {
-          border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        td {
-          border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-      }
-      -webkit-text-size-adjust: 100%;
-      font-feature-settings: normal;
-      font-variation-settings: normal;
-      tab-size: 4;
-
-      color-scheme: dark;
-      color: rgba(236, 236, 241, var(--tw-text-opacity));
-      border: 0 solid #d9d9e3;
-      box-sizing: border-box;
-
-      margin: auto;
-      display: flex;
-      gap: 1rem;
-      padding: 1rem;
-      font-size: 1rem;
-      line-height: 1.5rem;
-    }
+    ${StyledCommon}
   }
 
   .mine {
@@ -288,34 +298,7 @@ export const StyledTalksWrap = styled.div`
     border-color: rgba(32, 33, 35, 0.5);
     background-color: rgba(52, 53, 65, var(--tw-bg-opacity));
     color: rgba(236, 236, 241, var(--tw-text-opacity));
-    .messagesContainer {
-      .Container *:not(code) {
-        font-size: revert;
-      }
-      .Container table {
-        th {
-          border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        td {
-          border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-      }
-      -webkit-text-size-adjust: 100%;
-      font-feature-settings: normal;
-      font-variation-settings: normal;
-      tab-size: 4;
-      color-scheme: dark;
-      color: rgba(236, 236, 241, var(--tw-text-opacity));
-      border: 0 solid #d9d9e3;
-      box-sizing: border-box;
-
-      margin: auto;
-      display: flex;
-      gap: 1rem;
-      padding: 1rem;
-      font-size: 1rem;
-      line-height: 1.5rem;
-    }
+    ${StyledCommon}
   }
 
   .messagesContainer {
