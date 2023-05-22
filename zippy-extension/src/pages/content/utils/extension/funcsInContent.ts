@@ -25,7 +25,7 @@ export const shouldRenderResign = (element: HTMLElement) => {
 };
 
 export const shouldRenderPlayButton = (element: HTMLElement) => {
-  if (element.nodeName !== 'BUTTON') return false;
+  if (element.nodeName !== 'DIV') return false;
   return (
     element.className?.startsWith('Detailstyle__Container') ||
     element.className?.startsWith('Detailstyle__LeftContainer')

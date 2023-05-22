@@ -22,8 +22,11 @@ export default function useScrollToTopButton(
       if (targetElement) {
         // eslint-disable-next-line prefer-destructuring
         targetElementRef.current = targetElement.children[0];
-
         targetElementRef.current.addEventListener('scroll', onScroll);
+        const toTopButton = document.querySelector(`#${ZP_TO_TOP_BUTTON_ID}`) as HTMLElement;
+        if (targetElementRef.current.scrollTop === 0) {
+          toTopButton.style.display = 'none';
+        }
       } else {
         setTimeout(findTargetElement, 500);
       }
