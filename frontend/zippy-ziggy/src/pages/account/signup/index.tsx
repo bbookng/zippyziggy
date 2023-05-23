@@ -56,6 +56,10 @@ const LoginWarp = styled.div`
     padding: 16px;
     background-color: ${({ theme: { colors } }) => colors.bgColor};
   }
+
+  .link {
+    text-decoration: underline;
+  }
 `;
 
 // 이미지 파일이면 URL.createObjectURL() 메서드를 이용하여 이미지 URL을 생성합니다
@@ -253,11 +257,11 @@ export default function SignUp() {
           <div className="legal">
             <Paragraph sizeType="sm" textAlign="left">
               회원가입을 하시면{' '}
-              <Link className="link" href="/legal#termsOfUse">
+              <Link className="link" target="_blank" href="/legal#termsOfUse">
                 이용약관
               </Link>{' '}
               및{' '}
-              <Link className="link" href="/legal#privacyPolicy">
+              <Link className="link" target="_blank" href="/legal#privacyPolicy">
                 개인정보처리방침
               </Link>
               에 동의하시게 됩니다.
