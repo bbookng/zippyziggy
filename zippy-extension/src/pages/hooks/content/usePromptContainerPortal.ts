@@ -57,9 +57,7 @@ const usePromptListPortal = () => {
         for (const mutation of mutations) {
           const $targetElement = mutation.target as HTMLElement;
           if (!document.querySelector('h1.text-4xl')) {
-            if (
-              $targetElement.className === 'flex flex-col items-center text-sm dark:bg-gray-800'
-            ) {
+            if ($targetElement.className === 'flex flex-col text-sm dark:bg-gray-800') {
               const $ZPPromptContainer = document.querySelector(
                 `#${ZP_PROMPT_CONTAINER_ID}`
               ) as HTMLElement;

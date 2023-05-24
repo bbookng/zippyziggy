@@ -360,7 +360,9 @@ export const appendShareButton = async () => {
     const $shareButton = createShareButton();
     if (!$shareButton) return;
 
-    findRegenerateButton().insertAdjacentElement('beforebegin', $shareButton);
+    if (findRegenerateButton()) {
+      findRegenerateButton().insertAdjacentElement('beforebegin', $shareButton);
+    }
 
     $shareButton.addEventListener(
       'click',
