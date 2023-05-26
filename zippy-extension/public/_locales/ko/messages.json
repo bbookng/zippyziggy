@@ -200,6 +200,9 @@
   "errorMessage_conversationsShare": {
     "message": "대화내용 공유에 실패했습니다."
   },
+  "errorMessage_serverError": {
+    "message": "ZippyZiggy 서버를 리뉴얼 중입니다. 6월 초에 서비스를 재개하겠습니다."
+  },
   "errorMessage_noContent": {
     "message": "결과가 없습니다."
   },

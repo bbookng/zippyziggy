@@ -85,7 +85,11 @@ const PromptContainer = () => {
   const [limit, setLimit] = useState(LIMIT);
 
   // 검색
-  const { data: searchResult, isLoading: isSearchLoading } = useQuery(
+  const {
+    data: searchResult,
+    isLoading: isSearchLoading,
+    isError: isSearchError,
+  } = useQuery(
     [
       'search',
       searchPage[selectedCategory] - 1,
@@ -110,7 +114,11 @@ const PromptContainer = () => {
   );
 
   // 북마크
-  const { data: bookmarkResult, isLoading: isBookmarkLoading } = useQuery(
+  const {
+    data: bookmarkResult,
+    isLoading: isBookmarkLoading,
+    isError: isBookmarkError,
+  } = useQuery(
     ['bookmark', searchPage[selectedCategory] - 1, limit, selectedSort],
     () => {
       const path = userData?.userUuid;
@@ -187,7 +195,9 @@ const PromptContainer = () => {
                 if (searchResult?.totalPromptsCnt === 0) {
                   return <div>{t('errorMessage_noContent')}</div>;
                 }
-
+                if (isSearchError) {
+                  return <h1 className="server-error-message">{t('errorMessage_serverError')}</h1>;
+                }
                 return searchResult?.extensionSearchPromptList?.map((prompt) => {
                   const queryKeyItems = {
                     page: searchPage[selectedCategory] - 1,
@@ -219,6 +229,9 @@ const PromptContainer = () => {
               }
               if (bookmarkResult?.totalPromptsCnt === 0) {
                 return <div>{t('errorMessage_noContent')}</div>;
+              }
+              if (isBookmarkError) {
+                return <h1 className="server-error-message">{t('errorMessage_serverError')}</h1>;
               }
 
               return bookmarkResult?.promptCardResponseList?.map((prompt) => {

@@ -92,4 +92,14 @@
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
+
+.server-error-message {
+  position: absolute;
+  text-overflow: ellipsis;
+  width: 500px;
+  -webkit-line-clamp: 2;
+  right: 50%;
+  transform: translateX(50%);
+  top: 150%;
+}
 //프롬프트 컨테이너 끝 #####

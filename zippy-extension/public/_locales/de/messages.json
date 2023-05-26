@@ -200,6 +200,9 @@
   "errorMessage_conversationsShare": {
     "message": "Konversation konnte nicht geteilt werden."
   },
+  "errorMessage_serverError": {
+    "message": "Der ZippyZiggy-Server wird gerade aktualisiert. Der Service wird Anfang Juni wieder aufgenommen."
+  },
   "errorMessage_noContent": {
     "message": "Keine Ergebnisse gefunden."
   },

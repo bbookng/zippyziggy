@@ -200,6 +200,9 @@
   "errorMessage_conversationsShare": {
     "message": "对话内容分享失败。"
   },
+  "errorMessage_serverError": {
+    "message": "ZippyZiggy服务器正在进行更新。服务将在6月初恢复。"
+  },
   "errorMessage_noContent": {
     "message": "没有结果。"
   },
