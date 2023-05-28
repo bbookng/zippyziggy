@@ -15,6 +15,7 @@ import 'toastify-js/src/toastify.css';
 import Head from 'next/head';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Construction from './construction';
 
 export const GlobalStyle = createGlobalStyle`
   ${normalize}
@@ -160,6 +161,7 @@ function App({ Component, pageProps }: AppProps) {
           <ThemeProvider theme={colorTheme === 'dark' ? darkTheme : lightTheme}>
             <GlobalStyle />
             <AppLayout toggleTheme={toggleTheme}>
+              <Construction />
               <Component {...pageProps} />
               <ToastContainer
                 limit={1}
