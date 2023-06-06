@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:zippy_ziggy/data/model/prompt_model.dart';
 import 'package:zippy_ziggy/data/repository/chat_repository.dart';
@@ -7,9 +9,13 @@ class ChatProvider extends ChangeNotifier {
   final ChatRepository _chatRepository = ChatRepository();
   final PromptRepository _promptRepository = PromptRepository();
 
+  // GPT 답변
+  String answer = '';
+  StreamSubscription? subscription;
+
   // GPT한테 보낼 메시지 목록
-  late List<Map<String, dynamic>> _messageList = [];
-  List<Map<String, dynamic>> get messageList => _messageList;
+  late List<Map<String, String>> _messageList = [];
+  List<Map<String, String>> get messageList => _messageList;
 
   // 유저한테 보여줄 메시지 목록
   List<Map<String, dynamic>> chatList = [];
@@ -26,7 +32,7 @@ class ChatProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addMessage(Map<String, dynamic> message) {
+  void addMessage(Map<String, String> message) {
     messageList.add(message);
     notifyListeners();
   }
@@ -38,6 +44,8 @@ class ChatProvider extends ChangeNotifier {
     isLoading = false;
     isLoadingGPT = false;
     chatList = [];
+    answer = '';
+    stopChat();
     notifyListeners();
   }
 
@@ -66,14 +74,12 @@ class ChatProvider extends ChangeNotifier {
     }
   }
 
-  // ChatGPT 요청
-  Future<bool> postChatGPT() async {
-    isLoadingGPT = true;
-    notifyListeners();
+  // ChatGPT SSE 요청
+  Future<Map<String, dynamic>> SSEChatGPT() async {
     try {
       String systemMessage = '';
       String exampleMessage = '';
-      final List<Map<String, dynamic>> extraMessages = [];
+      final List<Map<String, String>> extraMessages = [];
       if (prompt != null) {
         final String? prefix = prompt?.messageResponse?.prefix;
         final String? suffix = prompt?.messageResponse?.suffix;
@@ -103,24 +109,32 @@ class ChatProvider extends ChangeNotifier {
         }
       }
 
-      List<Map<String, dynamic>> messages = messageList;
+      List<Map<String, String>> messages = messageList;
       if (extraMessages.isNotEmpty) {
         messages = extraMessages + messages;
       }
 
-      Map<String, dynamic> data =
-          await _chatRepository.postChatGPTAPI(messages);
-
+      final response = await _chatRepository.SSEChatGPTAPI(messages);
+      answer = '';
       chatList.add({
-        "message": data['apiResult'],
+        "message": answer,
         "isMe": false,
         "prompt": prompt,
       });
       messageList.add({
         "role": "assistant",
-        "content": data['apiResult'],
+        "content": answer,
       });
-      return true;
+
+      subscription = await response.listen((it) {
+        // print('${it.choices.last.message!.content}');
+        answer += it.choices.last.message!.content;
+        chatList[chatList.length - 1]['message'] = answer;
+        _messageList[_messageList.length - 1]['content'] = answer;
+        notifyListeners();
+      });
+
+      return {"result": "SUCCESS", "data": subscription};
     } catch (e) {
       chatList.add({
         "message": "요청 실패, 다시 시도해주세요.",
@@ -128,10 +142,13 @@ class ChatProvider extends ChangeNotifier {
         "prompt": prompt,
       });
       messageList.removeLast();
-      return false;
-    } finally {
-      isLoadingGPT = false;
-      notifyListeners();
+      return {"result": "FAIL", "data": e};
     }
+  }
+
+  // stop
+  void stopChat() {
+    subscription?.cancel();
+    subscription = null;
   }
 }

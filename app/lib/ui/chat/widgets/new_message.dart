@@ -21,14 +21,14 @@ class _NewMessageState extends State<NewMessage> {
     void _sendMessage() async {
       // 전송 버튼 클릭시 키보드 사라지게 만듦
       FocusScope.of(context).unfocus();
-      final Map<String, dynamic> message = {
+      final Map<String, String> message = {
         "role": "user",
         "content": _controller.text,
       };
 
       provider.addChat(_controller.text, true);
       provider.addMessage(message);
-      await provider.postChatGPT();
+      await provider.SSEChatGPT();
 
       // 전송시 텍스트폼 초기화
       _controller.clear();

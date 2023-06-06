@@ -185,8 +185,8 @@ class _PromptListState extends State<PromptList> {
     // 로딩중이 아닌데 캐시에 아무것도 업슴
     // 아무것도 가져올 아이템이 없을때
     if (provider.page > 0 && !isLoading && promptList.isEmpty) {
-      return const Column(
-        children: [
+      return Column(
+        children: const [
           SizedBox(
             height: 200,
           ),
