@@ -10,30 +10,6 @@
 
 1. 개발 기간: 2023.04.10 ~ 2023.05.19 (총 6주)
 2. 인원(총 6인)
-
-<table>
-  <tr>
-   <td align="center"><a href="https://github.com/dltkdcks456"><img src="https://avatars.githubusercontent.com/u/109336772?v=4" width="100px;" alt=""/>
-   <br/><sub><b>이상찬</b></sub><br></a>
-    <sub><b>팀장, BE</b><br></sub></td>
-   <td align="center"><a href="https://github.com/bbookng"><img src="https://avatars.githubusercontent.com/u/109321163?v=4" width="100px;" alt=""/>
-   <br /><sub><b>bbookng</b><br></sub></a>
-   <sub><b>BE</b><br></sub></td>
-   <td align="center"><a href="https://github.com/EZ-000"><img src="https://avatars.githubusercontent.com/u/85544352?v=4" width="100px;" alt=""/>
-   <br /><sub><b>EZ-000</b><br></sub></a>
-    <sub><b>BE</b><br></sub></td>
-   <td align="center"><a href="https://github.com/heisje"><img src="https://avatars.githubusercontent.com/u/109322450?v=4" width="100px;" alt=""/>
-   <br /><sub><b>heeje</b><br></sub></a>
-   <sub><b>FE</b><br></sub></td>
-   <td align="center"><a href="https://github.com/ChangJuneKim"><img src="https://avatars.githubusercontent.com/u/77381154?v=4" width="100px;" alt=""/>
-   <br /><sub><b>김창준</b><br></sub></a>
-       <sub><b>FE</b><br></sub></td>
-   <td align="center"><a href="https://github.com/Choihyoungkyu"><img src="https://avatars.githubusercontent.com/u/109322428?v=4" width="100px;" alt=""/>
-   <br /><sub><b>ChoiHyoungKyu</b><br></sub></a>
-      <sub><b>FE</b><br></sub></td>
-  </tr>
-</table>
-
 3. 개요
 
 -  서비스 목표: 간편하고 쉬운 프롬프트 제작을 통해 일반 사용자들에게 ChatGPT 접근성 향상
